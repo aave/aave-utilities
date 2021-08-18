@@ -1,0 +1,13 @@
+{
+  "editor.formatOnSave": true,
+  "eslint.enable": true,
+  "eslint.validate": ["typescript"],
+  "files.associations": {
+    ".eslintrc.json": "jsonc"
+  },
+  "search.exclude": {
+    "coverage": true,
+    "packages/*/dist": true,
+    "**/node_modules": true
+  }
+}

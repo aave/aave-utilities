@@ -1,0 +1,121 @@
+{
+  "name": "@aave/node-lib",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "lerna bootstrap",
+    "clean": "rimraf coverage && lerna run clean",
+    "lint": "lerna run lint",
+    "check-types": "lerna run check-types",
+    "build": "lerna run build",
+    "test": "jest --watch",
+    "precover": "rimraf coverage",
+    "cover": "jest --coverage",
+    "commit": "git-cz"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-push": "yarn check-types && yarn cover"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional",
+      "@commitlint/config-lerna-scopes"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "release": {
+    "branch": "master"
+  },
+  "prettier": {
+    "arrowParens": "avoid",
+    "proseWrap": "always",
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "all"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ],
+    "*.{json,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "packages/*/src/**/*.ts"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": [
+      "lcov",
+      "text"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    },
+    "globals": {
+      "ts-jest": {
+        "diagnostics": {
+          "//": "https://github.com/kulshekhar/ts-jest/issues/748#issuecomment-423528659",
+          "ignoreCodes": [
+            151001
+          ]
+        }
+      }
+    },
+    "modulePathIgnorePatterns": [
+      "node_modules"
+    ],
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "verbose": true,
+    "watchPlugins": [
+      "jest-watch-typeahead/filename",
+      "jest-watch-typeahead/testname"
+    ]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^8.1.0",
+    "@commitlint/config-conventional": "^8.1.0",
+    "@commitlint/config-lerna-scopes": "^8.1.0",
+    "@types/jest": "^24.0.17",
+    "@types/node": "^16.6.1",
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
+    "commitizen": "^4.0.3",
+    "cz-conventional-changelog": "^3.0.2",
+    "eslint": "^6.1.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-config-xo": "^0.26.0",
+    "eslint-config-xo-typescript": "^0.16.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "husky": "^3.0.3",
+    "jest": "^24.8.0",
+    "jest-watch-typeahead": "^0.3.1",
+    "lerna": "^3.16.4",
+    "lint-staged": "^9.2.1",
+    "prettier": "^1.18.2",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.5.3",
+    "xo": "^0.24.0"
+  }
+}

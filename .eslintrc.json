@@ -1,0 +1,45 @@
+{
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "impliedStrict": true
+    },
+    "ecmaVersion": 6,
+    "project": "./tsconfig.json",
+    "sourceType": "module",
+    "tsconfigRootDir": "."
+  },
+  "plugins": ["@typescript-eslint", "prettier"],
+  "extends": [
+    "eslint:recommended",
+    "xo",
+    "xo-typescript",
+    "prettier",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "@typescript-eslint/no-use-before-define": "off",
+
+    // Defer to Prettier
+    "@typescript-eslint/indent": "off",
+
+    // xo-typescript overrides
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/semi": ["error", "never"]
+  },
+  "overrides": [
+    {
+      "files": ["packages/*/src/**/*.test.ts"],
+      "env": {
+        "jest": true
+      },
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    }
+  ]
+}

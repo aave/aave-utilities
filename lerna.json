@@ -1,0 +1,15 @@
+{
+  "packages": ["packages/*"],
+  "version": "independent",
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "private": true,
+  "command": {
+    "publish": {
+      "allowBranch": ["master"],
+      "commitHooks": false,
+      "conventionalCommits": true,
+      "message": "chore(release): [skip ci]"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "commands-show-output": false,
+  "list-marker-space": {
+    "ol_multi": 1,
+    "ol_single": 1,
+    "ul_multi": 1,
+    "ul_single": 1
+  }
+}

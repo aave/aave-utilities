@@ -1,0 +1,41 @@
+{
+  "name": "@aave/math",
+  "license": "MIT",
+  "version": "1.1.1",
+  "scripts": {
+    "clean": "cd ../.. && npx rimraf packages/math/dist packages/math/*.log*",
+    "lint": "cd ../.. && npx eslint packages/math/src/**/*.ts",
+    "check-types": "npm run build -- --noEmit",
+    "prebuild": "npm run clean",
+    "build": "cd ../.. && npx tsc -p packages/math/tsconfig.json",
+    "test": "cd ../.. && npm test packages/math",
+    "cover": "cd ../.. && npm run cover packages/math",
+    "commit": "cd ../.. && npm run commit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "lerna",
+    "typescript"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "tslib": "^1.10.0"
+  },
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/@aave/aave-node.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/@aave/aave-node/issues"
+  },
+  "homepage": "https://github.com/@aave/aave-node#readme"
+}
