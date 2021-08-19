@@ -7,7 +7,7 @@
     "lint": "cd ../.. && npx eslint packages/math/src/**/*.ts",
     "check-types": "npm run build -- --noEmit",
     "prebuild": "npm run clean",
-    "build": "cd ../.. && npx tsc -p packages/math/tsconfig.json",
+    "build": "cd ../.. && npx tsc -p packages/math/tsconfig.json && npx tsc -p packages/math/tsconfig.json --module commonjs --outDir ./packages/math/dist/cjs",
     "test": "cd ../.. && npm test packages/math",
     "cover": "cd ../.. && npm run cover packages/math",
     "commit": "cd ../.. && npm run commit",
@@ -17,10 +17,15 @@
     "lerna",
     "typescript"
   ],
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "package.json",
+    "package-lock.json",
+    "README.md",
+    "LICENSE"
   ],
   "publishConfig": {
     "access": "public"
