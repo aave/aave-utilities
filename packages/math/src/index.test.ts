@@ -1,7 +1,4 @@
-import core, { foo } from '.'
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-import cjs = require('.')
+import { core, foo } from './index'
 
 describe('core', () => {
 	describe('default export', function() {
@@ -12,13 +9,6 @@ describe('core', () => {
 
 		it('returns 42', () => {
 			expect(core()).toBe(42)
-		})
-	})
-
-	describe('CommonJS export', () => {
-		it('is the same as the default export', () => {
-			expect(cjs).toBe(core)
-			expect(cjs.foo).toBe(foo)
 		})
 	})
 
