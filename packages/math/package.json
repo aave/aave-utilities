@@ -8,8 +8,6 @@
     "check-types": "npm run build -- --noEmit",
     "prebuild": "npm run clean",
     "build": "cd ../.. && npx tsc -p packages/math/tsconfig.json && npx tsc -p packages/math/tsconfig.json --module commonjs --outDir ./packages/math/dist/cjs",
-    "build-esm": "npx tsc -p packages/math/tsconfig.json",
-    "build-cjs": "npx tsc -p packages/math/tsconfig.json --module commonjs --outDir dist/cjs",
     "test": "cd ../.. && npm test packages/math",
     "cover": "cd ../.. && npm run cover packages/math",
     "commit": "cd ../.. && npm run commit",
