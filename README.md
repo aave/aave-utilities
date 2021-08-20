@@ -75,3 +75,38 @@ to bypasses the pre-commit and commit-msg hooks.
 
 [jest]: https://jestjs.io/
 [run options]: https://github.com/lerna/lerna/tree/master/commands/run#options
+
+### Setup a new package
+
+When we setup a new package you just need to create a new folder in `packages`
+and do `npm init` and `tsc init`. In the `tsconfig` paste:
+
+```json
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist/esm",
+    "rootDir": "src"
+  }
+}
+```
+
+In the package.json copy these scripts and replace `YOUR_PACKAGE_NAME` with your
+package name
+
+```json
+"scripts": {
+    "clean": "cd ../.. && npx rimraf packages/YOUR_PACKAGE_NAME/dist packages/math/*.log*",
+    "lint": "cd ../.. && npx eslint packages/YOUR_PACKAGE_NAME/src/**/*.ts",
+    "check-types": "npm run build -- --noEmit",
+    "prebuild": "npm run clean",
+    "build": "cd ../.. && npx tsc -p packages/YOUR_PACKAGE_NAME/tsconfig.json && npx tsc -p packages/YOUR_PACKAGE_NAME/tsconfig.json --module commonjs --outDir ./packages/YOUR_PACKAGE_NAME/dist/cjs",
+    "test": "cd ../.. && npm test packages/YOUR_PACKAGE_NAME",
+    "cover": "cd ../.. && npm run cover packages/YOUR_PACKAGE_NAME",
+    "commit": "cd ../.. && npm run commit",
+    "prepublishOnly": "npm run build"
+  },
+```
+
+Thats it now start writing your logic, you must write your typescript code in
+the `src` folder in your package.
