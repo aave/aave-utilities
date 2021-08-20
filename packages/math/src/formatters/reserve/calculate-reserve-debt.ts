@@ -22,14 +22,9 @@ export function calculateReserveDebt(
   reserveDebt: CalculateReserveDebtRequest,
   currentTimestamp?: number | undefined,
 ): CalculateReserveDebtResponse {
-  const totalVariableDebt = getTotalVariableDebt(
-    reserveDebt,
-    currentTimestamp || reserveDebt.lastUpdateTimestamp,
-  )
-  const totalStableDebt = getTotalStableDebt(
-    reserveDebt,
-    currentTimestamp || reserveDebt.lastUpdateTimestamp,
-  )
+  const timestamp = currentTimestamp || reserveDebt.lastUpdateTimestamp
+  const totalVariableDebt = getTotalVariableDebt(reserveDebt, timestamp)
+  const totalStableDebt = getTotalStableDebt(reserveDebt, timestamp)
   return {
     totalVariableDebt,
     totalStableDebt,
