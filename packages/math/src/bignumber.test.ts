@@ -2,13 +2,12 @@ import BigNumber from 'bignumber.js'
 import {
 	normalize,
 	normalizeBN,
-	pow10,
 	valueToBigNumber,
 	valueToZDBigNumber,
 } from './bignumber'
 
 describe('BigNumber tests', () => {
-	xdescribe('valueToZDBigNumber', () => {
+	describe('valueToZDBigNumber', () => {
 		it('should return zero decimals', () => {
 			expect(valueToZDBigNumber('1923.83234554543534323')).toEqual('1923')
 		})
@@ -17,24 +16,6 @@ describe('BigNumber tests', () => {
 	describe('valueToBigNumber', () => {
 		it('should turn value to big number', () => {
 			expect(valueToBigNumber('1923.232323')).toBeInstanceOf(BigNumber)
-		})
-	})
-
-	describe('pow10', () => {
-		it('should return 100', () => {
-			expect(pow10(2).toString()).toEqual('100')
-		})
-
-		it('should return 1000', () => {
-			expect(pow10(3).toString()).toEqual('1000')
-		})
-
-		it('should return 10000', () => {
-			expect(pow10(4).toString()).toEqual('10000')
-		})
-
-		it('should return 100000', () => {
-			expect(pow10(5).toString()).toEqual('100000')
 		})
 	})
 

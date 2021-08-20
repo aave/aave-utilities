@@ -1,7 +1,8 @@
+// ANDREW WILL WRITE TESTS FOR THIS
+
 import BigNumber from 'bignumber.js'
 import {
 	BigNumberValue,
-	pow10,
 	valueToBigNumber,
 	valueToZDBigNumber,
 } from './bignumber'
@@ -133,7 +134,7 @@ export function calculateHealthFactorFromBalances(
 
 	return valueToBigNumber(collateralBalanceETH)
 		.multipliedBy(currentLiquidationThreshold)
-		.dividedBy(pow10(LTV_PRECISION))
+		.shiftedBy(LTV_PRECISION * -1)
 		.div(borrowBalanceETH)
 }
 
@@ -146,7 +147,7 @@ export function calculateHealthFactorFromBalancesBigUnits(
 		collateralBalanceETH,
 		borrowBalanceETH,
 		new BigNumber(currentLiquidationThreshold)
-			.multipliedBy(pow10(LTV_PRECISION))
+			.shiftedBy(LTV_PRECISION)
 			.decimalPlaces(0, BigNumber.ROUND_DOWN),
 	)
 }
@@ -162,7 +163,7 @@ export function calculateAvailableBorrowsETH(
 
 	const availableBorrowsETH = valueToZDBigNumber(collateralBalanceETH)
 		.multipliedBy(currentLtv)
-		.dividedBy(pow10(LTV_PRECISION))
+		.shiftedBy(LTV_PRECISION * -1)
 		.minus(borrowBalanceETH)
 	return availableBorrowsETH.gt('0')
 		? availableBorrowsETH
