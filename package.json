@@ -82,6 +82,7 @@
         }
       }
     },
+    "coveragePathIgnorePatterns": [],
     "modulePathIgnorePatterns": [
       "node_modules"
     ],

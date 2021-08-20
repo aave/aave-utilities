@@ -31,6 +31,7 @@
     "access": "public"
   },
   "dependencies": {
+    "bignumber.js": "^9.0.1",
     "tslib": "^1.10.0"
   },
   "description": "",
