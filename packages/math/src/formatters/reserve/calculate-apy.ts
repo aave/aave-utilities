@@ -21,24 +21,10 @@ export interface CalculateAPYResponse {
 }
 
 interface CalculateAPYBase {
+  aEmissionPerSecond: string
   hasEmission: boolean
   rewardTokenPriceEth: string
   priceInEth: string
-}
-
-interface CalculateAAPY extends CalculateAPYBase {
-  aEmissionPerSecond: string
-  totalLiquidity: BigNumber
-}
-
-interface CalculateVAPY extends CalculateAPYBase {
-  aEmissionPerSecond: string
-  totalVariableDebt: BigNumber
-}
-
-interface CalculateSAPY extends CalculateAPYBase {
-  aEmissionPerSecond: string
-  totalStableDebt: BigNumber
 }
 
 export function calculateAPYs(
@@ -55,27 +41,33 @@ export function calculateAPYs(
   }
 
   return {
-    aIncentives: calculateAIncentivesAPY({
-      hasEmission,
-      rewardTokenPriceEth,
-      priceInEth: request.priceInEth,
-      aEmissionPerSecond: request.aEmissionPerSecond,
-      totalLiquidity: request.totalLiquidity,
-    }),
-    vIncentives: calculateVIncentivesAPY({
-      hasEmission,
-      rewardTokenPriceEth,
-      priceInEth: request.priceInEth,
-      aEmissionPerSecond: request.aEmissionPerSecond,
-      totalVariableDebt: request.totalVariableDebt,
-    }),
-    sIncentives: calculateSIncentivesAPY({
-      hasEmission,
-      rewardTokenPriceEth,
-      priceInEth: request.priceInEth,
-      aEmissionPerSecond: request.aEmissionPerSecond,
-      totalStableDebt: request.totalStableDebt,
-    }),
+    aIncentives: _calculateIncentivesAPY(
+      {
+        hasEmission,
+        rewardTokenPriceEth,
+        priceInEth: request.priceInEth,
+        aEmissionPerSecond: request.aEmissionPerSecond,
+      },
+      request.totalLiquidity,
+    ),
+    vIncentives: _calculateIncentivesAPY(
+      {
+        hasEmission,
+        rewardTokenPriceEth,
+        priceInEth: request.priceInEth,
+        aEmissionPerSecond: request.aEmissionPerSecond,
+      },
+      request.totalVariableDebt,
+    ),
+    sIncentives: _calculateIncentivesAPY(
+      {
+        hasEmission,
+        rewardTokenPriceEth,
+        priceInEth: request.priceInEth,
+        aEmissionPerSecond: request.aEmissionPerSecond,
+      },
+      request.totalStableDebt,
+    ),
   }
 }
 
@@ -92,34 +84,15 @@ function workoutOutIfHasEmission(
   )
 }
 
-function calculateAIncentivesAPY(request: CalculateAAPY): BigNumber {
-  return request.hasEmission && !request.totalLiquidity.eq(0)
+function _calculateIncentivesAPY(
+  request: CalculateAPYBase,
+  tokenTotalSupply: BigNumber,
+): BigNumber {
+  return request.hasEmission && !tokenTotalSupply.eq(0)
     ? calculateIncentivesAPY({
         emissionPerSecond: request.aEmissionPerSecond,
         rewardTokenPriceInEth: request.rewardTokenPriceEth,
-        tokenTotalSupplyNormalized: request.totalLiquidity,
-        tokenPriceInEth: request.priceInEth,
-      })
-    : new BigNumber(0)
-}
-
-function calculateVIncentivesAPY(request: CalculateVAPY): BigNumber {
-  return request.hasEmission && !request.totalVariableDebt.eq(0)
-    ? calculateIncentivesAPY({
-        emissionPerSecond: request.aEmissionPerSecond,
-        rewardTokenPriceInEth: request.rewardTokenPriceEth,
-        tokenTotalSupplyNormalized: request.totalVariableDebt,
-        tokenPriceInEth: request.priceInEth,
-      })
-    : new BigNumber(0)
-}
-
-function calculateSIncentivesAPY(request: CalculateSAPY): BigNumber {
-  return request.hasEmission && !request.totalStableDebt.eq(0)
-    ? calculateIncentivesAPY({
-        emissionPerSecond: request.aEmissionPerSecond,
-        rewardTokenPriceInEth: request.rewardTokenPriceEth,
-        tokenTotalSupplyNormalized: request.totalStableDebt,
+        tokenTotalSupply: tokenTotalSupply,
         tokenPriceInEth: request.priceInEth,
       })
     : new BigNumber(0)

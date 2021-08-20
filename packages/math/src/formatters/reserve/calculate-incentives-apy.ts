@@ -5,7 +5,7 @@ import { ETH_DECIMALS, SECONDS_PER_YEAR } from 'math/src/constants'
 export interface CalculateIncentivesAPYRequest {
   emissionPerSecond: string
   rewardTokenPriceInEth: string
-  tokenTotalSupplyNormalized: BigNumber
+  tokenTotalSupply: BigNumber
   tokenPriceInEth: string
 }
 
@@ -20,7 +20,7 @@ export function calculateIncentivesAPY(
     SECONDS_PER_YEAR,
   )
 
-  const totalSupplyNormalized = request.tokenTotalSupplyNormalized.multipliedBy(
+  const totalSupplyNormalized = request.tokenTotalSupply.multipliedBy(
     request.tokenPriceInEth,
   )
 
