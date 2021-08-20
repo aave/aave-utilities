@@ -23,7 +23,9 @@ export interface CalculateAPYResponse {
 interface CalculateAPYBase {
   emissionPerSecond: string
   hasEmission: boolean
+  // TODO > This might not be in ETH should change name but other work will apply for this change
   rewardTokenPriceEth: string
+  // TODO > This might not be in ETH should change name but other work will apply for this change
   priceInEth: string
 }
 
