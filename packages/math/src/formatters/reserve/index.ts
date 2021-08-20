@@ -5,7 +5,22 @@ import { ETH_DECIMALS, RAY_DECIMALS } from '../../constants'
 import { calculateAPYs } from './calculate-apy'
 import { calculateReserveDebt } from './calculate-reserve-debt'
 
-export interface FormatReserveResponse extends ReserveData {
+export interface FormatReserveResponse {
+  reserveFactor: string
+  baseLTVasCollateral: string
+  liquidityIndex: string
+  reserveLiquidationThreshold: string
+  reserveLiquidationBonus: string
+  variableBorrowIndex: string
+  variableBorrowRate: string
+  availableLiquidity: string
+  stableBorrowRate: string
+  liquidityRate: string
+  totalPrincipalStableDebt: string
+  totalScaledVariableDebt: string
+  price: {
+    priceInEth: string
+  }
   utilizationRate: string
   totalStableDebt: string
   totalVariableDebt: string
@@ -78,14 +93,6 @@ export function formatReserves(
     normalize(n, request.reserve.decimals)
 
   return {
-    decimals: request.reserve.decimals,
-    averageStableRate: request.reserve.averageStableRate,
-    stableDebtLastUpdateTimestamp:
-      request.reserve.stableDebtLastUpdateTimestamp,
-    lastUpdateTimestamp: request.reserve.lastUpdateTimestamp,
-    aEmissionPerSecond: request.reserve.aEmissionPerSecond,
-    vEmissionPerSecond: request.reserve.vEmissionPerSecond,
-    sEmissionPerSecond: request.reserve.sEmissionPerSecond,
     totalVariableDebt: normalizeWithReserve(
       calculateReserveDebtResult.totalVariableDebt,
     ),
@@ -102,7 +109,6 @@ export function formatReserves(
     sIncentivesAPY: incentivesAPYs.sIncentives.toFixed(),
     totalDebt: calculateReserveDebtResult.totalDebt.toFixed(),
     price: {
-      ...request.reserve.price,
       priceInEth: normalize(request.reserve.price.priceInEth, ETH_DECIMALS),
     },
     baseLTVasCollateral: normalize(
