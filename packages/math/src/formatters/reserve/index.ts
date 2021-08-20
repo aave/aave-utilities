@@ -36,7 +36,14 @@ export function formatReserves(
     normalize(n, request.reserve.decimals)
 
   return {
-    ...request.reserve,
+    decimals: request.reserve.decimals,
+    averageStableRate: request.reserve.averageStableRate,
+    stableDebtLastUpdateTimestamp:
+      request.reserve.stableDebtLastUpdateTimestamp,
+    lastUpdateTimestamp: request.reserve.lastUpdateTimestamp,
+    aEmissionPerSecond: request.reserve.aEmissionPerSecond,
+    vEmissionPerSecond: request.reserve.vEmissionPerSecond,
+    sEmissionPerSecond: request.reserve.sEmissionPerSecond,
     totalVariableDebt: normalizeWithReserve(
       calculateReserveDebtResult.totalVariableDebt,
     ),
