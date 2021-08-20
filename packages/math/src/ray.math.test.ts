@@ -1,7 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { BigNumberValue, normalize, valueToZDBigNumber } from './bignumber'
-import { SECONDS_PER_YEAR } from './constants'
-import { calculateCompoundedInterest } from './pool.math'
 import {
 	binomialApproximatedRayPow,
 	HALF_RAY,
@@ -14,7 +11,19 @@ import {
 	WAD,
 	wadToRay,
 	WAD_RAY_RATIO,
-} from './ray.math'
+} from './'
+import { BigNumberValue, normalize, valueToZDBigNumber } from './bignumber'
+import { SECONDS_PER_YEAR } from './constants'
+
+function calculateCompoundedInterest(
+	rate: BigNumberValue,
+	currentTimestamp: number,
+	lastUpdateTimestamp: number,
+): BigNumber {
+	const timeDelta = valueToZDBigNumber(currentTimestamp - lastUpdateTimestamp)
+	const ratePerSecond = valueToZDBigNumber(rate).dividedBy(SECONDS_PER_YEAR)
+	return binomialApproximatedRayPow(ratePerSecond, timeDelta)
+}
 
 describe('ray math', () => {
 	describe('WAD', () => {

@@ -34,7 +34,7 @@ export function wadToRay(a: BigNumberValue): BigNumber {
 export function rayPow(a: BigNumberValue, p: BigNumberValue): BigNumber {
 	let x = valueToZDBigNumber(a)
 	let n = valueToZDBigNumber(p)
-	let z = !n.modulo(2).eq(0) ? x : valueToZDBigNumber(RAY)
+	let z = n.modulo(2).eq(0) ? valueToZDBigNumber(RAY) : x
 
 	for (n = n.div(2); !n.eq(0); n = n.div(2)) {
 		x = rayMul(x, x)
