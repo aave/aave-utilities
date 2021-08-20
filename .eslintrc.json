@@ -29,7 +29,8 @@
 
     // xo-typescript overrides
     "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/semi": ["error", "never"]
+    "@typescript-eslint/semi": ["error", "never"],
+    "no-negated-condition": "off"
   },
   "overrides": [
     {
