@@ -26,9 +26,9 @@ export interface FormatReserveResponse {
   totalVariableDebt: string
   totalDebt: string
   totalLiquidity: string
-  aIncentivesAPY: string
-  vIncentivesAPY: string
-  sIncentivesAPY: string
+  depositIncentivesAPY: string
+  variableDebtIncentivesAPY: string
+  stableDebtIncentivesAPY: string
 }
 
 export interface FormatReserveRequest {
@@ -58,9 +58,9 @@ export interface ReserveData {
   price: {
     priceInEth: string
   }
-  aEmissionPerSecond: string
-  vEmissionPerSecond: string
-  sEmissionPerSecond: string
+  depositIncentivesEmissionPerSecond: string
+  variableDebtIncentivesEmissionPerSecond: string
+  stableDebtIncentivesEmissionPerSecond: string
 }
 
 export function formatReserves(
@@ -79,9 +79,12 @@ export function formatReserves(
   const incentivesAPYs = calculateAPYs({
     emissionEndTimestamp: request.emissionEndTimestamp,
     currentTimestamp: request.currentTimestamp,
-    aEmissionPerSecond: request.reserve.aEmissionPerSecond,
-    sEmissionPerSecond: request.reserve.sEmissionPerSecond,
-    vEmissionPerSecond: request.reserve.vEmissionPerSecond,
+    depositIncentivesEmissionPerSecond:
+      request.reserve.depositIncentivesEmissionPerSecond,
+    stableDebtIncentivesEmissionPerSecond:
+      request.reserve.stableDebtIncentivesEmissionPerSecond,
+    variableDebtIncentivesEmissionPerSecond:
+      request.reserve.variableDebtIncentivesEmissionPerSecond,
     totalLiquidity,
     rewardTokenPriceEth: request.rewardTokenPriceEth,
     priceInEth: request.reserve.price.priceInEth,
@@ -104,9 +107,9 @@ export function formatReserves(
     utilizationRate: !totalLiquidity.eq(0)
       ? calculateReserveDebtResult.totalDebt.dividedBy(totalLiquidity).toFixed()
       : '0',
-    aIncentivesAPY: incentivesAPYs.aIncentives.toFixed(),
-    vIncentivesAPY: incentivesAPYs.vIncentives.toFixed(),
-    sIncentivesAPY: incentivesAPYs.sIncentives.toFixed(),
+    depositIncentivesAPY: incentivesAPYs.depositIncentives.toFixed(),
+    variableDebtIncentivesAPY: incentivesAPYs.variableDebtIncentives.toFixed(),
+    stableDebtIncentivesAPY: incentivesAPYs.stableDebtIncentives.toFixed(),
     totalDebt: calculateReserveDebtResult.totalDebt.toFixed(),
     price: {
       priceInEth: normalize(request.reserve.price.priceInEth, ETH_DECIMALS),

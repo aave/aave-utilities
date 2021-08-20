@@ -4,9 +4,9 @@ import { calculateIncentivesAPY } from './calculate-incentives-apy'
 export interface CalculateAPYRequest {
   emissionEndTimestamp?: number | undefined
   currentTimestamp?: number | undefined
-  aEmissionPerSecond: string
-  vEmissionPerSecond: string
-  sEmissionPerSecond: string
+  depositIncentivesEmissionPerSecond: string
+  variableDebtIncentivesEmissionPerSecond: string
+  stableDebtIncentivesEmissionPerSecond: string
   totalLiquidity: BigNumber
   rewardTokenPriceEth?: string | undefined
   priceInEth: string
@@ -15,13 +15,13 @@ export interface CalculateAPYRequest {
 }
 
 export interface CalculateAPYResponse {
-  aIncentives: BigNumber
-  vIncentives: BigNumber
-  sIncentives: BigNumber
+  depositIncentives: BigNumber
+  variableDebtIncentives: BigNumber
+  stableDebtIncentives: BigNumber
 }
 
 interface CalculateAPYBase {
-  aEmissionPerSecond: string
+  emissionPerSecond: string
   hasEmission: boolean
   rewardTokenPriceEth: string
   priceInEth: string
@@ -30,7 +30,7 @@ interface CalculateAPYBase {
 export function calculateAPYs(
   request: CalculateAPYRequest,
 ): CalculateAPYResponse {
-  const hasEmission = workoutOutIfHasEmission(
+  const hasEmission = _hasEmission(
     request.emissionEndTimestamp,
     request.currentTimestamp,
   )
@@ -41,37 +41,37 @@ export function calculateAPYs(
   }
 
   return {
-    aIncentives: _calculateIncentivesAPY(
+    depositIncentives: _calculateIncentivesAPY(
       {
         hasEmission,
         rewardTokenPriceEth,
         priceInEth: request.priceInEth,
-        aEmissionPerSecond: request.aEmissionPerSecond,
+        emissionPerSecond: request.depositIncentivesEmissionPerSecond,
       },
       request.totalLiquidity,
     ),
-    vIncentives: _calculateIncentivesAPY(
+    variableDebtIncentives: _calculateIncentivesAPY(
       {
         hasEmission,
         rewardTokenPriceEth,
         priceInEth: request.priceInEth,
-        aEmissionPerSecond: request.aEmissionPerSecond,
+        emissionPerSecond: request.variableDebtIncentivesEmissionPerSecond,
       },
       request.totalVariableDebt,
     ),
-    sIncentives: _calculateIncentivesAPY(
+    stableDebtIncentives: _calculateIncentivesAPY(
       {
         hasEmission,
         rewardTokenPriceEth,
         priceInEth: request.priceInEth,
-        aEmissionPerSecond: request.aEmissionPerSecond,
+        emissionPerSecond: request.stableDebtIncentivesEmissionPerSecond,
       },
       request.totalStableDebt,
     ),
   }
 }
 
-function workoutOutIfHasEmission(
+function _hasEmission(
   emissionEndTimestamp?: number | undefined,
   currentTimestamp?: number | undefined,
 ): boolean {
@@ -90,7 +90,7 @@ function _calculateIncentivesAPY(
 ): BigNumber {
   return request.hasEmission && !tokenTotalSupply.eq(0)
     ? calculateIncentivesAPY({
-        emissionPerSecond: request.aEmissionPerSecond,
+        emissionPerSecond: request.emissionPerSecond,
         rewardTokenPriceInEth: request.rewardTokenPriceEth,
         tokenTotalSupply,
         tokenPriceInEth: request.priceInEth,
