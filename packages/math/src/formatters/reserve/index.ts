@@ -4,7 +4,49 @@ import { BigNumberValue, normalize, valueToBigNumber } from '../../bignumber'
 import { ETH_DECIMALS, RAY_DECIMALS } from '../../constants'
 import { calculateAPYs } from './calculate-apy'
 import { calculateReserveDebt } from './calculate-reserve-debt'
-import { FormatReserveRequest, FormatReserveResponse } from './models'
+
+export interface FormatReserveResponse extends ReserveData {
+  utilizationRate: string
+  totalStableDebt: string
+  totalVariableDebt: string
+  totalDebt: string
+  totalLiquidity: string
+  aIncentivesAPY: string
+  vIncentivesAPY: string
+  sIncentivesAPY: string
+}
+
+export interface FormatReserveRequest {
+  reserve: ReserveData
+  currentTimestamp?: number
+  rewardTokenPriceEth?: string
+  emissionEndTimestamp?: number
+}
+
+export interface ReserveData {
+  decimals: number
+  reserveFactor: string
+  baseLTVasCollateral: string
+  averageStableRate: string
+  stableDebtLastUpdateTimestamp: number
+  liquidityIndex: string
+  reserveLiquidationThreshold: string
+  reserveLiquidationBonus: string
+  variableBorrowIndex: string
+  variableBorrowRate: string
+  availableLiquidity: string
+  stableBorrowRate: string
+  liquidityRate: string
+  totalPrincipalStableDebt: string
+  totalScaledVariableDebt: string
+  lastUpdateTimestamp: number
+  price: {
+    priceInEth: string
+  }
+  aEmissionPerSecond: string
+  vEmissionPerSecond: string
+  sEmissionPerSecond: string
+}
 
 export function formatReserves(
   request: FormatReserveRequest,
