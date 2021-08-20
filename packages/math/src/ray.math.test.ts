@@ -152,7 +152,7 @@ describe('ray math', () => {
 				 * < 0.0005% in 3 years
 				 * < 0.005% in 5 years
 				 */
-				const timeSpan = 60 * 60 * 24 * 365 * Number.parseInt(years)
+				const timeSpan = 60 * 60 * 24 * 365 * Number.parseInt(years, 10)
 				const rate = valueToZDBigNumber(
 					Number.parseFloat(interest) * 1000000000000000000000000,
 				)
