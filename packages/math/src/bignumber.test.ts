@@ -1,18 +1,7 @@
 import BigNumber from 'bignumber.js'
-import {
-	normalize,
-	normalizeBN,
-	valueToBigNumber,
-	valueToZDBigNumber,
-} from './bignumber'
+import { normalize, normalizeBN, valueToBigNumber } from './bignumber'
 
 describe('BigNumber tests', () => {
-	describe('valueToZDBigNumber', () => {
-		it('should return zero decimals', () => {
-			expect(valueToZDBigNumber('1923.83234554543534323')).toEqual('1923')
-		})
-	})
-
 	describe('valueToBigNumber', () => {
 		it('should turn value to big number', () => {
 			expect(valueToBigNumber('1923.232323')).toBeInstanceOf(BigNumber)
