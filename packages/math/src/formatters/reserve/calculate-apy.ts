@@ -92,7 +92,7 @@ function _calculateIncentivesAPY(
     ? calculateIncentivesAPY({
         emissionPerSecond: request.aEmissionPerSecond,
         rewardTokenPriceInEth: request.rewardTokenPriceEth,
-        tokenTotalSupply: tokenTotalSupply,
+        tokenTotalSupply,
         tokenPriceInEth: request.priceInEth,
       })
     : new BigNumber(0)
