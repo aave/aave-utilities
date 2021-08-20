@@ -82,6 +82,10 @@
         }
       }
     },
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/packages/math/src/index.ts",
+      "<rootDir>/packages/math/src/pool.math.ts"
+    ],
     "modulePathIgnorePatterns": [
       "node_modules"
     ],
