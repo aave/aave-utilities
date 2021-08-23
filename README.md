@@ -110,7 +110,7 @@ package name
 
 also in the package.json paste these in:
 
-```
+```json
 "main": "dist/cjs/index.js",
 "module": "./dist/esm/index.js",
 "types": "./dist/esm/index.d.ts",
