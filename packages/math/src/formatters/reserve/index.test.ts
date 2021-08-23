@@ -59,7 +59,7 @@ describe('formatReserves', () => {
         totalLiquidity: new BigNumber('150629528254290021063240208'),
         rewardTokenPriceEth: request.rewardTokenPriceEth,
         priceInEth: request.reserve.price.priceInEth,
-        totalVariableDebt: new BigNumber('29694984770103338741527703152408139'),
+        totalVariableDebt: new BigNumber('30186360792775159242526245'),
         totalStableDebt: new BigNumber(0),
       })
     })
