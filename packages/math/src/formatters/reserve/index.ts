@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
-import { LTV_PRECISION } from 'math/src'
 import { BigNumberValue, normalize, valueToBigNumber } from '../../bignumber'
 import { ETH_DECIMALS, RAY_DECIMALS } from '../../constants'
+import { LTV_PRECISION } from '../../index'
 import { calculateAPYs } from './calculate-apy'
 import { calculateReserveDebt } from './calculate-reserve-debt'
 
@@ -68,7 +68,7 @@ export function formatReserves(
 ): FormatReserveResponse {
   const calculateReserveDebtResult = calculateReserveDebt(
     request.reserve,
-    request.currentTimestamp || request.reserve.lastUpdateTimestamp,
+    request.currentTimestamp,
   )
 
   const totalLiquidity = calculateTotalLiquidity(

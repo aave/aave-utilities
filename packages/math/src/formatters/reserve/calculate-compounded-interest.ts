@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
-import { BigNumberValue, valueToZDBigNumber } from 'math/src/bignumber'
-import { SECONDS_PER_YEAR } from 'math/src/constants'
-import { binomialApproximatedRayPow } from 'math/src/ray.math'
+import { BigNumberValue, valueToZDBigNumber } from '../../bignumber'
+import { SECONDS_PER_YEAR } from '../../constants'
+import { binomialApproximatedRayPow } from '../../ray.math'
 
 export interface CalculateCompoundedInterestRequest {
   rate: BigNumberValue

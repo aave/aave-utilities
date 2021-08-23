@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { rayMul } from 'math/src/ray.math'
+import { rayMul } from '../../ray.math'
 import calculateCompoundedInterest from './calculate-compounded-interest'
 
 export interface CalculateReserveDebtRequest {

@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { normalizeBN } from 'math/src/bignumber'
-import { ETH_DECIMALS, SECONDS_PER_YEAR } from 'math/src/constants'
+import { normalizeBN } from '../../bignumber'
+import { ETH_DECIMALS, SECONDS_PER_YEAR } from '../../constants'
 
 export interface CalculateIncentivesAPYRequest {
   emissionPerSecond: string
