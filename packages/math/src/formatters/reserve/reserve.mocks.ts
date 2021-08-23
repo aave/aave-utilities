@@ -1,4 +1,4 @@
-import { FormatReserveRequest } from '.'
+import { FormatReserveRequest } from '.';
 
 export const formatReserveRequestWMATIC: FormatReserveRequest = {
   reserve: {
@@ -28,7 +28,7 @@ export const formatReserveRequestWMATIC: FormatReserveRequest = {
   currentTimestamp: 1329706026,
   rewardTokenPriceEth: '498035657442060',
   emissionEndTimestamp: 1649851200,
-}
+};
 
 export const formatReserveRequestDAI: FormatReserveRequest = {
   reserve: {
@@ -56,4 +56,4 @@ export const formatReserveRequestDAI: FormatReserveRequest = {
   currentTimestamp: 1629708576057,
   rewardTokenPriceEth: '317233277449070',
   emissionEndTimestamp: 1649851200,
-}
+};

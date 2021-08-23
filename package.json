@@ -6,10 +6,11 @@
     "postinstall": "lerna bootstrap",
     "clean": "rimraf coverage && lerna run clean",
     "lint": "lerna run lint",
-    "lint:fix": "lerna run lint -- --fix",
+    "lint:fix": "lerna run lint --fix",
     "check-types": "lerna run check-types",
     "build": "lerna run build",
-    "test": "jest --watch",
+    "test": "jest",
+    "test-watch": "jest --watch",
     "precover": "rimraf coverage",
     "cover": "jest --coverage",
     "commit": "git-cz"
@@ -41,7 +42,7 @@
   "prettier": {
     "arrowParens": "avoid",
     "proseWrap": "always",
-    "semi": false,
+    "semi": true,
     "singleQuote": true,
     "trailingComma": "all"
   },

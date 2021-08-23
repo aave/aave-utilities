@@ -1,36 +1,36 @@
-import BigNumber from 'bignumber.js'
-import { rayMul } from '../../ray.math'
-import { calculateCompoundedInterest } from './calculate-compounded-interest'
+import BigNumber from 'bignumber.js';
+import { rayMul } from '../../ray.math';
+import { calculateCompoundedInterest } from './calculate-compounded-interest';
 
 export interface CalculateReserveDebtRequest {
-  totalScaledVariableDebt: string
-  variableBorrowIndex: string
-  totalPrincipalStableDebt: string
-  variableBorrowRate: string
-  lastUpdateTimestamp: number
-  averageStableRate: string
-  stableDebtLastUpdateTimestamp: number
+  totalScaledVariableDebt: string;
+  variableBorrowIndex: string;
+  totalPrincipalStableDebt: string;
+  variableBorrowRate: string;
+  lastUpdateTimestamp: number;
+  averageStableRate: string;
+  stableDebtLastUpdateTimestamp: number;
 }
 
 export interface CalculateReserveDebtResponse {
-  totalVariableDebt: BigNumber
-  totalStableDebt: BigNumber
-  totalDebt: BigNumber
+  totalVariableDebt: BigNumber;
+  totalStableDebt: BigNumber;
+  totalDebt: BigNumber;
 }
 
 export function calculateReserveDebt(
   reserveDebt: CalculateReserveDebtRequest,
   currentTimestamp?: number | undefined,
 ): CalculateReserveDebtResponse {
-  const timestamp = currentTimestamp || reserveDebt.lastUpdateTimestamp
-  const totalVariableDebt = getTotalVariableDebt(reserveDebt, timestamp)
-  const totalStableDebt = getTotalStableDebt(reserveDebt, timestamp)
+  const timestamp = currentTimestamp || reserveDebt.lastUpdateTimestamp;
+  const totalVariableDebt = getTotalVariableDebt(reserveDebt, timestamp);
+  const totalStableDebt = getTotalStableDebt(reserveDebt, timestamp);
 
   return {
     totalVariableDebt,
     totalStableDebt,
     totalDebt: totalStableDebt.plus(totalStableDebt),
-  }
+  };
 }
 
 function getTotalVariableDebt(
@@ -47,7 +47,7 @@ function getTotalVariableDebt(
       currentTimestamp,
       lastUpdateTimestamp: reserveDebt.lastUpdateTimestamp,
     }),
-  )
+  );
 }
 
 function getTotalStableDebt(
@@ -61,5 +61,5 @@ function getTotalStableDebt(
       currentTimestamp,
       lastUpdateTimestamp: reserveDebt.stableDebtLastUpdateTimestamp,
     }),
-  )
+  );
 }

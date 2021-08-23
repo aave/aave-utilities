@@ -1,12 +1,12 @@
-import BigNumber from 'bignumber.js'
-import { normalizeBN } from '../../bignumber'
-import { ETH_DECIMALS, SECONDS_PER_YEAR } from '../../constants'
+import BigNumber from 'bignumber.js';
+import { normalizeBN } from '../../bignumber';
+import { ETH_DECIMALS, SECONDS_PER_YEAR } from '../../constants';
 
 export interface CalculateIncentivesAPYRequest {
-  emissionPerSecond: string
-  rewardTokenPriceInEth: string
-  tokenTotalSupply: BigNumber
-  tokenPriceInEth: string
+  emissionPerSecond: string;
+  rewardTokenPriceInEth: string;
+  tokenTotalSupply: BigNumber;
+  tokenPriceInEth: string;
 }
 
 export function calculateIncentivesAPY(
@@ -15,14 +15,14 @@ export function calculateIncentivesAPY(
   const emissionPerSecondNormalized = normalizeBN(
     request.emissionPerSecond,
     ETH_DECIMALS,
-  ).multipliedBy(request.rewardTokenPriceInEth)
+  ).multipliedBy(request.rewardTokenPriceInEth);
   const emissionPerYear = emissionPerSecondNormalized.multipliedBy(
     SECONDS_PER_YEAR,
-  )
+  );
 
   const totalSupplyNormalized = request.tokenTotalSupply.multipliedBy(
     request.tokenPriceInEth,
-  )
+  );
 
-  return emissionPerYear.dividedBy(totalSupplyNormalized)
+  return emissionPerYear.dividedBy(totalSupplyNormalized);
 }

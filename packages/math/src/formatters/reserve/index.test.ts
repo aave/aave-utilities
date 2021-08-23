@@ -1,51 +1,51 @@
-import BigNumber from 'bignumber.js'
-import * as calReserveAPYs from './calculate-apy'
-import * as calReserveDebt from './calculate-reserve-debt'
-import { FormatReserveRequest, formatReserves } from './index'
+import BigNumber from 'bignumber.js';
+import * as calReserveAPYs from './calculate-apy';
+import * as calReserveDebt from './calculate-reserve-debt';
+import { FormatReserveRequest, formatReserves } from './index';
 import {
   formatReserveRequestDAI,
   formatReserveRequestWMATIC,
-} from './reserve.mocks'
+} from './reserve.mocks';
 
 describe('formatReserves', () => {
   afterEach(() => {
     // Clear spys each test can then test what it needs to without context of other tests
-    jest.clearAllMocks()
-  })
+    jest.clearAllMocks();
+  });
 
   describe('WMATIC', () => {
-    let request: FormatReserveRequest
+    let request: FormatReserveRequest;
 
     beforeEach(() => {
-      // clone it
-      request = JSON.parse(JSON.stringify(formatReserveRequestWMATIC))
-    })
+      // Clone it
+      request = JSON.parse(JSON.stringify(formatReserveRequestWMATIC));
+    });
 
     it('should call calculateReserveDebt with reserve and currentTimestamp if defined', () => {
-      const spy = jest.spyOn(calReserveDebt, 'calculateReserveDebt')
-      formatReserves(request)
+      const spy = jest.spyOn(calReserveDebt, 'calculateReserveDebt');
+      formatReserves(request);
 
-      expect(spy).toHaveBeenCalledTimes(1)
+      expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith(
         request.reserve,
         request.currentTimestamp,
-      )
-    })
+      );
+    });
 
     it('should call calculateReserveDebt with reserve and undefined', () => {
-      request.currentTimestamp = undefined
-      const spy = jest.spyOn(calReserveDebt, 'calculateReserveDebt')
-      formatReserves(request)
+      request.currentTimestamp = undefined;
+      const spy = jest.spyOn(calReserveDebt, 'calculateReserveDebt');
+      formatReserves(request);
 
-      expect(spy).toHaveBeenCalledTimes(1)
-      expect(spy).toHaveBeenCalledWith(request.reserve, undefined)
-    })
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(request.reserve, undefined);
+    });
 
     it('should call calculateAPYs', () => {
-      const spy = jest.spyOn(calReserveAPYs, 'calculateAPYs')
-      formatReserves(request)
+      const spy = jest.spyOn(calReserveAPYs, 'calculateAPYs');
+      formatReserves(request);
 
-      expect(spy).toHaveBeenCalledTimes(1)
+      expect(spy).toHaveBeenCalledTimes(1);
 
       expect(spy).toHaveBeenCalledWith({
         emissionEndTimestamp: request.emissionEndTimestamp,
@@ -61,11 +61,11 @@ describe('formatReserves', () => {
         priceInEth: request.reserve.price.priceInEth,
         totalVariableDebt: new BigNumber('30186360792775159242526245'),
         totalStableDebt: new BigNumber(0),
-      })
-    })
+      });
+    });
 
     it('should return the correct response', () => {
-      const result = formatReserves(request)
+      const result = formatReserves(request);
       expect(result).toEqual({
         availableLiquidity: '150629528254290021063240208',
         baseLTVasCollateral: '0.5',
@@ -88,53 +88,53 @@ describe('formatReserves', () => {
         variableBorrowIndex: '1.02739968325035004938',
         variableBorrowRate: '0.03341338737105765182',
         variableDebtIncentivesAPY: '0.00000000000000000002',
-      })
-    })
+      });
+    });
 
     it('should increase over time', () => {
-      request.currentTimestamp = request.reserve.lastUpdateTimestamp + 1
-      const first = formatReserves(request)
+      request.currentTimestamp = request.reserve.lastUpdateTimestamp + 1;
+      const first = formatReserves(request);
 
-      request.currentTimestamp = request.reserve.lastUpdateTimestamp + 1
-      const second = formatReserves(request)
+      request.currentTimestamp = request.reserve.lastUpdateTimestamp + 1;
+      const second = formatReserves(request);
 
-      expect(new BigNumber(second.totalDebt).gte(first.totalDebt)).toBe(true)
-    })
-  })
+      expect(new BigNumber(second.totalDebt).gte(first.totalDebt)).toBe(true);
+    });
+  });
 
   describe('DAI', () => {
-    let request: FormatReserveRequest
+    let request: FormatReserveRequest;
 
     beforeEach(() => {
-      // clone it
-      request = JSON.parse(JSON.stringify(formatReserveRequestDAI))
-    })
+      // Clone it
+      request = JSON.parse(JSON.stringify(formatReserveRequestDAI));
+    });
 
     it('should call calculateReserveDebt with reserve and currentTimestamp if defined', () => {
-      const spy = jest.spyOn(calReserveDebt, 'calculateReserveDebt')
-      formatReserves(request)
+      const spy = jest.spyOn(calReserveDebt, 'calculateReserveDebt');
+      formatReserves(request);
 
-      expect(spy).toHaveBeenCalledTimes(1)
+      expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith(
         request.reserve,
         request.currentTimestamp,
-      )
-    })
+      );
+    });
 
     it('should call calculateReserveDebt with reserve and undefined', () => {
-      request.currentTimestamp = undefined
-      const spy = jest.spyOn(calReserveDebt, 'calculateReserveDebt')
-      formatReserves(request)
+      request.currentTimestamp = undefined;
+      const spy = jest.spyOn(calReserveDebt, 'calculateReserveDebt');
+      formatReserves(request);
 
-      expect(spy).toHaveBeenCalledTimes(1)
-      expect(spy).toHaveBeenCalledWith(request.reserve, undefined)
-    })
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(request.reserve, undefined);
+    });
 
     it('should call calculateAPYs', () => {
-      const spy = jest.spyOn(calReserveAPYs, 'calculateAPYs')
-      formatReserves(request)
+      const spy = jest.spyOn(calReserveAPYs, 'calculateAPYs');
+      formatReserves(request);
 
-      expect(spy).toHaveBeenCalledTimes(1)
+      expect(spy).toHaveBeenCalledTimes(1);
 
       expect(spy).toHaveBeenCalledWith({
         emissionEndTimestamp: request.emissionEndTimestamp,
@@ -150,11 +150,11 @@ describe('formatReserves', () => {
         priceInEth: request.reserve.price.priceInEth,
         totalVariableDebt: new BigNumber('209641165163710133518030674226800'),
         totalStableDebt: new BigNumber('30225352042632111254338556051'),
-      })
-    })
+      });
+    });
 
     it('should return the correct response', () => {
-      const result = formatReserves(request)
+      const result = formatReserves(request);
       expect(result).toEqual({
         availableLiquidity: '43133641118657852003256',
         baseLTVasCollateral: '0.75',
@@ -177,25 +177,25 @@ describe('formatReserves', () => {
         variableBorrowIndex: '1.00023285443371120965',
         variableBorrowRate: '0.03856874338802839568',
         variableDebtIncentivesAPY: '0',
-      })
-    })
+      });
+    });
 
     it('should increase over time', () => {
-      request.currentTimestamp = request.reserve.lastUpdateTimestamp + 1
-      const first = formatReserves(request)
+      request.currentTimestamp = request.reserve.lastUpdateTimestamp + 1;
+      const first = formatReserves(request);
 
-      request.currentTimestamp = request.reserve.lastUpdateTimestamp + 1
-      const second = formatReserves(request)
+      request.currentTimestamp = request.reserve.lastUpdateTimestamp + 1;
+      const second = formatReserves(request);
 
-      expect(new BigNumber(second.totalDebt).gte(first.totalDebt)).toBe(true)
-    })
-  })
+      expect(new BigNumber(second.totalDebt).gte(first.totalDebt)).toBe(true);
+    });
+  });
 
   it('should return utilizationRate 0 when totalLiquidity == 0', () => {
     const request: FormatReserveRequest = JSON.parse(
       JSON.stringify(formatReserveRequestWMATIC),
-    )
-    request.reserve.availableLiquidity = '0'
+    );
+    request.reserve.availableLiquidity = '0';
     jest
       .spyOn(calReserveDebt, 'calculateReserveDebt')
       .mockImplementationOnce(() => {
@@ -203,10 +203,10 @@ describe('formatReserves', () => {
           totalDebt: new BigNumber('0'),
           totalVariableDebt: new BigNumber('0'),
           totalStableDebt: new BigNumber('0'),
-        }
-      })
+        };
+      });
 
-    const result = formatReserves(request)
-    expect(result.utilizationRate).toEqual('0')
-  })
-})
+    const result = formatReserves(request);
+    expect(result.utilizationRate).toEqual('0');
+  });
+});

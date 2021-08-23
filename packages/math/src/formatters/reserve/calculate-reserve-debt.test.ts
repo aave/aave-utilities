@@ -1,10 +1,10 @@
-import BigNumber from 'bignumber.js'
-import * as calculateCompoundedInterest from './calculate-compounded-interest'
-import { calculateReserveDebt } from './calculate-reserve-debt'
+import BigNumber from 'bignumber.js';
+import * as calculateCompoundedInterest from './calculate-compounded-interest';
+import { calculateReserveDebt } from './calculate-reserve-debt';
 import {
   formatReserveRequestDAI,
   formatReserveRequestWMATIC,
-} from './reserve.mocks'
+} from './reserve.mocks';
 
 describe('calculateReserveDebt', () => {
   describe('WMATIC', () => {
@@ -27,15 +27,15 @@ describe('calculateReserveDebt', () => {
             formatReserveRequestWMATIC.reserve.stableDebtLastUpdateTimestamp,
         },
         formatReserveRequestWMATIC.currentTimestamp,
-      )
+      );
 
       expect(result).toEqual({
         totalDebt: new BigNumber('0'),
         totalStableDebt: new BigNumber('0'),
         totalVariableDebt: new BigNumber('30186360792775159242526245'),
-      })
-    })
-  })
+      });
+    });
+  });
 
   describe('DAI', () => {
     it('should calculate reserve debt', () => {
@@ -56,21 +56,21 @@ describe('calculateReserveDebt', () => {
             formatReserveRequestDAI.reserve.stableDebtLastUpdateTimestamp,
         },
         formatReserveRequestWMATIC.currentTimestamp,
-      )
+      );
 
       expect(result).toEqual({
         totalDebt: new BigNumber('1001528596565357176'),
         totalStableDebt: new BigNumber('500764298282678588'),
         totalVariableDebt: new BigNumber('104546224138225704941867'),
-      })
-    })
-  })
+      });
+    });
+  });
 
   it('should call calculateCompoundedInterest twice', () => {
     const spy = jest.spyOn(
       calculateCompoundedInterest,
       'calculateCompoundedInterest',
-    )
+    );
     calculateReserveDebt(
       {
         totalScaledVariableDebt:
@@ -87,8 +87,8 @@ describe('calculateReserveDebt', () => {
           formatReserveRequestDAI.reserve.stableDebtLastUpdateTimestamp,
       },
       formatReserveRequestWMATIC.currentTimestamp,
-    )
+    );
 
-    expect(spy).toHaveBeenCalledTimes(2)
-  })
-})
+    expect(spy).toHaveBeenCalledTimes(2);
+  });
+});

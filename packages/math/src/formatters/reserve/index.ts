@@ -1,66 +1,66 @@
-import BigNumber from 'bignumber.js'
-import { BigNumberValue, normalize, valueToBigNumber } from '../../bignumber'
-import { ETH_DECIMALS, RAY_DECIMALS } from '../../constants'
-import { LTV_PRECISION } from '../../index'
-import { calculateAPYs } from './calculate-apy'
-import { calculateReserveDebt } from './calculate-reserve-debt'
+import BigNumber from 'bignumber.js';
+import { BigNumberValue, normalize, valueToBigNumber } from '../../bignumber';
+import { ETH_DECIMALS, RAY_DECIMALS } from '../../constants';
+import { LTV_PRECISION } from '../../index';
+import { calculateAPYs } from './calculate-apy';
+import { calculateReserveDebt } from './calculate-reserve-debt';
 
 export interface FormatReserveResponse {
-  reserveFactor: string
-  baseLTVasCollateral: string
-  liquidityIndex: string
-  reserveLiquidationThreshold: string
-  reserveLiquidationBonus: string
-  variableBorrowIndex: string
-  variableBorrowRate: string
-  availableLiquidity: string
-  stableBorrowRate: string
-  liquidityRate: string
-  totalPrincipalStableDebt: string
-  totalScaledVariableDebt: string
+  reserveFactor: string;
+  baseLTVasCollateral: string;
+  liquidityIndex: string;
+  reserveLiquidationThreshold: string;
+  reserveLiquidationBonus: string;
+  variableBorrowIndex: string;
+  variableBorrowRate: string;
+  availableLiquidity: string;
+  stableBorrowRate: string;
+  liquidityRate: string;
+  totalPrincipalStableDebt: string;
+  totalScaledVariableDebt: string;
   price: {
-    priceInEth: string
-  }
-  utilizationRate: string
-  totalStableDebt: string
-  totalVariableDebt: string
-  totalDebt: string
-  totalLiquidity: string
-  depositIncentivesAPY: string
-  variableDebtIncentivesAPY: string
-  stableDebtIncentivesAPY: string
+    priceInEth: string;
+  };
+  utilizationRate: string;
+  totalStableDebt: string;
+  totalVariableDebt: string;
+  totalDebt: string;
+  totalLiquidity: string;
+  depositIncentivesAPY: string;
+  variableDebtIncentivesAPY: string;
+  stableDebtIncentivesAPY: string;
 }
 
 export interface FormatReserveRequest {
-  reserve: ReserveData
-  currentTimestamp?: number
-  rewardTokenPriceEth?: string
-  emissionEndTimestamp?: number
+  reserve: ReserveData;
+  currentTimestamp?: number;
+  rewardTokenPriceEth?: string;
+  emissionEndTimestamp?: number;
 }
 
 export interface ReserveData {
-  decimals: number
-  reserveFactor: string
-  baseLTVasCollateral: string
-  averageStableRate: string
-  stableDebtLastUpdateTimestamp: number
-  liquidityIndex: string
-  reserveLiquidationThreshold: string
-  reserveLiquidationBonus: string
-  variableBorrowIndex: string
-  variableBorrowRate: string
-  availableLiquidity: string
-  stableBorrowRate: string
-  liquidityRate: string
-  totalPrincipalStableDebt: string
-  totalScaledVariableDebt: string
-  lastUpdateTimestamp: number
+  decimals: number;
+  reserveFactor: string;
+  baseLTVasCollateral: string;
+  averageStableRate: string;
+  stableDebtLastUpdateTimestamp: number;
+  liquidityIndex: string;
+  reserveLiquidationThreshold: string;
+  reserveLiquidationBonus: string;
+  variableBorrowIndex: string;
+  variableBorrowRate: string;
+  availableLiquidity: string;
+  stableBorrowRate: string;
+  liquidityRate: string;
+  totalPrincipalStableDebt: string;
+  totalScaledVariableDebt: string;
+  lastUpdateTimestamp: number;
   price: {
-    priceInEth: string
-  }
-  depositIncentivesEmissionPerSecond: string
-  variableDebtIncentivesEmissionPerSecond: string
-  stableDebtIncentivesEmissionPerSecond: string
+    priceInEth: string;
+  };
+  depositIncentivesEmissionPerSecond: string;
+  variableDebtIncentivesEmissionPerSecond: string;
+  stableDebtIncentivesEmissionPerSecond: string;
 }
 
 export function formatReserves(
@@ -69,12 +69,12 @@ export function formatReserves(
   const calculateReserveDebtResult = calculateReserveDebt(
     request.reserve,
     request.currentTimestamp,
-  )
+  );
 
   const totalLiquidity = calculateTotalLiquidity(
     calculateReserveDebtResult.totalDebt,
     request.reserve.availableLiquidity,
-  )
+  );
 
   const incentivesAPYs = calculateAPYs({
     emissionEndTimestamp: request.emissionEndTimestamp,
@@ -90,10 +90,10 @@ export function formatReserves(
     priceInEth: request.reserve.price.priceInEth,
     totalVariableDebt: calculateReserveDebtResult.totalVariableDebt,
     totalStableDebt: calculateReserveDebtResult.totalStableDebt,
-  })
+  });
 
   const normalizeWithReserve = (n: BigNumberValue) =>
-    normalize(n, request.reserve.decimals)
+    normalize(n, request.reserve.decimals);
 
   return {
     totalVariableDebt: normalizeWithReserve(
@@ -104,9 +104,11 @@ export function formatReserves(
     ),
     totalLiquidity: totalLiquidity.toFixed(),
     availableLiquidity: request.reserve.availableLiquidity,
-    utilizationRate: !totalLiquidity.eq(0)
-      ? calculateReserveDebtResult.totalDebt.dividedBy(totalLiquidity).toFixed()
-      : '0',
+    utilizationRate: totalLiquidity.eq(0)
+      ? '0'
+      : calculateReserveDebtResult.totalDebt
+          .dividedBy(totalLiquidity)
+          .toFixed(),
     depositIncentivesAPY: incentivesAPYs.depositIncentives.toFixed(),
     variableDebtIncentivesAPY: incentivesAPYs.variableDebtIncentives.toFixed(),
     stableDebtIncentivesAPY: incentivesAPYs.stableDebtIncentives.toFixed(),
@@ -146,12 +148,12 @@ export function formatReserves(
       request.reserve.variableBorrowIndex,
       RAY_DECIMALS,
     ),
-  }
+  };
 }
 
 function calculateTotalLiquidity(
   totalDebt: BigNumber,
   availableLiquidity: string,
 ): BigNumber {
-  return totalDebt.plus(availableLiquidity)
+  return totalDebt.plus(availableLiquidity);
 }

@@ -1,32 +1,32 @@
-import { BigNumber } from 'bignumber.js'
-import { calculateIncentivesAPY } from './calculate-incentives-apy'
+import { BigNumber } from 'bignumber.js';
+import { calculateIncentivesAPY } from './calculate-incentives-apy';
 
 export interface CalculateAPYRequest {
-  emissionEndTimestamp?: number | undefined
-  currentTimestamp?: number | undefined
-  depositIncentivesEmissionPerSecond: string
-  variableDebtIncentivesEmissionPerSecond: string
-  stableDebtIncentivesEmissionPerSecond: string
-  totalLiquidity: BigNumber
-  rewardTokenPriceEth?: string | undefined
-  priceInEth: string
-  totalVariableDebt: BigNumber
-  totalStableDebt: BigNumber
+  emissionEndTimestamp?: number | undefined;
+  currentTimestamp?: number | undefined;
+  depositIncentivesEmissionPerSecond: string;
+  variableDebtIncentivesEmissionPerSecond: string;
+  stableDebtIncentivesEmissionPerSecond: string;
+  totalLiquidity: BigNumber;
+  rewardTokenPriceEth?: string | undefined;
+  priceInEth: string;
+  totalVariableDebt: BigNumber;
+  totalStableDebt: BigNumber;
 }
 
 export interface CalculateAPYResponse {
-  depositIncentives: BigNumber
-  variableDebtIncentives: BigNumber
-  stableDebtIncentives: BigNumber
+  depositIncentives: BigNumber;
+  variableDebtIncentives: BigNumber;
+  stableDebtIncentives: BigNumber;
 }
 
 interface CalculateAPYBase {
-  emissionPerSecond: string
-  hasEmission: boolean
-  // TODO > This might not be in ETH should change name but other work will apply for this change
-  rewardTokenPriceEth: string
-  // TODO > This might not be in ETH should change name but other work will apply for this change
-  priceInEth: string
+  emissionPerSecond: string;
+  hasEmission: boolean;
+  // Resolve > this might not be in eth should change name but other work will apply for this change
+  rewardTokenPriceEth: string;
+  // Resolve > this might not be in eth should change name but other work will apply for this change
+  priceInEth: string;
 }
 
 export function calculateAPYs(
@@ -35,11 +35,11 @@ export function calculateAPYs(
   const hasEmission = _hasEmission(
     request.emissionEndTimestamp,
     request.currentTimestamp,
-  )
+  );
 
-  let rewardTokenPriceEth = '0'
+  let rewardTokenPriceEth = '0';
   if (request.rewardTokenPriceEth) {
-    rewardTokenPriceEth = request.rewardTokenPriceEth
+    rewardTokenPriceEth = request.rewardTokenPriceEth;
   }
 
   return {
@@ -70,7 +70,7 @@ export function calculateAPYs(
       },
       request.totalStableDebt,
     ),
-  }
+  };
 }
 
 function _hasEmission(
@@ -78,12 +78,12 @@ function _hasEmission(
   currentTimestamp?: number | undefined,
 ): boolean {
   if (emissionEndTimestamp === undefined) {
-    return false
+    return false;
   }
 
   return (
     emissionEndTimestamp > (currentTimestamp || Math.floor(Date.now() / 1000))
-  )
+  );
 }
 
 function _calculateIncentivesAPY(
@@ -97,5 +97,5 @@ function _calculateIncentivesAPY(
         tokenTotalSupply,
         tokenPriceInEth: request.priceInEth,
       })
-    : new BigNumber(0)
+    : new BigNumber(0);
 }
