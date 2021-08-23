@@ -108,5 +108,12 @@ package name
   },
 ```
 
-Thats it now start writing your logic, you must write your typescript code in
-the `src` folder in your package.
+also in the package.json paste these in:
+
+```
+"main": "dist/cjs/index.js",
+"module": "./dist/esm/index.js",
+"types": "./dist/esm/index.d.ts",
+```
+
+Thats it now start writing your logic, you must write your typescript code in the `src` folder in your package.
