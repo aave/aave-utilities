@@ -53,7 +53,7 @@ export const formatReserveRequestDAI: FormatReserveRequest = {
     variableDebtIncentivesEmissionPerSecond: '0',
     stableDebtIncentivesEmissionPerSecond: '0',
   },
-  currentTimestamp: 1629708576057,
+  currentTimestamp: 1329706026,
   rewardTokenPriceEth: '317233277449070',
   emissionEndTimestamp: 1649851200,
 };

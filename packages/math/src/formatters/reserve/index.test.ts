@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-import * as calReserveAPYs from './calculate-apy';
 import * as calReserveDebt from './calculate-reserve-debt';
 import { FormatReserveRequest, formatReserves } from './index';
 import {
@@ -19,49 +18,6 @@ describe('formatReserves', () => {
     beforeEach(() => {
       // Clone it
       request = JSON.parse(JSON.stringify(formatReserveRequestWMATIC));
-    });
-
-    it('should call calculateReserveDebt with reserve and currentTimestamp if defined', () => {
-      const spy = jest.spyOn(calReserveDebt, 'calculateReserveDebt');
-      formatReserves(request);
-
-      expect(spy).toHaveBeenCalledTimes(1);
-      expect(spy).toHaveBeenCalledWith(
-        request.reserve,
-        request.currentTimestamp,
-      );
-    });
-
-    it('should call calculateReserveDebt with reserve and undefined', () => {
-      request.currentTimestamp = undefined;
-      const spy = jest.spyOn(calReserveDebt, 'calculateReserveDebt');
-      formatReserves(request);
-
-      expect(spy).toHaveBeenCalledTimes(1);
-      expect(spy).toHaveBeenCalledWith(request.reserve, undefined);
-    });
-
-    it('should call calculateAPYs', () => {
-      const spy = jest.spyOn(calReserveAPYs, 'calculateAPYs');
-      formatReserves(request);
-
-      expect(spy).toHaveBeenCalledTimes(1);
-
-      expect(spy).toHaveBeenCalledWith({
-        emissionEndTimestamp: request.emissionEndTimestamp,
-        currentTimestamp: request.currentTimestamp,
-        depositIncentivesEmissionPerSecond:
-          request.reserve.depositIncentivesEmissionPerSecond,
-        stableDebtIncentivesEmissionPerSecond:
-          request.reserve.stableDebtIncentivesEmissionPerSecond,
-        variableDebtIncentivesEmissionPerSecond:
-          request.reserve.variableDebtIncentivesEmissionPerSecond,
-        totalLiquidity: new BigNumber('150629528254290021063240208'),
-        rewardTokenPriceEth: request.rewardTokenPriceEth,
-        priceInEth: request.reserve.price.priceInEth,
-        totalVariableDebt: new BigNumber('30186360792775159242526245'),
-        totalStableDebt: new BigNumber(0),
-      });
     });
 
     it('should return the correct response', () => {
@@ -110,49 +66,6 @@ describe('formatReserves', () => {
       request = JSON.parse(JSON.stringify(formatReserveRequestDAI));
     });
 
-    it('should call calculateReserveDebt with reserve and currentTimestamp if defined', () => {
-      const spy = jest.spyOn(calReserveDebt, 'calculateReserveDebt');
-      formatReserves(request);
-
-      expect(spy).toHaveBeenCalledTimes(1);
-      expect(spy).toHaveBeenCalledWith(
-        request.reserve,
-        request.currentTimestamp,
-      );
-    });
-
-    it('should call calculateReserveDebt with reserve and undefined', () => {
-      request.currentTimestamp = undefined;
-      const spy = jest.spyOn(calReserveDebt, 'calculateReserveDebt');
-      formatReserves(request);
-
-      expect(spy).toHaveBeenCalledTimes(1);
-      expect(spy).toHaveBeenCalledWith(request.reserve, undefined);
-    });
-
-    it('should call calculateAPYs', () => {
-      const spy = jest.spyOn(calReserveAPYs, 'calculateAPYs');
-      formatReserves(request);
-
-      expect(spy).toHaveBeenCalledTimes(1);
-
-      expect(spy).toHaveBeenCalledWith({
-        emissionEndTimestamp: request.emissionEndTimestamp,
-        currentTimestamp: request.currentTimestamp,
-        depositIncentivesEmissionPerSecond:
-          request.reserve.depositIncentivesEmissionPerSecond,
-        stableDebtIncentivesEmissionPerSecond:
-          request.reserve.stableDebtIncentivesEmissionPerSecond,
-        variableDebtIncentivesEmissionPerSecond:
-          request.reserve.variableDebtIncentivesEmissionPerSecond,
-        totalLiquidity: new BigNumber('60450747218905341166529115358'),
-        rewardTokenPriceEth: request.rewardTokenPriceEth,
-        priceInEth: request.reserve.price.priceInEth,
-        totalVariableDebt: new BigNumber('209641165163710133518030674226800'),
-        totalStableDebt: new BigNumber('30225352042632111254338556051'),
-      });
-    });
-
     it('should return the correct response', () => {
       const result = formatReserves(request);
       expect(result).toEqual({
@@ -167,12 +80,12 @@ describe('formatReserves', () => {
         reserveLiquidationThreshold: '0.8',
         stableBorrowRate: '0.10928437169401419784',
         stableDebtIncentivesAPY: '0',
-        totalDebt: '60450704085264222508677112102',
-        totalLiquidity: '60450747218905341166529115358',
+        totalDebt: '1001528596565357176',
+        totalLiquidity: '43134642647254417360432',
         totalPrincipalStableDebt: '1',
         totalScaledVariableDebt: '145496.831599325217573288',
-        totalStableDebt: '209641165163710.1335180306742268',
-        totalVariableDebt: '209641165163710.1335180306742268',
+        totalStableDebt: '104546.224138225704941867',
+        totalVariableDebt: '104546.224138225704941867',
         utilizationRate: '0',
         variableBorrowIndex: '1.00023285443371120965',
         variableBorrowRate: '0.03856874338802839568',

@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-import * as calculateCompoundedInterest from './calculate-compounded-interest';
 import { calculateReserveDebt } from './calculate-reserve-debt';
 import {
   formatReserveRequestDAI,
@@ -8,7 +7,7 @@ import {
 
 describe('calculateReserveDebt', () => {
   describe('WMATIC', () => {
-    it('should calculate reserve debt', () => {
+    it('should calculate reserve debt with current timestamp', () => {
       const result = calculateReserveDebt(
         {
           totalScaledVariableDebt:
@@ -35,10 +34,34 @@ describe('calculateReserveDebt', () => {
         totalVariableDebt: new BigNumber('30186360792775159242526245'),
       });
     });
+
+    it('should calculate reserve debt without current timestamp', () => {
+      const result = calculateReserveDebt({
+        totalScaledVariableDebt:
+          formatReserveRequestWMATIC.reserve.totalScaledVariableDebt,
+        variableBorrowIndex:
+          formatReserveRequestWMATIC.reserve.variableBorrowIndex,
+        totalPrincipalStableDebt:
+          formatReserveRequestWMATIC.reserve.totalPrincipalStableDebt,
+        variableBorrowRate:
+          formatReserveRequestWMATIC.reserve.variableBorrowRate,
+        lastUpdateTimestamp:
+          formatReserveRequestWMATIC.reserve.lastUpdateTimestamp,
+        averageStableRate: formatReserveRequestWMATIC.reserve.averageStableRate,
+        stableDebtLastUpdateTimestamp:
+          formatReserveRequestWMATIC.reserve.stableDebtLastUpdateTimestamp,
+      });
+
+      expect(result).toEqual({
+        totalDebt: new BigNumber('0'),
+        totalStableDebt: new BigNumber('0'),
+        totalVariableDebt: new BigNumber('41201170096036421098928389'),
+      });
+    });
   });
 
   describe('DAI', () => {
-    it('should calculate reserve debt', () => {
+    it('should calculate reserve debt with current timestamp', () => {
       const result = calculateReserveDebt(
         {
           totalScaledVariableDebt:
@@ -64,15 +87,9 @@ describe('calculateReserveDebt', () => {
         totalVariableDebt: new BigNumber('104546224138225704941867'),
       });
     });
-  });
 
-  it('should call calculateCompoundedInterest twice', () => {
-    const spy = jest.spyOn(
-      calculateCompoundedInterest,
-      'calculateCompoundedInterest',
-    );
-    calculateReserveDebt(
-      {
+    it('should calculate reserve debt without current timestamp', () => {
+      const result = calculateReserveDebt({
         totalScaledVariableDebt:
           formatReserveRequestDAI.reserve.totalScaledVariableDebt,
         variableBorrowIndex:
@@ -85,10 +102,13 @@ describe('calculateReserveDebt', () => {
         averageStableRate: formatReserveRequestDAI.reserve.averageStableRate,
         stableDebtLastUpdateTimestamp:
           formatReserveRequestDAI.reserve.stableDebtLastUpdateTimestamp,
-      },
-      formatReserveRequestWMATIC.currentTimestamp,
-    );
+      });
 
-    expect(spy).toHaveBeenCalledTimes(2);
+      expect(result).toEqual({
+        totalDebt: new BigNumber('2000000000000000000'),
+        totalStableDebt: new BigNumber('1000000000000000000'),
+        totalVariableDebt: new BigNumber('145530711181654053680146'),
+      });
+    });
   });
 });
