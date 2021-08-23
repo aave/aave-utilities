@@ -2,6 +2,10 @@ import BigNumber from 'bignumber.js'
 import * as calReserveAPYs from './calculate-apy'
 import * as calReserveDebt from './calculate-reserve-debt'
 import { FormatReserveRequest, formatReserves } from './index'
+import {
+  formatReserveRequestDAI,
+  formatReserveRequestWMATIC,
+} from './reserve.mocks'
 
 describe('formatReserves', () => {
   afterEach(() => {
@@ -13,36 +17,8 @@ describe('formatReserves', () => {
     let request: FormatReserveRequest
 
     beforeEach(() => {
-      // Reset back to good request
-      request = {
-        reserve: {
-          decimals: 18,
-          reserveFactor: '2000',
-          baseLTVasCollateral: '5000',
-          averageStableRate: '0',
-          stableDebtLastUpdateTimestamp: 0,
-          liquidityIndex: '1009201148274304211064576980',
-          reserveLiquidationThreshold: '6500',
-          reserveLiquidationBonus: '11000',
-          variableBorrowIndex: '1027399683250350049378945640',
-          variableBorrowRate: '33413387371057651815368820',
-          availableLiquidity: '150629528254290021063240208',
-          stableBorrowRate: '97733410530082359736241173',
-          liquidityRate: '5741765771700111307817774',
-          totalPrincipalStableDebt: '0',
-          totalScaledVariableDebt: '40102377650818088556713088',
-          lastUpdateTimestamp: 1629706026,
-          price: {
-            priceInEth: '498035657442060',
-          },
-          depositIncentivesEmissionPerSecond: '198333333333333000',
-          variableDebtIncentivesEmissionPerSecond: '22037037037037000',
-          stableDebtIncentivesEmissionPerSecond: '0',
-        },
-        currentTimestamp: 1629708576057,
-        rewardTokenPriceEth: '498035657442060',
-        emissionEndTimestamp: 1649851200,
-      }
+      // clone it
+      request = JSON.parse(JSON.stringify(formatReserveRequestWMATIC))
     })
 
     it('should call calculateReserveDebt with reserve and currentTimestamp if defined', () => {
@@ -93,7 +69,7 @@ describe('formatReserves', () => {
       expect(result).toEqual({
         availableLiquidity: '150629528254290021063240208',
         baseLTVasCollateral: '0.5',
-        depositIncentivesAPY: '0',
+        depositIncentivesAPY: '0.00000000000000000004',
         liquidityIndex: '1.00920114827430421106',
         liquidityRate: '0.00574176577170011131',
         price: { priceInEth: '0.00049803565744206' },
@@ -106,12 +82,12 @@ describe('formatReserves', () => {
         totalLiquidity: '150629528254290021063240208',
         totalPrincipalStableDebt: '0',
         totalScaledVariableDebt: '40102377.650818088556713088',
-        totalStableDebt: '29694984770103338.741527703152408139',
-        totalVariableDebt: '29694984770103338.741527703152408139',
+        totalStableDebt: '30186360.792775159242526245',
+        totalVariableDebt: '30186360.792775159242526245',
         utilizationRate: '0',
         variableBorrowIndex: '1.02739968325035004938',
         variableBorrowRate: '0.03341338737105765182',
-        variableDebtIncentivesAPY: '0',
+        variableDebtIncentivesAPY: '0.00000000000000000002',
       })
     })
 
@@ -130,34 +106,8 @@ describe('formatReserves', () => {
     let request: FormatReserveRequest
 
     beforeEach(() => {
-      // Reset back to good request
-      request = {
-        reserve: {
-          decimals: 18,
-          baseLTVasCollateral: '7500',
-          reserveLiquidationThreshold: '8000',
-          reserveLiquidationBonus: '10500',
-          reserveFactor: '1000',
-          liquidityIndex: '1000164447379610590574518134',
-          variableBorrowIndex: '1000232854433711209646283880',
-          liquidityRate: '26776200735312093055313462',
-          variableBorrowRate: '38568743388028395681971229',
-          stableBorrowRate: '109284371694014197840985614',
-          lastUpdateTimestamp: 1606992400,
-          availableLiquidity: '43133641118657852003256',
-          totalPrincipalStableDebt: '1000000000000000000',
-          averageStableRate: '109284236984257451326752610',
-          stableDebtLastUpdateTimestamp: 1606992400,
-          totalScaledVariableDebt: '145496831599325217573288',
-          price: { priceInEth: '1634050000000000' },
-          depositIncentivesEmissionPerSecond: '0',
-          variableDebtIncentivesEmissionPerSecond: '0',
-          stableDebtIncentivesEmissionPerSecond: '0',
-        },
-        currentTimestamp: 1629708576057,
-        rewardTokenPriceEth: '317233277449070',
-        emissionEndTimestamp: 1649851200,
-      }
+      // clone it
+      request = JSON.parse(JSON.stringify(formatReserveRequestDAI))
     })
 
     it('should call calculateReserveDebt with reserve and currentTimestamp if defined', () => {
