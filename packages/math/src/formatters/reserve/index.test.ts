@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-import * as calReserveDebt from './calculate-reserve-debt';
 import { FormatReserveRequest, formatReserves } from './index';
 import {
   formatReserveRequestDAI,
@@ -109,15 +108,6 @@ describe('formatReserves', () => {
       JSON.stringify(formatReserveRequestWMATIC),
     );
     request.reserve.availableLiquidity = '0';
-    jest
-      .spyOn(calReserveDebt, 'calculateReserveDebt')
-      .mockImplementationOnce(() => {
-        return {
-          totalDebt: new BigNumber('0'),
-          totalVariableDebt: new BigNumber('0'),
-          totalStableDebt: new BigNumber('0'),
-        };
-      });
 
     const result = formatReserves(request);
     expect(result.utilizationRate).toEqual('0');

@@ -177,7 +177,7 @@ describe('calculateAPYs', () => {
     const result = calculateAPYs({
       ...request,
       emissionEndTimestamp: now + 1000,
-      currentTimestamp: undefined,
+      currentTimestamp: now,
     });
 
     expect(result.depositIncentives.toFixed()).toEqual(
