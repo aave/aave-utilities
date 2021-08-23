@@ -158,7 +158,7 @@ describe('calculateAPYs', () => {
   it('should return the correct response emissionEndTimestamp is higher then current timestamp by over 1 second', () => {
     const result = calculateAPYs({
       ...request,
-      emissionEndTimestamp: now + 1000,
+      emissionEndTimestamp: now + 1,
       currentTimestamp: now,
     });
 
@@ -176,18 +176,12 @@ describe('calculateAPYs', () => {
   it('should return the correct response emissionEndTimestamp is higher then Math.floor(now / 1000)', () => {
     const result = calculateAPYs({
       ...request,
-      emissionEndTimestamp: now + 1000,
-      currentTimestamp: now,
+      emissionEndTimestamp: now + 1,
+      currentTimestamp: undefined,
     });
 
-    expect(result.depositIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
-    );
-    expect(result.variableDebtIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
-    );
-    expect(result.stableDebtIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
-    );
+    expect(result.depositIncentives.toFixed()).toEqual('0');
+    expect(result.variableDebtIncentives.toFixed()).toEqual('0');
+    expect(result.stableDebtIncentives.toFixed()).toEqual('0');
   });
 });
