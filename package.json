@@ -10,7 +10,7 @@
     "check-types": "lerna run check-types",
     "build": "lerna run build",
     "test": "jest",
-    "test-watch": "jest --watch",
+    "test:watch": "jest --watch",
     "precover": "rimraf coverage",
     "cover": "jest --coverage",
     "commit": "git-cz"
