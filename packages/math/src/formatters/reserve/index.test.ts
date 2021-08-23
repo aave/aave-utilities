@@ -190,4 +190,23 @@ describe('formatReserves', () => {
       expect(new BigNumber(second.totalDebt).gte(first.totalDebt)).toBe(true)
     })
   })
+
+  it('should return utilizationRate 0 when totalLiquidity == 0', () => {
+    const request: FormatReserveRequest = JSON.parse(
+      JSON.stringify(formatReserveRequestWMATIC),
+    )
+    request.reserve.availableLiquidity = '0'
+    jest
+      .spyOn(calReserveDebt, 'calculateReserveDebt')
+      .mockImplementationOnce(() => {
+        return {
+          totalDebt: new BigNumber('0'),
+          totalVariableDebt: new BigNumber('0'),
+          totalStableDebt: new BigNumber('0'),
+        }
+      })
+
+    const result = formatReserves(request)
+    expect(result.utilizationRate).toEqual('0')
+  })
 })
