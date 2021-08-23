@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { rayMul } from '../../ray.math'
-import calculateCompoundedInterest from './calculate-compounded-interest'
+import { calculateCompoundedInterest } from './calculate-compounded-interest'
 
 export interface CalculateReserveDebtRequest {
   totalScaledVariableDebt: string
@@ -25,6 +25,7 @@ export function calculateReserveDebt(
   const timestamp = currentTimestamp || reserveDebt.lastUpdateTimestamp
   const totalVariableDebt = getTotalVariableDebt(reserveDebt, timestamp)
   const totalStableDebt = getTotalStableDebt(reserveDebt, timestamp)
+
   return {
     totalVariableDebt,
     totalStableDebt,

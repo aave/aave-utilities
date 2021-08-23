@@ -9,7 +9,7 @@ export interface CalculateCompoundedInterestRequest {
   lastUpdateTimestamp: number
 }
 
-export default function calculateCompoundedInterest(
+export function calculateCompoundedInterest(
   request: CalculateCompoundedInterestRequest,
 ): BigNumber {
   const timeDelta = valueToZDBigNumber(

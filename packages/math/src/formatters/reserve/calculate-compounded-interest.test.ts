@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import * as rayMath from '../../ray.math'
-import calculateCompoundedInterest from './calculate-compounded-interest'
+import { calculateCompoundedInterest } from './calculate-compounded-interest'
 
 describe('calculateCompoundedInterest', () => {
   it('should call binomialApproximatedRayPow', () => {
