@@ -79,7 +79,7 @@ to bypasses the pre-commit and commit-msg hooks.
 ### Setup a new package
 
 When we setup a new package you just need to create a new folder in `packages`
-and do `npm init` and `tsc init`. In the `tsconfig` paste:
+and do `npm init` and `tsc --init`. In the `tsconfig` paste:
 
 ```json
 {
