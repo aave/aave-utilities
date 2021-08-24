@@ -7,12 +7,7 @@ import {
 
 describe('formatReserves', () => {
   describe('WMATIC', () => {
-    let request: FormatReserveRequest;
-
-    beforeEach(() => {
-      // Clone it
-      request = JSON.parse(JSON.stringify(formatReserveRequestWMATIC));
-    });
+    const request: FormatReserveRequest = formatReserveRequestWMATIC;
 
     it('should return the correct response', () => {
       const result = formatReserves(request);
@@ -42,23 +37,22 @@ describe('formatReserves', () => {
     });
 
     it('should increase over time', () => {
-      request.currentTimestamp = request.reserve.lastUpdateTimestamp + 1;
-      const first = formatReserves(request);
+      const first = formatReserves({
+        ...request,
+        currentTimestamp: request.reserve.lastUpdateTimestamp + 1,
+      });
 
-      request.currentTimestamp = request.reserve.lastUpdateTimestamp + 1;
-      const second = formatReserves(request);
+      const second = formatReserves({
+        ...request,
+        currentTimestamp: request.reserve.lastUpdateTimestamp + 1,
+      });
 
       expect(new BigNumber(second.totalDebt).gte(first.totalDebt)).toBe(true);
     });
   });
 
   describe('DAI', () => {
-    let request: FormatReserveRequest;
-
-    beforeEach(() => {
-      // Clone it
-      request = JSON.parse(JSON.stringify(formatReserveRequestDAI));
-    });
+    const request: FormatReserveRequest = formatReserveRequestDAI;
 
     it('should return the correct response', () => {
       const result = formatReserves(request);
@@ -88,21 +82,23 @@ describe('formatReserves', () => {
     });
 
     it('should increase over time', () => {
-      request.currentTimestamp = request.reserve.lastUpdateTimestamp + 1;
-      const first = formatReserves(request);
+      const first = formatReserves({
+        ...request,
+        currentTimestamp: request.reserve.lastUpdateTimestamp + 1,
+      });
 
-      request.currentTimestamp = request.reserve.lastUpdateTimestamp + 1;
-      const second = formatReserves(request);
+      const second = formatReserves({
+        ...request,
+        currentTimestamp: request.reserve.lastUpdateTimestamp + 1,
+      });
 
       expect(new BigNumber(second.totalDebt).gte(first.totalDebt)).toBe(true);
     });
   });
 
   it('should return utilizationRate 0 when totalLiquidity == 0', () => {
-    const request: FormatReserveRequest = JSON.parse(
-      JSON.stringify(formatReserveRequestWMATIC),
-    );
-    request.reserve.availableLiquidity = '0';
+    const request: FormatReserveRequest = formatReserveRequestWMATIC;
+    request.reserve = { ...request.reserve, availableLiquidity: '0' };
 
     const result = formatReserves(request);
     expect(result.utilizationRate).toEqual('0');
