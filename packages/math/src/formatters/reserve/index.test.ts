@@ -6,11 +6,6 @@ import {
 } from './reserve.mocks';
 
 describe('formatReserves', () => {
-  afterEach(() => {
-    // Clear spys each test can then test what it needs to without context of other tests
-    jest.clearAllMocks();
-  });
-
   describe('WMATIC', () => {
     let request: FormatReserveRequest;
 
