@@ -174,14 +174,21 @@ describe('calculateAPYs', () => {
   });
 
   it('should return the correct response emissionEndTimestamp is higher then Math.floor(now / 1000)', () => {
+    jest.spyOn(Date, 'now').mockImplementationOnce(() => now);
     const result = calculateAPYs({
       ...request,
       emissionEndTimestamp: now + 1,
       currentTimestamp: undefined,
     });
 
-    expect(result.depositIncentives.toFixed()).toEqual('0');
-    expect(result.variableDebtIncentives.toFixed()).toEqual('0');
-    expect(result.stableDebtIncentives.toFixed()).toEqual('0');
+    expect(result.depositIncentives.toFixed()).toEqual(
+      '0.00000000000000000001',
+    );
+    expect(result.variableDebtIncentives.toFixed()).toEqual(
+      '0.00000000000000000001',
+    );
+    expect(result.stableDebtIncentives.toFixed()).toEqual(
+      '0.00000000000000000001',
+    );
   });
 });
