@@ -144,7 +144,7 @@ export function formatReserve(
       valueToBigNumber(request.reserve.reserveLiquidationBonus).minus(
         10 ** LTV_PRECISION,
       ),
-      4,
+      LTV_PRECISION,
     ),
     totalScaledVariableDebt: normalizeWithReserve(
       request.reserve.totalScaledVariableDebt,
