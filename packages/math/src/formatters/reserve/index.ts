@@ -139,9 +139,10 @@ export function formatReserve(
       request.reserve.reserveLiquidationThreshold,
       4,
     ),
+    // https://github.com/aave/protocol-v2/blob/baeb455fad42d3160d571bd8d3a795948b72dd85/contracts/protocol/lendingpool/LendingPoolConfigurator.sol#L284
     reserveLiquidationBonus: normalize(
-      valueToBigNumber(request.reserve.reserveLiquidationBonus).shiftedBy(
-        LTV_PRECISION,
+      valueToBigNumber(request.reserve.reserveLiquidationBonus).minus(
+        10 ** LTV_PRECISION,
       ),
       4,
     ),

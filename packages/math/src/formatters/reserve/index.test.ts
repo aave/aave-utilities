@@ -22,8 +22,7 @@ describe('formatReserve', () => {
         liquidityRate: '0.00574176577170011131',
         price: { priceInEth: '0.00049803565744206' },
         reserveFactor: '0.2',
-        // TO FIX
-        reserveLiquidationBonus: '11000',
+        reserveLiquidationBonus: '0.1',
         reserveLiquidationThreshold: '0.65',
         stableBorrowRate: '0.09773341053008235974',
         totalDebt: '30186360.792775159242526245',
@@ -68,8 +67,7 @@ describe('formatReserve', () => {
         liquidityRate: '0.02677620073531209306',
         price: { priceInEth: '0.00163405' },
         reserveFactor: '0.1',
-        // TO FIX
-        reserveLiquidationBonus: '10500',
+        reserveLiquidationBonus: '0.05',
         reserveLiquidationThreshold: '0.8',
         stableBorrowRate: '0.10928437169401419784',
         totalDebt: '104546.724902523987620455',
