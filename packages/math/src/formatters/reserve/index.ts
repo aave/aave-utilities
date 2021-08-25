@@ -90,6 +90,7 @@ export function formatReserve(
     priceInEth: request.reserve.price.priceInEth,
     totalVariableDebt: calculateReserveDebtResult.totalVariableDebt,
     totalStableDebt: calculateReserveDebtResult.totalStableDebt,
+    decimals: request.reserve.decimals,
   });
 
   const normalizeWithReserve = (n: BigNumberValue) =>
@@ -100,19 +101,25 @@ export function formatReserve(
       calculateReserveDebtResult.totalVariableDebt,
     ),
     totalStableDebt: normalizeWithReserve(
-      calculateReserveDebtResult.totalVariableDebt,
+      calculateReserveDebtResult.totalStableDebt,
     ),
-    totalLiquidity: totalLiquidity.toFixed(),
-    availableLiquidity: request.reserve.availableLiquidity,
+    totalLiquidity: normalizeWithReserve(totalLiquidity),
+    availableLiquidity: normalizeWithReserve(
+      request.reserve.availableLiquidity,
+    ),
     utilizationRate: totalLiquidity.eq(0)
       ? '0'
-      : calculateReserveDebtResult.totalDebt
-          .dividedBy(totalLiquidity)
-          .toFixed(),
+      : // Have to make sure you do the math with the decimal else you will not
+        // get the outcome you want.
+        valueToBigNumber(
+          normalizeWithReserve(calculateReserveDebtResult.totalDebt),
+        )
+          .dividedBy(normalizeWithReserve(totalLiquidity))
+          .toString(),
     depositIncentivesAPY: incentivesAPYs.depositIncentives.toFixed(),
     variableDebtIncentivesAPY: incentivesAPYs.variableDebtIncentives.toFixed(),
     stableDebtIncentivesAPY: incentivesAPYs.stableDebtIncentives.toFixed(),
-    totalDebt: calculateReserveDebtResult.totalDebt.toFixed(),
+    totalDebt: normalizeWithReserve(calculateReserveDebtResult.totalDebt),
     price: {
       priceInEth: normalize(request.reserve.price.priceInEth, ETH_DECIMALS),
     },

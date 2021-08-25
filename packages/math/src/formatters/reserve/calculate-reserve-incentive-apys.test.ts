@@ -15,19 +15,20 @@ const request = {
   priceInEth: formatReserveRequestDAI.reserve.price.priceInEth,
   totalVariableDebt: new BigNumber('150629528254290021063240208'),
   totalStableDebt: new BigNumber('150629528254290021063240208'),
+  decimals: 18,
 };
 
 describe('calculateReserveIncentiveAPYs', () => {
   it('should return the correct response', () => {
     const result = calculateReserveIncentiveAPYs(request);
     expect(result.depositIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
+      '0.00556406489198376119',
     );
     expect(result.variableDebtIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
+      '0.00556406489198376119',
     );
     expect(result.stableDebtIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
+      '0.00556406489198376119',
     );
   });
 
@@ -38,10 +39,10 @@ describe('calculateReserveIncentiveAPYs', () => {
     });
     expect(result.depositIncentives.toFixed()).toEqual('0');
     expect(result.variableDebtIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
+      '0.00556406489198376119',
     );
     expect(result.stableDebtIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
+      '0.00556406489198376119',
     );
   });
 
@@ -51,11 +52,11 @@ describe('calculateReserveIncentiveAPYs', () => {
       totalVariableDebt: new BigNumber(0),
     });
     expect(result.depositIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
+      '0.00556406489198376119',
     );
     expect(result.variableDebtIncentives.toFixed()).toEqual('0');
     expect(result.stableDebtIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
+      '0.00556406489198376119',
     );
   });
 
@@ -65,10 +66,10 @@ describe('calculateReserveIncentiveAPYs', () => {
       totalStableDebt: new BigNumber(0),
     });
     expect(result.depositIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
+      '0.00556406489198376119',
     );
     expect(result.variableDebtIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
+      '0.00556406489198376119',
     );
     expect(result.stableDebtIncentives.toFixed()).toEqual('0');
   });
@@ -81,7 +82,7 @@ describe('calculateReserveIncentiveAPYs', () => {
     });
     expect(result.depositIncentives.toFixed()).toEqual('0');
     expect(result.variableDebtIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
+      '0.00556406489198376119',
     );
     expect(result.stableDebtIncentives.toFixed()).toEqual('0');
   });
@@ -95,7 +96,7 @@ describe('calculateReserveIncentiveAPYs', () => {
     expect(result.depositIncentives.toFixed()).toEqual('0');
     expect(result.variableDebtIncentives.toFixed()).toEqual('0');
     expect(result.stableDebtIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
+      '0.00556406489198376119',
     );
   });
 
@@ -106,7 +107,7 @@ describe('calculateReserveIncentiveAPYs', () => {
       totalStableDebt: new BigNumber(0),
     });
     expect(result.depositIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
+      '0.00556406489198376119',
     );
     expect(result.variableDebtIncentives.toFixed()).toEqual('0');
     expect(result.stableDebtIncentives.toFixed()).toEqual('0');
@@ -163,13 +164,13 @@ describe('calculateReserveIncentiveAPYs', () => {
     });
 
     expect(result.depositIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
+      '0.00556406489198376119',
     );
     expect(result.variableDebtIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
+      '0.00556406489198376119',
     );
     expect(result.stableDebtIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
+      '0.00556406489198376119',
     );
   });
 
@@ -182,13 +183,13 @@ describe('calculateReserveIncentiveAPYs', () => {
     });
 
     expect(result.depositIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
+      '0.00556406489198376119',
     );
     expect(result.variableDebtIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
+      '0.00556406489198376119',
     );
     expect(result.stableDebtIncentives.toFixed()).toEqual(
-      '0.00000000000000000001',
+      '0.00556406489198376119',
     );
   });
 });

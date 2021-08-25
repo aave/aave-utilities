@@ -12,6 +12,7 @@ export interface CalculateAPYRequest {
   priceInEth: string;
   totalVariableDebt: BigNumber;
   totalStableDebt: BigNumber;
+  decimals: number;
 }
 
 export interface CalculateAPYResponse {
@@ -27,6 +28,7 @@ interface CalculateAPYBase {
   rewardTokenPriceEth: string;
   // Resolve > this might not be in eth should change name but other work will apply for this change
   priceInEth: string;
+  decimals: number;
 }
 
 export function calculateReserveIncentiveAPYs(
@@ -49,6 +51,7 @@ export function calculateReserveIncentiveAPYs(
         rewardTokenPriceEth,
         priceInEth: request.priceInEth,
         emissionPerSecond: request.depositIncentivesEmissionPerSecond,
+        decimals: request.decimals,
       },
       request.totalLiquidity,
     ),
@@ -58,6 +61,7 @@ export function calculateReserveIncentiveAPYs(
         rewardTokenPriceEth,
         priceInEth: request.priceInEth,
         emissionPerSecond: request.variableDebtIncentivesEmissionPerSecond,
+        decimals: request.decimals,
       },
       request.totalVariableDebt,
     ),
@@ -67,6 +71,7 @@ export function calculateReserveIncentiveAPYs(
         rewardTokenPriceEth,
         priceInEth: request.priceInEth,
         emissionPerSecond: request.stableDebtIncentivesEmissionPerSecond,
+        decimals: request.decimals,
       },
       request.totalStableDebt,
     ),
@@ -96,6 +101,7 @@ function _calculateIncentivesAPY(
         rewardTokenPriceInEth: request.rewardTokenPriceEth,
         tokenTotalSupply,
         tokenPriceInEth: request.priceInEth,
+        decimals: request.decimals,
       })
     : new BigNumber(0);
 }
