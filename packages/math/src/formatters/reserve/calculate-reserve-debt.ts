@@ -29,7 +29,7 @@ export function calculateReserveDebt(
   return {
     totalVariableDebt,
     totalStableDebt,
-    totalDebt: totalStableDebt.plus(totalStableDebt),
+    totalDebt: totalVariableDebt.plus(totalStableDebt),
   };
 }
 

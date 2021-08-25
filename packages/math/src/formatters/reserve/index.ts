@@ -2,8 +2,8 @@ import BigNumber from 'bignumber.js';
 import { BigNumberValue, normalize, valueToBigNumber } from '../../bignumber';
 import { ETH_DECIMALS, RAY_DECIMALS } from '../../constants';
 import { LTV_PRECISION } from '../../index';
-import { calculateAPYs } from './calculate-apy';
 import { calculateReserveDebt } from './calculate-reserve-debt';
+import { calculateReserveIncentiveAPYs } from './calculate-reserve-incentive-apys';
 
 export interface FormatReserveResponse {
   reserveFactor: string;
@@ -63,7 +63,7 @@ export interface ReserveData {
   stableDebtIncentivesEmissionPerSecond: string;
 }
 
-export function formatReserves(
+export function formatReserve(
   request: FormatReserveRequest,
 ): FormatReserveResponse {
   const calculateReserveDebtResult = calculateReserveDebt(
@@ -76,7 +76,7 @@ export function formatReserves(
     request.reserve.availableLiquidity,
   );
 
-  const incentivesAPYs = calculateAPYs({
+  const incentivesAPYs = calculateReserveIncentiveAPYs({
     emissionEndTimestamp: request.emissionEndTimestamp,
     currentTimestamp: request.currentTimestamp,
     depositIncentivesEmissionPerSecond:

@@ -29,7 +29,7 @@ describe('calculateReserveDebt', () => {
       );
 
       expect(result).toEqual({
-        totalDebt: new BigNumber('0'),
+        totalDebt: new BigNumber('30186360792775159242526245'),
         totalStableDebt: new BigNumber('0'),
         totalVariableDebt: new BigNumber('30186360792775159242526245'),
       });
@@ -53,7 +53,7 @@ describe('calculateReserveDebt', () => {
       });
 
       expect(result).toEqual({
-        totalDebt: new BigNumber('0'),
+        totalDebt: new BigNumber('41201170096036421098928389'),
         totalStableDebt: new BigNumber('0'),
         totalVariableDebt: new BigNumber('41201170096036421098928389'),
       });
@@ -82,7 +82,7 @@ describe('calculateReserveDebt', () => {
       );
 
       expect(result).toEqual({
-        totalDebt: new BigNumber('1001528596565357176'),
+        totalDebt: new BigNumber('104546724902523987620455'),
         totalStableDebt: new BigNumber('500764298282678588'),
         totalVariableDebt: new BigNumber('104546224138225704941867'),
       });
@@ -105,7 +105,7 @@ describe('calculateReserveDebt', () => {
       });
 
       expect(result).toEqual({
-        totalDebt: new BigNumber('2000000000000000000'),
+        totalDebt: new BigNumber('145531711181654053680146'),
         totalStableDebt: new BigNumber('1000000000000000000'),
         totalVariableDebt: new BigNumber('145530711181654053680146'),
       });

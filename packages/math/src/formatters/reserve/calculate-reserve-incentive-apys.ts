@@ -29,7 +29,7 @@ interface CalculateAPYBase {
   priceInEth: string;
 }
 
-export function calculateAPYs(
+export function calculateReserveIncentiveAPYs(
   request: CalculateAPYRequest,
 ): CalculateAPYResponse {
   const hasEmission = _hasEmission(

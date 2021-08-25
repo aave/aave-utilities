@@ -1,20 +1,21 @@
 import BigNumber from 'bignumber.js';
-import { FormatReserveRequest, formatReserves } from './index';
+import * as calculateReserveInstance from './calculate-reserve-debt';
+import { formatReserve, FormatReserveRequest } from './index';
 import {
   formatReserveRequestDAI,
   formatReserveRequestWMATIC,
 } from './reserve.mocks';
 
-describe('formatReserves', () => {
+describe('formatReserve', () => {
   describe('WMATIC', () => {
     const request: FormatReserveRequest = formatReserveRequestWMATIC;
 
     it('should return the correct response', () => {
-      const result = formatReserves(request);
+      const result = formatReserve(request);
       expect(result).toEqual({
         availableLiquidity: '150629528254290021063240208',
         baseLTVasCollateral: '0.5',
-        depositIncentivesAPY: '0.00000000000000000004',
+        depositIncentivesAPY: '0.00000000000000000003',
         liquidityIndex: '1.00920114827430421106',
         liquidityRate: '0.00574176577170011131',
         price: { priceInEth: '0.00049803565744206' },
@@ -23,8 +24,8 @@ describe('formatReserves', () => {
         reserveLiquidationThreshold: '0.65',
         stableBorrowRate: '0.09773341053008235974',
         stableDebtIncentivesAPY: '0',
-        totalDebt: '0',
-        totalLiquidity: '150629528254290021063240208',
+        totalDebt: '30186360792775159242526245',
+        totalLiquidity: '180815889047065180305766453',
         totalPrincipalStableDebt: '0',
         totalScaledVariableDebt: '40102377.650818088556713088',
         totalStableDebt: '30186360.792775159242526245',
@@ -37,12 +38,12 @@ describe('formatReserves', () => {
     });
 
     it('should increase over time', () => {
-      const first = formatReserves({
+      const first = formatReserve({
         ...request,
         currentTimestamp: request.reserve.lastUpdateTimestamp + 1,
       });
 
-      const second = formatReserves({
+      const second = formatReserve({
         ...request,
         currentTimestamp: request.reserve.lastUpdateTimestamp + 1,
       });
@@ -55,7 +56,7 @@ describe('formatReserves', () => {
     const request: FormatReserveRequest = formatReserveRequestDAI;
 
     it('should return the correct response', () => {
-      const result = formatReserves(request);
+      const result = formatReserve(request);
       expect(result).toEqual({
         availableLiquidity: '43133641118657852003256',
         baseLTVasCollateral: '0.75',
@@ -68,8 +69,8 @@ describe('formatReserves', () => {
         reserveLiquidationThreshold: '0.8',
         stableBorrowRate: '0.10928437169401419784',
         stableDebtIncentivesAPY: '0',
-        totalDebt: '1001528596565357176',
-        totalLiquidity: '43134642647254417360432',
+        totalDebt: '104546724902523987620455',
+        totalLiquidity: '147680366021181839623711',
         totalPrincipalStableDebt: '1',
         totalScaledVariableDebt: '145496.831599325217573288',
         totalStableDebt: '104546.224138225704941867',
@@ -82,12 +83,12 @@ describe('formatReserves', () => {
     });
 
     it('should increase over time', () => {
-      const first = formatReserves({
+      const first = formatReserve({
         ...request,
         currentTimestamp: request.reserve.lastUpdateTimestamp + 1,
       });
 
-      const second = formatReserves({
+      const second = formatReserve({
         ...request,
         currentTimestamp: request.reserve.lastUpdateTimestamp + 1,
       });
@@ -98,9 +99,22 @@ describe('formatReserves', () => {
 
   it('should return utilizationRate 0 when totalLiquidity == 0', () => {
     const request: FormatReserveRequest = formatReserveRequestWMATIC;
-    request.reserve = { ...request.reserve, availableLiquidity: '0' };
+    request.reserve = {
+      ...request.reserve,
+      availableLiquidity: '0',
+    };
 
-    const result = formatReserves(request);
+    jest
+      .spyOn(calculateReserveInstance, 'calculateReserveDebt')
+      .mockImplementation(() => {
+        return {
+          totalDebt: new BigNumber('0'),
+          totalVariableDebt: new BigNumber('0'),
+          totalStableDebt: new BigNumber('0'),
+        };
+      });
+
+    const result = formatReserve(request);
     expect(result.utilizationRate).toEqual('0');
   });
 });
