@@ -109,13 +109,9 @@ export function formatReserve(
     ),
     utilizationRate: totalLiquidity.eq(0)
       ? '0'
-      : // Have to make sure you do the math with the decimal else you will not
-        // get the outcome you want.
-        valueToBigNumber(
-          normalizeWithReserve(calculateReserveDebtResult.totalDebt),
-        )
-          .dividedBy(normalizeWithReserve(totalLiquidity))
-          .toString(),
+      : valueToBigNumber(calculateReserveDebtResult.totalDebt)
+          .dividedBy(totalLiquidity)
+          .toFixed(),
     depositIncentivesAPY: incentivesAPYs.depositIncentives.toFixed(),
     variableDebtIncentivesAPY: incentivesAPYs.variableDebtIncentives.toFixed(),
     stableDebtIncentivesAPY: incentivesAPYs.stableDebtIncentives.toFixed(),
