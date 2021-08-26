@@ -28,8 +28,7 @@
     "@typescript-eslint/indent": "off",
 
     // xo-typescript overrides
-    "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/semi": ["error", "never"]
+    "@typescript-eslint/explicit-function-return-type": "off"
   },
   "overrides": [
     {
