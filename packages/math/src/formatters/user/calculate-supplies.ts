@@ -2,13 +2,18 @@ import BigNumber from 'bignumber.js';
 import { calculateCompoundedInterest } from '../../pool-math';
 import { rayMul } from '../../ray.math';
 
-export interface Supplies {
+export interface SuppliesRequest {
+  reserve: ReserveSupplyData;
+  currentTimestamp: number;
+}
+
+export interface SuppliesResponse {
   totalVariableDebt: BigNumber;
   totalStableDebt: BigNumber;
   totalLiquidity: BigNumber;
 }
 
-export interface ReserveSupplyData {
+interface ReserveSupplyData {
   totalScaledVariableDebt: string;
   variableBorrowIndex: string;
   variableBorrowRate: string;
@@ -19,18 +24,18 @@ export interface ReserveSupplyData {
   lastUpdateTimestamp: number;
 }
 
-export function calculateSupplies(
-  reserve: ReserveSupplyData,
-  currentTimestamp: number,
-): Supplies {
+export function calculateSupplies(request: SuppliesRequest): SuppliesResponse {
   const {
     totalVariableDebt,
     totalStableDebt,
-  } = calculateReserveDebtSuppliesRaw(reserve, currentTimestamp);
+  } = calculateReserveDebtSuppliesRaw({
+    reserve: request.reserve,
+    currentTimestamp: request.currentTimestamp,
+  });
 
   const totalDebt = totalVariableDebt.plus(totalStableDebt);
 
-  const totalLiquidity = totalDebt.plus(reserve.availableLiquidity);
+  const totalLiquidity = totalDebt.plus(request.reserve.availableLiquidity);
   return {
     totalVariableDebt,
     totalStableDebt,
@@ -38,29 +43,41 @@ export function calculateSupplies(
   };
 }
 
+interface ReserveDebtSuppliesRawRequest {
+  reserve: ReserveSupplyData;
+  currentTimestamp: number;
+}
+
+interface ReserveDebtSuppliesRawResponse {
+  totalVariableDebt: BigNumber;
+  totalStableDebt: BigNumber;
+}
+
 /**
  * Calculates the debt accrued to a given point in time.
  * @param reserve
  * @param currentTimestamp unix timestamp which must be higher than reserve.lastUpdateTimestamp
  */
-export function calculateReserveDebtSuppliesRaw(
-  reserve: ReserveSupplyData,
-  currentTimestamp: number,
-) {
+function calculateReserveDebtSuppliesRaw(
+  request: ReserveDebtSuppliesRawRequest,
+): ReserveDebtSuppliesRawResponse {
   const totalVariableDebt = rayMul(
-    rayMul(reserve.totalScaledVariableDebt, reserve.variableBorrowIndex),
+    rayMul(
+      request.reserve.totalScaledVariableDebt,
+      request.reserve.variableBorrowIndex,
+    ),
     calculateCompoundedInterest(
-      reserve.variableBorrowRate,
-      currentTimestamp,
-      reserve.lastUpdateTimestamp,
+      request.reserve.variableBorrowRate,
+      request.currentTimestamp,
+      request.reserve.lastUpdateTimestamp,
     ),
   );
   const totalStableDebt = rayMul(
-    reserve.totalPrincipalStableDebt,
+    request.reserve.totalPrincipalStableDebt,
     calculateCompoundedInterest(
-      reserve.averageStableRate,
-      currentTimestamp,
-      reserve.stableDebtLastUpdateTimestamp,
+      request.reserve.averageStableRate,
+      request.currentTimestamp,
+      request.reserve.stableDebtLastUpdateTimestamp,
     ),
   );
   return { totalVariableDebt, totalStableDebt };
