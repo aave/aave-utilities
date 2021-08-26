@@ -1,22 +1,22 @@
-import BigNumber from 'bignumber.js'
-import { calculateCompoundedInterest } from 'math/src/pool-math'
-import { rayMul } from 'math/src/ray.math'
+import BigNumber from 'bignumber.js';
+import { calculateCompoundedInterest } from '../../pool-math';
+import { rayMul } from '../../ray.math';
 
 export interface Supplies {
-  totalVariableDebt: BigNumber
-  totalStableDebt: BigNumber
-  totalLiquidity: BigNumber
+  totalVariableDebt: BigNumber;
+  totalStableDebt: BigNumber;
+  totalLiquidity: BigNumber;
 }
 
 export interface ReserveSupplyData {
-  totalScaledVariableDebt: string
-  variableBorrowIndex: string
-  variableBorrowRate: string
-  totalPrincipalStableDebt: string
-  averageStableRate: string
-  availableLiquidity: string
-  stableDebtLastUpdateTimestamp: number
-  lastUpdateTimestamp: number
+  totalScaledVariableDebt: string;
+  variableBorrowIndex: string;
+  variableBorrowRate: string;
+  totalPrincipalStableDebt: string;
+  averageStableRate: string;
+  availableLiquidity: string;
+  stableDebtLastUpdateTimestamp: number;
+  lastUpdateTimestamp: number;
 }
 
 export function calculateSupplies(
@@ -26,16 +26,16 @@ export function calculateSupplies(
   const {
     totalVariableDebt,
     totalStableDebt,
-  } = calculateReserveDebtSuppliesRaw(reserve, currentTimestamp)
+  } = calculateReserveDebtSuppliesRaw(reserve, currentTimestamp);
 
-  const totalDebt = totalVariableDebt.plus(totalStableDebt)
+  const totalDebt = totalVariableDebt.plus(totalStableDebt);
 
-  const totalLiquidity = totalDebt.plus(reserve.availableLiquidity)
+  const totalLiquidity = totalDebt.plus(reserve.availableLiquidity);
   return {
     totalVariableDebt,
     totalStableDebt,
     totalLiquidity,
-  }
+  };
 }
 
 /**
@@ -54,7 +54,7 @@ export function calculateReserveDebtSuppliesRaw(
       currentTimestamp,
       reserve.lastUpdateTimestamp,
     ),
-  )
+  );
   const totalStableDebt = rayMul(
     reserve.totalPrincipalStableDebt,
     calculateCompoundedInterest(
@@ -62,6 +62,6 @@ export function calculateReserveDebtSuppliesRaw(
       currentTimestamp,
       reserve.stableDebtLastUpdateTimestamp,
     ),
-  )
-  return { totalVariableDebt, totalStableDebt }
+  );
+  return { totalVariableDebt, totalStableDebt };
 }

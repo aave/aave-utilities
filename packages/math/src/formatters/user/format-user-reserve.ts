@@ -1,28 +1,28 @@
-import { ComputedUserReserve } from '.'
-import { RawUserReserveResponse } from './generate-raw-user-reserve'
-import { normalize, valueToBigNumber } from '../../bignumber'
+import { ComputedUserReserve } from '.';
+import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
+import { normalize, valueToBigNumber } from '../../bignumber';
 import {
   LTV_PRECISION,
   USD_DECIMALS,
   RAY_DECIMALS,
   ETH_DECIMALS,
-} from '../../constants'
+} from '../../constants';
 
-export interface FormatUserReservesRequest {
-  rawUserReserve: RawUserReserveResponse
+export interface FormatUserReserveRequest {
+  rawUserReserve: UserReserveSummaryResponse;
 }
 
-export interface FormatUserReservesResponse {
-  reserves: ComputedUserReserve
+export interface FormatUserReserveResponse {
+  reserves: ComputedUserReserve;
 }
 
 export function formatUserReserve(
-  request: FormatUserReservesRequest,
+  request: FormatUserReserveRequest,
 ): ComputedUserReserve {
-  const rawUserReserve = request.rawUserReserve
-  const userReserve = rawUserReserve.userReserve
-  const reserve = userReserve.reserve
-  const reserveDecimals = reserve.decimals
+  const rawUserReserve = request.rawUserReserve;
+  const userReserve = rawUserReserve.userReserve;
+  const reserve = userReserve.reserve;
+  const reserveDecimals = reserve.decimals;
 
   return {
     ...userReserve,
@@ -72,17 +72,11 @@ export function formatUserReserve(
     totalBorrows: normalize(rawUserReserve.totalBorrows, reserveDecimals),
     totalBorrowsETH: normalize(rawUserReserve.totalBorrowsETH, ETH_DECIMALS),
     totalBorrowsUSD: normalize(rawUserReserve.totalBorrowsUSD, USD_DECIMALS),
-    depositRewards: rawUserReserve.depositRewards.toString(),
-    depositRewardsUSD: rawUserReserve.depositRewardsUSD.toString(),
-    depositRewardsETH: rawUserReserve.depositRewardsETH.toString(),
-    variableDebtRewards: rawUserReserve.variableDebtRewards.toString(),
-    variableDebtRewardsETH: rawUserReserve.variableDebtRewardsETH.toString(),
-    variableDebtRewardsUSD: rawUserReserve.variableDebtRewardsUSD.toString(),
-    stableDebtRewards: rawUserReserve.stableDebtRewards.toString(),
-    stableDebtRewardsETH: rawUserReserve.stableDebtRewardsETH.toString(),
-    stableDebtRewardsUSD: rawUserReserve.stableDebtRewardsUSD.toString(),
-    totalRewards: rawUserReserve.totalRewards.toString(),
-    totalRewardsETH: rawUserReserve.totalRewardsETH.toString(),
-    totalRewardsUSD: rawUserReserve.totalRewardsUSD.toString(),
-  }
+    totalLiquidity: normalize(rawUserReserve.totalLiquidity, reserveDecimals),
+    totalStableDebt: normalize(rawUserReserve.totalStableDebt, reserveDecimals),
+    totalVariableDebt: normalize(
+      rawUserReserve.totalVariableDebt,
+      reserveDecimals,
+    ),
+  };
 }

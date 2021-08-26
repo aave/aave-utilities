@@ -1,29 +1,31 @@
-import BigNumber from 'bignumber.js'
+import BigNumber from 'bignumber.js';
 
-import { valueToBigNumber, normalizeBN } from '../../bignumber'
+import { valueToBigNumber, normalizeBN } from '../../bignumber';
 
-export function calculateRewards(
-  principalUserBalance: BigNumber,
-  reserveIndex: string,
-  userIndex: string,
-  precision: number,
-  rewardTokenDecimals: number,
-  reserveIndexTimestamp: number,
-  emissionPerSecond: string,
-  totalSupply: BigNumber,
-  currentTimestamp: number,
-): BigNumber {
-  const timeDelta = currentTimestamp - reserveIndexTimestamp
+export interface CalculateRewardsRequest {
+  principalUserBalance: BigNumber;
+  reserveIndex: string;
+  userIndex: string;
+  precision: number;
+  rewardTokenDecimals: number;
+  reserveIndexTimestamp: number;
+  emissionPerSecond: string;
+  totalSupply: BigNumber;
+  currentTimestamp: number;
+}
 
-  const currentReserveIndex = valueToBigNumber(emissionPerSecond)
+export function calculateRewards(request: CalculateRewardsRequest): BigNumber {
+  const timeDelta = request.currentTimestamp - request.reserveIndexTimestamp;
+
+  const currentReserveIndex = valueToBigNumber(request.emissionPerSecond)
     .multipliedBy(timeDelta)
-    .shiftedBy(precision)
-    .dividedBy(totalSupply)
-    .plus(reserveIndex)
+    .shiftedBy(request.precision)
+    .dividedBy(request.totalSupply)
+    .plus(request.reserveIndex);
 
-  const reward = principalUserBalance
-    .multipliedBy(currentReserveIndex.minus(userIndex))
-    .shiftedBy(precision * -1)
+  const reward = request.principalUserBalance
+    .multipliedBy(currentReserveIndex.minus(request.userIndex))
+    .shiftedBy(request.precision * -1);
 
-  return normalizeBN(reward, rewardTokenDecimals)
+  return normalizeBN(reward, request.rewardTokenDecimals);
 }
