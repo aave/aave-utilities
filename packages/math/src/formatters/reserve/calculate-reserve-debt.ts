@@ -20,9 +20,9 @@ export interface CalculateReserveDebtResponse {
 
 export function calculateReserveDebt(
   reserveDebt: CalculateReserveDebtRequest,
-  currentTimestamp?: number | undefined,
+  currentTimestamp: number,
 ): CalculateReserveDebtResponse {
-  const timestamp = currentTimestamp || reserveDebt.lastUpdateTimestamp;
+  const timestamp = currentTimestamp;
   const totalVariableDebt = getTotalVariableDebt(reserveDebt, timestamp);
   const totalStableDebt = getTotalStableDebt(reserveDebt, timestamp);
 

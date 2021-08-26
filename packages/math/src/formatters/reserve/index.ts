@@ -26,7 +26,7 @@ export interface FormatReserveResponse {
 
 export interface FormatReserveRequest {
   reserve: ReserveData;
-  currentTimestamp?: number;
+  currentTimestamp: number;
 }
 
 export interface ReserveData {
