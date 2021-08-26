@@ -6,7 +6,7 @@
     "postinstall": "lerna bootstrap",
     "clean": "rimraf coverage && lerna run clean",
     "lint": "lerna run lint",
-    "lint:fix": "lerna run lint --fix",
+    "lint:fix": "lerna run lint -- --fix",
     "check-types": "lerna run check-types",
     "build": "lerna run build",
     "test": "jest",
