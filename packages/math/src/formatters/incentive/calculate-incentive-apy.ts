@@ -18,7 +18,7 @@ export function calculateIncentiveAPY(
   ).multipliedBy(request.rewardTokenPriceInEth);
 
   if (emissionPerSecondNormalized.eq(0)) {
-    return emissionPerSecondNormalized.toFixed();
+    return '0';
   }
 
   const emissionPerYear = emissionPerSecondNormalized.multipliedBy(
