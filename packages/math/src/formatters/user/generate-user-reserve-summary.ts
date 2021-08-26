@@ -90,8 +90,8 @@ export function generateUserReserveSummary(
     totalLiquidity,
     totalStableDebt,
     totalVariableDebt,
-  } = calculateSupplies(
-    {
+  } = calculateSupplies({
+    reserve: {
       totalScaledVariableDebt: poolReserve.totalScaledVariableDebt,
       variableBorrowIndex: poolReserve.variableBorrowIndex,
       variableBorrowRate: poolReserve.variableBorrowRate,
@@ -101,8 +101,8 @@ export function generateUserReserveSummary(
       stableDebtLastUpdateTimestamp: poolReserve.stableDebtLastUpdateTimestamp,
       lastUpdateTimestamp: poolReserve.lastUpdateTimestamp,
     },
-    request.currentTimestamp,
-  );
+    currentTimestamp: request.currentTimestamp,
+  });
 
   return {
     userReserve: request.userReserve,
