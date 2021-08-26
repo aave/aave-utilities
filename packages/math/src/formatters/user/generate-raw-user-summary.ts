@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-
 import {
   BigNumberValue,
   valueToBigNumber,
@@ -36,6 +35,13 @@ export interface RawUserSummaryResponse {
   healthFactor: BigNumber;
 }
 
+function convertToUsd(
+  value: BigNumber,
+  usdPriceEth: BigNumberValue,
+): BigNumber {
+  return value.shiftedBy(USD_DECIMALS).dividedBy(usdPriceEth);
+}
+
 export function generateRawUserSummary(
   request: RawUserSummaryRequest,
 ): RawUserSummaryResponse {
@@ -70,14 +76,14 @@ export function generateRawUserSummary(
           computedUserReserve.underlyingBalanceETH,
         );
         currentLtv = currentLtv.plus(
-          valueToBigNumber(
-            computedUserReserve.underlyingBalanceETH,
-          ).multipliedBy(poolReserve.baseLTVasCollateral),
+          computedUserReserve.underlyingBalanceETH.multipliedBy(
+            poolReserve.baseLTVasCollateral,
+          ),
         );
         currentLiquidationThreshold = currentLiquidationThreshold.plus(
-          valueToBigNumber(
-            computedUserReserve.underlyingBalanceETH,
-          ).multipliedBy(poolReserve.reserveLiquidationThreshold),
+          computedUserReserve.underlyingBalanceETH.multipliedBy(
+            poolReserve.reserveLiquidationThreshold,
+          ),
         );
       }
 
@@ -92,40 +98,30 @@ export function generateRawUserSummary(
     );
 
   if (currentLtv.gt(0)) {
-    currentLtv = currentLtv
-      .div(totalCollateralETH)
-      .decimalPlaces(0, BigNumber.ROUND_DOWN);
+    currentLtv = valueToZDBigNumber(currentLtv.div(totalCollateralETH));
   }
 
   if (currentLiquidationThreshold.gt(0)) {
-    currentLiquidationThreshold = currentLiquidationThreshold
-      .div(totalCollateralETH)
-      .decimalPlaces(0, BigNumber.ROUND_DOWN);
+    currentLiquidationThreshold = valueToZDBigNumber(
+      currentLiquidationThreshold.div(totalCollateralETH),
+    );
   }
 
-  const healthFactor = calculateHealthFactorFromBalances(
+  const totalCollateralUSD = convertToUsd(
     totalCollateralETH,
-    totalBorrowsETH,
-    currentLiquidationThreshold,
+    request.usdPriceEth,
   );
+  const totalLiquidityUSD = convertToUsd(
+    totalLiquidityETH,
+    request.usdPriceEth,
+  );
+  const totalBorrowsUSD = convertToUsd(totalBorrowsETH, request.usdPriceEth);
 
-  const totalCollateralUSD = totalCollateralETH
-    .shiftedBy(USD_DECIMALS)
-    .dividedBy(request.usdPriceEth);
-
-  const totalLiquidityUSD = totalLiquidityETH
-    .shiftedBy(USD_DECIMALS)
-    .dividedBy(request.usdPriceEth);
-
-  const totalBorrowsUSD = totalBorrowsETH
-    .shiftedBy(USD_DECIMALS)
-    .dividedBy(request.usdPriceEth);
-
-  const availableBorrowsETH = calculateAvailableBorrowsETH(
-    totalCollateralETH,
-    totalBorrowsETH,
+  const availableBorrowsETH = calculateAvailableBorrowsETH({
+    collateralBalanceETH: totalCollateralETH,
+    borrowBalanceETH: totalBorrowsETH,
     currentLtv,
-  );
+  });
 
   return {
     totalLiquidityUSD,
@@ -137,7 +133,11 @@ export function generateRawUserSummary(
     availableBorrowsETH,
     currentLoanToValue: currentLtv,
     currentLiquidationThreshold,
-    healthFactor,
+    healthFactor: calculateHealthFactorFromBalances({
+      collateralBalanceETH: totalCollateralETH,
+      borrowBalanceETH: totalBorrowsETH,
+      currentLiquidationThreshold,
+    }),
     reservesData: userReservesData,
   };
 }
