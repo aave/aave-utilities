@@ -1,4 +1,3 @@
-import { valueToBigNumber } from '../../bignumber';
 import { calculateReward, CalculateRewardRequest } from './calculate-reward';
 import { calculateSupplies, SuppliesRequest } from './calculate-supplies';
 
@@ -16,10 +15,14 @@ describe('calculateReward', () => {
     },
     currentTimestamp: 1629942075,
   };
-  const { totalLiquidity } = calculateSupplies(reserveSuppliesInput);
+  const {
+    totalLiquidity,
+    totalVariableDebt,
+    totalStableDebt,
+  } = calculateSupplies(reserveSuppliesInput);
 
   const depositRewardsRequest: CalculateRewardRequest = {
-    principalUserBalance: valueToBigNumber('2441.09244'),
+    principalUserBalance: '2441092440',
     reserveIndex: '14677148010356546110472348',
     userIndex: '8399742855606485876888576',
     precision: 18,
@@ -28,10 +31,45 @@ describe('calculateReward', () => {
     emissionPerSecond: '4629629629629629',
     totalSupply: totalLiquidity,
     currentTimestamp: 1629942229,
+    emissionEndTimestamp: 1637573428,
+  };
+
+  const variableDebtRewardsRequest: CalculateRewardRequest = {
+    principalUserBalance: '52314205',
+    reserveIndex: '19667478596034441389278095',
+    userIndex: '0',
+    precision: 18,
+    rewardTokenDecimals: 18,
+    reserveIndexTimestamp: 1629942075,
+    emissionPerSecond: '4629629629629629',
+    totalSupply: totalVariableDebt,
+    currentTimestamp: 1629942229,
+    emissionEndTimestamp: 1637573428,
+  };
+
+  const stableDebtRewardsRequest: CalculateRewardRequest = {
+    principalUserBalance: '0',
+    reserveIndex: '0',
+    userIndex: '0',
+    precision: 18,
+    rewardTokenDecimals: 18,
+    reserveIndexTimestamp: 1629942075,
+    emissionPerSecond: '0',
+    totalSupply: totalStableDebt,
+    currentTimestamp: 1629942229,
+    emissionEndTimestamp: 1637573428,
   };
 
   it('should calculate the correct deposit rewards', () => {
     const result = calculateReward(depositRewardsRequest);
-    expect(result.toFixed()).toBe('0.015324027748186104');
+    expect(result).toBe('0.01532402971873275309');
+  });
+  it('should calculate the correct variable debt rewards', () => {
+    const result = calculateReward(variableDebtRewardsRequest);
+    expect(result).toBe('0.0010288957777515011');
+  });
+  it('should calculate the correct stable debt rewards', () => {
+    const result = calculateReward(stableDebtRewardsRequest);
+    expect(result).toBe('0');
   });
 });

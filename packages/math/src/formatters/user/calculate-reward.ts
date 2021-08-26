@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js';
 
-import { valueToBigNumber, normalizeBN } from '../../bignumber';
+import { valueToZDBigNumber, normalize } from '../../bignumber';
 
 export interface CalculateRewardRequest {
-  principalUserBalance: BigNumber;
+  principalUserBalance: string;
   reserveIndex: string;
   userIndex: string;
   precision: number;
@@ -12,20 +12,34 @@ export interface CalculateRewardRequest {
   emissionPerSecond: string;
   totalSupply: BigNumber;
   currentTimestamp: number;
+  emissionEndTimestamp: number;
 }
 
-export function calculateReward(request: CalculateRewardRequest): BigNumber {
-  const timeDelta = request.currentTimestamp - request.reserveIndexTimestamp;
+export function calculateReward(request: CalculateRewardRequest): string {
+  const actualCurrentTimestamp =
+    request.currentTimestamp > request.emissionEndTimestamp
+      ? request.emissionEndTimestamp
+      : request.currentTimestamp;
 
-  const currentReserveIndex = valueToBigNumber(request.emissionPerSecond)
-    .multipliedBy(timeDelta)
-    .shiftedBy(request.precision)
-    .dividedBy(request.totalSupply)
-    .plus(request.reserveIndex);
+  const timeDelta = actualCurrentTimestamp - request.reserveIndexTimestamp;
 
-  const reward = request.principalUserBalance
+  let currentReserveIndex;
+  if (
+    request.reserveIndexTimestamp === Number(request.currentTimestamp) ||
+    request.reserveIndexTimestamp >= request.emissionEndTimestamp
+  ) {
+    currentReserveIndex = valueToZDBigNumber(request.reserveIndex);
+  } else {
+    currentReserveIndex = valueToZDBigNumber(request.emissionPerSecond)
+      .multipliedBy(timeDelta)
+      .shiftedBy(request.precision)
+      .dividedBy(request.totalSupply)
+      .plus(request.reserveIndex);
+  }
+
+  const reward = valueToZDBigNumber(request.principalUserBalance)
     .multipliedBy(currentReserveIndex.minus(request.userIndex))
     .shiftedBy(request.precision * -1);
 
-  return normalizeBN(reward, request.rewardTokenDecimals);
+  return normalize(reward, request.rewardTokenDecimals);
 }
