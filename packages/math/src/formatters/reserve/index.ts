@@ -1,9 +1,8 @@
 import BigNumber from 'bignumber.js';
 import { BigNumberValue, normalize, valueToBigNumber } from '../../bignumber';
-import { ETH_DECIMALS, RAY_DECIMALS } from '../../constants';
+import { RAY_DECIMALS } from '../../constants';
 import { LTV_PRECISION } from '../../index';
 import { calculateReserveDebt } from './calculate-reserve-debt';
-import { calculateReserveIncentiveAPYs } from './calculate-reserve-incentive-apys';
 
 export interface FormatReserveResponse {
   reserveFactor: string;
@@ -18,24 +17,16 @@ export interface FormatReserveResponse {
   liquidityRate: string;
   totalPrincipalStableDebt: string;
   totalScaledVariableDebt: string;
-  price: {
-    priceInEth: string;
-  };
   utilizationRate: string;
   totalStableDebt: string;
   totalVariableDebt: string;
   totalDebt: string;
   totalLiquidity: string;
-  depositIncentivesAPY: string;
-  variableDebtIncentivesAPY: string;
-  stableDebtIncentivesAPY: string;
 }
 
 export interface FormatReserveRequest {
   reserve: ReserveData;
   currentTimestamp?: number;
-  rewardTokenPriceEth?: string;
-  emissionEndTimestamp?: number;
 }
 
 export interface ReserveData {
@@ -55,12 +46,6 @@ export interface ReserveData {
   totalPrincipalStableDebt: string;
   totalScaledVariableDebt: string;
   lastUpdateTimestamp: number;
-  price: {
-    priceInEth: string;
-  };
-  depositIncentivesEmissionPerSecond: string;
-  variableDebtIncentivesEmissionPerSecond: string;
-  stableDebtIncentivesEmissionPerSecond: string;
 }
 
 export function formatReserve(
@@ -75,23 +60,6 @@ export function formatReserve(
     calculateReserveDebtResult.totalDebt,
     request.reserve.availableLiquidity,
   );
-
-  const incentivesAPYs = calculateReserveIncentiveAPYs({
-    emissionEndTimestamp: request.emissionEndTimestamp,
-    currentTimestamp: request.currentTimestamp,
-    depositIncentivesEmissionPerSecond:
-      request.reserve.depositIncentivesEmissionPerSecond,
-    stableDebtIncentivesEmissionPerSecond:
-      request.reserve.stableDebtIncentivesEmissionPerSecond,
-    variableDebtIncentivesEmissionPerSecond:
-      request.reserve.variableDebtIncentivesEmissionPerSecond,
-    totalLiquidity,
-    rewardTokenPriceEth: request.rewardTokenPriceEth,
-    priceInEth: request.reserve.price.priceInEth,
-    totalVariableDebt: calculateReserveDebtResult.totalVariableDebt,
-    totalStableDebt: calculateReserveDebtResult.totalStableDebt,
-    decimals: request.reserve.decimals,
-  });
 
   const normalizeWithReserve = (n: BigNumberValue) =>
     normalize(n, request.reserve.decimals);
@@ -112,13 +80,7 @@ export function formatReserve(
       : valueToBigNumber(calculateReserveDebtResult.totalDebt)
           .dividedBy(totalLiquidity)
           .toFixed(),
-    depositIncentivesAPY: incentivesAPYs.depositIncentives.toFixed(),
-    variableDebtIncentivesAPY: incentivesAPYs.variableDebtIncentives.toFixed(),
-    stableDebtIncentivesAPY: incentivesAPYs.stableDebtIncentives.toFixed(),
     totalDebt: normalizeWithReserve(calculateReserveDebtResult.totalDebt),
-    price: {
-      priceInEth: normalize(request.reserve.price.priceInEth, ETH_DECIMALS),
-    },
     baseLTVasCollateral: normalize(
       request.reserve.baseLTVasCollateral,
       LTV_PRECISION,

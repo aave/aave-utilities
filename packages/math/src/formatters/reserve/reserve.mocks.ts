@@ -18,16 +18,8 @@ export const formatReserveRequestWMATIC: FormatReserveRequest = {
     totalPrincipalStableDebt: '0',
     totalScaledVariableDebt: '40102377650818088556713088',
     lastUpdateTimestamp: 1629706026,
-    price: {
-      priceInEth: '498035657442060',
-    },
-    depositIncentivesEmissionPerSecond: '198333333333333000',
-    variableDebtIncentivesEmissionPerSecond: '22037037037037000',
-    stableDebtIncentivesEmissionPerSecond: '0',
   },
   currentTimestamp: 1329706026,
-  rewardTokenPriceEth: '498035657442060',
-  emissionEndTimestamp: 1649851200,
 };
 
 export const formatReserveRequestDAI: FormatReserveRequest = {
@@ -48,12 +40,6 @@ export const formatReserveRequestDAI: FormatReserveRequest = {
     averageStableRate: '109284236984257451326752610',
     stableDebtLastUpdateTimestamp: 1606992400,
     totalScaledVariableDebt: '145496831599325217573288',
-    price: { priceInEth: '1634050000000000' },
-    depositIncentivesEmissionPerSecond: '0',
-    variableDebtIncentivesEmissionPerSecond: '0',
-    stableDebtIncentivesEmissionPerSecond: '0',
   },
   currentTimestamp: 1329706026,
-  rewardTokenPriceEth: '317233277449070',
-  emissionEndTimestamp: 1649851200,
 };
