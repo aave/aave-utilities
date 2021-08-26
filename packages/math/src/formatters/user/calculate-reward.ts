@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 
 import { valueToBigNumber, normalizeBN } from '../../bignumber';
 
-export interface CalculateRewardsRequest {
+export interface CalculateRewardRequest {
   principalUserBalance: BigNumber;
   reserveIndex: string;
   userIndex: string;
@@ -14,7 +14,7 @@ export interface CalculateRewardsRequest {
   currentTimestamp: number;
 }
 
-export function calculateRewards(request: CalculateRewardsRequest): BigNumber {
+export function calculateReward(request: CalculateRewardRequest): BigNumber {
   const timeDelta = request.currentTimestamp - request.reserveIndexTimestamp;
 
   const currentReserveIndex = valueToBigNumber(request.emissionPerSecond)
