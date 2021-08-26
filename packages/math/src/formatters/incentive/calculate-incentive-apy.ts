@@ -4,7 +4,7 @@ import { ETH_DECIMALS, SECONDS_PER_YEAR } from '../../constants';
 export interface CalculateIncentiveAPYRequest {
   emissionPerSecond: string;
   rewardTokenPriceInEth: string;
-  total: string;
+  tokenTotalSupply: string;
   decimals: number;
   tokenPriceInEth: string;
 }
@@ -26,7 +26,7 @@ export function calculateIncentiveAPY(
   );
 
   const totalSupplyNormalized = valueToBigNumber(
-    normalize(request.total, request.decimals),
+    normalize(request.tokenTotalSupply, request.decimals),
   ).multipliedBy(request.tokenPriceInEth);
 
   return emissionPerYear.dividedBy(totalSupplyNormalized).toFixed();
