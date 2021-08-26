@@ -35,7 +35,7 @@ export function formatUserReserve(
         valueToBigNumber(reserve.reserveLiquidationBonus).shiftedBy(
           LTV_PRECISION,
         ),
-        4,
+        LTV_PRECISION,
       ),
       liquidityRate: normalize(reserve.liquidityRate, RAY_DECIMALS),
     },

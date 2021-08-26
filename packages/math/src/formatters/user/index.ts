@@ -1,9 +1,9 @@
 import { BigNumberValue, normalize } from '../../bignumber';
-import { ETH_DECIMALS, USD_DECIMALS } from '../../constants';
+import { ETH_DECIMALS, LTV_PRECISION, USD_DECIMALS } from '../../constants';
 import { generateRawUserSummary } from './generate-raw-user-summary';
 import { formatUserReserve } from './format-user-reserve';
 
-export interface RawReserveData {
+interface RawReserveData {
   decimals: number;
   reserveFactor: string;
   baseLTVasCollateral: string;
@@ -100,10 +100,10 @@ export function formatUserSummary(
     totalBorrowsETH: normalize(userData.totalBorrowsETH, ETH_DECIMALS),
     totalBorrowsUSD: normalize(userData.totalBorrowsUSD, USD_DECIMALS),
     availableBorrowsETH: normalize(userData.availableBorrowsETH, ETH_DECIMALS),
-    currentLoanToValue: normalize(userData.currentLoanToValue, 4),
+    currentLoanToValue: normalize(userData.currentLoanToValue, LTV_PRECISION),
     currentLiquidationThreshold: normalize(
       userData.currentLiquidationThreshold,
-      4,
+      LTV_PRECISION,
     ),
     healthFactor: userData.healthFactor.toString(),
   };
