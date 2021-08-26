@@ -1,4 +1,6 @@
 import BigNumber from 'bignumber.js';
+import { BigNumberValue, normalize, valueToZDBigNumber } from './bignumber';
+import { SECONDS_PER_YEAR } from './constants';
 import {
   binomialApproximatedRayPow,
   HALF_RAY,
@@ -11,9 +13,7 @@ import {
   WAD,
   wadToRay,
   WAD_RAY_RATIO,
-} from './';
-import { BigNumberValue, normalize, valueToZDBigNumber } from './bignumber';
-import { SECONDS_PER_YEAR } from './constants';
+} from './index';
 
 function calculateCompoundedInterest(
   rate: BigNumberValue,

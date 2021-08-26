@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js';
 import * as calculateReserveInstance from './calculate-reserve-debt';
-import { formatReserve, FormatReserveRequest } from './index';
 import {
   formatReserveRequestDAI,
   formatReserveRequestWMATIC,
 } from './reserve.mocks';
+import { formatReserve, FormatReserveRequest } from './index';
 
 describe('formatReserve', () => {
   describe('WMATIC', () => {
