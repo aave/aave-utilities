@@ -3,12 +3,12 @@ import {
   formatReserveRequestDAI,
   formatReserveRequestWMATIC,
 } from '../reserve/reserve.mocks';
-import { calculateIncentivesAPY } from './calculate-incentives-apy';
+import { calculateIncentiveAPY } from './calculate-incentive-apy';
 
-describe('calculateIncentivesAPY', () => {
+describe('calculateIncentiveAPY', () => {
   describe('inhouse test values', () => {
     it('calculates incentives APY', () => {
-      const result = calculateIncentivesAPY({
+      const result = calculateIncentiveAPY({
         emissionPerSecond: '198333333333333000',
         rewardTokenPriceInEth: '317233277449070',
         total: '1000000003465380422',
@@ -20,7 +20,7 @@ describe('calculateIncentivesAPY', () => {
     });
 
     it('calculates incentives APY', () => {
-      const result = calculateIncentivesAPY({
+      const result = calculateIncentiveAPY({
         emissionPerSecond: '22037037037037000',
         rewardTokenPriceInEth: '317233277449070',
         total: '145530711359639107416907',
@@ -32,7 +32,7 @@ describe('calculateIncentivesAPY', () => {
     });
 
     it('calculates incentives APY', () => {
-      const result = calculateIncentivesAPY({
+      const result = calculateIncentiveAPY({
         emissionPerSecond: '0',
         rewardTokenPriceInEth: '317233277449070',
         total: '43135641118664782764100',
@@ -44,7 +44,7 @@ describe('calculateIncentivesAPY', () => {
     });
 
     it('calculates incentives APY', () => {
-      const result = calculateIncentivesAPY({
+      const result = calculateIncentiveAPY({
         emissionPerSecond: '136893333333333000',
         rewardTokenPriceInEth: '317233277449070',
         total: '150629528254290021063240208',
@@ -67,7 +67,7 @@ describe('calculateIncentivesAPY', () => {
     );
 
     it('calculates deposit incentives APY', () => {
-      const result = calculateIncentivesAPY({
+      const result = calculateIncentiveAPY({
         emissionPerSecond: '198333333333333000',
         rewardTokenPriceInEth: '498035657442060',
         total: totalLiquidity.toFixed(),
@@ -79,7 +79,7 @@ describe('calculateIncentivesAPY', () => {
     });
 
     it('calculates variable debt incentives APY', () => {
-      const result = calculateIncentivesAPY({
+      const result = calculateIncentiveAPY({
         emissionPerSecond: '22037037037037000',
         rewardTokenPriceInEth: '498035657442060',
         total: calculateReserveDebtResult.totalVariableDebt.toFixed(),
@@ -91,7 +91,7 @@ describe('calculateIncentivesAPY', () => {
     });
 
     it('calculates stable debt incentives APY', () => {
-      const result = calculateIncentivesAPY({
+      const result = calculateIncentiveAPY({
         emissionPerSecond: '0',
         rewardTokenPriceInEth: '498035657442060',
         total: calculateReserveDebtResult.totalStableDebt.toFixed(),
@@ -114,7 +114,7 @@ describe('calculateIncentivesAPY', () => {
     );
 
     it('calculates deposit incentives APY', () => {
-      const result = calculateIncentivesAPY({
+      const result = calculateIncentiveAPY({
         emissionPerSecond: '0',
         rewardTokenPriceInEth: '317233277449070',
         total: totalLiquidity.toFixed(),
@@ -126,7 +126,7 @@ describe('calculateIncentivesAPY', () => {
     });
 
     it('calculates variable debt incentives APY', () => {
-      const result = calculateIncentivesAPY({
+      const result = calculateIncentiveAPY({
         emissionPerSecond: '0',
         rewardTokenPriceInEth: '317233277449070',
         total: calculateReserveDebtResult.totalVariableDebt.toFixed(),
@@ -138,7 +138,7 @@ describe('calculateIncentivesAPY', () => {
     });
 
     it('calculates stable debt incentives APY', () => {
-      const result = calculateIncentivesAPY({
+      const result = calculateIncentiveAPY({
         emissionPerSecond: '0',
         rewardTokenPriceInEth: '317233277449070',
         total: calculateReserveDebtResult.totalStableDebt.toFixed(),

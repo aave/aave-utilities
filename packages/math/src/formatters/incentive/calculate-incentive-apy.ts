@@ -1,7 +1,7 @@
 import { normalize, normalizeBN, valueToBigNumber } from '../../bignumber';
 import { ETH_DECIMALS, SECONDS_PER_YEAR } from '../../constants';
 
-export interface CalculateIncentivesAPYRequest {
+export interface CalculateIncentiveAPYRequest {
   emissionPerSecond: string;
   rewardTokenPriceInEth: string;
   total: string;
@@ -9,8 +9,8 @@ export interface CalculateIncentivesAPYRequest {
   tokenPriceInEth: string;
 }
 
-export function calculateIncentivesAPY(
-  request: CalculateIncentivesAPYRequest,
+export function calculateIncentiveAPY(
+  request: CalculateIncentiveAPYRequest,
 ): string {
   const emissionPerSecondNormalized = normalizeBN(
     request.emissionPerSecond,
