@@ -81,6 +81,17 @@ export interface FormatUserSummaryResponse {
   healthFactor: string;
 }
 
+function sortBySymbol(reserves: ComputedUserReserve[]): ComputedUserReserve[] {
+  reserves.sort((a, b) =>
+    a.reserve.symbol > b.reserve.symbol
+      ? 1
+      : a.reserve.symbol < b.reserve.symbol
+      ? -1
+      : 0,
+  );
+  return reserves;
+}
+
 export function formatUserSummary(
   request: FormatUserSummaryRequest,
 ): FormatUserSummaryResponse {
@@ -103,6 +114,8 @@ export function formatUserSummary(
     },
   );
 
+  const sortedUserReserves = sortBySymbol(formattedUserReserves);
+
   const userData = generateRawUserSummary({
     userReserves: computedUserReserves,
     usdPriceEth: request.usdPriceEth,
@@ -110,7 +123,7 @@ export function formatUserSummary(
   });
 
   return {
-    userReservesData: formattedUserReserves,
+    userReservesData: sortedUserReserves,
     totalLiquidityETH: normalize(userData.totalLiquidityETH, ETH_DECIMALS),
     totalLiquidityUSD: normalize(userData.totalLiquidityUSD, USD_DECIMALS),
     totalCollateralETH: normalize(userData.totalCollateralETH, ETH_DECIMALS),
