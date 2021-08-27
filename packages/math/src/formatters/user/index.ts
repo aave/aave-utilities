@@ -6,6 +6,7 @@ import {
   generateUserReserveSummary,
   UserReserveSummaryResponse,
 } from './generate-user-reserve-summary';
+import { BigNumber } from 'bignumber.js';
 
 interface RawReserveData {
   decimals: number;
@@ -92,26 +93,30 @@ function sortBySymbol(reserves: ComputedUserReserve[]): ComputedUserReserve[] {
   return reserves;
 }
 
+function normalizeETH(value: BigNumber): string {
+  return normalize(value, ETH_DECIMALS);
+}
+
+function normalizeUSD(value: BigNumber): string {
+  return normalize(value, USD_DECIMALS);
+}
+
 export function formatUserSummary(
   request: FormatUserSummaryRequest,
 ): FormatUserSummaryResponse {
   const computedUserReserves: UserReserveSummaryResponse[] = request.rawUserReserves.map(
-    userReserve => {
-      return generateUserReserveSummary({
+    userReserve =>
+      generateUserReserveSummary({
         userReserve,
         usdPriceEth: request.usdPriceEth,
         currentTimestamp: request.currentTimestamp,
-      });
-    },
+      }),
   );
 
-  const formattedUserReserves = computedUserReserves.map(
-    computedUserReserve => {
-      const formattedReserve = formatUserReserve({
-        reserve: computedUserReserve,
-      });
-      return formattedReserve;
-    },
+  const formattedUserReserves = computedUserReserves.map(computedUserReserve =>
+    formatUserReserve({
+      reserve: computedUserReserve,
+    }),
   );
 
   const sortedUserReserves = sortBySymbol(formattedUserReserves);
@@ -124,18 +129,18 @@ export function formatUserSummary(
 
   return {
     userReservesData: sortedUserReserves,
-    totalLiquidityETH: normalize(userData.totalLiquidityETH, ETH_DECIMALS),
-    totalLiquidityUSD: normalize(userData.totalLiquidityUSD, USD_DECIMALS),
-    totalCollateralETH: normalize(userData.totalCollateralETH, ETH_DECIMALS),
-    totalCollateralUSD: normalize(userData.totalCollateralUSD, USD_DECIMALS),
-    totalBorrowsETH: normalize(userData.totalBorrowsETH, ETH_DECIMALS),
-    totalBorrowsUSD: normalize(userData.totalBorrowsUSD, USD_DECIMALS),
-    availableBorrowsETH: normalize(userData.availableBorrowsETH, ETH_DECIMALS),
+    totalLiquidityETH: normalizeETH(userData.totalLiquidityETH),
+    totalLiquidityUSD: normalizeUSD(userData.totalLiquidityUSD),
+    totalCollateralETH: normalizeETH(userData.totalCollateralETH),
+    totalCollateralUSD: normalizeUSD(userData.totalCollateralUSD),
+    totalBorrowsETH: normalizeETH(userData.totalBorrowsETH),
+    totalBorrowsUSD: normalizeUSD(userData.totalBorrowsUSD),
+    availableBorrowsETH: normalizeETH(userData.availableBorrowsETH),
     currentLoanToValue: normalize(userData.currentLoanToValue, LTV_PRECISION),
     currentLiquidationThreshold: normalize(
       userData.currentLiquidationThreshold,
       LTV_PRECISION,
     ),
-    healthFactor: userData.healthFactor.toString(),
+    healthFactor: userData.healthFactor.toFixed(),
   };
 }

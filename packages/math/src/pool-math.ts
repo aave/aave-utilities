@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-
 import {
   BigNumberValue,
   valueToBigNumber,
@@ -178,7 +177,7 @@ export function calculateHealthFactorFromBalancesBigUnits(
   return calculateHealthFactorFromBalances({
     collateralBalanceETH: request.collateralBalanceETH,
     borrowBalanceETH: request.borrowBalanceETH,
-    currentLiquidationThreshold: new BigNumber(
+    currentLiquidationThreshold: valueToBigNumber(
       request.currentLiquidationThreshold,
     )
       .shiftedBy(LTV_PRECISION)
