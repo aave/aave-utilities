@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { valueToBigNumber, valueToZDBigNumber } from 'math/src/bignumber';
+import { valueToBigNumber, valueToZDBigNumber } from '../../bignumber';
 import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
 
 interface UserReserveTotalsRequest {

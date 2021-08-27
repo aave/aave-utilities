@@ -66,19 +66,19 @@ function calculateReserveDebtSuppliesRaw(
       request.reserve.totalScaledVariableDebt,
       request.reserve.variableBorrowIndex,
     ),
-    calculateCompoundedInterest(
-      request.reserve.variableBorrowRate,
-      request.currentTimestamp,
-      request.reserve.lastUpdateTimestamp,
-    ),
+    calculateCompoundedInterest({
+      rate: request.reserve.variableBorrowRate,
+      currentTimestamp: request.currentTimestamp,
+      lastUpdateTimestamp: request.reserve.lastUpdateTimestamp,
+    }),
   );
   const totalStableDebt = rayMul(
     request.reserve.totalPrincipalStableDebt,
-    calculateCompoundedInterest(
-      request.reserve.averageStableRate,
-      request.currentTimestamp,
-      request.reserve.stableDebtLastUpdateTimestamp,
-    ),
+    calculateCompoundedInterest({
+      rate: request.reserve.averageStableRate,
+      currentTimestamp: request.currentTimestamp,
+      lastUpdateTimestamp: request.reserve.stableDebtLastUpdateTimestamp,
+    }),
   );
   return { totalVariableDebt, totalStableDebt };
 }

@@ -9,17 +9,17 @@ import {
 } from '../../constants';
 
 export interface FormatUserReserveRequest {
-  rawUserReserve: UserReserveSummaryResponse;
+  reserve: UserReserveSummaryResponse;
 }
 
 export interface FormatUserReserveResponse {
-  reserves: ComputedUserReserve;
+  reserve: ComputedUserReserve;
 }
 
 export function formatUserReserve(
   request: FormatUserReserveRequest,
 ): ComputedUserReserve {
-  const rawUserReserve = request.rawUserReserve;
+  const rawUserReserve = request.reserve;
   const userReserve = rawUserReserve.userReserve;
   const reserve = userReserve.reserve;
   const reserveDecimals = reserve.decimals;

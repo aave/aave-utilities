@@ -16,7 +16,7 @@ describe('generateUserReserveSummary', () => {
     currentTimestamp: 1629942229,
   });
   const request: FormatUserReserveRequest = {
-    rawUserReserve: rawSummary,
+    reserve: rawSummary,
   };
 
   it('should generate a summary for an individual user reserve', () => {
