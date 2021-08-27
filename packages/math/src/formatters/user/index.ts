@@ -2,6 +2,10 @@ import { BigNumberValue, normalize } from '../../bignumber';
 import { ETH_DECIMALS, LTV_PRECISION, USD_DECIMALS } from '../../constants';
 import { generateRawUserSummary } from './generate-raw-user-summary';
 import { formatUserReserve } from './format-user-reserve';
+import {
+  generateUserReserveSummary,
+  UserReserveSummaryResponse,
+} from './generate-user-reserve-summary';
 
 interface RawReserveData {
   decimals: number;
@@ -80,19 +84,33 @@ export interface FormatUserSummaryResponse {
 export function formatUserSummary(
   request: FormatUserSummaryRequest,
 ): FormatUserSummaryResponse {
+  const computedUserReserves: UserReserveSummaryResponse[] = request.rawUserReserves.map(
+    userReserve => {
+      return generateUserReserveSummary({
+        userReserve,
+        usdPriceEth: request.usdPriceEth,
+        currentTimestamp: request.currentTimestamp,
+      });
+    },
+  );
+
+  const formattedUserReserves = computedUserReserves.map(
+    computedUserReserve => {
+      const formattedReserve = formatUserReserve({
+        reserve: computedUserReserve,
+      });
+      return formattedReserve;
+    },
+  );
+
   const userData = generateRawUserSummary({
-    rawUserReserves: request.rawUserReserves,
+    userReserves: computedUserReserves,
     usdPriceEth: request.usdPriceEth,
     currentTimestamp: request.currentTimestamp,
   });
 
-  const userReservesData = userData.reservesData.map(rawUserReserve => {
-    const formattedReserve = formatUserReserve({ rawUserReserve });
-    return formattedReserve;
-  });
-
   return {
-    userReservesData,
+    userReservesData: formattedUserReserves,
     totalLiquidityETH: normalize(userData.totalLiquidityETH, ETH_DECIMALS),
     totalLiquidityUSD: normalize(userData.totalLiquidityUSD, USD_DECIMALS),
     totalCollateralETH: normalize(userData.totalCollateralETH, ETH_DECIMALS),
