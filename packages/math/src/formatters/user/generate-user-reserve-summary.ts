@@ -1,14 +1,13 @@
 import BigNumber from 'bignumber.js';
 import { BigNumberValue } from '../../bignumber';
-import { RawUserReserveData } from './index';
 import {
   getLinearBalance,
   getEthAndUsdBalance,
   getCompoundedBalance,
   getCompoundedStableBalance,
 } from '../../pool-math';
-
 import { calculateSupplies } from './calculate-supplies';
+import { RawUserReserveData } from './index';
 
 export interface UserReserveSummaryRequest {
   userReserve: RawUserReserveData;

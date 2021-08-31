@@ -1,10 +1,10 @@
-import { ComputedUserReserve } from './index';
 import { formatUserReserve } from './format-user-reserve';
 import {
   generateUserReserveSummary,
   UserReserveSummaryResponse,
 } from './generate-user-reserve-summary';
 import { usdcUserReserve } from './user.mocks';
+import { ComputedUserReserve } from './index';
 
 describe('formatUserReserve', () => {
   const usdPriceEth = 309519442156873;
