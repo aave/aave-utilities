@@ -1,12 +1,12 @@
+import { BigNumber } from 'bignumber.js';
 import { BigNumberValue, normalize } from '../../bignumber';
 import { ETH_DECIMALS, LTV_PRECISION, USD_DECIMALS } from '../../constants';
-import { generateRawUserSummary } from './generate-raw-user-summary';
 import { formatUserReserve } from './format-user-reserve';
+import { generateRawUserSummary } from './generate-raw-user-summary';
 import {
   generateUserReserveSummary,
   UserReserveSummaryResponse,
 } from './generate-user-reserve-summary';
-import { BigNumber } from 'bignumber.js';
 
 interface RawReserveData {
   decimals: number;

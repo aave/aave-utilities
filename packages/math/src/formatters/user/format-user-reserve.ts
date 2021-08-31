@@ -1,5 +1,4 @@
-import { ComputedUserReserve } from '.';
-import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
+import { ComputedUserReserve } from './index';
 import { BigNumberValue, normalize, valueToBigNumber } from '../../bignumber';
 import {
   LTV_PRECISION,
@@ -7,6 +6,7 @@ import {
   RAY_DECIMALS,
   ETH_DECIMALS,
 } from '../../constants';
+import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
 
 export interface FormatUserReserveRequest {
   reserve: UserReserveSummaryResponse;

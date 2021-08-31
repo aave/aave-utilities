@@ -1,4 +1,4 @@
-import { ComputedUserReserve } from '.';
+import { ComputedUserReserve } from './index';
 import { formatUserReserve } from './format-user-reserve';
 import {
   generateUserReserveSummary,

@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { BigNumberValue } from '../../bignumber';
-import { RawUserReserveData } from '.';
+import { RawUserReserveData } from './index';
 import {
   getLinearBalance,
   getEthAndUsdBalance,

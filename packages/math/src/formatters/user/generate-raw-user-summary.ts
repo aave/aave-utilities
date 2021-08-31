@@ -1,12 +1,12 @@
 import BigNumber from 'bignumber.js';
 import { BigNumberValue } from '../../bignumber';
+import { USD_DECIMALS } from '../../constants';
 import {
   calculateAvailableBorrowsETH,
   calculateHealthFactorFromBalances,
 } from '../../pool-math';
-import { USD_DECIMALS } from '../../constants';
-import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
 import { calculateUserReserveTotals } from './calculate-user-reserve-totals';
+import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
 
 export interface RawUserSummaryRequest {
   userReserves: UserReserveSummaryResponse[];

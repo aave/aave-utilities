@@ -1,4 +1,4 @@
-import { FormatUserSummaryRequest, RawUserReserveData } from '.';
+import { FormatUserSummaryRequest, RawUserReserveData } from './index';
 
 export const usdcUserReserve: RawUserReserveData = {
   scaledATokenBalance: '2328085146',
