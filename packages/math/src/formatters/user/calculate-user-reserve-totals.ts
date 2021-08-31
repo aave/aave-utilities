@@ -23,7 +23,7 @@ export function calculateUserReserveTotals(
   let currentLtv = valueToBigNumber('0');
   let currentLiquidationThreshold = valueToBigNumber('0');
 
-  request.userReserves.map(userReserveSummary => {
+  request.userReserves.forEach(userReserveSummary => {
     totalLiquidityETH = totalLiquidityETH.plus(
       userReserveSummary.underlyingBalanceETH,
     );

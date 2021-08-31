@@ -6,6 +6,7 @@ import {
   getReserveNormalizedIncome,
   getCompoundedStableBalance,
   calculateHealthFactorFromBalances,
+  calculateHealthFactorFromBalancesBigUnits,
   calculateAvailableBorrowsETH,
   getEthAndUsdBalance,
 } from './pool-math';
@@ -80,6 +81,21 @@ describe('pool math', () => {
     );
   });
 
+  it('should return index if rate is 0', () => {
+    const reserveNormalizedIncomeRequest = {
+      rate: 0,
+      index: 1048540642417873800000000000,
+      currentTimestamp: 1729942300,
+      lastUpdateTimestamp: 1629942200,
+    };
+    const reserveNormalizedIncome = getReserveNormalizedIncome(
+      reserveNormalizedIncomeRequest,
+    );
+    expect(reserveNormalizedIncome.toFixed()).toEqual(
+      '1048540642417873800000000000',
+    );
+  });
+
   it('should calculate compounded stable balances', () => {
     const compoundedStableBalanceRequest = {
       principalBalance: 2000000000000000000,
@@ -112,6 +128,37 @@ describe('pool math', () => {
     expect(healthFactor.toFixed()).toEqual('1.66666666666666666667');
   });
 
+  it('should return -1 health factor if borrowBalance is 0', () => {
+    const healthFactorRequest = {
+      collateralBalanceETH: 100000000000000000,
+      borrowBalanceETH: 0,
+      currentLiquidationThreshold: 5000,
+    };
+    const healthFactor = calculateHealthFactorFromBalances(healthFactorRequest);
+    expect(healthFactor.toFixed()).toEqual('-1');
+  });
+
+  it('should calculate big unit health factor', () => {
+    const minHealthFactorRequest = {
+      collateralBalanceETH: 100000000000000000,
+      borrowBalanceETH: 50000000000000000,
+      currentLiquidationThreshold: 5000,
+    };
+    const minHealthFactor = calculateHealthFactorFromBalancesBigUnits(
+      minHealthFactorRequest,
+    );
+    expect(minHealthFactor.toFixed()).toEqual('10000');
+    const healthFactorRequest = {
+      collateralBalanceETH: 100000000000000000,
+      borrowBalanceETH: 30000000000000000,
+      currentLiquidationThreshold: 5000,
+    };
+    const healthFactor = calculateHealthFactorFromBalancesBigUnits(
+      healthFactorRequest,
+    );
+    expect(healthFactor.toFixed()).toEqual('16666.66666666666666666667');
+  });
+
   it('should calculate availableBorrows', () => {
     const availableBorrowsMaxedRequest = {
       collateralBalanceETH: 1000000000000000000,
@@ -126,6 +173,18 @@ describe('pool math', () => {
       collateralBalanceETH: 1000000000000000000,
       borrowBalanceETH: 30000000000000000,
       currentLtv: 0.5,
+    };
+    const availableBorrows = calculateAvailableBorrowsETH(
+      availableBorrowsRequest,
+    );
+    expect(availableBorrows.toFixed()).toEqual('0');
+  });
+
+  it('should return availableBorrows = 0 if currentLtv = 0', () => {
+    const availableBorrowsRequest = {
+      collateralBalanceETH: 1000000000000000000,
+      borrowBalanceETH: 50000000000000000,
+      currentLtv: 0,
     };
     const availableBorrows = calculateAvailableBorrowsETH(
       availableBorrowsRequest,

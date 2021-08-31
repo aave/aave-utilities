@@ -34,11 +34,10 @@ describe('calculateUserReserveTotals', () => {
     currentTimestamp,
   });
 
-  const userReserveTotals = calculateUserReserveTotals({
-    userReserves: [rawUSDCSummary, rawXSUSHISummary, rawETHSummary],
-  });
-
   it('should compute totals from user reserve array', () => {
+    const userReserveTotals = calculateUserReserveTotals({
+      userReserves: [rawUSDCSummary, rawXSUSHISummary, rawETHSummary],
+    });
     expect(userReserveTotals.totalLiquidityETH.toFixed()).toEqual(
       '5461791539140663086.919458539672351564',
     );
@@ -53,6 +52,37 @@ describe('calculateUserReserveTotals', () => {
     );
     expect(userReserveTotals.currentLiquidationThreshold.toFixed()).toEqual(
       '5123.32086463568964151797',
+    );
+  });
+
+  it('should not compute collateral or LTV if usageAsCollateralEnabledOnUser is false', () => {
+    const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
+      {
+        userReserve: {
+          ...usdcUserReserve,
+          usageAsCollateralEnabledOnUser: false,
+        },
+        usdPriceEth,
+        currentTimestamp,
+      },
+    );
+    const rawETHSummary: UserReserveSummaryResponse = generateUserReserveSummary(
+      {
+        userReserve: {
+          ...ethUserReserve,
+          usageAsCollateralEnabledOnUser: false,
+        },
+        usdPriceEth,
+        currentTimestamp,
+      },
+    );
+    const userReserveTotals = calculateUserReserveTotals({
+      userReserves: [rawUSDCSummary, rawETHSummary],
+    });
+    expect(userReserveTotals.totalCollateralETH.toFixed()).toEqual('0');
+    expect(userReserveTotals.currentLtv.toFixed()).toEqual('0');
+    expect(userReserveTotals.currentLiquidationThreshold.toFixed()).toEqual(
+      '0',
     );
   });
 });

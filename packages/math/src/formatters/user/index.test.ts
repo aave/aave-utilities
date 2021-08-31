@@ -1,5 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { formatUserSummary, FormatUserSummaryRequest } from './index';
+import {
+  ComputedUserReserve,
+  formatUserSummary,
+  FormatUserSummaryRequest,
+} from './index';
 import { formatUserSummaryRequest } from './user.mocks';
 
 describe('formatUserSummary', () => {
@@ -51,5 +55,25 @@ describe('formatUserSummary', () => {
     expect(
       new BigNumber(second.totalCollateralETH).gt(first.totalCollateralETH),
     ).toEqual(true);
+  });
+
+  it('should sort by symbol', () => {
+    const isSorted = (arr: ComputedUserReserve[]) => {
+      if (arr.length <= 1) {
+        return true;
+      }
+
+      for (let i = 1; i < arr.length; i++) {
+        const condition = arr[i].reserve.symbol < arr[i - 1].reserve.symbol;
+        if (condition) {
+          return false;
+        }
+      }
+
+      return true;
+    };
+
+    const result = formatUserSummary(request);
+    expect(isSorted(result.userReservesData)).toEqual(true);
   });
 });
