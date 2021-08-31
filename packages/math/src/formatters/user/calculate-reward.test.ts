@@ -72,4 +72,11 @@ describe('calculateReward', () => {
     const result = calculateReward(stableDebtRewardsRequest);
     expect(result).toBe('0');
   });
+  it('should default to reserveIndex if rewards emission', () => {
+    const result = calculateReward({
+      ...stableDebtRewardsRequest,
+      emissionEndTimestamp: 1,
+    });
+    expect(result).toBe(stableDebtRewardsRequest.reserveIndex);
+  });
 });

@@ -1,8 +1,3 @@
-import { ComputedUserReserve } from '.';
-import {
-  formatUserReserve,
-  FormatUserReserveRequest,
-} from './format-user-reserve';
 import {
   generateUserReserveSummary,
   UserReserveSummaryResponse,
@@ -15,28 +10,28 @@ describe('generateUserReserveSummary', () => {
     usdPriceEth: 309519442156873,
     currentTimestamp: 1629942229,
   });
-  const request: FormatUserReserveRequest = {
-    reserve: rawSummary,
-  };
 
   it('should generate a summary for an individual user reserve', () => {
-    const result: ComputedUserReserve = formatUserReserve(request);
-    expect(Number(result.underlyingBalance)).toBeCloseTo(2441.09244);
-    expect(Number(result.underlyingBalanceETH)).toBeCloseTo(
-      0.757277279117938105,
+    expect(rawSummary.underlyingBalance.toFixed()).toEqual('2441092444');
+    expect(rawSummary.underlyingBalanceETH.toFixed()).toEqual(
+      '757277280358820698.04594',
     );
-    expect(Number(result.underlyingBalanceUSD)).toBeCloseTo(2446.6226542697);
-    expect(Number(result.variableBorrows)).toBeCloseTo(52.314205);
-    expect(Number(result.variableBorrowsETH)).toBeCloseTo(0.016228946586561069);
-    expect(Number(result.variableBorrowsUSD)).toBeCloseTo(52.4327211029);
-    expect(Number(result.stableBorrows)).toBeCloseTo(0);
-    expect(Number(result.stableBorrowsETH)).toBeCloseTo(0);
-    expect(Number(result.stableBorrowsUSD)).toBeCloseTo(0);
-    expect(Number(result.totalBorrows)).toBeCloseTo(52.314205);
-    expect(Number(result.totalBorrowsETH)).toBeCloseTo(0.016228946586561069);
-    expect(Number(result.totalBorrowsUSD)).toBeCloseTo(52.4327211029);
-    expect(Number(result.totalLiquidity)).toBeCloseTo(5735355757.091039);
-    expect(Number(result.totalStableDebt)).toBeCloseTo(47382349.631778);
-    expect(Number(result.totalVariableDebt)).toBeCloseTo(5129957324.438749);
+    expect(rawSummary.underlyingBalanceUSD.toFixed()).toEqual('24466226582788');
+    expect(rawSummary.variableBorrows.toFixed()).toEqual('52314205');
+    expect(rawSummary.variableBorrowsETH.toFixed()).toEqual(
+      '16228946586561069.850175',
+    );
+    expect(rawSummary.variableBorrowsUSD.toFixed()).toEqual('524327211029');
+    expect(rawSummary.stableBorrows.toFixed()).toEqual('0');
+    expect(rawSummary.stableBorrowsETH.toFixed()).toEqual('0');
+    expect(rawSummary.stableBorrowsUSD.toFixed()).toEqual('0');
+    expect(rawSummary.totalBorrows.toFixed()).toEqual('52314205');
+    expect(rawSummary.totalBorrowsETH.toFixed()).toEqual(
+      '16228946586561069.850175',
+    );
+    expect(rawSummary.totalBorrowsUSD.toFixed()).toEqual('524327211029');
+    expect(rawSummary.totalLiquidity.toFixed()).toEqual('5735355757091039');
+    expect(rawSummary.totalStableDebt.toFixed()).toEqual('47382349631778');
+    expect(rawSummary.totalVariableDebt.toFixed()).toEqual('5129957324438749');
   });
 });

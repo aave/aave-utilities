@@ -7,18 +7,18 @@ describe('formatUserSummary', () => {
 
   it('should return the correct response', () => {
     const result = formatUserSummary(request);
-    expect(Number(result.totalLiquidityETH)).toBeCloseTo(5.461791537890080662);
-    expect(Number(result.totalLiquidityUSD)).toBeCloseTo(17646.0370302744);
-    expect(Number(result.totalCollateralETH)).toBeCloseTo(5.461791537890080662);
-    expect(Number(result.totalCollateralUSD)).toBeCloseTo(17646.0370302744);
-    expect(Number(result.totalBorrowsETH)).toBeCloseTo(1.793279247517556825);
-    expect(Number(result.totalBorrowsUSD)).toBeCloseTo(5793.7531646515);
-    expect(Number(result.availableBorrowsETH)).toBeCloseTo(
-      0.043521246674877301,
+    expect(result.totalLiquidityETH).toEqual('5.46179153914066308692');
+    expect(result.totalLiquidityUSD).toEqual('17646.0370343148');
+    expect(result.totalCollateralETH).toEqual('5.46179153914066308692');
+    expect(result.totalCollateralUSD).toEqual('17646.0370343148');
+    expect(result.totalBorrowsETH).toEqual('1.79327924784091481685');
+    expect(result.totalBorrowsUSD).toEqual('5793.7531656962');
+    expect(result.availableBorrowsETH).toEqual('0.04372093494452852425');
+    expect(result.currentLoanToValue).toEqual('0.33633656092895661176');
+    expect(result.currentLiquidationThreshold).toEqual(
+      '0.51233208646356896415',
     );
-    expect(Number(result.currentLoanToValue)).toBeCloseTo(0.3363);
-    expect(Number(result.currentLiquidationThreshold)).toBeCloseTo(0.5123);
-    expect(Number(result.healthFactor)).toBeCloseTo(1.56031237674471231051);
+    expect(result.healthFactor).toEqual('1.56041010257942924677');
   });
 
   it('should increase debt over time', () => {
@@ -33,8 +33,8 @@ describe('formatUserSummary', () => {
     });
 
     expect(
-      new BigNumber(second.totalBorrowsETH).gte(first.totalBorrowsETH),
-    ).toBe(true);
+      new BigNumber(second.totalBorrowsETH).gt(first.totalBorrowsETH),
+    ).toEqual(true);
   });
 
   it('should increase collateral over time', () => {
@@ -49,7 +49,7 @@ describe('formatUserSummary', () => {
     });
 
     expect(
-      new BigNumber(second.totalCollateralETH).gte(first.totalCollateralETH),
-    ).toBe(true);
+      new BigNumber(second.totalCollateralETH).gt(first.totalCollateralETH),
+    ).toEqual(true);
   });
 });
