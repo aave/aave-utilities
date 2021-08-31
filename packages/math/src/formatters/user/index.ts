@@ -82,6 +82,7 @@ export interface FormatUserSummaryResponse {
   healthFactor: string;
 }
 
+/* istanbul ignore next */
 function sortBySymbol(reserves: ComputedUserReserve[]): ComputedUserReserve[] {
   reserves.sort((a, b) =>
     a.reserve.symbol > b.reserve.symbol
