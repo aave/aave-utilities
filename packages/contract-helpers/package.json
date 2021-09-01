@@ -1,0 +1,21 @@
+{
+  "name": "contract-helpers",
+  "version": "1.0.0",
+  "license": "MIT",
+  "author": "",
+  "description": "",
+  "scripts": {
+    "clean": "cd ../.. && npx rimraf packages/contract-helpers/dist packages/math/*.log*",
+    "lint": "cd ../.. && npx eslint packages/contract-helpers/src/**/*.ts",
+    "check-types": "npm run build -- --noEmit",
+    "prebuild": "npm run clean",
+    "build": "cd ../.. && npx tsc -p packages/contract-helpers/tsconfig.json && npx tsc -p packages/contract-helpers/tsconfig.json --module commonjs --outDir ./packages/contract-helpers/dist/cjs",
+    "test": "cd ../.. && npm test packages/contract-helpers",
+    "cover": "cd ../.. && npm run cover packages/contract-helpers",
+    "commit": "cd ../.. && npm run commit",
+    "prepublishOnly": "npm run build"
+  },
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts"
+}
