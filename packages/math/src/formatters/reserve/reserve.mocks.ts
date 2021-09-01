@@ -1,4 +1,4 @@
-import { FormatReserveRequest } from '.';
+import { FormatReserveRequest } from './index';
 
 export const formatReserveRequestWMATIC: FormatReserveRequest = {
   reserve: {
