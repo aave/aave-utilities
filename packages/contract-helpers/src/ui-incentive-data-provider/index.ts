@@ -14,6 +14,12 @@ export {
   UserreserveincentivedataResponse,
 } from './types/UiIncentiveDataProvider';
 
+export interface UiIncentiveDataProviderContext {
+  incentiveDataProviderAddress: string;
+  lendingPoolAddress: string;
+  provider: providers.Provider;
+}
+
 export class UiIncentiveDataProvider {
   private readonly _contract: ContractContext;
 
@@ -21,29 +27,23 @@ export class UiIncentiveDataProvider {
 
   /**
    * Constructor
-   * @param contractAddress The contract address for the `UiIncentiveDataProvider`
-   * @param lendingPoolAddress The address for the lending pool
-   * @param provider The ethers provider
+   * @param context The ui incentive data provider context
    */
-  public constructor(
-    contractAddress: string,
-    lendingPoolAddress: string,
-    provider: providers.Provider,
-  ) {
-    if (!isAddress(contractAddress)) {
+  public constructor(context: UiIncentiveDataProviderContext) {
+    if (!isAddress(context.incentiveDataProviderAddress)) {
       throw new Error('contract address is not valid');
     }
 
-    if (!isAddress(lendingPoolAddress)) {
+    if (!isAddress(context.lendingPoolAddress)) {
       throw new Error('Lending pool address is not valid');
     }
 
-    this._lendingPoolAddress = lendingPoolAddress;
+    this._lendingPoolAddress = context.lendingPoolAddress;
 
     this._contract = (new ethers.Contract(
-      contractAddress,
+      context.incentiveDataProviderAddress,
       abi,
-      provider,
+      context.provider,
     ) as unknown) as ContractContext;
   }
 

@@ -6,11 +6,11 @@ describe('UiIncentiveDataProvider', () => {
   const mockInvalidEthereumAddress = '0x0';
 
   const createValidInstance = () => {
-    const instance = new UiIncentiveDataProvider(
-      mockValidEthereumAddress,
-      mockValidEthereumAddress,
-      new providers.JsonRpcProvider(),
-    );
+    const instance = new UiIncentiveDataProvider({
+      incentiveDataProviderAddress: mockValidEthereumAddress,
+      lendingPoolAddress: mockValidEthereumAddress,
+      provider: new providers.JsonRpcProvider(),
+    });
 
     // @ts-ignore
     instance._contract = {
@@ -26,22 +26,22 @@ describe('UiIncentiveDataProvider', () => {
     it('should throw an error if the contractAddress is not valid', () => {
       expect(
         () =>
-          new UiIncentiveDataProvider(
-            mockInvalidEthereumAddress,
-            mockValidEthereumAddress,
-            new providers.JsonRpcProvider(),
-          ),
+          new UiIncentiveDataProvider({
+            incentiveDataProviderAddress: mockInvalidEthereumAddress,
+            lendingPoolAddress: mockValidEthereumAddress,
+            provider: new providers.JsonRpcProvider(),
+          }),
       ).toThrowError('contract address is not valid');
     });
 
     it('should throw an error if the lendingPoolAddress is not valid', () => {
       expect(
         () =>
-          new UiIncentiveDataProvider(
-            mockValidEthereumAddress,
-            mockInvalidEthereumAddress,
-            new providers.JsonRpcProvider(),
-          ),
+          new UiIncentiveDataProvider({
+            incentiveDataProviderAddress: mockValidEthereumAddress,
+            lendingPoolAddress: mockInvalidEthereumAddress,
+            provider: new providers.JsonRpcProvider(),
+          }),
       ).toThrowError('Lending pool address is not valid');
     });
   });
