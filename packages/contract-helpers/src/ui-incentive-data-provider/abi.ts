@@ -4,7 +4,6 @@ export const abi = [
     stateMutability: 'nonpayable',
     type: 'constructor',
   },
-
   {
     inputs: [
       {
