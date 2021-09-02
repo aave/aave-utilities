@@ -19,6 +19,12 @@ export class UiIncentiveDataProvider {
 
   private readonly _lendingPoolAddress: string;
 
+  /**
+   * Constructor
+   * @param contractAddress The contract address for the `UiIncentiveDataProvider`
+   * @param lendingPoolAddress The address for the lending pool
+   * @param provider The ethers provider
+   */
   public constructor(
     contractAddress: string,
     lendingPoolAddress: string,
