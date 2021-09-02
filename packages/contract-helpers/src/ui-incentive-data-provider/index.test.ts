@@ -46,11 +46,11 @@ describe('UiIncentiveDataProvider', () => {
     });
   });
 
-  describe('getFullReserves', () => {
+  describe('getAllIncentives', () => {
     it('should throw if user is not a valid ethereum address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getFullReserves(mockInvalidEthereumAddress),
+        instance.getAllIncentives(mockInvalidEthereumAddress),
       ).rejects.toThrow('User address is not a valid ethereum address');
     });
 
@@ -58,7 +58,7 @@ describe('UiIncentiveDataProvider', () => {
       const instance = createValidInstance();
       let errored = false;
       try {
-        await instance.getFullReserves(mockValidEthereumAddress);
+        await instance.getAllIncentives(mockValidEthereumAddress);
       } catch (_) {
         errored = true;
       }
@@ -67,12 +67,12 @@ describe('UiIncentiveDataProvider', () => {
     });
   });
 
-  describe('getReserves - to get 100% in coverage :( pointless test', () => {
+  describe('getReservesIncentives - to get 100% in coverage :( pointless test', () => {
     it('should not throw', async () => {
       const instance = createValidInstance();
       let errored = false;
       try {
-        await instance.getReserves();
+        await instance.getReservesIncentives();
       } catch (_) {
         errored = true;
       }
@@ -85,7 +85,7 @@ describe('UiIncentiveDataProvider', () => {
     it('should throw if user is not a valid ethereum address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getUserReserves(mockInvalidEthereumAddress),
+        instance.getUserReservesIncentives(mockInvalidEthereumAddress),
       ).rejects.toThrow('User address is not a valid ethereum address');
     });
 
@@ -93,7 +93,7 @@ describe('UiIncentiveDataProvider', () => {
       const instance = createValidInstance();
       let errored = false;
       try {
-        await instance.getUserReserves(mockValidEthereumAddress);
+        await instance.getUserReservesIncentives(mockValidEthereumAddress);
       } catch (_) {
         errored = true;
       }

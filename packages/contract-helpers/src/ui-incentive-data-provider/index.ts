@@ -51,7 +51,7 @@ export class UiIncentiveDataProvider {
    *  Get the full reserve incentive data for the lending pool and the user
    * @param user The user address
    */
-  public async getFullReserves(
+  public async getAllIncentives(
     user: string,
   ): Promise<GetFullReservesIncentiveDataResponse> {
     if (!isAddress(user)) {
@@ -67,7 +67,7 @@ export class UiIncentiveDataProvider {
   /**
    *  Get the reserve incentive data for the lending pool
    */
-  public async getReserves(): Promise<
+  public async getReservesIncentives(): Promise<
     AggregatedreserveincentivedataResponse[]
   > {
     return this._contract.getReservesIncentivesData(this._lendingPoolAddress);
@@ -77,7 +77,7 @@ export class UiIncentiveDataProvider {
    *  Get the reserve incentive data for the user
    * @param user The user address
    */
-  public async getUserReserves(
+  public async getUserReservesIncentives(
     user: string,
   ): Promise<UserreserveincentivedataResponse[]> {
     if (!isAddress(user)) {
