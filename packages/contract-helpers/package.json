@@ -15,6 +15,13 @@
     "commit": "cd ../.. && npm run commit",
     "prepublishOnly": "npm run build"
   },
+  "peerDependencies": {
+    "ethers": "^5.0.24"
+  },
+  "devDependencies": {
+    "ethereum-abi-types-generator": "^1.2.2",
+    "ethers": "5.0.31"
+  },
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts"
