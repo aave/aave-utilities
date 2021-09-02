@@ -59,7 +59,7 @@ describe('UiIncentiveDataProvider', () => {
       let errored = false;
       try {
         await instance.getFullReserves(mockValidEthereumAddress);
-      } catch (e) {
+      } catch (_) {
         errored = true;
       }
 
@@ -73,7 +73,7 @@ describe('UiIncentiveDataProvider', () => {
       let errored = false;
       try {
         await instance.getReserves();
-      } catch (e) {
+      } catch (_) {
         errored = true;
       }
 
@@ -94,7 +94,7 @@ describe('UiIncentiveDataProvider', () => {
       let errored = false;
       try {
         await instance.getUserReserves(mockValidEthereumAddress);
-      } catch (e) {
+      } catch (_) {
         errored = true;
       }
 
