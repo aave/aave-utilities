@@ -1,0 +1,81 @@
+import { ethers, providers } from 'ethers';
+import { isAddress } from 'ethers/lib/utils';
+import { abi } from './abi';
+import {
+  ReserveDataResponse,
+  UserReserveDataResponse,
+  AllReserveDataResponse,
+  ContractContext,
+} from './types/UiPoolDataProvider';
+
+export interface UiPoolDataProviderContext {
+  uiPoolDataProviderAddress: string;
+  lendingPoolAddress: string;
+  provider: providers.Provider;
+}
+
+export class UiPoolDataProvider {
+  private readonly _contract: ContractContext;
+
+  private readonly _lendingPoolAddress: string;
+
+  /**
+   * Constructor
+   * @param context The ui pool data provider context
+   */
+  public constructor(context: UiPoolDataProviderContext) {
+    if (!isAddress(context.uiPoolDataProviderAddress)) {
+      throw new Error('contract address is not valid');
+    }
+
+    if (!isAddress(context.lendingPoolAddress)) {
+      throw new Error('Lending pool address is not valid');
+    }
+
+    this._lendingPoolAddress = context.lendingPoolAddress;
+
+    this._contract = (new ethers.Contract(
+      context.uiPoolDataProviderAddress,
+      abi,
+      context.provider,
+    ) as unknown) as ContractContext;
+  }
+
+  /**
+   * Get the underlying asset address for each lending pool reserve
+   */
+  public async getReservesList(): Promise<string[]> {
+    return this._contract.getReservesList(this._lendingPoolAddress);
+  }
+
+  /**
+   * Get data for each lending pool reserve
+   */
+  public async getReserves(): Promise<ReserveDataResponse[]> {
+    return this._contract.getSimpleReservesData(this._lendingPoolAddress);
+  }
+
+  /**
+   * Get data for each user reserve on the lending pool
+   */
+  public async getUserReserves(
+    user: string,
+  ): Promise<UserReserveDataResponse[]> {
+    if (!isAddress(user)) {
+      throw new Error('User address is not a valid ethereum address');
+    }
+
+    return this._contract.getUserReservesData(this._lendingPoolAddress, user);
+  }
+
+  /**
+   * Get data for each lending pool reserve and user reserve
+   */
+  public async getAllReserves(user: string): Promise<AllReserveDataResponse> {
+    if (!isAddress(user)) {
+      throw new Error('User address is not a valid ethereum address');
+    }
+
+    return this._contract.getReservesData(this._lendingPoolAddress, user);
+  }
+}
