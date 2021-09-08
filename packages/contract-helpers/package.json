@@ -33,5 +33,8 @@
     "url": "https://github.com/@aave/aave-utilities/issues"
   },
   "homepage": "https://github.com/@aave/aave-utilities#readme",
-  "gitHead": "47a9a6d1f940185ab1e7f6c2bea61564b2abe47a"
+  "gitHead": "47a9a6d1f940185ab1e7f6c2bea61564b2abe47a",
+  "publishConfig": {
+    "access": "public"
+  }
 }
