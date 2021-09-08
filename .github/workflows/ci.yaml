@@ -44,7 +44,7 @@ jobs:
         name: build
         run: |
           yarn build
-
+      # https://github.com/lerna/lerna/issues/2788 --no-verify-access
       - id: prerelease
         name: prerelease
         if: |
@@ -52,7 +52,7 @@ jobs:
           !contains(github.head_ref, 'dependabot') &&
           github.ref != 'refs/heads/master'
         run: |
-          yarn release:canary --yes
+          yarn release:canary --yes --no-verify-access
       #- uses: actions/github-script@v4
       #  if: |
       #    github.event.pull_request.head.repo.full_name == github.repository &&
@@ -73,4 +73,4 @@ jobs:
           !contains(github.event.head_commit.message, 'chore(release)')
         run: |
           yarn version:ci --yes
-          yarn release:latest --yes
+          yarn release:latest --yes --no-verify-access
