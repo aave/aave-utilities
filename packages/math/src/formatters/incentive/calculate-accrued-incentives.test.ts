@@ -1,7 +1,11 @@
-import { calculateReward, CalculateRewardRequest } from './calculate-reward';
-import { calculateSupplies, SuppliesRequest } from './calculate-supplies';
+import BigNumber from 'bignumber.js';
+import { calculateSupplies, SuppliesRequest } from '../user/calculate-supplies';
+import {
+  calculateAccruedIncentives,
+  CalculateAccruedIncentivesRequest,
+} from './calculate-accrued-incentives';
 
-describe('calculateReward', () => {
+describe('calculateAccruedIncentives', () => {
   const reserveSuppliesInput: SuppliesRequest = {
     reserve: {
       totalScaledVariableDebt: '4790920796601146',
@@ -21,62 +25,62 @@ describe('calculateReward', () => {
     totalStableDebt,
   } = calculateSupplies(reserveSuppliesInput);
 
-  const depositRewardsRequest: CalculateRewardRequest = {
-    principalUserBalance: '2441092440',
-    reserveIndex: '14677148010356546110472348',
-    userIndex: '8399742855606485876888576',
+  const depositRewardsRequest: CalculateAccruedIncentivesRequest = {
+    principalUserBalance: new BigNumber('2441092440'),
+    reserveIndex: new BigNumber('14677148010356546110472348'),
+    userIndex: new BigNumber('8399742855606485876888576'),
     precision: 18,
     rewardTokenDecimals: 18,
     reserveIndexTimestamp: 1629942075,
-    emissionPerSecond: '4629629629629629',
+    emissionPerSecond: new BigNumber('4629629629629629'),
     totalSupply: totalLiquidity,
     currentTimestamp: 1629942229,
     emissionEndTimestamp: 1637573428,
   };
 
-  const variableDebtRewardsRequest: CalculateRewardRequest = {
-    principalUserBalance: '52314205',
-    reserveIndex: '19667478596034441389278095',
-    userIndex: '0',
+  const variableDebtRewardsRequest: CalculateAccruedIncentivesRequest = {
+    principalUserBalance: new BigNumber('52314205'),
+    reserveIndex: new BigNumber('19667478596034441389278095'),
+    userIndex: new BigNumber('0'),
     precision: 18,
     rewardTokenDecimals: 18,
     reserveIndexTimestamp: 1629942075,
-    emissionPerSecond: '4629629629629629',
+    emissionPerSecond: new BigNumber('4629629629629629'),
     totalSupply: totalVariableDebt,
     currentTimestamp: 1629942229,
     emissionEndTimestamp: 1637573428,
   };
 
-  const stableDebtRewardsRequest: CalculateRewardRequest = {
-    principalUserBalance: '0',
-    reserveIndex: '0',
-    userIndex: '0',
+  const stableDebtRewardsRequest: CalculateAccruedIncentivesRequest = {
+    principalUserBalance: new BigNumber('0'),
+    reserveIndex: new BigNumber('0'),
+    userIndex: new BigNumber('0'),
     precision: 18,
     rewardTokenDecimals: 18,
     reserveIndexTimestamp: 1629942075,
-    emissionPerSecond: '0',
+    emissionPerSecond: new BigNumber('0'),
     totalSupply: totalStableDebt,
     currentTimestamp: 1629942229,
     emissionEndTimestamp: 1637573428,
   };
 
   it('should calculate the correct deposit rewards', () => {
-    const result = calculateReward(depositRewardsRequest);
+    const result = calculateAccruedIncentives(depositRewardsRequest);
     expect(result).toBe('0.01532402971873275309');
   });
   it('should calculate the correct variable debt rewards', () => {
-    const result = calculateReward(variableDebtRewardsRequest);
+    const result = calculateAccruedIncentives(variableDebtRewardsRequest);
     expect(result).toBe('0.0010288957777515011');
   });
   it('should calculate the correct stable debt rewards', () => {
-    const result = calculateReward(stableDebtRewardsRequest);
+    const result = calculateAccruedIncentives(stableDebtRewardsRequest);
     expect(result).toBe('0');
   });
-  it('should default to reserveIndex if rewards emission', () => {
-    const result = calculateReward({
+  it('should default to reserveIndex if rewards emission is 0', () => {
+    const result = calculateAccruedIncentives({
       ...stableDebtRewardsRequest,
       emissionEndTimestamp: 1,
     });
-    expect(result).toBe(stableDebtRewardsRequest.reserveIndex);
+    expect(result).toBe(stableDebtRewardsRequest.reserveIndex.toFixed());
   });
 });

@@ -2,20 +2,23 @@ import BigNumber from 'bignumber.js';
 
 import { valueToZDBigNumber, normalize } from '../../bignumber';
 
-export interface CalculateRewardRequest {
-  principalUserBalance: string;
-  reserveIndex: string;
-  userIndex: string;
+export interface CalculateAccruedIncentivesRequest {
+  principalUserBalance: BigNumber;
+  reserveIndex: BigNumber;
+  userIndex: BigNumber;
   precision: number;
   rewardTokenDecimals: number;
   reserveIndexTimestamp: number;
-  emissionPerSecond: string;
+  emissionPerSecond: BigNumber;
   totalSupply: BigNumber;
   currentTimestamp: number;
   emissionEndTimestamp: number;
 }
 
-export function calculateReward(request: CalculateRewardRequest): string {
+// TO-DO: Convert this function to return BigNumber instead of string
+export function calculateAccruedIncentives(
+  request: CalculateAccruedIncentivesRequest,
+): string {
   const actualCurrentTimestamp =
     request.currentTimestamp > request.emissionEndTimestamp
       ? request.emissionEndTimestamp
@@ -28,7 +31,7 @@ export function calculateReward(request: CalculateRewardRequest): string {
     request.reserveIndexTimestamp === Number(request.currentTimestamp) ||
     request.reserveIndexTimestamp >= request.emissionEndTimestamp
   ) {
-    currentReserveIndex = valueToZDBigNumber(request.reserveIndex);
+    currentReserveIndex = request.reserveIndex;
   } else {
     currentReserveIndex = valueToZDBigNumber(request.emissionPerSecond)
       .multipliedBy(timeDelta)
@@ -37,9 +40,9 @@ export function calculateReward(request: CalculateRewardRequest): string {
       .plus(request.reserveIndex);
   }
 
-  const reward = valueToZDBigNumber(request.principalUserBalance)
+  const incentives = valueToZDBigNumber(request.principalUserBalance)
     .multipliedBy(currentReserveIndex.minus(request.userIndex))
     .shiftedBy(request.precision * -1);
 
-  return normalize(reward, request.rewardTokenDecimals);
+  return normalize(incentives, request.rewardTokenDecimals);
 }
