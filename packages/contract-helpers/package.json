@@ -1,6 +1,6 @@
 {
   "name": "@aave/contract-helpers",
-  "version": "0.0.0",
+  "version": "0.0.1-alpha.25+47a9a6d",
   "license": "MIT",
   "description": "",
   "scripts": {
@@ -32,5 +32,6 @@
   "bugs": {
     "url": "https://github.com/@aave/aave-utilities/issues"
   },
-  "homepage": "https://github.com/@aave/aave-utilities#readme"
+  "homepage": "https://github.com/@aave/aave-utilities#readme",
+  "gitHead": "47a9a6d1f940185ab1e7f6c2bea61564b2abe47a"
 }
