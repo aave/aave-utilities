@@ -96,7 +96,7 @@ package name
 
 ```json
 "scripts": {
-    "clean": "cd ../.. && npx rimraf packages/YOUR_PACKAGE_NAME/dist packages/math/*.log*",
+    "clean": "cd ../.. && npx rimraf packages/YOUR_PACKAGE_NAME/dist packages/math-utils/*.log*",
     "lint": "cd ../.. && npx eslint packages/YOUR_PACKAGE_NAME/src/**/*.ts",
     "check-types": "npm run build -- --noEmit",
     "prebuild": "npm run clean",
