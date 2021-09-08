@@ -1,8 +1,7 @@
 {
-  "name": "contract-helpers",
-  "version": "1.0.0",
+  "name": "@aave/contract-helpers",
+  "version": "0.0.0",
   "license": "MIT",
-  "author": "",
   "description": "",
   "scripts": {
     "clean": "cd ../.. && npx rimraf packages/contract-helpers/dist packages/math/*.log*",
@@ -24,5 +23,14 @@
   },
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
-  "types": "./dist/esm/index.d.ts"
+  "types": "./dist/esm/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/@aave/aave-utilities.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/@aave/aave-utilities/issues"
+  },
+  "homepage": "https://github.com/@aave/aave-utilities#readme"
 }

@@ -1,7 +1,8 @@
 {
   "name": "@aave/math",
+  "version": "0.0.0",
   "license": "MIT",
-  "version": "1.1.1",
+  "description": "",
   "scripts": {
     "clean": "cd ../.. && npx rimraf packages/math/dist packages/math/*.log*",
     "lint": "cd ../.. && npx eslint packages/math/src/**/*.ts",
@@ -34,14 +35,13 @@
     "bignumber.js": "^9.0.1",
     "tslib": "^1.10.0"
   },
-  "description": "",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/@aave/aave-node.git"
+    "url": "git+https://github.com/@aave/aave-utilities.git"
   },
   "author": "",
   "bugs": {
-    "url": "https://github.com/@aave/aave-node/issues"
+    "url": "https://github.com/@aave/aave-utilities/issues"
   },
-  "homepage": "https://github.com/@aave/aave-node#readme"
+  "homepage": "https://github.com/@aave/aave-utilities#readme"
 }
