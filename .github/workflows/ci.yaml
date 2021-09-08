@@ -66,10 +66,11 @@ jobs:
       #        repo: context.repo.repo,
       #        body: '🎉 Canary Release. You can install canary version via `npm install package@next`'
       #      })
-      #- id: release
-      #  name: release
-      #  if: |
-      #    github.ref == 'refs/heads/master' &&
-      #    !contains(github.event.head_commit.message, 'chore(release)')
-      #  run: |
-      #    yarn release:latest --yes
+      - id: release
+        name: release
+        if: |
+          github.ref == 'refs/heads/master' &&
+          !contains(github.event.head_commit.message, 'chore(release)')
+        run: |
+          yarn version:ci --yes
+          yarn release:latest --yes
