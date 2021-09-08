@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.1.1 (2021-09-08)
+
+
+### Bug Fixes
+
+* remove alpha from master wording ([1e03694](https://github.com/@aave/aave-utilities/commit/1e03694924f7f9f414f1257ba3b2ef4674ef8874))
+
+
+
+
+
 # 0.1.0-alpha.1 (2021-09-08)
 
 
