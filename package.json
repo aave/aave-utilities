@@ -1,5 +1,9 @@
 {
-  "name": "@aave/node-lib",
+  "name": "@aave/aave-utilities",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aave/aave-utilities.git"
+  },
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -13,7 +17,10 @@
     "test:watch": "jest --watch",
     "precover": "rimraf coverage",
     "cover": "jest --coverage",
-    "commit": "git-cz"
+    "commit": "git-cz",
+    "version:ci": "lerna version --yes --conventional-commits --create-release github --message 'chore(release): publish %v [ci skip]'",
+    "release:latest": "lerna publish",
+    "release:canary": "lerna publish --canary"
   },
   "workspaces": [
     "packages/*"
@@ -45,7 +52,7 @@
       "prettier --write",
       "git add"
     ],
-    "*.{json,md}": [
+    "*.{json,md,yaml}": [
       "prettier --write",
       "git add"
     ]
