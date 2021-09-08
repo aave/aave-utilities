@@ -16,6 +16,15 @@ jobs:
           node-version: '14'
           cache: 'yarn'
 
+      - name: prepare
+        id: prepare
+        shell: bash
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> ~/.npmrc
+          git config user.name "GitHub Actions Build"
+          git config user.email "developers@aave.com"
+          npm config set access public
+
       - name: install
         id: install
         run: |
@@ -45,19 +54,19 @@ jobs:
         run: |
           yarn release:canary --yes
 
-      - uses: actions/github-script@v4
-        if: |
-          github.event.pull_request.head.repo.full_name == github.repository &&
-          !contains(github.head_ref, 'dependabot') &&
-          github.ref != 'refs/heads/master'
-        with:
-          script: |
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '🎉 Canary Release. You can install canary version via `npm install package@next`'
-            })
+      #- uses: actions/github-script@v4
+      #  if: |
+      #    github.event.pull_request.head.repo.full_name == github.repository &&
+      #    !contains(github.head_ref, 'dependabot') &&
+      #    github.ref != 'refs/heads/master'
+      #  with:
+      #    script: |
+      #      github.issues.createComment({
+      #        issue_number: context.issue.number,
+      #        owner: context.repo.owner,
+      #        repo: context.repo.repo,
+      #        body: '🎉 Canary Release. You can install canary version via `npm install package@next`'
+      #      })
 
       - id: release
         name: release
