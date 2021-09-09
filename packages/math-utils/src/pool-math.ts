@@ -148,35 +148,35 @@ export function getCompoundedStableBalance(
 }
 
 interface HealthFactorFromBalanceRequest {
-  collateralBalanceETH: BigNumberValue;
-  borrowBalanceETH: BigNumberValue;
+  collateralBalance: BigNumberValue;
+  borrowBalance: BigNumberValue;
   currentLiquidationThreshold: BigNumberValue;
 }
 
 export function calculateHealthFactorFromBalances(
   request: HealthFactorFromBalanceRequest,
 ): BigNumber {
-  if (valueToBigNumber(request.borrowBalanceETH).eq(0)) {
+  if (valueToBigNumber(request.borrowBalance).eq(0)) {
     return valueToBigNumber('-1'); // Invalid number
   }
 
-  return valueToBigNumber(request.collateralBalanceETH)
+  return valueToBigNumber(request.collateralBalance)
     .multipliedBy(request.currentLiquidationThreshold)
     .shiftedBy(LTV_PRECISION * -1)
-    .div(request.borrowBalanceETH);
+    .div(request.borrowBalance);
 }
 
 interface HealthFactorFromBalanceBigUnitsRequest {
-  collateralBalanceETH: BigNumberValue;
-  borrowBalanceETH: BigNumberValue;
+  collateralBalance: BigNumberValue;
+  borrowBalance: BigNumberValue;
   currentLiquidationThreshold: BigNumberValue;
 }
 export function calculateHealthFactorFromBalancesBigUnits(
   request: HealthFactorFromBalanceBigUnitsRequest,
 ): BigNumber {
   return calculateHealthFactorFromBalances({
-    collateralBalanceETH: request.collateralBalanceETH,
-    borrowBalanceETH: request.borrowBalanceETH,
+    collateralBalance: request.collateralBalance,
+    borrowBalance: request.borrowBalance,
     currentLiquidationThreshold: valueToBigNumber(
       request.currentLiquidationThreshold,
     )
@@ -185,26 +185,24 @@ export function calculateHealthFactorFromBalancesBigUnits(
   });
 }
 
-interface AvailableBorrowsETHRequest {
-  collateralBalanceETH: BigNumberValue;
-  borrowBalanceETH: BigNumberValue;
+interface AvailableBorrowsRequest {
+  collateralBalance: BigNumberValue;
+  borrowBalance: BigNumberValue;
   currentLtv: BigNumberValue;
 }
 
-export function calculateAvailableBorrowsETH(
-  request: AvailableBorrowsETHRequest,
+export function calculateAvailableBorrows(
+  request: AvailableBorrowsRequest,
 ): BigNumber {
   if (valueToZDBigNumber(request.currentLtv).eq(0)) {
     return valueToZDBigNumber('0');
   }
 
-  const availableBorrowsETH = valueToZDBigNumber(request.collateralBalanceETH)
+  const availableBorrows = valueToZDBigNumber(request.collateralBalance)
     .multipliedBy(request.currentLtv)
     .shiftedBy(LTV_PRECISION * -1)
-    .minus(request.borrowBalanceETH);
-  return availableBorrowsETH.gt('0')
-    ? availableBorrowsETH
-    : valueToZDBigNumber('0');
+    .minus(request.borrowBalance);
+  return availableBorrows.gt('0') ? availableBorrows : valueToZDBigNumber('0');
 }
 
 interface EthAndUsdBalanceRequest {

@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { BigNumberValue } from '../../bignumber';
 import { USD_DECIMALS } from '../../constants';
 import {
-  calculateAvailableBorrowsETH,
+  calculateAvailableBorrows,
   calculateHealthFactorFromBalances,
 } from '../../pool-math';
 import { calculateUserReserveTotals } from './calculate-user-reserve-totals';
@@ -52,16 +52,16 @@ export function generateRawUserSummary(
     totalLiquidityETH,
     totalCollateralETH,
     totalBorrowsETH,
-    availableBorrowsETH: calculateAvailableBorrowsETH({
-      collateralBalanceETH: totalCollateralETH,
-      borrowBalanceETH: totalBorrowsETH,
+    availableBorrowsETH: calculateAvailableBorrows({
+      collateralBalance: totalCollateralETH,
+      borrowBalance: totalBorrowsETH,
       currentLtv,
     }),
     currentLoanToValue: currentLtv,
     currentLiquidationThreshold,
     healthFactor: calculateHealthFactorFromBalances({
-      collateralBalanceETH: totalCollateralETH,
-      borrowBalanceETH: totalBorrowsETH,
+      collateralBalance: totalCollateralETH,
+      borrowBalance: totalBorrowsETH,
       currentLiquidationThreshold,
     }),
   };

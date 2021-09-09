@@ -7,7 +7,7 @@ import {
   getCompoundedStableBalance,
   calculateHealthFactorFromBalances,
   calculateHealthFactorFromBalancesBigUnits,
-  calculateAvailableBorrowsETH,
+  calculateAvailableBorrows,
   getEthAndUsdBalance,
 } from './pool-math';
 
@@ -111,8 +111,8 @@ describe('pool math', () => {
 
   it('should calculate health factor', () => {
     const minHealthFactorRequest = {
-      collateralBalanceETH: 100000000000000000,
-      borrowBalanceETH: 50000000000000000,
+      collateralBalance: 100000000000000000,
+      borrowBalance: 50000000000000000,
       currentLiquidationThreshold: 5000,
     };
     const minHealthFactor = calculateHealthFactorFromBalances(
@@ -120,8 +120,8 @@ describe('pool math', () => {
     );
     expect(minHealthFactor.toFixed()).toEqual('1');
     const healthFactorRequest = {
-      collateralBalanceETH: 100000000000000000,
-      borrowBalanceETH: 30000000000000000,
+      collateralBalance: 100000000000000000,
+      borrowBalance: 30000000000000000,
       currentLiquidationThreshold: 5000,
     };
     const healthFactor = calculateHealthFactorFromBalances(healthFactorRequest);
@@ -130,8 +130,8 @@ describe('pool math', () => {
 
   it('should return -1 health factor if borrowBalance is 0', () => {
     const healthFactorRequest = {
-      collateralBalanceETH: 100000000000000000,
-      borrowBalanceETH: 0,
+      collateralBalance: 100000000000000000,
+      borrowBalance: 0,
       currentLiquidationThreshold: 5000,
     };
     const healthFactor = calculateHealthFactorFromBalances(healthFactorRequest);
@@ -140,8 +140,8 @@ describe('pool math', () => {
 
   it('should calculate big unit health factor', () => {
     const minHealthFactorRequest = {
-      collateralBalanceETH: 100000000000000000,
-      borrowBalanceETH: 50000000000000000,
+      collateralBalance: 100000000000000000,
+      borrowBalance: 50000000000000000,
       currentLiquidationThreshold: 5000,
     };
     const minHealthFactor = calculateHealthFactorFromBalancesBigUnits(
@@ -149,8 +149,8 @@ describe('pool math', () => {
     );
     expect(minHealthFactor.toFixed()).toEqual('10000');
     const healthFactorRequest = {
-      collateralBalanceETH: 100000000000000000,
-      borrowBalanceETH: 30000000000000000,
+      collateralBalance: 100000000000000000,
+      borrowBalance: 30000000000000000,
       currentLiquidationThreshold: 5000,
     };
     const healthFactor = calculateHealthFactorFromBalancesBigUnits(
@@ -161,34 +161,30 @@ describe('pool math', () => {
 
   it('should calculate availableBorrows', () => {
     const availableBorrowsMaxedRequest = {
-      collateralBalanceETH: 1000000000000000000,
-      borrowBalanceETH: 50000000000000000,
+      collateralBalance: 1000000000000000000,
+      borrowBalance: 50000000000000000,
       currentLtv: 0.5,
     };
-    const availableBorrowsMaxed = calculateAvailableBorrowsETH(
+    const availableBorrowsMaxed = calculateAvailableBorrows(
       availableBorrowsMaxedRequest,
     );
     expect(availableBorrowsMaxed.toFixed()).toEqual('0');
     const availableBorrowsRequest = {
-      collateralBalanceETH: 1000000000000000000,
-      borrowBalanceETH: 30000000000000000,
+      collateralBalance: 1000000000000000000,
+      borrowBalance: 30000000000000000,
       currentLtv: 0.5,
     };
-    const availableBorrows = calculateAvailableBorrowsETH(
-      availableBorrowsRequest,
-    );
+    const availableBorrows = calculateAvailableBorrows(availableBorrowsRequest);
     expect(availableBorrows.toFixed()).toEqual('0');
   });
 
   it('should return availableBorrows = 0 if currentLtv = 0', () => {
     const availableBorrowsRequest = {
-      collateralBalanceETH: 1000000000000000000,
-      borrowBalanceETH: 50000000000000000,
+      collateralBalance: 1000000000000000000,
+      borrowBalance: 50000000000000000,
       currentLtv: 0,
     };
-    const availableBorrows = calculateAvailableBorrowsETH(
-      availableBorrowsRequest,
-    );
+    const availableBorrows = calculateAvailableBorrows(availableBorrowsRequest);
     expect(availableBorrows.toFixed()).toEqual('0');
   });
 
