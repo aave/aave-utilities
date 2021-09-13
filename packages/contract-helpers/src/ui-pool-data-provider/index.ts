@@ -10,14 +10,14 @@ import {
 
 export interface UiPoolDataProviderContext {
   uiPoolDataProviderAddress: string;
-  lendingPoolAddress: string;
+  lendingPoolAddressProvider: string;
   provider: providers.Provider;
 }
 
 export class UiPoolDataProvider {
   private readonly _contract: ContractContext;
 
-  private readonly _lendingPoolAddress: string;
+  private readonly _lendingPoolAddressProvider: string;
 
   /**
    * Constructor
@@ -28,11 +28,11 @@ export class UiPoolDataProvider {
       throw new Error('contract address is not valid');
     }
 
-    if (!isAddress(context.lendingPoolAddress)) {
+    if (!isAddress(context.lendingPoolAddressProvider)) {
       throw new Error('Lending pool address is not valid');
     }
 
-    this._lendingPoolAddress = context.lendingPoolAddress;
+    this._lendingPoolAddressProvider = context.lendingPoolAddressProvider;
 
     this._contract = (new ethers.Contract(
       context.uiPoolDataProviderAddress,
@@ -45,14 +45,16 @@ export class UiPoolDataProvider {
    * Get the underlying asset address for each lending pool reserve
    */
   public async getReservesList(): Promise<string[]> {
-    return this._contract.getReservesList(this._lendingPoolAddress);
+    return this._contract.getReservesList(this._lendingPoolAddressProvider);
   }
 
   /**
    * Get data for each lending pool reserve
    */
   public async getReserves(): Promise<ReserveDataResponse[]> {
-    return this._contract.getSimpleReservesData(this._lendingPoolAddress);
+    return this._contract.getSimpleReservesData(
+      this._lendingPoolAddressProvider,
+    );
   }
 
   /**
@@ -65,7 +67,10 @@ export class UiPoolDataProvider {
       throw new Error('User address is not a valid ethereum address');
     }
 
-    return this._contract.getUserReservesData(this._lendingPoolAddress, user);
+    return this._contract.getUserReservesData(
+      this._lendingPoolAddressProvider,
+      user,
+    );
   }
 
   /**
@@ -76,6 +81,9 @@ export class UiPoolDataProvider {
       throw new Error('User address is not a valid ethereum address');
     }
 
-    return this._contract.getReservesData(this._lendingPoolAddress, user);
+    return this._contract.getReservesData(
+      this._lendingPoolAddressProvider,
+      user,
+    );
   }
 }

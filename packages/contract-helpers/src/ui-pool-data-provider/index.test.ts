@@ -8,7 +8,7 @@ describe('UiPoolDataProvider', () => {
   const createValidInstance = () => {
     const instance = new UiPoolDataProvider({
       uiPoolDataProviderAddress: mockValidEthereumAddress,
-      lendingPoolAddress: mockValidEthereumAddress,
+      lendingPoolAddressProvider: mockValidEthereumAddress,
       provider: new providers.JsonRpcProvider(),
     });
 
@@ -29,7 +29,7 @@ describe('UiPoolDataProvider', () => {
         () =>
           new UiPoolDataProvider({
             uiPoolDataProviderAddress: mockInvalidEthereumAddress,
-            lendingPoolAddress: mockValidEthereumAddress,
+            lendingPoolAddressProvider: mockValidEthereumAddress,
             provider: new providers.JsonRpcProvider(),
           }),
       ).toThrowError('contract address is not valid');
@@ -40,7 +40,7 @@ describe('UiPoolDataProvider', () => {
         () =>
           new UiPoolDataProvider({
             uiPoolDataProviderAddress: mockValidEthereumAddress,
-            lendingPoolAddress: mockInvalidEthereumAddress,
+            lendingPoolAddressProvider: mockInvalidEthereumAddress,
             provider: new providers.JsonRpcProvider(),
           }),
       ).toThrowError('Lending pool address is not valid');

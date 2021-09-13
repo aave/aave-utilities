@@ -120,10 +120,10 @@ export interface UiPoolDataProvider {
    * Constant: true
    * StateMutability: view
    * Type: function
-   * @param provider Type: address, Indexed: false
+   * @param lendingPoolAddressProvider Type: address, Indexed: false
    */
   getReservesList(
-    provider: string,
+    lendingPoolAddressProvider: string,
     overrides?: ContractCallOverrides,
   ): Promise<string[]>;
   /**
@@ -131,10 +131,10 @@ export interface UiPoolDataProvider {
    * Constant: true
    * StateMutability: view
    * Type: function
-   * @param provider Type: address, Indexed: false
+   * @param lendingPoolAddressProvider Type: address, Indexed: false
    */
   getSimpleReservesData(
-    provider: string,
+    lendingPoolAddressProvider: string,
     overrides?: ContractCallOverrides,
   ): Promise<ReserveDataResponse[]>;
 
@@ -143,11 +143,11 @@ export interface UiPoolDataProvider {
    * Constant: true
    * StateMutability: view
    * Type: function
-   * @param provider Type: address, Indexed: false
+   * @param lendingPoolAddressProvider Type: address, Indexed: false
    * @param user Type: address, Indexed: false
    */
   getUserReservesData(
-    provider: string,
+    lendingPoolAddressProvider: string,
     user: string,
     overrides?: ContractCallOverrides,
   ): Promise<UserReserveDataResponse[]>;
@@ -157,11 +157,11 @@ export interface UiPoolDataProvider {
    * Constant: true
    * StateMutability: view
    * Type: function
-   * @param provider Type: address, Indexed: false
+   * @param lendingPoolAddressProvider Type: address, Indexed: false
    * @param user Type: address, Indexed: false
    */
   getReservesData(
-    provider: string,
+    lendingPoolAddresslendingPoolAddressProvider: string,
     user: string,
     overrides?: ContractCallOverrides,
   ): Promise<AllReserveDataResponse>;
