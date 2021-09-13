@@ -16,14 +16,14 @@ export {
 
 export interface UiIncentiveDataProviderContext {
   incentiveDataProviderAddress: string;
-  lendingPoolAddress: string;
+  lendingPoolAddressProvider: string;
   provider: providers.Provider;
 }
 
 export class UiIncentiveDataProvider {
   private readonly _contract: ContractContext;
 
-  private readonly _lendingPoolAddress: string;
+  private readonly _lendingPoolAddressProvider: string;
 
   /**
    * Constructor
@@ -34,11 +34,11 @@ export class UiIncentiveDataProvider {
       throw new Error('contract address is not valid');
     }
 
-    if (!isAddress(context.lendingPoolAddress)) {
+    if (!isAddress(context.lendingPoolAddressProvider)) {
       throw new Error('Lending pool address is not valid');
     }
 
-    this._lendingPoolAddress = context.lendingPoolAddress;
+    this._lendingPoolAddressProvider = context.lendingPoolAddressProvider;
 
     this._contract = (new ethers.Contract(
       context.incentiveDataProviderAddress,
@@ -59,7 +59,7 @@ export class UiIncentiveDataProvider {
     }
 
     return this._contract.getFullReservesIncentiveData(
-      this._lendingPoolAddress,
+      this._lendingPoolAddressProvider,
       user,
     );
   }
@@ -70,7 +70,7 @@ export class UiIncentiveDataProvider {
   public async getReservesIncentives(): Promise<
     AggregatedreserveincentivedataResponse[]
   > {
-    return this._contract.getReservesIncentivesData(this._lendingPoolAddress);
+    return this._contract.getReservesIncentivesData(this._lendingPoolAddressProvider);
   }
 
   /**
@@ -85,7 +85,7 @@ export class UiIncentiveDataProvider {
     }
 
     return this._contract.getUserReservesIncentivesData(
-      this._lendingPoolAddress,
+      this._lendingPoolAddressProvider,
       user,
     );
   }
