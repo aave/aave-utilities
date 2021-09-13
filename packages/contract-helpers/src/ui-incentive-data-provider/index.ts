@@ -1,7 +1,7 @@
 import { providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
+import { UiIncentiveDataProvider as UiIncentiveDataProviderContract } from './typechain/UiIncentiveDataProvider';
 import { UiIncentiveDataProviderFactory } from './typechain/UiIncentiveDataProviderFactory';
-import { UiIncentiveDataProvider as UiIncentiveDataProviderContract } from './typechain/UiIncentiveDataProvider'
 import {
   FullReservesIncentiveDataResponse,
   ReserveIncentiveDataResponse,
@@ -39,7 +39,10 @@ export class UiIncentiveDataProvider {
 
     this._lendingPoolAddressProvider = context.lendingPoolAddressProvider;
 
-    this._contract = UiIncentiveDataProviderFactory.connect(context.incentiveDataProviderAddress, context.provider);
+    this._contract = UiIncentiveDataProviderFactory.connect(
+      context.incentiveDataProviderAddress,
+      context.provider,
+    );
   }
 
   /**
@@ -63,9 +66,11 @@ export class UiIncentiveDataProvider {
    *  Get the reserve incentive data for the lending pool
    */
   public async getReservesIncentives(): Promise<
-  ReserveIncentiveDataResponse[]
+    ReserveIncentiveDataResponse[]
   > {
-    return this._contract.getReservesIncentivesData(this._lendingPoolAddressProvider);
+    return this._contract.getReservesIncentivesData(
+      this._lendingPoolAddressProvider,
+    );
   }
 
   /**

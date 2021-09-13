@@ -1,8 +1,6 @@
-import {
-  BigNumber,
-} from "ethers";
+import { BigNumber } from 'ethers';
 
-export type IncentiveData = {
+export interface IncentiveData {
   emissionPerSecond: BigNumber;
   incentivesLastUpdateTimestamp: BigNumber;
   tokenIncentivesIndex: BigNumber;
@@ -15,9 +13,9 @@ export type IncentiveData = {
   3: BigNumber;
   4: string;
   5: string;
-};
+}
 
-export type IncentiveUserData = {
+export interface IncentiveUserData {
   tokenincentivesUserIndex: BigNumber;
   userUnclaimedRewards: BigNumber;
   tokenAddress: string;
@@ -26,9 +24,9 @@ export type IncentiveUserData = {
   1: BigNumber;
   2: string;
   3: string;
-};
+}
 
-export type ReserveIncentiveDataResponse = {
+export interface ReserveIncentiveDataResponse {
   underlyingAsset: string;
   aIncentiveData: IncentiveData;
   vIncentiveData: IncentiveData;
@@ -37,9 +35,9 @@ export type ReserveIncentiveDataResponse = {
   1: IncentiveData;
   2: IncentiveData;
   3: IncentiveData;
-};
+}
 
-export type UserReserveIncentiveDataResponse = {
+export interface UserReserveIncentiveDataResponse {
   underlyingAsset: string;
   aTokenIncentivesUserData: IncentiveUserData;
   vTokenIncentivesUserData: IncentiveUserData;
@@ -48,9 +46,9 @@ export type UserReserveIncentiveDataResponse = {
   1: IncentiveUserData;
   2: IncentiveUserData;
   3: IncentiveUserData;
-};
+}
 
-export type FullReservesIncentiveDataResponse = {
+export interface FullReservesIncentiveDataResponse {
   0: ReserveIncentiveDataResponse[];
   1: UserReserveIncentiveDataResponse[];
-};
+}
