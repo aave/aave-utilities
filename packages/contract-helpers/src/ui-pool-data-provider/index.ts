@@ -1,12 +1,12 @@
-import { ethers, providers } from 'ethers';
+import { providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
-import { abi } from './abi';
+import { UiPoolDataProvider as UiPoolDataProviderContract } from './typechain/UiPoolDataProvider';
+import { UiPoolDataProviderFactory } from './typechain/UiPoolDataProviderFactory';
 import {
   ReserveDataResponse,
   UserReserveDataResponse,
   AllReserveDataResponse,
-  ContractContext,
-} from './types/UiPoolDataProvider';
+} from './types/UiPoolDataProviderTypes';
 
 export interface UiPoolDataProviderContext {
   uiPoolDataProviderAddress: string;
@@ -15,7 +15,7 @@ export interface UiPoolDataProviderContext {
 }
 
 export class UiPoolDataProvider {
-  private readonly _contract: ContractContext;
+  private readonly _contract: UiPoolDataProviderContract;
 
   private readonly _lendingPoolAddressProvider: string;
 
@@ -34,26 +34,27 @@ export class UiPoolDataProvider {
 
     this._lendingPoolAddressProvider = context.lendingPoolAddressProvider;
 
-    this._contract = (new ethers.Contract(
+    this._contract = UiPoolDataProviderFactory.connect(
       context.uiPoolDataProviderAddress,
-      abi,
       context.provider,
-    ) as unknown) as ContractContext;
+    );
   }
 
   /**
    * Get the underlying asset address for each lending pool reserve
    */
   public async getReservesList(): Promise<string[]> {
-    return this._contract.getReservesList(this._lendingPoolAddressProvider);
+    return Promise.all(
+      this._contract.getReservesList(this._lendingPoolAddressProvider),
+    );
   }
 
   /**
    * Get data for each lending pool reserve
    */
   public async getReserves(): Promise<ReserveDataResponse[]> {
-    return this._contract.getSimpleReservesData(
-      this._lendingPoolAddressProvider,
+    return Promise.all(
+      this._contract.getSimpleReservesData(this._lendingPoolAddressProvider),
     );
   }
 
@@ -67,9 +68,11 @@ export class UiPoolDataProvider {
       throw new Error('User address is not a valid ethereum address');
     }
 
-    return this._contract.getUserReservesData(
-      this._lendingPoolAddressProvider,
-      user,
+    return Promise.all(
+      this._contract.getUserReservesData(
+        this._lendingPoolAddressProvider,
+        user,
+      ),
     );
   }
 
