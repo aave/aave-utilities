@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { BigNumberValue, normalize } from '../../bignumber';
-import { ETH_DECIMALS, LTV_PRECISION, USD_DECIMALS } from '../../constants';
+import { LTV_PRECISION, USD_DECIMALS } from '../../constants';
 import { formatUserReserve } from './format-user-reserve';
 import { generateRawUserSummary } from './generate-raw-user-summary';
 import {
@@ -64,7 +64,8 @@ export interface ComputedUserReserve extends RawUserReserveData {
 
 export interface FormatUserSummaryRequest {
   rawUserReserves: RawUserReserveData[];
-  usdPriceEth: BigNumberValue;
+  marketReferenceCurrencyUsdPrice: BigNumberValue;
+  marketReferenceCurrencyDecimals: number;
   currentTimestamp: number;
 }
 
@@ -94,24 +95,21 @@ function sortBySymbol(reserves: ComputedUserReserve[]): ComputedUserReserve[] {
   return reserves;
 }
 
-function normalizeETH(value: BigNumber): string {
-  return normalize(value, ETH_DECIMALS);
-}
-
 function normalizeUSD(value: BigNumber): string {
   return normalize(value, USD_DECIMALS);
 }
 
 export function formatUserSummary({
   currentTimestamp,
-  usdPriceEth,
+  marketReferenceCurrencyUsdPrice,
+  marketReferenceCurrencyDecimals,
   rawUserReserves,
 }: FormatUserSummaryRequest): FormatUserSummaryResponse {
   const computedUserReserves: UserReserveSummaryResponse[] = rawUserReserves.map(
     userReserve =>
       generateUserReserveSummary({
         userReserve,
-        usdPriceEth,
+        marketReferenceCurrencyUsdPrice,
         currentTimestamp,
       }),
   );
@@ -126,18 +124,30 @@ export function formatUserSummary({
 
   const userData = generateRawUserSummary({
     userReserves: computedUserReserves,
-    usdPriceEth,
+    marketReferenceCurrencyUsdPrice,
   });
 
   return {
     userReservesData: sortedUserReserves,
-    totalLiquidityETH: normalizeETH(userData.totalLiquidityETH),
+    totalLiquidityETH: normalize(
+      userData.totalLiquidityETH,
+      marketReferenceCurrencyDecimals,
+    ),
     totalLiquidityUSD: normalizeUSD(userData.totalLiquidityUSD),
-    totalCollateralETH: normalizeETH(userData.totalCollateralETH),
+    totalCollateralETH: normalize(
+      userData.totalCollateralETH,
+      marketReferenceCurrencyDecimals,
+    ),
     totalCollateralUSD: normalizeUSD(userData.totalCollateralUSD),
-    totalBorrowsETH: normalizeETH(userData.totalBorrowsETH),
+    totalBorrowsETH: normalize(
+      userData.totalBorrowsETH,
+      marketReferenceCurrencyDecimals,
+    ),
     totalBorrowsUSD: normalizeUSD(userData.totalBorrowsUSD),
-    availableBorrowsETH: normalizeETH(userData.availableBorrowsETH),
+    availableBorrowsETH: normalize(
+      userData.availableBorrowsETH,
+      marketReferenceCurrencyDecimals,
+    ),
     currentLoanToValue: normalize(userData.currentLoanToValue, LTV_PRECISION),
     currentLiquidationThreshold: normalize(
       userData.currentLiquidationThreshold,
