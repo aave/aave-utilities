@@ -1,13 +1,12 @@
 import BigNumber from 'bignumber.js';
 
-import { valueToZDBigNumber, normalize } from '../../bignumber';
+import { valueToZDBigNumber } from '../../bignumber';
 
 export interface CalculateAccruedIncentivesRequest {
   principalUserBalance: BigNumber;
   reserveIndex: BigNumber;
   userIndex: BigNumber;
   precision: number;
-  rewardTokenDecimals: number;
   reserveIndexTimestamp: number;
   emissionPerSecond: BigNumber;
   totalSupply: BigNumber;
@@ -15,10 +14,9 @@ export interface CalculateAccruedIncentivesRequest {
   emissionEndTimestamp: number;
 }
 
-// TO-DO: Convert this function to return BigNumber instead of string
 export function calculateAccruedIncentives(
   request: CalculateAccruedIncentivesRequest,
-): string {
+): BigNumber {
   const actualCurrentTimestamp =
     request.currentTimestamp > request.emissionEndTimestamp
       ? request.emissionEndTimestamp
@@ -44,5 +42,5 @@ export function calculateAccruedIncentives(
     .multipliedBy(currentReserveIndex.minus(request.userIndex))
     .shiftedBy(request.precision * -1);
 
-  return normalize(incentives, request.rewardTokenDecimals);
+  return incentives;
 }

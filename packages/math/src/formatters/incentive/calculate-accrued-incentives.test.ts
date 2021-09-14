@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { normalize } from '../../bignumber';
 import { calculateSupplies, SuppliesRequest } from '../user/calculate-supplies';
 import {
   calculateAccruedIncentives,
@@ -30,7 +31,6 @@ describe('calculateAccruedIncentives', () => {
     reserveIndex: new BigNumber('14677148010356546110472348'),
     userIndex: new BigNumber('8399742855606485876888576'),
     precision: 18,
-    rewardTokenDecimals: 18,
     reserveIndexTimestamp: 1629942075,
     emissionPerSecond: new BigNumber('4629629629629629'),
     totalSupply: totalLiquidity,
@@ -43,7 +43,6 @@ describe('calculateAccruedIncentives', () => {
     reserveIndex: new BigNumber('19667478596034441389278095'),
     userIndex: new BigNumber('0'),
     precision: 18,
-    rewardTokenDecimals: 18,
     reserveIndexTimestamp: 1629942075,
     emissionPerSecond: new BigNumber('4629629629629629'),
     totalSupply: totalVariableDebt,
@@ -56,7 +55,6 @@ describe('calculateAccruedIncentives', () => {
     reserveIndex: new BigNumber('0'),
     userIndex: new BigNumber('0'),
     precision: 18,
-    rewardTokenDecimals: 18,
     reserveIndexTimestamp: 1629942075,
     emissionPerSecond: new BigNumber('0'),
     totalSupply: totalStableDebt,
@@ -66,21 +64,23 @@ describe('calculateAccruedIncentives', () => {
 
   it('should calculate the correct deposit rewards', () => {
     const result = calculateAccruedIncentives(depositRewardsRequest);
-    expect(result).toBe('0.01532402971873275309');
+    expect(normalize(result, 18)).toBe('0.01532402971873275309');
   });
   it('should calculate the correct variable debt rewards', () => {
     const result = calculateAccruedIncentives(variableDebtRewardsRequest);
-    expect(result).toBe('0.0010288957777515011');
+    expect(normalize(result, 18)).toBe('0.0010288957777515011');
   });
   it('should calculate the correct stable debt rewards', () => {
     const result = calculateAccruedIncentives(stableDebtRewardsRequest);
-    expect(result).toBe('0');
+    expect(normalize(result, 18)).toBe('0');
   });
   it('should default to reserveIndex if rewards emission is 0', () => {
     const result = calculateAccruedIncentives({
       ...stableDebtRewardsRequest,
       emissionEndTimestamp: 1,
     });
-    expect(result).toBe(stableDebtRewardsRequest.reserveIndex.toFixed());
+    expect(normalize(result, 18)).toBe(
+      stableDebtRewardsRequest.reserveIndex.toFixed(),
+    );
   });
 });
