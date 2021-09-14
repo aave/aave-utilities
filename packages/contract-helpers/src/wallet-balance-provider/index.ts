@@ -1,7 +1,7 @@
 import { providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
-import { WalletBalanceProvider as WalletBalanceProviderContract } from './types/WalletBalanceProvider';
-import { WalletBalanceProviderFactory } from './types/WalletBalanceProviderFactory';
+import { WalletBalanceProvider as WalletBalanceProviderContract } from './typechain/WalletBalanceProvider';
+import { WalletBalanceProviderFactory } from './typechain/WalletBalanceProviderFactory';
 import {
   BalanceOfResponse,
   BatchBalanceOfResponse,

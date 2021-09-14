@@ -1,7 +1,7 @@
 import { providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
-import { UiIncentiveDataProvider as UiIncentiveDataProviderContract } from './types/UiIncentiveDataProvider';
-import { UiIncentiveDataProviderFactory } from './types/UiIncentiveDataProviderFactory';
+import { UiIncentiveDataProvider as UiIncentiveDataProviderContract } from './typechain/UiIncentiveDataProvider';
+import { UiIncentiveDataProviderFactory } from './typechain/UiIncentiveDataProviderFactory';
 import {
   FullReservesIncentiveDataResponse,
   ReserveIncentiveDataResponse,
