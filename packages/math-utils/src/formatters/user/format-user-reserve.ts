@@ -16,11 +16,10 @@ export interface FormatUserReserveResponse {
   reserve: ComputedUserReserve;
 }
 
-export function formatUserReserve(
-  request: FormatUserReserveRequest,
-): ComputedUserReserve {
-  const rawUserReserve = request.reserve;
-  const userReserve = rawUserReserve.userReserve;
+export function formatUserReserve({
+  reserve: _reserve,
+}: FormatUserReserveRequest): ComputedUserReserve {
+  const userReserve = _reserve.userReserve;
   const reserve = userReserve.reserve;
   const reserveDecimals = reserve.decimals;
 
@@ -45,35 +44,26 @@ export function formatUserReserve(
       userReserve.variableBorrowIndex,
       RAY_DECIMALS,
     ),
-    underlyingBalance: normalize(
-      rawUserReserve.underlyingBalance,
-      reserveDecimals,
-    ),
+    underlyingBalance: normalize(_reserve.underlyingBalance, reserveDecimals),
     underlyingBalanceETH: normalize(
-      rawUserReserve.underlyingBalanceETH,
+      _reserve.underlyingBalanceETH,
       ETH_DECIMALS,
     ),
     underlyingBalanceUSD: normalize(
-      rawUserReserve.underlyingBalanceUSD,
+      _reserve.underlyingBalanceUSD,
       USD_DECIMALS,
     ),
-    stableBorrows: normalizeWithReserve(rawUserReserve.stableBorrows),
-    stableBorrowsETH: normalize(rawUserReserve.stableBorrowsETH, ETH_DECIMALS),
-    stableBorrowsUSD: normalize(rawUserReserve.stableBorrowsUSD, USD_DECIMALS),
-    variableBorrows: normalizeWithReserve(rawUserReserve.variableBorrows),
-    variableBorrowsETH: normalize(
-      rawUserReserve.variableBorrowsETH,
-      ETH_DECIMALS,
-    ),
-    variableBorrowsUSD: normalize(
-      rawUserReserve.variableBorrowsUSD,
-      USD_DECIMALS,
-    ),
-    totalBorrows: normalizeWithReserve(rawUserReserve.totalBorrows),
-    totalBorrowsETH: normalize(rawUserReserve.totalBorrowsETH, ETH_DECIMALS),
-    totalBorrowsUSD: normalize(rawUserReserve.totalBorrowsUSD, USD_DECIMALS),
-    totalLiquidity: normalizeWithReserve(rawUserReserve.totalLiquidity),
-    totalStableDebt: normalizeWithReserve(rawUserReserve.totalStableDebt),
-    totalVariableDebt: normalizeWithReserve(rawUserReserve.totalVariableDebt),
+    stableBorrows: normalizeWithReserve(_reserve.stableBorrows),
+    stableBorrowsETH: normalize(_reserve.stableBorrowsETH, ETH_DECIMALS),
+    stableBorrowsUSD: normalize(_reserve.stableBorrowsUSD, USD_DECIMALS),
+    variableBorrows: normalizeWithReserve(_reserve.variableBorrows),
+    variableBorrowsETH: normalize(_reserve.variableBorrowsETH, ETH_DECIMALS),
+    variableBorrowsUSD: normalize(_reserve.variableBorrowsUSD, USD_DECIMALS),
+    totalBorrows: normalizeWithReserve(_reserve.totalBorrows),
+    totalBorrowsETH: normalize(_reserve.totalBorrowsETH, ETH_DECIMALS),
+    totalBorrowsUSD: normalize(_reserve.totalBorrowsUSD, USD_DECIMALS),
+    totalLiquidity: normalizeWithReserve(_reserve.totalLiquidity),
+    totalStableDebt: normalizeWithReserve(_reserve.totalStableDebt),
+    totalVariableDebt: normalizeWithReserve(_reserve.totalVariableDebt),
   };
 }

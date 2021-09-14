@@ -36,7 +36,8 @@
           "order": "asc"
         }
       }
-    ]
+    ],
+    "capitalized-comments": "off"
   },
   "overrides": [
     {

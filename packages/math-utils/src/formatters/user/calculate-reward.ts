@@ -15,31 +15,42 @@ export interface CalculateRewardRequest {
   emissionEndTimestamp: number;
 }
 
-export function calculateReward(request: CalculateRewardRequest): string {
+export function calculateReward({
+  principalUserBalance,
+  reserveIndex,
+  userIndex,
+  precision,
+  rewardTokenDecimals,
+  reserveIndexTimestamp,
+  emissionPerSecond,
+  totalSupply,
+  currentTimestamp,
+  emissionEndTimestamp,
+}: CalculateRewardRequest): string {
   const actualCurrentTimestamp =
-    request.currentTimestamp > request.emissionEndTimestamp
-      ? request.emissionEndTimestamp
-      : request.currentTimestamp;
+    currentTimestamp > emissionEndTimestamp
+      ? emissionEndTimestamp
+      : currentTimestamp;
 
-  const timeDelta = actualCurrentTimestamp - request.reserveIndexTimestamp;
+  const timeDelta = actualCurrentTimestamp - reserveIndexTimestamp;
 
   let currentReserveIndex;
   if (
-    request.reserveIndexTimestamp === Number(request.currentTimestamp) ||
-    request.reserveIndexTimestamp >= request.emissionEndTimestamp
+    reserveIndexTimestamp === Number(currentTimestamp) ||
+    reserveIndexTimestamp >= emissionEndTimestamp
   ) {
-    currentReserveIndex = valueToZDBigNumber(request.reserveIndex);
+    currentReserveIndex = valueToZDBigNumber(reserveIndex);
   } else {
-    currentReserveIndex = valueToZDBigNumber(request.emissionPerSecond)
+    currentReserveIndex = valueToZDBigNumber(emissionPerSecond)
       .multipliedBy(timeDelta)
-      .shiftedBy(request.precision)
-      .dividedBy(request.totalSupply)
-      .plus(request.reserveIndex);
+      .shiftedBy(precision)
+      .dividedBy(totalSupply)
+      .plus(reserveIndex);
   }
 
-  const reward = valueToZDBigNumber(request.principalUserBalance)
-    .multipliedBy(currentReserveIndex.minus(request.userIndex))
-    .shiftedBy(request.precision * -1);
+  const reward = valueToZDBigNumber(principalUserBalance)
+    .multipliedBy(currentReserveIndex.minus(userIndex))
+    .shiftedBy(precision * -1);
 
-  return normalize(reward, request.rewardTokenDecimals);
+  return normalize(reward, rewardTokenDecimals);
 }
