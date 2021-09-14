@@ -195,7 +195,7 @@ describe('pool math', () => {
   it('should convert balances to ETH and USD', () => {
     const balanceRequest = {
       balance: 10000000000000000000,
-      priceInEth: 1,
+      priceInMarketReferenceCurrency: 1,
       decimals: 18,
       usdPriceMarketReferenceCurrency: 2500,
     };

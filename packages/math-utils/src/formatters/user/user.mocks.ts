@@ -17,7 +17,7 @@ export const usdcUserReserve: RawUserReserveData = {
     reserveLiquidationBonus: '10500',
     lastUpdateTimestamp: 1629942075,
     price: {
-      priceInEth: '310220648226635',
+      priceInMarketReferenceCurrency: '310220648226635',
     },
     reserveFactor: '1000',
     baseLTVasCollateral: '8000',
@@ -53,7 +53,7 @@ export const xSushiUserReserve: RawUserReserveData = {
     reserveLiquidationBonus: '11500',
     lastUpdateTimestamp: 1629936152,
     price: {
-      priceInEth: '4461141236372503',
+      priceInMarketReferenceCurrency: '4461141236372503',
     },
     reserveFactor: '3500',
     baseLTVasCollateral: '2500',
@@ -90,7 +90,7 @@ export const ethUserReserve: RawUserReserveData = {
     lastUpdateTimestamp: 1629941871,
 
     price: {
-      priceInEth: '1000000000000000000',
+      priceInMarketReferenceCurrency: '1000000000000000000',
     },
     reserveFactor: '1000',
     baseLTVasCollateral: '8000',

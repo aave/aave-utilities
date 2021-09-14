@@ -26,7 +26,7 @@ interface RawReserveData {
   totalScaledVariableDebt: string;
   lastUpdateTimestamp: number;
   price: {
-    priceInEth: string;
+    priceInMarketReferenceCurrency: string;
   };
   id: string;
   symbol: string;

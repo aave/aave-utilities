@@ -226,7 +226,7 @@ export function calculateAvailableBorrowsETH({
 
 interface EthAndUsdBalanceRequest {
   balance: BigNumberValue;
-  priceInEth: BigNumberValue;
+  priceInMarketReferenceCurrency: BigNumberValue;
   decimals: number;
   usdPriceMarketReferenceCurrency: BigNumberValue;
 }
@@ -237,12 +237,12 @@ interface EthAndUsdBalanceResponse {
 }
 export function getEthAndUsdBalance({
   balance,
-  priceInEth,
+  priceInMarketReferenceCurrency,
   decimals,
   usdPriceMarketReferenceCurrency,
 }: EthAndUsdBalanceRequest): EthAndUsdBalanceResponse {
   const ethBalance = valueToZDBigNumber(balance)
-    .multipliedBy(priceInEth)
+    .multipliedBy(priceInMarketReferenceCurrency)
     .shiftedBy(decimals * -1);
   const usdBalance = ethBalance
     .shiftedBy(USD_DECIMALS)

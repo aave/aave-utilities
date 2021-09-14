@@ -41,7 +41,7 @@ export function generateUserReserveSummary({
 }: UserReserveSummaryRequest): UserReserveSummaryResponse {
   const poolReserve = userReserve.reserve;
   const {
-    price: { priceInEth },
+    price: { priceInMarketReferenceCurrency },
     decimals,
   } = poolReserve;
   const underlyingBalance = getLinearBalance({
@@ -56,7 +56,7 @@ export function generateUserReserveSummary({
     usdBalance: underlyingBalanceUSD,
   } = getEthAndUsdBalance({
     balance: underlyingBalance,
-    priceInEth,
+    priceInMarketReferenceCurrency,
     decimals,
     usdPriceMarketReferenceCurrency,
   });
@@ -74,7 +74,7 @@ export function generateUserReserveSummary({
     usdBalance: variableBorrowsUSD,
   } = getEthAndUsdBalance({
     balance: variableBorrows,
-    priceInEth,
+    priceInMarketReferenceCurrency,
     decimals,
     usdPriceMarketReferenceCurrency,
   });
@@ -91,7 +91,7 @@ export function generateUserReserveSummary({
     usdBalance: stableBorrowsUSD,
   } = getEthAndUsdBalance({
     balance: stableBorrows,
-    priceInEth,
+    priceInMarketReferenceCurrency,
     decimals,
     usdPriceMarketReferenceCurrency,
   });
