@@ -54,7 +54,7 @@ jobs:
           !contains(github.head_ref, 'dependabot') &&
           github.ref != 'refs/heads/master'
         run: |
-          yarn release:canary --yes --no-verify-access
+          yarn release:canary --yes --no-verify-access --dist-tag ${{ github.sha }}
       #- uses: actions/github-script@v4
       #  if: |
       #    github.event.pull_request.head.repo.full_name == github.repository &&
