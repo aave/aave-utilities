@@ -40,7 +40,6 @@ describe('generateRawUserSummary', () => {
   const rawSummary: RawUserSummaryResponse = generateRawUserSummary({
     userReserves: [rawUSDCSummary, rawXSUSHISummary, rawETHSummary],
     usdPriceEth,
-    currentTimestamp,
   });
 
   const rawUSDCSummaryModified: UserReserveSummaryResponse = generateUserReserveSummary(
@@ -66,7 +65,6 @@ describe('generateRawUserSummary', () => {
     {
       userReserves: [rawUSDCSummaryModified, rawXSUSHISummary, rawETHSummary],
       usdPriceEth,
-      currentTimestamp,
     },
   );
 
@@ -74,7 +72,6 @@ describe('generateRawUserSummary', () => {
     {
       userReserves: [rawUSDCSummary, rawXSUSHISummary, rawETHSummaryModified],
       usdPriceEth,
-      currentTimestamp,
     },
   );
 
