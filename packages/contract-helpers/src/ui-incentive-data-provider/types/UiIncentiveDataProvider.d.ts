@@ -9,47 +9,47 @@ import {
   BigNumber,
   BigNumberish,
   PopulatedTransaction,
-} from "ethers";
+} from 'ethers';
 import {
   Contract,
   ContractTransaction,
   CallOverrides,
-} from "@ethersproject/contracts";
-import { BytesLike } from "@ethersproject/bytes";
-import { Listener, Provider } from "@ethersproject/providers";
-import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
+} from '@ethersproject/contracts';
+import { BytesLike } from '@ethersproject/bytes';
+import { Listener, Provider } from '@ethersproject/providers';
+import { FunctionFragment, EventFragment, Result } from '@ethersproject/abi';
 
 interface UiIncentiveDataProviderInterface extends ethers.utils.Interface {
   functions: {
-    "getFullReservesIncentiveData(address,address)": FunctionFragment;
-    "getReservesIncentivesData(address)": FunctionFragment;
-    "getUserReservesIncentivesData(address,address)": FunctionFragment;
+    'getFullReservesIncentiveData(address,address)': FunctionFragment;
+    'getReservesIncentivesData(address)': FunctionFragment;
+    'getUserReservesIncentivesData(address,address)': FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "getFullReservesIncentiveData",
-    values: [string, string]
+    functionFragment: 'getFullReservesIncentiveData',
+    values: [string, string],
   ): string;
   encodeFunctionData(
-    functionFragment: "getReservesIncentivesData",
-    values: [string]
+    functionFragment: 'getReservesIncentivesData',
+    values: [string],
   ): string;
   encodeFunctionData(
-    functionFragment: "getUserReservesIncentivesData",
-    values: [string, string]
+    functionFragment: 'getUserReservesIncentivesData',
+    values: [string, string],
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "getFullReservesIncentiveData",
-    data: BytesLike
+    functionFragment: 'getFullReservesIncentiveData',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getReservesIncentivesData",
-    data: BytesLike
+    functionFragment: 'getReservesIncentivesData',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getUserReservesIncentivesData",
-    data: BytesLike
+    functionFragment: 'getUserReservesIncentivesData',
+    data: BytesLike,
   ): Result;
 
   events: {};
@@ -72,7 +72,7 @@ export class UiIncentiveDataProvider extends Contract {
     getFullReservesIncentiveData(
       provider: string,
       user: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<{
       0: {
         underlyingAsset: string;
@@ -228,10 +228,10 @@ export class UiIncentiveDataProvider extends Contract {
       }[];
     }>;
 
-    "getFullReservesIncentiveData(address,address)"(
+    'getFullReservesIncentiveData(address,address)'(
       provider: string,
       user: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<{
       0: {
         underlyingAsset: string;
@@ -389,7 +389,7 @@ export class UiIncentiveDataProvider extends Contract {
 
     getReservesIncentivesData(
       provider: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<{
       0: {
         underlyingAsset: string;
@@ -481,9 +481,9 @@ export class UiIncentiveDataProvider extends Contract {
       }[];
     }>;
 
-    "getReservesIncentivesData(address)"(
+    'getReservesIncentivesData(address)'(
       provider: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<{
       0: {
         underlyingAsset: string;
@@ -578,7 +578,7 @@ export class UiIncentiveDataProvider extends Contract {
     getUserReservesIncentivesData(
       provider: string,
       user: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<{
       0: {
         underlyingAsset: string;
@@ -646,10 +646,10 @@ export class UiIncentiveDataProvider extends Contract {
       }[];
     }>;
 
-    "getUserReservesIncentivesData(address,address)"(
+    'getUserReservesIncentivesData(address,address)'(
       provider: string,
       user: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<{
       0: {
         underlyingAsset: string;
@@ -721,7 +721,7 @@ export class UiIncentiveDataProvider extends Contract {
   getFullReservesIncentiveData(
     provider: string,
     user: string,
-    overrides?: CallOverrides
+    overrides?: CallOverrides,
   ): Promise<{
     0: {
       underlyingAsset: string;
@@ -877,10 +877,10 @@ export class UiIncentiveDataProvider extends Contract {
     }[];
   }>;
 
-  "getFullReservesIncentiveData(address,address)"(
+  'getFullReservesIncentiveData(address,address)'(
     provider: string,
     user: string,
-    overrides?: CallOverrides
+    overrides?: CallOverrides,
   ): Promise<{
     0: {
       underlyingAsset: string;
@@ -1038,7 +1038,7 @@ export class UiIncentiveDataProvider extends Contract {
 
   getReservesIncentivesData(
     provider: string,
-    overrides?: CallOverrides
+    overrides?: CallOverrides,
   ): Promise<
     {
       underlyingAsset: string;
@@ -1130,9 +1130,9 @@ export class UiIncentiveDataProvider extends Contract {
     }[]
   >;
 
-  "getReservesIncentivesData(address)"(
+  'getReservesIncentivesData(address)'(
     provider: string,
-    overrides?: CallOverrides
+    overrides?: CallOverrides,
   ): Promise<
     {
       underlyingAsset: string;
@@ -1227,7 +1227,7 @@ export class UiIncentiveDataProvider extends Contract {
   getUserReservesIncentivesData(
     provider: string,
     user: string,
-    overrides?: CallOverrides
+    overrides?: CallOverrides,
   ): Promise<
     {
       underlyingAsset: string;
@@ -1295,10 +1295,10 @@ export class UiIncentiveDataProvider extends Contract {
     }[]
   >;
 
-  "getUserReservesIncentivesData(address,address)"(
+  'getUserReservesIncentivesData(address,address)'(
     provider: string,
     user: string,
-    overrides?: CallOverrides
+    overrides?: CallOverrides,
   ): Promise<
     {
       underlyingAsset: string;
@@ -1370,7 +1370,7 @@ export class UiIncentiveDataProvider extends Contract {
     getFullReservesIncentiveData(
       provider: string,
       user: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<{
       0: {
         underlyingAsset: string;
@@ -1526,10 +1526,10 @@ export class UiIncentiveDataProvider extends Contract {
       }[];
     }>;
 
-    "getFullReservesIncentiveData(address,address)"(
+    'getFullReservesIncentiveData(address,address)'(
       provider: string,
       user: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<{
       0: {
         underlyingAsset: string;
@@ -1687,7 +1687,7 @@ export class UiIncentiveDataProvider extends Contract {
 
     getReservesIncentivesData(
       provider: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<
       {
         underlyingAsset: string;
@@ -1779,9 +1779,9 @@ export class UiIncentiveDataProvider extends Contract {
       }[]
     >;
 
-    "getReservesIncentivesData(address)"(
+    'getReservesIncentivesData(address)'(
       provider: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<
       {
         underlyingAsset: string;
@@ -1876,7 +1876,7 @@ export class UiIncentiveDataProvider extends Contract {
     getUserReservesIncentivesData(
       provider: string,
       user: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<
       {
         underlyingAsset: string;
@@ -1944,10 +1944,10 @@ export class UiIncentiveDataProvider extends Contract {
       }[]
     >;
 
-    "getUserReservesIncentivesData(address,address)"(
+    'getUserReservesIncentivesData(address,address)'(
       provider: string,
       user: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<
       {
         underlyingAsset: string;
@@ -2022,35 +2022,35 @@ export class UiIncentiveDataProvider extends Contract {
     getFullReservesIncentiveData(
       provider: string,
       user: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
-    "getFullReservesIncentiveData(address,address)"(
+    'getFullReservesIncentiveData(address,address)'(
       provider: string,
       user: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
     getReservesIncentivesData(
       provider: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
-    "getReservesIncentivesData(address)"(
+    'getReservesIncentivesData(address)'(
       provider: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
     getUserReservesIncentivesData(
       provider: string,
       user: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
-    "getUserReservesIncentivesData(address,address)"(
+    'getUserReservesIncentivesData(address,address)'(
       provider: string,
       user: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber>;
   };
 
@@ -2058,35 +2058,35 @@ export class UiIncentiveDataProvider extends Contract {
     getFullReservesIncentiveData(
       provider: string,
       user: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
-    "getFullReservesIncentiveData(address,address)"(
+    'getFullReservesIncentiveData(address,address)'(
       provider: string,
       user: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     getReservesIncentivesData(
       provider: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
-    "getReservesIncentivesData(address)"(
+    'getReservesIncentivesData(address)'(
       provider: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     getUserReservesIncentivesData(
       provider: string,
       user: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
-    "getUserReservesIncentivesData(address,address)"(
+    'getUserReservesIncentivesData(address,address)'(
       provider: string,
       user: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
   };
 }
