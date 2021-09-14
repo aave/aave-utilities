@@ -117,6 +117,7 @@ export function formatUserSummary({
   const formattedUserReserves = computedUserReserves.map(computedUserReserve =>
     formatUserReserve({
       reserve: computedUserReserve,
+      marketReferenceCurrencyDecimals,
     }),
   );
 

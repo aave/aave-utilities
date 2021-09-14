@@ -19,6 +19,7 @@ describe('formatUserReserve', () => {
 
   const formattedReserve: ComputedUserReserve = formatUserReserve({
     reserve: rawUSDCSummary,
+    marketReferenceCurrencyDecimals: 18,
   });
 
   it('should format a user reserve ', () => {

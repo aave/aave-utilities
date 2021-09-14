@@ -1,15 +1,11 @@
 import { BigNumberValue, normalize, valueToBigNumber } from '../../bignumber';
-import {
-  LTV_PRECISION,
-  USD_DECIMALS,
-  RAY_DECIMALS,
-  ETH_DECIMALS,
-} from '../../constants';
+import { LTV_PRECISION, USD_DECIMALS, RAY_DECIMALS } from '../../constants';
 import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
 import { ComputedUserReserve } from './index';
 
 export interface FormatUserReserveRequest {
   reserve: UserReserveSummaryResponse;
+  marketReferenceCurrencyDecimals: number;
 }
 
 export interface FormatUserReserveResponse {
@@ -18,6 +14,7 @@ export interface FormatUserReserveResponse {
 
 export function formatUserReserve({
   reserve: _reserve,
+  marketReferenceCurrencyDecimals,
 }: FormatUserReserveRequest): ComputedUserReserve {
   const userReserve = _reserve.userReserve;
   const reserve = userReserve.reserve;
@@ -47,20 +44,29 @@ export function formatUserReserve({
     underlyingBalance: normalize(_reserve.underlyingBalance, reserveDecimals),
     underlyingBalanceETH: normalize(
       _reserve.underlyingBalanceETH,
-      ETH_DECIMALS,
+      marketReferenceCurrencyDecimals,
     ),
     underlyingBalanceUSD: normalize(
       _reserve.underlyingBalanceUSD,
       USD_DECIMALS,
     ),
     stableBorrows: normalizeWithReserve(_reserve.stableBorrows),
-    stableBorrowsETH: normalize(_reserve.stableBorrowsETH, ETH_DECIMALS),
+    stableBorrowsETH: normalize(
+      _reserve.stableBorrowsETH,
+      marketReferenceCurrencyDecimals,
+    ),
     stableBorrowsUSD: normalize(_reserve.stableBorrowsUSD, USD_DECIMALS),
     variableBorrows: normalizeWithReserve(_reserve.variableBorrows),
-    variableBorrowsETH: normalize(_reserve.variableBorrowsETH, ETH_DECIMALS),
+    variableBorrowsETH: normalize(
+      _reserve.variableBorrowsETH,
+      marketReferenceCurrencyDecimals,
+    ),
     variableBorrowsUSD: normalize(_reserve.variableBorrowsUSD, USD_DECIMALS),
     totalBorrows: normalizeWithReserve(_reserve.totalBorrows),
-    totalBorrowsETH: normalize(_reserve.totalBorrowsETH, ETH_DECIMALS),
+    totalBorrowsETH: normalize(
+      _reserve.totalBorrowsETH,
+      marketReferenceCurrencyDecimals,
+    ),
     totalBorrowsUSD: normalize(_reserve.totalBorrowsUSD, USD_DECIMALS),
     totalLiquidity: normalizeWithReserve(_reserve.totalLiquidity),
     totalStableDebt: normalizeWithReserve(_reserve.totalStableDebt),
