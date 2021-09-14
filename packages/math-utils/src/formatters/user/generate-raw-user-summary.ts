@@ -35,7 +35,7 @@ function convertToUsd(
 }
 
 export function generateRawUserSummary({
-  //  TODO: currentTimestamp, figure out why this is no longer necessary, seems like a  bug to me
+  //  currentTimestamp, figure out why this is no longer necessary, seems like a  bug to me
   userReserves,
   usdPriceEth,
 }: RawUserSummaryRequest): RawUserSummaryResponse {
