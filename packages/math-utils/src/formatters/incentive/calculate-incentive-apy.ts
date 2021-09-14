@@ -9,13 +9,17 @@ export interface CalculateIncentiveAPYRequest {
   tokenPriceInEth: string;
 }
 
-export function calculateIncentiveAPY(
-  request: CalculateIncentiveAPYRequest,
-): string {
+export function calculateIncentiveAPY({
+  emissionPerSecond,
+  rewardTokenPriceInEth,
+  tokenPriceInEth,
+  totalTokenSupply,
+  decimals,
+}: CalculateIncentiveAPYRequest): string {
   const emissionPerSecondNormalized = normalizeBN(
-    request.emissionPerSecond,
+    emissionPerSecond,
     ETH_DECIMALS,
-  ).multipliedBy(request.rewardTokenPriceInEth);
+  ).multipliedBy(rewardTokenPriceInEth);
 
   if (emissionPerSecondNormalized.eq(0)) {
     return '0';
@@ -26,8 +30,8 @@ export function calculateIncentiveAPY(
   );
 
   const totalSupplyNormalized = valueToBigNumber(
-    normalize(request.totalTokenSupply, request.decimals),
-  ).multipliedBy(request.tokenPriceInEth);
+    normalize(totalTokenSupply, decimals),
+  ).multipliedBy(tokenPriceInEth);
 
   return emissionPerYear.dividedBy(totalSupplyNormalized).toFixed();
 }

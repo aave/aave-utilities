@@ -9,14 +9,12 @@ export interface CalculateCompoundedInterestRequest {
   lastUpdateTimestamp: number;
 }
 
-export function calculateCompoundedInterest(
-  request: CalculateCompoundedInterestRequest,
-): BigNumber {
-  const timeDelta = valueToZDBigNumber(
-    request.currentTimestamp - request.lastUpdateTimestamp,
-  );
-  const ratePerSecond = valueToZDBigNumber(request.rate).dividedBy(
-    SECONDS_PER_YEAR,
-  );
+export function calculateCompoundedInterest({
+  rate,
+  currentTimestamp,
+  lastUpdateTimestamp,
+}: CalculateCompoundedInterestRequest): BigNumber {
+  const timeDelta = valueToZDBigNumber(currentTimestamp - lastUpdateTimestamp);
+  const ratePerSecond = valueToZDBigNumber(rate).dividedBy(SECONDS_PER_YEAR);
   return binomialApproximatedRayPow(ratePerSecond, timeDelta);
 }
