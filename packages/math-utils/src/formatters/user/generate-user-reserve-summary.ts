@@ -111,7 +111,7 @@ export function generateUserReserveSummary({
       stableDebtLastUpdateTimestamp: poolReserve.stableDebtLastUpdateTimestamp,
       lastUpdateTimestamp: poolReserve.lastUpdateTimestamp,
     },
-    currentTimestamp: currentTimestamp,
+    currentTimestamp,
   });
 
   return {

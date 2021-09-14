@@ -127,7 +127,6 @@ export function formatUserSummary({
   const userData = generateRawUserSummary({
     userReserves: computedUserReserves,
     usdPriceEth,
-    currentTimestamp,
   });
 
   return {

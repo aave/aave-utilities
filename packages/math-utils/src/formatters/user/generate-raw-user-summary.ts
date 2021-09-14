@@ -11,7 +11,6 @@ import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
 export interface RawUserSummaryRequest {
   userReserves: UserReserveSummaryResponse[];
   usdPriceEth: BigNumberValue;
-  currentTimestamp: number;
 }
 
 export interface RawUserSummaryResponse {
@@ -35,7 +34,6 @@ function convertToUsd(
 }
 
 export function generateRawUserSummary({
-  //  currentTimestamp, figure out why this is no longer necessary, seems like a  bug to me
   userReserves,
   usdPriceEth,
 }: RawUserSummaryRequest): RawUserSummaryResponse {
