@@ -15,7 +15,7 @@
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
-    "ethers": "^5.0.24"
+    "ethers": "^5.0.31"
   },
   "devDependencies": {
     "ethers": "5.0.31"
