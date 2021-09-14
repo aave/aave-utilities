@@ -8,7 +8,7 @@ import {
   calculateHealthFactorFromBalances,
   calculateHealthFactorFromBalancesBigUnits,
   calculateAvailableBorrowsETH,
-  getEthAndUsdBalance,
+  getMarketReferenceCurrencyAndUsdBalance,
 } from './pool-math';
 
 describe('pool math', () => {
@@ -199,8 +199,11 @@ describe('pool math', () => {
       decimals: 18,
       usdPriceMarketReferenceCurrency: 2500,
     };
-    const { ethBalance, usdBalance } = getEthAndUsdBalance(balanceRequest);
-    expect(ethBalance.toFixed()).toEqual('10');
+    const {
+      marketReferenceCurrencyBalance,
+      usdBalance,
+    } = getMarketReferenceCurrencyAndUsdBalance(balanceRequest);
+    expect(marketReferenceCurrencyBalance.toFixed()).toEqual('10');
     expect(usdBalance.toFixed()).toEqual('40000000');
   });
 });

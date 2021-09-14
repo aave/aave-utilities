@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { BigNumberValue } from '../../bignumber';
 import {
   getLinearBalance,
-  getEthAndUsdBalance,
+  getMarketReferenceCurrencyAndUsdBalance,
   getCompoundedBalance,
   getCompoundedStableBalance,
 } from '../../pool-math';
@@ -52,9 +52,9 @@ export function generateUserReserveSummary({
     currentTimestamp,
   });
   const {
-    ethBalance: underlyingBalanceETH,
+    marketReferenceCurrencyBalance: underlyingBalanceETH,
     usdBalance: underlyingBalanceUSD,
-  } = getEthAndUsdBalance({
+  } = getMarketReferenceCurrencyAndUsdBalance({
     balance: underlyingBalance,
     priceInMarketReferenceCurrency,
     decimals,
@@ -70,9 +70,9 @@ export function generateUserReserveSummary({
   });
 
   const {
-    ethBalance: variableBorrowsETH,
+    marketReferenceCurrencyBalance: variableBorrowsETH,
     usdBalance: variableBorrowsUSD,
-  } = getEthAndUsdBalance({
+  } = getMarketReferenceCurrencyAndUsdBalance({
     balance: variableBorrows,
     priceInMarketReferenceCurrency,
     decimals,
@@ -87,9 +87,9 @@ export function generateUserReserveSummary({
   });
 
   const {
-    ethBalance: stableBorrowsETH,
+    marketReferenceCurrencyBalance: stableBorrowsETH,
     usdBalance: stableBorrowsUSD,
-  } = getEthAndUsdBalance({
+  } = getMarketReferenceCurrencyAndUsdBalance({
     balance: stableBorrows,
     priceInMarketReferenceCurrency,
     decimals,
