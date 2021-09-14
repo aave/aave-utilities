@@ -48,21 +48,22 @@ export interface ReserveData {
   lastUpdateTimestamp: number;
 }
 
-export function formatReserve(
-  request: FormatReserveRequest,
-): FormatReserveResponse {
+export function formatReserve({
+  reserve,
+  currentTimestamp,
+}: FormatReserveRequest): FormatReserveResponse {
   const calculateReserveDebtResult = calculateReserveDebt(
-    request.reserve,
-    request.currentTimestamp,
+    reserve,
+    currentTimestamp,
   );
 
   const totalLiquidity = calculateTotalLiquidity(
     calculateReserveDebtResult.totalDebt,
-    request.reserve.availableLiquidity,
+    reserve.availableLiquidity,
   );
 
   const normalizeWithReserve = (n: BigNumberValue) =>
-    normalize(n, request.reserve.decimals);
+    normalize(n, reserve.decimals);
 
   return {
     totalVariableDebt: normalizeWithReserve(
@@ -72,48 +73,37 @@ export function formatReserve(
       calculateReserveDebtResult.totalStableDebt,
     ),
     totalLiquidity: normalizeWithReserve(totalLiquidity),
-    availableLiquidity: normalizeWithReserve(
-      request.reserve.availableLiquidity,
-    ),
+    availableLiquidity: normalizeWithReserve(reserve.availableLiquidity),
     utilizationRate: totalLiquidity.eq(0)
       ? '0'
       : valueToBigNumber(calculateReserveDebtResult.totalDebt)
           .dividedBy(totalLiquidity)
           .toFixed(),
     totalDebt: normalizeWithReserve(calculateReserveDebtResult.totalDebt),
-    baseLTVasCollateral: normalize(
-      request.reserve.baseLTVasCollateral,
-      LTV_PRECISION,
-    ),
-    reserveFactor: normalize(request.reserve.reserveFactor, LTV_PRECISION),
-    variableBorrowRate: normalize(
-      request.reserve.variableBorrowRate,
-      RAY_DECIMALS,
-    ),
-    stableBorrowRate: normalize(request.reserve.stableBorrowRate, RAY_DECIMALS),
-    liquidityRate: normalize(request.reserve.liquidityRate, RAY_DECIMALS),
-    liquidityIndex: normalize(request.reserve.liquidityIndex, RAY_DECIMALS),
+    baseLTVasCollateral: normalize(reserve.baseLTVasCollateral, LTV_PRECISION),
+    reserveFactor: normalize(reserve.reserveFactor, LTV_PRECISION),
+    variableBorrowRate: normalize(reserve.variableBorrowRate, RAY_DECIMALS),
+    stableBorrowRate: normalize(reserve.stableBorrowRate, RAY_DECIMALS),
+    liquidityRate: normalize(reserve.liquidityRate, RAY_DECIMALS),
+    liquidityIndex: normalize(reserve.liquidityIndex, RAY_DECIMALS),
     reserveLiquidationThreshold: normalize(
-      request.reserve.reserveLiquidationThreshold,
+      reserve.reserveLiquidationThreshold,
       4,
     ),
     // https://github.com/aave/protocol-v2/blob/baeb455fad42d3160d571bd8d3a795948b72dd85/contracts/protocol/lendingpool/LendingPoolConfigurator.sol#L284
     reserveLiquidationBonus: normalize(
-      valueToBigNumber(request.reserve.reserveLiquidationBonus).minus(
+      valueToBigNumber(reserve.reserveLiquidationBonus).minus(
         10 ** LTV_PRECISION,
       ),
       LTV_PRECISION,
     ),
     totalScaledVariableDebt: normalizeWithReserve(
-      request.reserve.totalScaledVariableDebt,
+      reserve.totalScaledVariableDebt,
     ),
     totalPrincipalStableDebt: normalizeWithReserve(
-      request.reserve.totalPrincipalStableDebt,
+      reserve.totalPrincipalStableDebt,
     ),
-    variableBorrowIndex: normalize(
-      request.reserve.variableBorrowIndex,
-      RAY_DECIMALS,
-    ),
+    variableBorrowIndex: normalize(reserve.variableBorrowIndex, RAY_DECIMALS),
   };
 }
 
