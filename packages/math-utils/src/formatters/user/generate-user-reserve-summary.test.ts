@@ -7,7 +7,7 @@ import { usdcUserReserve } from './user.mocks';
 describe('generateUserReserveSummary', () => {
   const rawSummary: UserReserveSummaryResponse = generateUserReserveSummary({
     userReserve: usdcUserReserve,
-    usdPriceEth: 309519442156873,
+    usdPriceMarketReferenceCurrency: 309519442156873,
     currentTimestamp: 1629942229,
   });
 

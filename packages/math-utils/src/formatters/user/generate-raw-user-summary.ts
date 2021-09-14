@@ -10,7 +10,7 @@ import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
 
 export interface RawUserSummaryRequest {
   userReserves: UserReserveSummaryResponse[];
-  marketReferenceCurrencyUsdPrice: BigNumberValue;
+  usdPriceMarketReferenceCurrency: BigNumberValue;
 }
 
 export interface RawUserSummaryResponse {
@@ -35,7 +35,7 @@ function convertToUsd(
 
 export function generateRawUserSummary({
   userReserves,
-  marketReferenceCurrencyUsdPrice,
+  usdPriceMarketReferenceCurrency,
 }: RawUserSummaryRequest): RawUserSummaryResponse {
   const {
     totalLiquidityETH,
@@ -48,15 +48,15 @@ export function generateRawUserSummary({
   return {
     totalLiquidityUSD: convertToUsd(
       totalLiquidityETH,
-      marketReferenceCurrencyUsdPrice,
+      usdPriceMarketReferenceCurrency,
     ),
     totalCollateralUSD: convertToUsd(
       totalCollateralETH,
-      marketReferenceCurrencyUsdPrice,
+      usdPriceMarketReferenceCurrency,
     ),
     totalBorrowsUSD: convertToUsd(
       totalBorrowsETH,
-      marketReferenceCurrencyUsdPrice,
+      usdPriceMarketReferenceCurrency,
     ),
     totalLiquidityETH,
     totalCollateralETH,

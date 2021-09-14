@@ -197,7 +197,7 @@ describe('pool math', () => {
       balance: 10000000000000000000,
       priceInEth: 1,
       decimals: 18,
-      usdPriceEth: 2500,
+      usdPriceMarketReferenceCurrency: 2500,
     };
     const { ethBalance, usdBalance } = getEthAndUsdBalance(balanceRequest);
     expect(ethBalance.toFixed()).toEqual('10');

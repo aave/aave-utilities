@@ -7,12 +7,12 @@ import { usdcUserReserve } from './user.mocks';
 import { ComputedUserReserve } from './index';
 
 describe('formatUserReserve', () => {
-  const usdPriceEth = 309519442156873;
+  const usdPriceMarketReferenceCurrency = 309519442156873;
   const currentTimestamp = 1629942229;
   const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
       userReserve: usdcUserReserve,
-      usdPriceEth,
+      usdPriceMarketReferenceCurrency,
       currentTimestamp,
     },
   );

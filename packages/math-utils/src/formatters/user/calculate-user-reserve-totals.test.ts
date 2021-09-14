@@ -10,12 +10,12 @@ import {
 } from './user.mocks';
 
 describe('calculateUserReserveTotals', () => {
-  const usdPriceEth = 309519442156873;
+  const usdPriceMarketReferenceCurrency = 309519442156873;
   const currentTimestamp = 1629942229;
   const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
       userReserve: usdcUserReserve,
-      usdPriceEth,
+      usdPriceMarketReferenceCurrency,
       currentTimestamp,
     },
   );
@@ -23,14 +23,14 @@ describe('calculateUserReserveTotals', () => {
   const rawXSUSHISummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
       userReserve: xSushiUserReserve,
-      usdPriceEth,
+      usdPriceMarketReferenceCurrency,
       currentTimestamp,
     },
   );
 
   const rawETHSummary: UserReserveSummaryResponse = generateUserReserveSummary({
     userReserve: ethUserReserve,
-    usdPriceEth,
+    usdPriceMarketReferenceCurrency,
     currentTimestamp,
   });
 
@@ -62,7 +62,7 @@ describe('calculateUserReserveTotals', () => {
           ...usdcUserReserve,
           usageAsCollateralEnabledOnUser: false,
         },
-        usdPriceEth,
+        usdPriceMarketReferenceCurrency,
         currentTimestamp,
       },
     );
@@ -72,7 +72,7 @@ describe('calculateUserReserveTotals', () => {
           ...ethUserReserve,
           usageAsCollateralEnabledOnUser: false,
         },
-        usdPriceEth,
+        usdPriceMarketReferenceCurrency,
         currentTimestamp,
       },
     );

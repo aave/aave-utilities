@@ -111,6 +111,7 @@ export const ethUserReserve: RawUserReserveData = {
 
 export const formatUserSummaryRequest: FormatUserSummaryRequest = {
   rawUserReserves: [usdcUserReserve, xSushiUserReserve, ethUserReserve],
-  usdPriceEth: 309519442156873,
+  usdPriceMarketReferenceCurrency: 309519442156873,
+  marketReferenceCurrencyDecimals: 18,
   currentTimestamp: 1629942229,
 };

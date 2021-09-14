@@ -228,7 +228,7 @@ interface EthAndUsdBalanceRequest {
   balance: BigNumberValue;
   priceInEth: BigNumberValue;
   decimals: number;
-  marketReferenceCurrencyUsdPrice: BigNumberValue;
+  usdPriceMarketReferenceCurrency: BigNumberValue;
 }
 
 interface EthAndUsdBalanceResponse {
@@ -239,13 +239,13 @@ export function getEthAndUsdBalance({
   balance,
   priceInEth,
   decimals,
-  marketReferenceCurrencyUsdPrice,
+  usdPriceMarketReferenceCurrency,
 }: EthAndUsdBalanceRequest): EthAndUsdBalanceResponse {
   const ethBalance = valueToZDBigNumber(balance)
     .multipliedBy(priceInEth)
     .shiftedBy(decimals * -1);
   const usdBalance = ethBalance
     .shiftedBy(USD_DECIMALS)
-    .dividedBy(marketReferenceCurrencyUsdPrice);
+    .dividedBy(usdPriceMarketReferenceCurrency);
   return { ethBalance, usdBalance };
 }

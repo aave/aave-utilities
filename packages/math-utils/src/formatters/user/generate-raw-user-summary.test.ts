@@ -13,12 +13,12 @@ import {
 } from './user.mocks';
 
 describe('generateRawUserSummary', () => {
-  const usdPriceEth = 309519442156873;
+  const usdPriceMarketReferenceCurrency = 309519442156873;
   const currentTimestamp = 1629942229;
   const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
       userReserve: usdcUserReserve,
-      usdPriceEth,
+      usdPriceMarketReferenceCurrency,
       currentTimestamp,
     },
   );
@@ -26,26 +26,26 @@ describe('generateRawUserSummary', () => {
   const rawXSUSHISummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
       userReserve: xSushiUserReserve,
-      usdPriceEth,
+      usdPriceMarketReferenceCurrency,
       currentTimestamp,
     },
   );
 
   const rawETHSummary: UserReserveSummaryResponse = generateUserReserveSummary({
     userReserve: ethUserReserve,
-    usdPriceEth,
+    usdPriceMarketReferenceCurrency,
     currentTimestamp,
   });
 
   const rawSummary: RawUserSummaryResponse = generateRawUserSummary({
     userReserves: [rawUSDCSummary, rawXSUSHISummary, rawETHSummary],
-    usdPriceEth,
+    usdPriceMarketReferenceCurrency,
   });
 
   const rawUSDCSummaryModified: UserReserveSummaryResponse = generateUserReserveSummary(
     {
       userReserve: { ...usdcUserReserve, scaledATokenBalance: '2528085146' },
-      usdPriceEth,
+      usdPriceMarketReferenceCurrency,
       currentTimestamp,
     },
   );
@@ -56,7 +56,7 @@ describe('generateRawUserSummary', () => {
         ...ethUserReserve,
         scaledVariableDebt: '1961463562232346784',
       },
-      usdPriceEth,
+      usdPriceMarketReferenceCurrency,
       currentTimestamp,
     },
   );
@@ -64,14 +64,14 @@ describe('generateRawUserSummary', () => {
   const rawSummaryCollateralChange: RawUserSummaryResponse = generateRawUserSummary(
     {
       userReserves: [rawUSDCSummaryModified, rawXSUSHISummary, rawETHSummary],
-      usdPriceEth,
+      usdPriceMarketReferenceCurrency,
     },
   );
 
   const rawSummaryBorrowChange: RawUserSummaryResponse = generateRawUserSummary(
     {
       userReserves: [rawUSDCSummary, rawXSUSHISummary, rawETHSummaryModified],
-      usdPriceEth,
+      usdPriceMarketReferenceCurrency,
     },
   );
 

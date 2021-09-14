@@ -64,7 +64,7 @@ export interface ComputedUserReserve extends RawUserReserveData {
 
 export interface FormatUserSummaryRequest {
   rawUserReserves: RawUserReserveData[];
-  marketReferenceCurrencyUsdPrice: BigNumberValue;
+  usdPriceMarketReferenceCurrency: BigNumberValue;
   marketReferenceCurrencyDecimals: number;
   currentTimestamp: number;
 }
@@ -101,7 +101,7 @@ function normalizeUSD(value: BigNumber): string {
 
 export function formatUserSummary({
   currentTimestamp,
-  marketReferenceCurrencyUsdPrice,
+  usdPriceMarketReferenceCurrency,
   marketReferenceCurrencyDecimals,
   rawUserReserves,
 }: FormatUserSummaryRequest): FormatUserSummaryResponse {
@@ -109,7 +109,7 @@ export function formatUserSummary({
     userReserve =>
       generateUserReserveSummary({
         userReserve,
-        marketReferenceCurrencyUsdPrice,
+        usdPriceMarketReferenceCurrency,
         currentTimestamp,
       }),
   );
@@ -124,7 +124,7 @@ export function formatUserSummary({
 
   const userData = generateRawUserSummary({
     userReserves: computedUserReserves,
-    marketReferenceCurrencyUsdPrice,
+    usdPriceMarketReferenceCurrency,
   });
 
   return {
