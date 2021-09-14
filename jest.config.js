@@ -19,7 +19,10 @@ module.exports = {
       },
     },
   },
-  coveragePathIgnorePatterns: [],
+  coveragePathIgnorePatterns: [
+    'packages/contract-helpers/src/ui-incentive-data-provider/typechain',
+    'packages/contract-helpers/src/wallet-balance-provider/typechain',
+  ],
   modulePathIgnorePatterns: ['node_modules'],
   preset: 'ts-jest',
   testEnvironment: 'node',

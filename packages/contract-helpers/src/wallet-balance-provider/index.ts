@@ -1,15 +1,13 @@
-import { BigNumber, ethers, providers } from 'ethers';
+import { providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
-import { abi } from './abi';
+import { WalletBalanceProvider as WalletBalanceProviderContract } from './typechain/WalletBalanceProvider';
+import { WalletBalanceProviderFactory } from './typechain/WalletBalanceProviderFactory';
 import {
-  ContractContext,
-  GetUserWalletBalancesResponse,
-} from './types/WalletBalanceProvider';
-
-export {
-  ContractContext,
-  GetUserWalletBalancesResponse,
-} from './types/WalletBalanceProvider';
+  BalanceOfResponse,
+  BatchBalanceOfResponse,
+  UserWalletBalancesResponse,
+} from './types/WalletBalanceProviderTypes';
+export * from './types/WalletBalanceProviderTypes';
 
 export interface WalletBalanceProviderContext {
   walletBalanceProviderAddress: string;
@@ -17,18 +15,17 @@ export interface WalletBalanceProviderContext {
 }
 
 export class WalletBalanceProvider {
-  private readonly _contract: ContractContext;
+  private readonly _contract: WalletBalanceProviderContract;
 
   /**
    * Constructor
    * @param context The wallet balance provider context
    */
   public constructor(context: WalletBalanceProviderContext) {
-    this._contract = (new ethers.Contract(
+    this._contract = WalletBalanceProviderFactory.connect(
       context.walletBalanceProviderAddress,
-      abi,
       context.provider,
-    ) as unknown) as ContractContext;
+    );
   }
 
   /**
@@ -36,7 +33,10 @@ export class WalletBalanceProvider {
    * @param user The user address
    * @param token The token address
    */
-  public async balanceOf(user: string, token: string): Promise<BigNumber> {
+  public async balanceOf(
+    user: string,
+    token: string,
+  ): Promise<BalanceOfResponse> {
     if (!isAddress(user)) {
       throw new Error('User address is not a valid ethereum address');
     }
@@ -56,7 +56,7 @@ export class WalletBalanceProvider {
   public async batchBalanceOf(
     users: string[],
     tokens: string[],
-  ): Promise<BigNumber[]> {
+  ): Promise<BatchBalanceOfResponse> {
     if (!users.every(u => isAddress(u))) {
       throw new Error(
         'One of the user address is not a valid ethereum address',
@@ -80,7 +80,7 @@ export class WalletBalanceProvider {
   public async getUserWalletBalancesForLendingPoolProvider(
     user: string,
     lendingPoolAddressProvider: string,
-  ): Promise<GetUserWalletBalancesResponse> {
+  ): Promise<UserWalletBalancesResponse> {
     if (!isAddress(user)) {
       throw new Error('User address is not a valid ethereum address');
     }
