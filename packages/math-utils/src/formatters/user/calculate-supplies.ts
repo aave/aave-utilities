@@ -24,18 +24,21 @@ interface ReserveSupplyData {
   lastUpdateTimestamp: number;
 }
 
-export function calculateSupplies(request: SuppliesRequest): SuppliesResponse {
+export function calculateSupplies({
+  reserve,
+  currentTimestamp,
+}: SuppliesRequest): SuppliesResponse {
   const {
     totalVariableDebt,
     totalStableDebt,
   } = calculateReserveDebtSuppliesRaw({
-    reserve: request.reserve,
-    currentTimestamp: request.currentTimestamp,
+    reserve: reserve,
+    currentTimestamp: currentTimestamp,
   });
 
   const totalDebt = totalVariableDebt.plus(totalStableDebt);
 
-  const totalLiquidity = totalDebt.plus(request.reserve.availableLiquidity);
+  const totalLiquidity = totalDebt.plus(reserve.availableLiquidity);
   return {
     totalVariableDebt,
     totalStableDebt,
@@ -58,26 +61,24 @@ interface ReserveDebtSuppliesRawResponse {
  * @param reserve
  * @param currentTimestamp unix timestamp which must be higher than reserve.lastUpdateTimestamp
  */
-function calculateReserveDebtSuppliesRaw(
-  request: ReserveDebtSuppliesRawRequest,
-): ReserveDebtSuppliesRawResponse {
+function calculateReserveDebtSuppliesRaw({
+  reserve,
+  currentTimestamp,
+}: ReserveDebtSuppliesRawRequest): ReserveDebtSuppliesRawResponse {
   const totalVariableDebt = rayMul(
-    rayMul(
-      request.reserve.totalScaledVariableDebt,
-      request.reserve.variableBorrowIndex,
-    ),
+    rayMul(reserve.totalScaledVariableDebt, reserve.variableBorrowIndex),
     calculateCompoundedInterest({
-      rate: request.reserve.variableBorrowRate,
-      currentTimestamp: request.currentTimestamp,
-      lastUpdateTimestamp: request.reserve.lastUpdateTimestamp,
+      rate: reserve.variableBorrowRate,
+      currentTimestamp,
+      lastUpdateTimestamp: reserve.lastUpdateTimestamp,
     }),
   );
   const totalStableDebt = rayMul(
-    request.reserve.totalPrincipalStableDebt,
+    reserve.totalPrincipalStableDebt,
     calculateCompoundedInterest({
-      rate: request.reserve.averageStableRate,
-      currentTimestamp: request.currentTimestamp,
-      lastUpdateTimestamp: request.reserve.stableDebtLastUpdateTimestamp,
+      rate: reserve.averageStableRate,
+      currentTimestamp,
+      lastUpdateTimestamp: reserve.stableDebtLastUpdateTimestamp,
     }),
   );
   return { totalVariableDebt, totalStableDebt };

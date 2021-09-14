@@ -34,20 +34,22 @@ export interface UserReserveSummaryResponse {
   totalVariableDebt: BigNumber;
 }
 
-export function generateUserReserveSummary(
-  request: UserReserveSummaryRequest,
-): UserReserveSummaryResponse {
-  const poolReserve = request.userReserve.reserve;
+export function generateUserReserveSummary({
+  userReserve,
+  usdPriceEth,
+  currentTimestamp,
+}: UserReserveSummaryRequest): UserReserveSummaryResponse {
+  const poolReserve = userReserve.reserve;
   const {
     price: { priceInEth },
     decimals,
   } = poolReserve;
   const underlyingBalance = getLinearBalance({
-    balance: request.userReserve.scaledATokenBalance,
+    balance: userReserve.scaledATokenBalance,
     index: poolReserve.liquidityIndex,
     rate: poolReserve.liquidityRate,
     lastUpdateTimestamp: poolReserve.lastUpdateTimestamp,
-    currentTimestamp: request.currentTimestamp,
+    currentTimestamp,
   });
   const {
     ethBalance: underlyingBalanceETH,
@@ -56,15 +58,15 @@ export function generateUserReserveSummary(
     balance: underlyingBalance,
     priceInEth,
     decimals,
-    usdPriceEth: request.usdPriceEth,
+    usdPriceEth,
   });
 
   const variableBorrows = getCompoundedBalance({
-    principalBalance: request.userReserve.scaledVariableDebt,
+    principalBalance: userReserve.scaledVariableDebt,
     reserveIndex: poolReserve.variableBorrowIndex,
     reserveRate: poolReserve.variableBorrowRate,
     lastUpdateTimestamp: poolReserve.lastUpdateTimestamp,
-    currentTimestamp: request.currentTimestamp,
+    currentTimestamp,
   });
 
   const {
@@ -74,14 +76,14 @@ export function generateUserReserveSummary(
     balance: variableBorrows,
     priceInEth,
     decimals,
-    usdPriceEth: request.usdPriceEth,
+    usdPriceEth,
   });
 
   const stableBorrows = getCompoundedStableBalance({
-    principalBalance: request.userReserve.principalStableDebt,
-    userStableRate: request.userReserve.stableBorrowRate,
-    lastUpdateTimestamp: request.userReserve.stableBorrowLastUpdateTimestamp,
-    currentTimestamp: request.currentTimestamp,
+    principalBalance: userReserve.principalStableDebt,
+    userStableRate: userReserve.stableBorrowRate,
+    lastUpdateTimestamp: userReserve.stableBorrowLastUpdateTimestamp,
+    currentTimestamp,
   });
 
   const {
@@ -91,7 +93,7 @@ export function generateUserReserveSummary(
     balance: stableBorrows,
     priceInEth,
     decimals,
-    usdPriceEth: request.usdPriceEth,
+    usdPriceEth,
   });
 
   const {
@@ -109,11 +111,11 @@ export function generateUserReserveSummary(
       stableDebtLastUpdateTimestamp: poolReserve.stableDebtLastUpdateTimestamp,
       lastUpdateTimestamp: poolReserve.lastUpdateTimestamp,
     },
-    currentTimestamp: request.currentTimestamp,
+    currentTimestamp: currentTimestamp,
   });
 
   return {
-    userReserve: request.userReserve,
+    userReserve,
     underlyingBalance,
     underlyingBalanceETH,
     underlyingBalanceUSD,

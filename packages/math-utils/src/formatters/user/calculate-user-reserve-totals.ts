@@ -14,16 +14,16 @@ interface UserReserveTotalsResponse {
   currentLiquidationThreshold: BigNumber;
 }
 
-export function calculateUserReserveTotals(
-  request: UserReserveTotalsRequest,
-): UserReserveTotalsResponse {
+export function calculateUserReserveTotals({
+  userReserves,
+}: UserReserveTotalsRequest): UserReserveTotalsResponse {
   let totalLiquidityETH = valueToZDBigNumber('0');
   let totalCollateralETH = valueToZDBigNumber('0');
   let totalBorrowsETH = valueToZDBigNumber('0');
   let currentLtv = valueToBigNumber('0');
   let currentLiquidationThreshold = valueToBigNumber('0');
 
-  request.userReserves.forEach(userReserveSummary => {
+  userReserves.forEach(userReserveSummary => {
     totalLiquidityETH = totalLiquidityETH.plus(
       userReserveSummary.underlyingBalanceETH,
     );

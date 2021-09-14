@@ -102,15 +102,17 @@ function normalizeUSD(value: BigNumber): string {
   return normalize(value, USD_DECIMALS);
 }
 
-export function formatUserSummary(
-  request: FormatUserSummaryRequest,
-): FormatUserSummaryResponse {
-  const computedUserReserves: UserReserveSummaryResponse[] = request.rawUserReserves.map(
+export function formatUserSummary({
+  currentTimestamp,
+  usdPriceEth,
+  rawUserReserves,
+}: FormatUserSummaryRequest): FormatUserSummaryResponse {
+  const computedUserReserves: UserReserveSummaryResponse[] = rawUserReserves.map(
     userReserve =>
       generateUserReserveSummary({
         userReserve,
-        usdPriceEth: request.usdPriceEth,
-        currentTimestamp: request.currentTimestamp,
+        usdPriceEth,
+        currentTimestamp,
       }),
   );
 
@@ -124,8 +126,8 @@ export function formatUserSummary(
 
   const userData = generateRawUserSummary({
     userReserves: computedUserReserves,
-    usdPriceEth: request.usdPriceEth,
-    currentTimestamp: request.currentTimestamp,
+    usdPriceEth,
+    currentTimestamp,
   });
 
   return {

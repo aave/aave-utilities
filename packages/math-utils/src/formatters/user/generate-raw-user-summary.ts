@@ -34,21 +34,23 @@ function convertToUsd(
   return value.shiftedBy(USD_DECIMALS).dividedBy(usdPriceEth);
 }
 
-export function generateRawUserSummary(
-  request: RawUserSummaryRequest,
-): RawUserSummaryResponse {
+export function generateRawUserSummary({
+  currentTimestamp,
+  userReserves,
+  usdPriceEth,
+}: RawUserSummaryRequest): RawUserSummaryResponse {
   const {
     totalLiquidityETH,
     totalBorrowsETH,
     totalCollateralETH,
     currentLtv,
     currentLiquidationThreshold,
-  } = calculateUserReserveTotals({ userReserves: request.userReserves });
+  } = calculateUserReserveTotals({ userReserves: userReserves });
 
   return {
-    totalLiquidityUSD: convertToUsd(totalLiquidityETH, request.usdPriceEth),
-    totalCollateralUSD: convertToUsd(totalCollateralETH, request.usdPriceEth),
-    totalBorrowsUSD: convertToUsd(totalBorrowsETH, request.usdPriceEth),
+    totalLiquidityUSD: convertToUsd(totalLiquidityETH, usdPriceEth),
+    totalCollateralUSD: convertToUsd(totalCollateralETH, usdPriceEth),
+    totalBorrowsUSD: convertToUsd(totalBorrowsETH, usdPriceEth),
     totalLiquidityETH,
     totalCollateralETH,
     totalBorrowsETH,
