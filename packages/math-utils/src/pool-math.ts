@@ -13,15 +13,13 @@ interface CalculateCompoundedInterestRequest {
   lastUpdateTimestamp: number;
 }
 
-export function calculateCompoundedInterest(
-  request: CalculateCompoundedInterestRequest,
-): BigNumber {
-  const timeDelta = valueToZDBigNumber(
-    request.currentTimestamp - request.lastUpdateTimestamp,
-  );
-  const ratePerSecond = valueToZDBigNumber(request.rate).dividedBy(
-    SECONDS_PER_YEAR,
-  );
+export function calculateCompoundedInterest({
+  rate,
+  currentTimestamp,
+  lastUpdateTimestamp,
+}: CalculateCompoundedInterestRequest): BigNumber {
+  const timeDelta = valueToZDBigNumber(currentTimestamp - lastUpdateTimestamp);
+  const ratePerSecond = valueToZDBigNumber(rate).dividedBy(SECONDS_PER_YEAR);
   return RayMath.binomialApproximatedRayPow(ratePerSecond, timeDelta);
 }
 
@@ -33,23 +31,24 @@ interface CompoundedBalanceRequest {
   currentTimestamp: number;
 }
 
-export function getCompoundedBalance(
-  request: CompoundedBalanceRequest,
-): BigNumber {
-  const principalBalance = valueToZDBigNumber(request.principalBalance);
+export function getCompoundedBalance({
+  principalBalance: _principalBalance,
+  reserveIndex,
+  reserveRate,
+  lastUpdateTimestamp,
+  currentTimestamp,
+}: CompoundedBalanceRequest): BigNumber {
+  const principalBalance = valueToZDBigNumber(_principalBalance);
   if (principalBalance.eq('0')) {
     return principalBalance;
   }
 
   const compoundedInterest = calculateCompoundedInterest({
-    rate: request.reserveRate,
-    currentTimestamp: request.currentTimestamp,
-    lastUpdateTimestamp: request.lastUpdateTimestamp,
+    rate: reserveRate,
+    currentTimestamp,
+    lastUpdateTimestamp,
   });
-  const cumulatedInterest = RayMath.rayMul(
-    compoundedInterest,
-    request.reserveIndex,
-  );
+  const cumulatedInterest = RayMath.rayMul(compoundedInterest, reserveIndex);
   const principalBalanceRay = RayMath.wadToRay(principalBalance);
 
   return RayMath.rayToWad(
@@ -63,17 +62,19 @@ interface LinearInterestRequest {
   lastUpdateTimestamp: number;
 }
 
-export function calculateLinearInterest(
-  request: LinearInterestRequest,
-): BigNumber {
+export function calculateLinearInterest({
+  rate,
+  currentTimestamp,
+  lastUpdateTimestamp,
+}: LinearInterestRequest): BigNumber {
   const timeDelta = RayMath.wadToRay(
-    valueToZDBigNumber(request.currentTimestamp - request.lastUpdateTimestamp),
+    valueToZDBigNumber(currentTimestamp - lastUpdateTimestamp),
   );
   const timeDeltaInSeconds = RayMath.rayDiv(
     timeDelta,
     RayMath.wadToRay(SECONDS_PER_YEAR),
   );
-  const a = RayMath.rayMul(request.rate, timeDeltaInSeconds).plus(RayMath.RAY);
+  const a = RayMath.rayMul(rate, timeDeltaInSeconds).plus(RayMath.RAY);
   return a;
 }
 
@@ -83,20 +84,23 @@ interface ReserveNormalizedIncomeRequest {
   lastUpdateTimestamp: number;
   currentTimestamp: number;
 }
-export function getReserveNormalizedIncome(
-  request: ReserveNormalizedIncomeRequest,
-): BigNumber {
-  if (valueToZDBigNumber(request.rate).eq('0')) {
-    return valueToZDBigNumber(request.index);
+export function getReserveNormalizedIncome({
+  rate,
+  index,
+  lastUpdateTimestamp,
+  currentTimestamp,
+}: ReserveNormalizedIncomeRequest): BigNumber {
+  if (valueToZDBigNumber(rate).eq('0')) {
+    return valueToZDBigNumber(index);
   }
 
   const cumulatedInterest = calculateLinearInterest({
-    rate: request.rate,
-    currentTimestamp: request.currentTimestamp,
-    lastUpdateTimestamp: request.lastUpdateTimestamp,
+    rate,
+    currentTimestamp,
+    lastUpdateTimestamp,
   });
 
-  return RayMath.rayMul(cumulatedInterest, request.index);
+  return RayMath.rayMul(cumulatedInterest, index);
 }
 
 interface LinearBalanceRequest {
@@ -106,15 +110,21 @@ interface LinearBalanceRequest {
   lastUpdateTimestamp: number;
   currentTimestamp: number;
 }
-export function getLinearBalance(request: LinearBalanceRequest) {
+export function getLinearBalance({
+  balance,
+  index,
+  rate,
+  lastUpdateTimestamp,
+  currentTimestamp,
+}: LinearBalanceRequest) {
   return RayMath.rayToWad(
     RayMath.rayMul(
-      RayMath.wadToRay(request.balance),
+      RayMath.wadToRay(balance),
       getReserveNormalizedIncome({
-        rate: request.rate,
-        index: request.index,
-        lastUpdateTimestamp: request.lastUpdateTimestamp,
-        currentTimestamp: request.currentTimestamp,
+        rate,
+        index,
+        lastUpdateTimestamp,
+        currentTimestamp,
       }),
     ),
   );
@@ -127,18 +137,21 @@ interface CompoundedStableBalanceRequest {
   currentTimestamp: number;
 }
 
-export function getCompoundedStableBalance(
-  request: CompoundedStableBalanceRequest,
-): BigNumber {
-  const principalBalance = valueToZDBigNumber(request.principalBalance);
+export function getCompoundedStableBalance({
+  principalBalance: _principalBalance,
+  userStableRate,
+  lastUpdateTimestamp,
+  currentTimestamp,
+}: CompoundedStableBalanceRequest): BigNumber {
+  const principalBalance = valueToZDBigNumber(_principalBalance);
   if (principalBalance.eq('0')) {
     return principalBalance;
   }
 
   const cumulatedInterest = calculateCompoundedInterest({
-    rate: request.userStableRate,
-    currentTimestamp: request.currentTimestamp,
-    lastUpdateTimestamp: request.lastUpdateTimestamp,
+    rate: userStableRate,
+    currentTimestamp,
+    lastUpdateTimestamp,
   });
   const principalBalanceRay = RayMath.wadToRay(principalBalance);
 
@@ -153,17 +166,19 @@ interface HealthFactorFromBalanceRequest {
   currentLiquidationThreshold: BigNumberValue;
 }
 
-export function calculateHealthFactorFromBalances(
-  request: HealthFactorFromBalanceRequest,
-): BigNumber {
-  if (valueToBigNumber(request.borrowBalanceETH).eq(0)) {
+export function calculateHealthFactorFromBalances({
+  borrowBalanceETH,
+  collateralBalanceETH,
+  currentLiquidationThreshold,
+}: HealthFactorFromBalanceRequest): BigNumber {
+  if (valueToBigNumber(borrowBalanceETH).eq(0)) {
     return valueToBigNumber('-1'); // Invalid number
   }
 
-  return valueToBigNumber(request.collateralBalanceETH)
-    .multipliedBy(request.currentLiquidationThreshold)
+  return valueToBigNumber(collateralBalanceETH)
+    .multipliedBy(currentLiquidationThreshold)
     .shiftedBy(LTV_PRECISION * -1)
-    .div(request.borrowBalanceETH);
+    .div(borrowBalanceETH);
 }
 
 interface HealthFactorFromBalanceBigUnitsRequest {
@@ -171,15 +186,15 @@ interface HealthFactorFromBalanceBigUnitsRequest {
   borrowBalanceETH: BigNumberValue;
   currentLiquidationThreshold: BigNumberValue;
 }
-export function calculateHealthFactorFromBalancesBigUnits(
-  request: HealthFactorFromBalanceBigUnitsRequest,
-): BigNumber {
+export function calculateHealthFactorFromBalancesBigUnits({
+  collateralBalanceETH,
+  borrowBalanceETH,
+  currentLiquidationThreshold,
+}: HealthFactorFromBalanceBigUnitsRequest): BigNumber {
   return calculateHealthFactorFromBalances({
-    collateralBalanceETH: request.collateralBalanceETH,
-    borrowBalanceETH: request.borrowBalanceETH,
-    currentLiquidationThreshold: valueToBigNumber(
-      request.currentLiquidationThreshold,
-    )
+    collateralBalanceETH,
+    borrowBalanceETH,
+    currentLiquidationThreshold: valueToBigNumber(currentLiquidationThreshold)
       .shiftedBy(LTV_PRECISION)
       .decimalPlaces(0, BigNumber.ROUND_DOWN),
   });
@@ -191,17 +206,19 @@ interface AvailableBorrowsETHRequest {
   currentLtv: BigNumberValue;
 }
 
-export function calculateAvailableBorrowsETH(
-  request: AvailableBorrowsETHRequest,
-): BigNumber {
-  if (valueToZDBigNumber(request.currentLtv).eq(0)) {
+export function calculateAvailableBorrowsETH({
+  collateralBalanceETH,
+  borrowBalanceETH,
+  currentLtv,
+}: AvailableBorrowsETHRequest): BigNumber {
+  if (valueToZDBigNumber(currentLtv).eq(0)) {
     return valueToZDBigNumber('0');
   }
 
-  const availableBorrowsETH = valueToZDBigNumber(request.collateralBalanceETH)
-    .multipliedBy(request.currentLtv)
+  const availableBorrowsETH = valueToZDBigNumber(collateralBalanceETH)
+    .multipliedBy(currentLtv)
     .shiftedBy(LTV_PRECISION * -1)
-    .minus(request.borrowBalanceETH);
+    .minus(borrowBalanceETH);
   return availableBorrowsETH.gt('0')
     ? availableBorrowsETH
     : valueToZDBigNumber('0');
@@ -218,14 +235,15 @@ interface EthAndUsdBalanceResponse {
   ethBalance: BigNumber;
   usdBalance: BigNumber;
 }
-export function getEthAndUsdBalance(
-  request: EthAndUsdBalanceRequest,
-): EthAndUsdBalanceResponse {
-  const ethBalance = valueToZDBigNumber(request.balance)
-    .multipliedBy(request.priceInEth)
-    .shiftedBy(request.decimals * -1);
-  const usdBalance = ethBalance
-    .shiftedBy(USD_DECIMALS)
-    .dividedBy(request.usdPriceEth);
+export function getEthAndUsdBalance({
+  balance,
+  priceInEth,
+  decimals,
+  usdPriceEth,
+}: EthAndUsdBalanceRequest): EthAndUsdBalanceResponse {
+  const ethBalance = valueToZDBigNumber(balance)
+    .multipliedBy(priceInEth)
+    .shiftedBy(decimals * -1);
+  const usdBalance = ethBalance.shiftedBy(USD_DECIMALS).dividedBy(usdPriceEth);
   return { ethBalance, usdBalance };
 }
