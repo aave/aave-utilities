@@ -2,9 +2,10 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Signer } from 'ethers';
-import { Provider, TransactionRequest } from '@ethersproject/providers';
-import { Contract, ContractFactory, Overrides } from '@ethersproject/contracts';
+//import { Signer } from 'ethers';
+import { Provider } from '@ethersproject/providers';
+import { Contract, ContractFactory } from '@ethersproject/contracts';
+import { Signer } from '@ethersproject/abstract-signer';
 
 import { UiPoolDataProvider } from './UiPoolDataProvider';
 
@@ -13,39 +14,15 @@ export class UiPoolDataProviderFactory extends ContractFactory {
     super(_abi, _bytecode, signer);
   }
 
-  deploy(
-    _incentivesController: string,
-    _oracle: string,
-    overrides?: Overrides,
-  ): Promise<UiPoolDataProvider> {
-    return super.deploy(
-      _incentivesController,
-      _oracle,
-      overrides || {},
-    ) as Promise<UiPoolDataProvider>;
-  }
-  getDeployTransaction(
-    _incentivesController: string,
-    _oracle: string,
-    overrides?: Overrides,
-  ): TransactionRequest {
-    return super.getDeployTransaction(
-      _incentivesController,
-      _oracle,
-      overrides || {},
-    );
-  }
-  attach(address: string): UiPoolDataProvider {
-    return super.attach(address) as UiPoolDataProvider;
-  }
-  connect(signer: Signer): UiPoolDataProviderFactory {
-    return super.connect(signer) as UiPoolDataProviderFactory;
-  }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider,
   ): UiPoolDataProvider {
-    return new Contract(address, _abi, signerOrProvider) as UiPoolDataProvider;
+    return (new Contract(
+      address,
+      _abi,
+      signerOrProvider,
+    ) as unknown) as UiPoolDataProvider;
   }
 }
 

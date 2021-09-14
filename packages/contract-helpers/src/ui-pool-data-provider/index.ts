@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/require-await */
 import { providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import { UiPoolDataProvider as UiPoolDataProviderContract } from './typechain/UiPoolDataProvider';
@@ -44,17 +45,15 @@ export class UiPoolDataProvider {
    * Get the underlying asset address for each lending pool reserve
    */
   public async getReservesList(): Promise<string[]> {
-    return Promise.all(
-      this._contract.getReservesList(this._lendingPoolAddressProvider),
-    );
+    return this._contract.getReservesList(this._lendingPoolAddressProvider);
   }
 
   /**
    * Get data for each lending pool reserve
    */
   public async getReserves(): Promise<ReserveDataResponse[]> {
-    return Promise.all(
-      this._contract.getSimpleReservesData(this._lendingPoolAddressProvider),
+    return this._contract.getSimpleReservesData(
+      this._lendingPoolAddressProvider,
     );
   }
 
@@ -68,11 +67,9 @@ export class UiPoolDataProvider {
       throw new Error('User address is not a valid ethereum address');
     }
 
-    return Promise.all(
-      this._contract.getUserReservesData(
-        this._lendingPoolAddressProvider,
-        user,
-      ),
+    return this._contract.getUserReservesData(
+      this._lendingPoolAddressProvider,
+      user,
     );
   }
 
