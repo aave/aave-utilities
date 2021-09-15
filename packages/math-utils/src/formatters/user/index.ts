@@ -25,9 +25,7 @@ interface RawReserveData {
   totalPrincipalStableDebt: string;
   totalScaledVariableDebt: string;
   lastUpdateTimestamp: number;
-  price: {
-    priceInMarketReferenceCurrency: string;
-  };
+  priceInMarketReferenceCurrency: string;
   id: string;
   symbol: string;
   usageAsCollateralEnabled: boolean;

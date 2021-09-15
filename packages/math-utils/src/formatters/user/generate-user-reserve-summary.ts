@@ -40,10 +40,7 @@ export function generateUserReserveSummary({
   currentTimestamp,
 }: UserReserveSummaryRequest): UserReserveSummaryResponse {
   const poolReserve = userReserve.reserve;
-  const {
-    price: { priceInMarketReferenceCurrency },
-    decimals,
-  } = poolReserve;
+  const { priceInMarketReferenceCurrency, decimals } = poolReserve;
   const underlyingBalance = getLinearBalance({
     balance: userReserve.scaledATokenBalance,
     index: poolReserve.liquidityIndex,
