@@ -46,13 +46,13 @@ export interface RawUserReserveData {
 
 export interface ComputedUserReserve extends RawUserReserveData {
   underlyingBalance: string;
-  underlyingBalanceETH: string;
+  underlyingBalanceMarketReferenceCurrency: string;
   underlyingBalanceUSD: string;
   variableBorrows: string;
-  variableBorrowsETH: string;
+  variableBorrowsMarketReferenceCurrency: string;
   variableBorrowsUSD: string;
   stableBorrows: string;
-  stableBorrowsETH: string;
+  stableBorrowsMarketReferenceCurrency: string;
   stableBorrowsUSD: string;
   totalBorrows: string;
   totalBorrowsMarketReferenceCurrency: string;

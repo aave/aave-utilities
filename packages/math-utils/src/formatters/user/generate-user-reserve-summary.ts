@@ -18,13 +18,13 @@ export interface UserReserveSummaryRequest {
 export interface UserReserveSummaryResponse {
   userReserve: RawUserReserveData;
   underlyingBalance: BigNumber;
-  underlyingBalanceETH: BigNumber;
+  underlyingBalanceMarketReferenceCurrency: BigNumber;
   underlyingBalanceUSD: BigNumber;
   variableBorrows: BigNumber;
-  variableBorrowsETH: BigNumber;
+  variableBorrowsMarketReferenceCurrency: BigNumber;
   variableBorrowsUSD: BigNumber;
   stableBorrows: BigNumber;
-  stableBorrowsETH: BigNumber;
+  stableBorrowsMarketReferenceCurrency: BigNumber;
   stableBorrowsUSD: BigNumber;
   totalBorrows: BigNumber;
   totalBorrowsMarketReferenceCurrency: BigNumber;
@@ -52,7 +52,7 @@ export function generateUserReserveSummary({
     currentTimestamp,
   });
   const {
-    marketReferenceCurrencyBalance: underlyingBalanceETH,
+    marketReferenceCurrencyBalance: underlyingBalanceMarketReferenceCurrency,
     usdBalance: underlyingBalanceUSD,
   } = getMarketReferenceCurrencyAndUsdBalance({
     balance: underlyingBalance,
@@ -70,7 +70,7 @@ export function generateUserReserveSummary({
   });
 
   const {
-    marketReferenceCurrencyBalance: variableBorrowsETH,
+    marketReferenceCurrencyBalance: variableBorrowsMarketReferenceCurrency,
     usdBalance: variableBorrowsUSD,
   } = getMarketReferenceCurrencyAndUsdBalance({
     balance: variableBorrows,
@@ -87,7 +87,7 @@ export function generateUserReserveSummary({
   });
 
   const {
-    marketReferenceCurrencyBalance: stableBorrowsETH,
+    marketReferenceCurrencyBalance: stableBorrowsMarketReferenceCurrency,
     usdBalance: stableBorrowsUSD,
   } = getMarketReferenceCurrencyAndUsdBalance({
     balance: stableBorrows,
@@ -117,17 +117,17 @@ export function generateUserReserveSummary({
   return {
     userReserve,
     underlyingBalance,
-    underlyingBalanceETH,
+    underlyingBalanceMarketReferenceCurrency,
     underlyingBalanceUSD,
     variableBorrows,
-    variableBorrowsETH,
+    variableBorrowsMarketReferenceCurrency,
     variableBorrowsUSD,
     stableBorrows,
-    stableBorrowsETH,
+    stableBorrowsMarketReferenceCurrency,
     stableBorrowsUSD,
     totalBorrows: variableBorrows.plus(stableBorrows),
-    totalBorrowsMarketReferenceCurrency: variableBorrowsETH.plus(
-      stableBorrowsETH,
+    totalBorrowsMarketReferenceCurrency: variableBorrowsMarketReferenceCurrency.plus(
+      stableBorrowsMarketReferenceCurrency,
     ),
     totalBorrowsUSD: variableBorrowsUSD.plus(stableBorrowsUSD),
     totalLiquidity,

@@ -42,8 +42,8 @@ export function formatUserReserve({
       RAY_DECIMALS,
     ),
     underlyingBalance: normalize(_reserve.underlyingBalance, reserveDecimals),
-    underlyingBalanceETH: normalize(
-      _reserve.underlyingBalanceETH,
+    underlyingBalanceMarketReferenceCurrency: normalize(
+      _reserve.underlyingBalanceMarketReferenceCurrency,
       marketReferenceCurrencyDecimals,
     ),
     underlyingBalanceUSD: normalize(
@@ -51,14 +51,14 @@ export function formatUserReserve({
       USD_DECIMALS,
     ),
     stableBorrows: normalizeWithReserve(_reserve.stableBorrows),
-    stableBorrowsETH: normalize(
-      _reserve.stableBorrowsETH,
+    stableBorrowsMarketReferenceCurrency: normalize(
+      _reserve.stableBorrowsMarketReferenceCurrency,
       marketReferenceCurrencyDecimals,
     ),
     stableBorrowsUSD: normalize(_reserve.stableBorrowsUSD, USD_DECIMALS),
     variableBorrows: normalizeWithReserve(_reserve.variableBorrows),
-    variableBorrowsETH: normalize(
-      _reserve.variableBorrowsETH,
+    variableBorrowsMarketReferenceCurrency: normalize(
+      _reserve.variableBorrowsMarketReferenceCurrency,
       marketReferenceCurrencyDecimals,
     ),
     variableBorrowsUSD: normalize(_reserve.variableBorrowsUSD, USD_DECIMALS),

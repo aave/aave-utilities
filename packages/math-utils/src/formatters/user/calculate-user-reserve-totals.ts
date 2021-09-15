@@ -25,26 +25,30 @@ export function calculateUserReserveTotals({
 
   userReserves.forEach(userReserveSummary => {
     totalLiquidityMarketReferenceCurrency = totalLiquidityMarketReferenceCurrency.plus(
-      userReserveSummary.underlyingBalanceETH,
+      userReserveSummary.underlyingBalanceMarketReferenceCurrency,
     );
     totalBorrowsMarketReferenceCurrency = totalBorrowsMarketReferenceCurrency
-      .plus(userReserveSummary.variableBorrowsETH)
-      .plus(userReserveSummary.stableBorrowsETH);
+      .plus(userReserveSummary.variableBorrowsMarketReferenceCurrency)
+      .plus(userReserveSummary.stableBorrowsMarketReferenceCurrency);
 
     if (
       userReserveSummary.userReserve.reserve.usageAsCollateralEnabled &&
       userReserveSummary.userReserve.usageAsCollateralEnabledOnUser
     ) {
       totalCollateralMarketReferenceCurrency = totalCollateralMarketReferenceCurrency.plus(
-        userReserveSummary.underlyingBalanceETH,
+        userReserveSummary.underlyingBalanceMarketReferenceCurrency,
       );
       currentLtv = currentLtv.plus(
-        valueToBigNumber(userReserveSummary.underlyingBalanceETH).multipliedBy(
+        valueToBigNumber(
+          userReserveSummary.underlyingBalanceMarketReferenceCurrency,
+        ).multipliedBy(
           userReserveSummary.userReserve.reserve.baseLTVasCollateral,
         ),
       );
       currentLiquidationThreshold = currentLiquidationThreshold.plus(
-        valueToBigNumber(userReserveSummary.underlyingBalanceETH).multipliedBy(
+        valueToBigNumber(
+          userReserveSummary.underlyingBalanceMarketReferenceCurrency,
+        ).multipliedBy(
           userReserveSummary.userReserve.reserve.reserveLiquidationThreshold,
         ),
       );

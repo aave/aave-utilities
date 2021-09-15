@@ -24,7 +24,7 @@ describe('formatUserReserve', () => {
 
   it('should format a user reserve ', () => {
     expect(formattedReserve.underlyingBalance).toEqual('2441.092444');
-    expect(formattedReserve.underlyingBalanceETH).toEqual(
+    expect(formattedReserve.underlyingBalanceMarketReferenceCurrency).toEqual(
       '0.75727728035882069805',
     );
     expect(formattedReserve.underlyingBalanceUSD).toEqual('2446.6226582788');
@@ -39,7 +39,7 @@ describe('formatUserReserve', () => {
     expect(formattedReserve.usageAsCollateralEnabledOnUser).toEqual(true);
     expect(formattedReserve.variableBorrowIndex).toEqual('0');
     expect(formattedReserve.variableBorrows).toEqual('52.314205');
-    expect(formattedReserve.variableBorrowsETH).toEqual(
+    expect(formattedReserve.variableBorrowsMarketReferenceCurrency).toEqual(
       '0.01622894658656106985',
     );
     expect(formattedReserve.variableBorrowsUSD).toEqual('52.4327211029');
