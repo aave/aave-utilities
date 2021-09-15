@@ -9,13 +9,23 @@ import {
 } from './types/UiIncentiveDataProviderTypes';
 export * from './types/UiIncentiveDataProviderTypes';
 
+export interface UiIncentiveDataProviderInterface {
+  getAllIncentives: (
+    user: string,
+  ) => Promise<FullReservesIncentiveDataResponse>;
+  getReservesIncentives: () => Promise<ReserveIncentiveDataResponse[]>;
+  getUserReservesIncentives: (
+    user: string,
+  ) => Promise<UserReserveIncentiveDataResponse[]>;
+}
 export interface UiIncentiveDataProviderContext {
   incentiveDataProviderAddress: string;
   lendingPoolAddressProvider: string;
   provider: providers.Provider;
 }
 
-export class UiIncentiveDataProvider {
+export class UiIncentiveDataProvider
+  implements UiIncentiveDataProviderInterface {
   private readonly _contract: UiIncentiveDataProviderContract;
 
   private readonly _lendingPoolAddressProvider: string;
