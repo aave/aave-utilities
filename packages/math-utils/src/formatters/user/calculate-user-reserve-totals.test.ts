@@ -38,15 +38,15 @@ describe('calculateUserReserveTotals', () => {
     const userReserveTotals = calculateUserReserveTotals({
       userReserves: [rawUSDCSummary, rawXSUSHISummary, rawETHSummary],
     });
-    expect(userReserveTotals.totalLiquidityETH.toFixed()).toEqual(
-      '5461791539140663086.919458539672351564',
-    );
-    expect(userReserveTotals.totalBorrowsETH.toFixed()).toEqual(
-      '1793279247840914816.850175',
-    );
-    expect(userReserveTotals.totalCollateralETH.toFixed()).toEqual(
-      '5461791539140663086.919458539672351564',
-    );
+    expect(
+      userReserveTotals.totalLiquidityMarketReferenceCurrency.toFixed(),
+    ).toEqual('5461791539140663086.919458539672351564');
+    expect(
+      userReserveTotals.totalBorrowsMarketReferenceCurrency.toFixed(),
+    ).toEqual('1793279247840914816.850175');
+    expect(
+      userReserveTotals.totalCollateralMarketReferenceCurrency.toFixed(),
+    ).toEqual('5461791539140663086.919458539672351564');
     expect(userReserveTotals.currentLtv.toFixed()).toEqual(
       '3363.36560928956611758556',
     );
@@ -79,7 +79,9 @@ describe('calculateUserReserveTotals', () => {
     const userReserveTotals = calculateUserReserveTotals({
       userReserves: [rawUSDCSummary, rawETHSummary],
     });
-    expect(userReserveTotals.totalCollateralETH.toFixed()).toEqual('0');
+    expect(
+      userReserveTotals.totalCollateralMarketReferenceCurrency.toFixed(),
+    ).toEqual('0');
     expect(userReserveTotals.currentLtv.toFixed()).toEqual('0');
     expect(userReserveTotals.currentLiquidationThreshold.toFixed()).toEqual(
       '0',

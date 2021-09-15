@@ -17,9 +17,9 @@ export interface RawUserSummaryResponse {
   totalLiquidityUSD: BigNumber;
   totalCollateralUSD: BigNumber;
   totalBorrowsUSD: BigNumber;
-  totalLiquidityETH: BigNumber;
-  totalCollateralETH: BigNumber;
-  totalBorrowsETH: BigNumber;
+  totalLiquidityMarketReferenceCurrency: BigNumber;
+  totalCollateralMarketReferenceCurrency: BigNumber;
+  totalBorrowsMarketReferenceCurrency: BigNumber;
   availableBorrowsETH: BigNumber;
   currentLoanToValue: BigNumber;
   currentLiquidationThreshold: BigNumber;
@@ -38,39 +38,39 @@ export function generateRawUserSummary({
   usdPriceMarketReferenceCurrency,
 }: RawUserSummaryRequest): RawUserSummaryResponse {
   const {
-    totalLiquidityETH,
-    totalBorrowsETH,
-    totalCollateralETH,
+    totalLiquidityMarketReferenceCurrency,
+    totalBorrowsMarketReferenceCurrency,
+    totalCollateralMarketReferenceCurrency,
     currentLtv,
     currentLiquidationThreshold,
   } = calculateUserReserveTotals({ userReserves: userReserves });
 
   return {
     totalLiquidityUSD: convertToUsd(
-      totalLiquidityETH,
+      totalLiquidityMarketReferenceCurrency,
       usdPriceMarketReferenceCurrency,
     ),
     totalCollateralUSD: convertToUsd(
-      totalCollateralETH,
+      totalCollateralMarketReferenceCurrency,
       usdPriceMarketReferenceCurrency,
     ),
     totalBorrowsUSD: convertToUsd(
-      totalBorrowsETH,
+      totalBorrowsMarketReferenceCurrency,
       usdPriceMarketReferenceCurrency,
     ),
-    totalLiquidityETH,
-    totalCollateralETH,
-    totalBorrowsETH,
+    totalLiquidityMarketReferenceCurrency,
+    totalCollateralMarketReferenceCurrency,
+    totalBorrowsMarketReferenceCurrency,
     availableBorrowsETH: calculateAvailableBorrowsETH({
-      collateralBalanceETH: totalCollateralETH,
-      borrowBalanceETH: totalBorrowsETH,
+      collateralBalanceETH: totalCollateralMarketReferenceCurrency,
+      borrowBalanceETH: totalBorrowsMarketReferenceCurrency,
       currentLtv,
     }),
     currentLoanToValue: currentLtv,
     currentLiquidationThreshold,
     healthFactor: calculateHealthFactorFromBalances({
-      collateralBalanceETH: totalCollateralETH,
-      borrowBalanceETH: totalBorrowsETH,
+      collateralBalanceETH: totalCollateralMarketReferenceCurrency,
+      borrowBalanceETH: totalBorrowsMarketReferenceCurrency,
       currentLiquidationThreshold,
     }),
   };

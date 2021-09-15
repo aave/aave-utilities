@@ -63,8 +63,8 @@ export function formatUserReserve({
     ),
     variableBorrowsUSD: normalize(_reserve.variableBorrowsUSD, USD_DECIMALS),
     totalBorrows: normalizeWithReserve(_reserve.totalBorrows),
-    totalBorrowsETH: normalize(
-      _reserve.totalBorrowsETH,
+    totalBorrowsMarketReferenceCurrency: normalize(
+      _reserve.totalBorrowsMarketReferenceCurrency,
       marketReferenceCurrencyDecimals,
     ),
     totalBorrowsUSD: normalize(_reserve.totalBorrowsUSD, USD_DECIMALS),

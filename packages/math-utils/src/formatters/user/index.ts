@@ -55,7 +55,7 @@ export interface ComputedUserReserve extends RawUserReserveData {
   stableBorrowsETH: string;
   stableBorrowsUSD: string;
   totalBorrows: string;
-  totalBorrowsETH: string;
+  totalBorrowsMarketReferenceCurrency: string;
   totalBorrowsUSD: string;
   totalLiquidity: string;
   totalStableDebt: string;
@@ -71,11 +71,11 @@ export interface FormatUserSummaryRequest {
 
 export interface FormatUserSummaryResponse {
   userReservesData: ComputedUserReserve[];
-  totalLiquidityETH: string;
+  totalLiquidityMarketReferenceCurrency: string;
   totalLiquidityUSD: string;
-  totalCollateralETH: string;
+  totalCollateralMarketReferenceCurrency: string;
   totalCollateralUSD: string;
-  totalBorrowsETH: string;
+  totalBorrowsMarketReferenceCurrency: string;
   totalBorrowsUSD: string;
   availableBorrowsETH: string;
   currentLoanToValue: string;
@@ -130,18 +130,18 @@ export function formatUserSummary({
 
   return {
     userReservesData: sortedUserReserves,
-    totalLiquidityETH: normalize(
-      userData.totalLiquidityETH,
+    totalLiquidityMarketReferenceCurrency: normalize(
+      userData.totalLiquidityMarketReferenceCurrency,
       marketReferenceCurrencyDecimals,
     ),
     totalLiquidityUSD: normalizeUSD(userData.totalLiquidityUSD),
-    totalCollateralETH: normalize(
-      userData.totalCollateralETH,
+    totalCollateralMarketReferenceCurrency: normalize(
+      userData.totalCollateralMarketReferenceCurrency,
       marketReferenceCurrencyDecimals,
     ),
     totalCollateralUSD: normalizeUSD(userData.totalCollateralUSD),
-    totalBorrowsETH: normalize(
-      userData.totalBorrowsETH,
+    totalBorrowsMarketReferenceCurrency: normalize(
+      userData.totalBorrowsMarketReferenceCurrency,
       marketReferenceCurrencyDecimals,
     ),
     totalBorrowsUSD: normalizeUSD(userData.totalBorrowsUSD),

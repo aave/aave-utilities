@@ -79,13 +79,13 @@ describe('generateRawUserSummary', () => {
     expect(rawSummary.totalLiquidityUSD.toFixed()).toEqual('176460370343148');
     expect(rawSummary.totalCollateralUSD.toFixed()).toEqual('176460370343148');
     expect(rawSummary.totalBorrowsUSD.toFixed()).toEqual('57937531656962');
-    expect(rawSummary.totalLiquidityETH.toFixed()).toEqual(
+    expect(rawSummary.totalLiquidityMarketReferenceCurrency.toFixed()).toEqual(
       '5461791539140663086.919458539672351564',
     );
-    expect(rawSummary.totalCollateralETH.toFixed()).toEqual(
+    expect(rawSummary.totalCollateralMarketReferenceCurrency.toFixed()).toEqual(
       '5461791539140663086.919458539672351564',
     );
-    expect(rawSummary.totalBorrowsETH.toFixed()).toEqual(
+    expect(rawSummary.totalBorrowsMarketReferenceCurrency.toFixed()).toEqual(
       '1793279247840914816.850175',
     );
     expect(rawSummary.availableBorrowsETH.toFixed()).toEqual(

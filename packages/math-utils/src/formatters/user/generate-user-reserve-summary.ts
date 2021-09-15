@@ -27,7 +27,7 @@ export interface UserReserveSummaryResponse {
   stableBorrowsETH: BigNumber;
   stableBorrowsUSD: BigNumber;
   totalBorrows: BigNumber;
-  totalBorrowsETH: BigNumber;
+  totalBorrowsMarketReferenceCurrency: BigNumber;
   totalBorrowsUSD: BigNumber;
   totalLiquidity: BigNumber;
   totalStableDebt: BigNumber;
@@ -126,7 +126,9 @@ export function generateUserReserveSummary({
     stableBorrowsETH,
     stableBorrowsUSD,
     totalBorrows: variableBorrows.plus(stableBorrows),
-    totalBorrowsETH: variableBorrowsETH.plus(stableBorrowsETH),
+    totalBorrowsMarketReferenceCurrency: variableBorrowsETH.plus(
+      stableBorrowsETH,
+    ),
     totalBorrowsUSD: variableBorrowsUSD.plus(stableBorrowsUSD),
     totalLiquidity,
     totalStableDebt,

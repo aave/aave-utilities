@@ -29,7 +29,9 @@ describe('formatUserReserve', () => {
     );
     expect(formattedReserve.underlyingBalanceUSD).toEqual('2446.6226582788');
     expect(formattedReserve.totalBorrows).toEqual('52.314205');
-    expect(formattedReserve.totalBorrowsETH).toEqual('0.01622894658656106985');
+    expect(formattedReserve.totalBorrowsMarketReferenceCurrency).toEqual(
+      '0.01622894658656106985',
+    );
     expect(formattedReserve.totalBorrowsUSD).toEqual('52.4327211029');
     expect(formattedReserve.totalLiquidity).toEqual('5735355757.091039');
     expect(formattedReserve.totalStableDebt).toEqual('47382349.631778');

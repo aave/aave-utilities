@@ -26,7 +26,7 @@ describe('generateUserReserveSummary', () => {
     expect(rawSummary.stableBorrowsETH.toFixed()).toEqual('0');
     expect(rawSummary.stableBorrowsUSD.toFixed()).toEqual('0');
     expect(rawSummary.totalBorrows.toFixed()).toEqual('52314205');
-    expect(rawSummary.totalBorrowsETH.toFixed()).toEqual(
+    expect(rawSummary.totalBorrowsMarketReferenceCurrency.toFixed()).toEqual(
       '16228946586561069.850175',
     );
     expect(rawSummary.totalBorrowsUSD.toFixed()).toEqual('524327211029');
