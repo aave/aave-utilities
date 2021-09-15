@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.1.6 (2021-09-15)
+
+
+### Bug Fixes
+
+* add export for user methods ([#46](https://github.com/@aave/aave-utilities/issues/46)) ([@sakulstra](https://github.com/sakulstra)) ([6b04b02](https://github.com/@aave/aave-utilities/commit/6b04b02bff78975352d786b9fe06f68cad19b880))
+
+
+
+
+
 ## 0.1.5 (2021-09-15)
 
 **Note:** Version bump only for package @aave/contract-helpers
