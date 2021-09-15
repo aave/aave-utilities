@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js';
 import { BigNumberValue, normalize, valueToBigNumber } from '../../bignumber';
 import { RAY_DECIMALS } from '../../constants';
 import { LTV_PRECISION } from '../../index';
@@ -52,34 +51,28 @@ export function formatReserve({
   reserve,
   currentTimestamp,
 }: FormatReserveRequest): FormatReserveResponse {
-  const calculateReserveDebtResult = calculateReserveDebt(
-    reserve,
-    currentTimestamp,
-  );
+  const {
+    totalDebt,
+    totalStableDebt,
+    totalVariableDebt,
+  } = calculateReserveDebt(reserve, currentTimestamp);
 
-  const totalLiquidity = calculateTotalLiquidity(
-    calculateReserveDebtResult.totalDebt,
-    reserve.availableLiquidity,
-  );
+  const totalLiquidity = totalDebt.plus(reserve.availableLiquidity);
 
   const normalizeWithReserve = (n: BigNumberValue) =>
     normalize(n, reserve.decimals);
 
   return {
-    totalVariableDebt: normalizeWithReserve(
-      calculateReserveDebtResult.totalVariableDebt,
-    ),
-    totalStableDebt: normalizeWithReserve(
-      calculateReserveDebtResult.totalStableDebt,
-    ),
+    totalVariableDebt: normalizeWithReserve(totalVariableDebt),
+    totalStableDebt: normalizeWithReserve(totalStableDebt),
     totalLiquidity: normalizeWithReserve(totalLiquidity),
     availableLiquidity: normalizeWithReserve(reserve.availableLiquidity),
     utilizationRate: totalLiquidity.eq(0)
       ? '0'
-      : valueToBigNumber(calculateReserveDebtResult.totalDebt)
+      : valueToBigNumber(totalDebt)
           .dividedBy(totalLiquidity)
           .toFixed(),
-    totalDebt: normalizeWithReserve(calculateReserveDebtResult.totalDebt),
+    totalDebt: normalizeWithReserve(totalDebt),
     baseLTVasCollateral: normalize(reserve.baseLTVasCollateral, LTV_PRECISION),
     reserveFactor: normalize(reserve.reserveFactor, LTV_PRECISION),
     variableBorrowRate: normalize(reserve.variableBorrowRate, RAY_DECIMALS),
@@ -105,11 +98,4 @@ export function formatReserve({
     ),
     variableBorrowIndex: normalize(reserve.variableBorrowIndex, RAY_DECIMALS),
   };
-}
-
-function calculateTotalLiquidity(
-  totalDebt: BigNumber,
-  availableLiquidity: string,
-): BigNumber {
-  return totalDebt.plus(availableLiquidity);
 }
