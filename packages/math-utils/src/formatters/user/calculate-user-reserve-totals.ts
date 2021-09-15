@@ -7,9 +7,9 @@ interface UserReserveTotalsRequest {
 }
 
 interface UserReserveTotalsResponse {
-  totalLiquidityETH: BigNumber;
-  totalBorrowsETH: BigNumber;
-  totalCollateralETH: BigNumber;
+  totalLiquidityMarketReferenceCurrency: BigNumber;
+  totalBorrowsMarketReferenceCurrency: BigNumber;
+  totalCollateralMarketReferenceCurrency: BigNumber;
   currentLtv: BigNumber;
   currentLiquidationThreshold: BigNumber;
 }
@@ -17,34 +17,38 @@ interface UserReserveTotalsResponse {
 export function calculateUserReserveTotals({
   userReserves,
 }: UserReserveTotalsRequest): UserReserveTotalsResponse {
-  let totalLiquidityETH = valueToZDBigNumber('0');
-  let totalCollateralETH = valueToZDBigNumber('0');
-  let totalBorrowsETH = valueToZDBigNumber('0');
+  let totalLiquidityMarketReferenceCurrency = valueToZDBigNumber('0');
+  let totalCollateralMarketReferenceCurrency = valueToZDBigNumber('0');
+  let totalBorrowsMarketReferenceCurrency = valueToZDBigNumber('0');
   let currentLtv = valueToBigNumber('0');
   let currentLiquidationThreshold = valueToBigNumber('0');
 
   userReserves.forEach(userReserveSummary => {
-    totalLiquidityETH = totalLiquidityETH.plus(
-      userReserveSummary.underlyingBalanceETH,
+    totalLiquidityMarketReferenceCurrency = totalLiquidityMarketReferenceCurrency.plus(
+      userReserveSummary.underlyingBalanceMarketReferenceCurrency,
     );
-    totalBorrowsETH = totalBorrowsETH
-      .plus(userReserveSummary.variableBorrowsETH)
-      .plus(userReserveSummary.stableBorrowsETH);
+    totalBorrowsMarketReferenceCurrency = totalBorrowsMarketReferenceCurrency
+      .plus(userReserveSummary.variableBorrowsMarketReferenceCurrency)
+      .plus(userReserveSummary.stableBorrowsMarketReferenceCurrency);
 
     if (
       userReserveSummary.userReserve.reserve.usageAsCollateralEnabled &&
       userReserveSummary.userReserve.usageAsCollateralEnabledOnUser
     ) {
-      totalCollateralETH = totalCollateralETH.plus(
-        userReserveSummary.underlyingBalanceETH,
+      totalCollateralMarketReferenceCurrency = totalCollateralMarketReferenceCurrency.plus(
+        userReserveSummary.underlyingBalanceMarketReferenceCurrency,
       );
       currentLtv = currentLtv.plus(
-        valueToBigNumber(userReserveSummary.underlyingBalanceETH).multipliedBy(
+        valueToBigNumber(
+          userReserveSummary.underlyingBalanceMarketReferenceCurrency,
+        ).multipliedBy(
           userReserveSummary.userReserve.reserve.baseLTVasCollateral,
         ),
       );
       currentLiquidationThreshold = currentLiquidationThreshold.plus(
-        valueToBigNumber(userReserveSummary.underlyingBalanceETH).multipliedBy(
+        valueToBigNumber(
+          userReserveSummary.underlyingBalanceMarketReferenceCurrency,
+        ).multipliedBy(
           userReserveSummary.userReserve.reserve.reserveLiquidationThreshold,
         ),
       );
@@ -52,19 +56,21 @@ export function calculateUserReserveTotals({
   });
 
   if (currentLtv.gt(0)) {
-    currentLtv = valueToZDBigNumber(currentLtv.div(totalCollateralETH));
+    currentLtv = valueToZDBigNumber(
+      currentLtv.div(totalCollateralMarketReferenceCurrency),
+    );
   }
 
   if (currentLiquidationThreshold.gt(0)) {
     currentLiquidationThreshold = valueToZDBigNumber(
-      currentLiquidationThreshold.div(totalCollateralETH),
+      currentLiquidationThreshold.div(totalCollateralMarketReferenceCurrency),
     );
   }
 
   return {
-    totalLiquidityETH,
-    totalBorrowsETH,
-    totalCollateralETH,
+    totalLiquidityMarketReferenceCurrency,
+    totalBorrowsMarketReferenceCurrency,
+    totalCollateralMarketReferenceCurrency,
     currentLtv,
     currentLiquidationThreshold,
   };
