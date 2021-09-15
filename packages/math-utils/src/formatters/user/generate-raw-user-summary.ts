@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { BigNumberValue } from '../../bignumber';
 import { USD_DECIMALS } from '../../constants';
 import {
-  calculateAvailableBorrowsETH,
+  calculateAvailableBorrowsMarketReferenceCurrency,
   calculateHealthFactorFromBalances,
 } from '../../pool-math';
 import { calculateUserReserveTotals } from './calculate-user-reserve-totals';
@@ -20,7 +20,7 @@ export interface RawUserSummaryResponse {
   totalLiquidityMarketReferenceCurrency: BigNumber;
   totalCollateralMarketReferenceCurrency: BigNumber;
   totalBorrowsMarketReferenceCurrency: BigNumber;
-  availableBorrowsETH: BigNumber;
+  availableBorrowsMarketReferenceCurrency: BigNumber;
   currentLoanToValue: BigNumber;
   currentLiquidationThreshold: BigNumber;
   healthFactor: BigNumber;
@@ -61,16 +61,18 @@ export function generateRawUserSummary({
     totalLiquidityMarketReferenceCurrency,
     totalCollateralMarketReferenceCurrency,
     totalBorrowsMarketReferenceCurrency,
-    availableBorrowsETH: calculateAvailableBorrowsETH({
-      collateralBalanceETH: totalCollateralMarketReferenceCurrency,
-      borrowBalanceETH: totalBorrowsMarketReferenceCurrency,
-      currentLtv,
-    }),
+    availableBorrowsMarketReferenceCurrency: calculateAvailableBorrowsMarketReferenceCurrency(
+      {
+        collateralBalanceMarketReferenceCurrency: totalCollateralMarketReferenceCurrency,
+        borrowBalanceMarketReferenceCurrency: totalBorrowsMarketReferenceCurrency,
+        currentLtv,
+      },
+    ),
     currentLoanToValue: currentLtv,
     currentLiquidationThreshold,
     healthFactor: calculateHealthFactorFromBalances({
-      collateralBalanceETH: totalCollateralMarketReferenceCurrency,
-      borrowBalanceETH: totalBorrowsMarketReferenceCurrency,
+      collateralBalanceMarketReferenceCurrency: totalCollateralMarketReferenceCurrency,
+      borrowBalanceMarketReferenceCurrency: totalBorrowsMarketReferenceCurrency,
       currentLiquidationThreshold,
     }),
   };

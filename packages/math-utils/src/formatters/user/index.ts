@@ -77,7 +77,7 @@ export interface FormatUserSummaryResponse {
   totalCollateralUSD: string;
   totalBorrowsMarketReferenceCurrency: string;
   totalBorrowsUSD: string;
-  availableBorrowsETH: string;
+  availableBorrowsMarketReferenceCurrency: string;
   currentLoanToValue: string;
   currentLiquidationThreshold: string;
   healthFactor: string;
@@ -145,8 +145,8 @@ export function formatUserSummary({
       marketReferenceCurrencyDecimals,
     ),
     totalBorrowsUSD: normalizeUSD(userData.totalBorrowsUSD),
-    availableBorrowsETH: normalize(
-      userData.availableBorrowsETH,
+    availableBorrowsMarketReferenceCurrency: normalize(
+      userData.availableBorrowsMarketReferenceCurrency,
       marketReferenceCurrencyDecimals,
     ),
     currentLoanToValue: normalize(userData.currentLoanToValue, LTV_PRECISION),

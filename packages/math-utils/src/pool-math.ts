@@ -161,66 +161,68 @@ export function getCompoundedStableBalance({
 }
 
 interface HealthFactorFromBalanceRequest {
-  collateralBalanceETH: BigNumberValue;
-  borrowBalanceETH: BigNumberValue;
+  collateralBalanceMarketReferenceCurrency: BigNumberValue;
+  borrowBalanceMarketReferenceCurrency: BigNumberValue;
   currentLiquidationThreshold: BigNumberValue;
 }
 
 export function calculateHealthFactorFromBalances({
-  borrowBalanceETH,
-  collateralBalanceETH,
+  borrowBalanceMarketReferenceCurrency,
+  collateralBalanceMarketReferenceCurrency,
   currentLiquidationThreshold,
 }: HealthFactorFromBalanceRequest): BigNumber {
-  if (valueToBigNumber(borrowBalanceETH).eq(0)) {
+  if (valueToBigNumber(borrowBalanceMarketReferenceCurrency).eq(0)) {
     return valueToBigNumber('-1'); // Invalid number
   }
 
-  return valueToBigNumber(collateralBalanceETH)
+  return valueToBigNumber(collateralBalanceMarketReferenceCurrency)
     .multipliedBy(currentLiquidationThreshold)
     .shiftedBy(LTV_PRECISION * -1)
-    .div(borrowBalanceETH);
+    .div(borrowBalanceMarketReferenceCurrency);
 }
 
 interface HealthFactorFromBalanceBigUnitsRequest {
-  collateralBalanceETH: BigNumberValue;
-  borrowBalanceETH: BigNumberValue;
+  collateralBalanceMarketReferenceCurrency: BigNumberValue;
+  borrowBalanceMarketReferenceCurrency: BigNumberValue;
   currentLiquidationThreshold: BigNumberValue;
 }
 export function calculateHealthFactorFromBalancesBigUnits({
-  collateralBalanceETH,
-  borrowBalanceETH,
+  collateralBalanceMarketReferenceCurrency,
+  borrowBalanceMarketReferenceCurrency,
   currentLiquidationThreshold,
 }: HealthFactorFromBalanceBigUnitsRequest): BigNumber {
   return calculateHealthFactorFromBalances({
-    collateralBalanceETH,
-    borrowBalanceETH,
+    collateralBalanceMarketReferenceCurrency,
+    borrowBalanceMarketReferenceCurrency,
     currentLiquidationThreshold: valueToBigNumber(currentLiquidationThreshold)
       .shiftedBy(LTV_PRECISION)
       .decimalPlaces(0, BigNumber.ROUND_DOWN),
   });
 }
 
-interface AvailableBorrowsETHRequest {
-  collateralBalanceETH: BigNumberValue;
-  borrowBalanceETH: BigNumberValue;
+interface AvailableBorrowsMarketReferenceCurrencyRequest {
+  collateralBalanceMarketReferenceCurrency: BigNumberValue;
+  borrowBalanceMarketReferenceCurrency: BigNumberValue;
   currentLtv: BigNumberValue;
 }
 
-export function calculateAvailableBorrowsETH({
-  collateralBalanceETH,
-  borrowBalanceETH,
+export function calculateAvailableBorrowsMarketReferenceCurrency({
+  collateralBalanceMarketReferenceCurrency,
+  borrowBalanceMarketReferenceCurrency,
   currentLtv,
-}: AvailableBorrowsETHRequest): BigNumber {
+}: AvailableBorrowsMarketReferenceCurrencyRequest): BigNumber {
   if (valueToZDBigNumber(currentLtv).eq(0)) {
     return valueToZDBigNumber('0');
   }
 
-  const availableBorrowsETH = valueToZDBigNumber(collateralBalanceETH)
+  const availableBorrowsMarketReferenceCurrency = valueToZDBigNumber(
+    collateralBalanceMarketReferenceCurrency,
+  )
     .multipliedBy(currentLtv)
     .shiftedBy(LTV_PRECISION * -1)
-    .minus(borrowBalanceETH);
-  return availableBorrowsETH.gt('0')
-    ? availableBorrowsETH
+    .minus(borrowBalanceMarketReferenceCurrency);
+  return availableBorrowsMarketReferenceCurrency.gt('0')
+    ? availableBorrowsMarketReferenceCurrency
     : valueToZDBigNumber('0');
 }
 

@@ -88,9 +88,9 @@ describe('generateRawUserSummary', () => {
     expect(rawSummary.totalBorrowsMarketReferenceCurrency.toFixed()).toEqual(
       '1793279247840914816.850175',
     );
-    expect(rawSummary.availableBorrowsETH.toFixed()).toEqual(
-      '43720934944528524.254955658577905715676693391313689916981584',
-    );
+    expect(
+      rawSummary.availableBorrowsMarketReferenceCurrency.toFixed(),
+    ).toEqual('43720934944528524.254955658577905715676693391313689916981584');
     expect(rawSummary.currentLoanToValue.toFixed()).toEqual(
       '3363.36560928956611758556',
     );

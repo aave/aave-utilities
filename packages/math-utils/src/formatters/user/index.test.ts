@@ -23,7 +23,9 @@ describe('formatUserSummary', () => {
       '1.79327924784091481685',
     );
     expect(result.totalBorrowsUSD).toEqual('5793.7531656962');
-    expect(result.availableBorrowsETH).toEqual('0.04372093494452852425');
+    expect(result.availableBorrowsMarketReferenceCurrency).toEqual(
+      '0.04372093494452852425',
+    );
     expect(result.currentLoanToValue).toEqual('0.33633656092895661176');
     expect(result.currentLiquidationThreshold).toEqual(
       '0.51233208646356896415',
