@@ -19,6 +19,7 @@
     "cover": "jest --coverage",
     "commit": "git-cz",
     "version:ci": "lerna version --yes --conventional-commits --create-release github --message 'chore(release): publish [ci skip]'",
+    "release:check": "lerna changed",
     "release:latest": "lerna publish",
     "release:canary": "lerna publish --canary"
   },
