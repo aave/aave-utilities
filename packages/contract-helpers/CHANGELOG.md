@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.1.8 (2021-09-15)
+
+
+### Bug Fixes
+
+* fail when no changes detected ([8ee2003](https://github.com/@aave/aave-utilities/commit/8ee2003cc810d34340d9c90d0dc9766e2f42fdd7))
+
+
+
+
+
 ## 0.1.7 (2021-09-15)
 
 **Note:** Version bump only for package @aave/contract-helpers
