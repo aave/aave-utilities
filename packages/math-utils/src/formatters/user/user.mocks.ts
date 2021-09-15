@@ -16,9 +16,7 @@ export const usdcUserReserve: RawUserReserveData = {
     liquidityRate: '46062683922433651545591283',
     reserveLiquidationBonus: '10500',
     lastUpdateTimestamp: 1629942075,
-    price: {
-      priceInMarketReferenceCurrency: '310220648226635',
-    },
+    priceInMarketReferenceCurrency: '310220648226635',
     reserveFactor: '1000',
     baseLTVasCollateral: '8000',
     averageStableRate: '106672256721053059345703064',
@@ -29,7 +27,6 @@ export const usdcUserReserve: RawUserReserveData = {
     variableBorrowRate: '56235456575090775514594900',
     availableLiquidity: '558016083020512',
     stableBorrowRate: '126235456575090775514594900',
-
     totalPrincipalStableDebt: '47382324949680',
     totalScaledVariableDebt: '4790920796601146',
     usageAsCollateralEnabled: true,
@@ -52,15 +49,12 @@ export const xSushiUserReserve: RawUserReserveData = {
     liquidityRate: '60907795848090763073598',
     reserveLiquidationBonus: '11500',
     lastUpdateTimestamp: 1629936152,
-    price: {
-      priceInMarketReferenceCurrency: '4461141236372503',
-    },
+    priceInMarketReferenceCurrency: '4461141236372503',
     reserveFactor: '3500',
     baseLTVasCollateral: '2500',
     averageStableRate: '0',
     stableDebtLastUpdateTimestamp: 0,
     liquidityIndex: '1000122254330797728596142162',
-
     reserveLiquidationThreshold: '4500',
     variableBorrowIndex: '1002026240154574876504626909',
     variableBorrowRate: '3817882220211400976902451',
@@ -88,10 +82,7 @@ export const ethUserReserve: RawUserReserveData = {
     liquidityRate: '254255556752591383202873',
     reserveLiquidationBonus: '10500',
     lastUpdateTimestamp: 1629941871,
-
-    price: {
-      priceInMarketReferenceCurrency: '1000000000000000000',
-    },
+    priceInMarketReferenceCurrency: '1000000000000000000',
     reserveFactor: '1000',
     baseLTVasCollateral: '8000',
     averageStableRate: '46637202204403154655675566',
