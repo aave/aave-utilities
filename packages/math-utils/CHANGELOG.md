@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.1.10 (2021-09-15)
+
+
+### Bug Fixes
+
+* add reserve formatters to export ([08078d3](https://github.com/@aave/aave-utilities/commit/08078d38d4adc21089e9d81c06a2c66ffa71ade2))
+
+
+
+
+
 ## 0.1.9 (2021-09-15)
 
 
