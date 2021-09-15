@@ -4,7 +4,11 @@ import {
   formatReserveRequestDAI,
   formatReserveRequestWMATIC,
 } from './reserve.mocks';
-import { formatReserve, FormatReserveRequest } from './index';
+import {
+  formatReserve,
+  FormatReserveRequest,
+  formatReserveWithUSD,
+} from './index';
 
 describe('formatReserve', () => {
   describe('WMATIC', () => {
@@ -53,60 +57,57 @@ describe('formatReserve', () => {
 
     it('should return the correct response', () => {
       const result = formatReserve(request);
-      expect(result).toEqual({
-        availableLiquidity: '43133.641118657852003256',
-        baseLTVasCollateral: '0.75',
-        liquidityIndex: '1.00016444737961059057',
-        liquidityRate: '0.02677620073531209306',
-        reserveFactor: '0.1',
-        reserveLiquidationBonus: '0.05',
-        reserveLiquidationThreshold: '0.8',
-        stableBorrowRate: '0.10928437169401419784',
-        totalDebt: '104546.724902523987620455',
-        totalLiquidity: '147680.366021181839623711',
-        totalPrincipalStableDebt: '1',
-        totalScaledVariableDebt: '145496.831599325217573288',
-        totalStableDebt: '0.500764298282678588',
-        totalVariableDebt: '104546.224138225704941867',
-        utilizationRate: '0.7079256892383976026',
-        variableBorrowIndex: '1.00023285443371120965',
-        variableBorrowRate: '0.03856874338802839568',
+      expect(result).toMatchSnapshot();
+
+      it('should increase over time', () => {
+        const first = formatReserve({
+          ...request,
+          currentTimestamp: request.reserve.lastUpdateTimestamp + 1,
+        });
+
+        const second = formatReserve({
+          ...request,
+          currentTimestamp: request.reserve.lastUpdateTimestamp + 1,
+        });
+
+        expect(new BigNumber(second.totalDebt).gte(first.totalDebt)).toBe(true);
       });
     });
 
-    it('should increase over time', () => {
-      const first = formatReserve({
-        ...request,
-        currentTimestamp: request.reserve.lastUpdateTimestamp + 1,
-      });
+    it('should return utilizationRate 0 when totalLiquidity == 0', () => {
+      const request: FormatReserveRequest = formatReserveRequestWMATIC;
+      request.reserve = {
+        ...request.reserve,
+        availableLiquidity: '0',
+      };
 
-      const second = formatReserve({
-        ...request,
-        currentTimestamp: request.reserve.lastUpdateTimestamp + 1,
-      });
+      jest
+        .spyOn(calculateReserveInstance, 'calculateReserveDebt')
+        .mockImplementation(() => {
+          return {
+            totalDebt: new BigNumber('0'),
+            totalVariableDebt: new BigNumber('0'),
+            totalStableDebt: new BigNumber('0'),
+          };
+        });
 
-      expect(new BigNumber(second.totalDebt).gte(first.totalDebt)).toBe(true);
+      const result = formatReserve(request);
+      expect(result.utilizationRate).toEqual('0');
     });
-  });
 
-  it('should return utilizationRate 0 when totalLiquidity == 0', () => {
-    const request: FormatReserveRequest = formatReserveRequestWMATIC;
-    request.reserve = {
-      ...request.reserve,
-      availableLiquidity: '0',
-    };
-
-    jest
-      .spyOn(calculateReserveInstance, 'calculateReserveDebt')
-      .mockImplementation(() => {
-        return {
-          totalDebt: new BigNumber('0'),
-          totalVariableDebt: new BigNumber('0'),
-          totalStableDebt: new BigNumber('0'),
-        };
+    it('should format & return usd prices', () => {
+      const result = formatReserveWithUSD({
+        reserve: {
+          ...formatReserveRequestDAI.reserve,
+          priceInMarketReferenceCurrency: '286130000000000',
+        },
+        currentTimestamp: formatReserveRequestDAI.currentTimestamp,
+        usdPriceMarketReferenceCurrency: '286017323855536',
+        marketReferenceCurrencyDecimals: 18,
       });
 
-    const result = formatReserve(request);
-    expect(result.utilizationRate).toEqual('0');
+      expect(result.totalLiquidity).toBe('43133.641118657852003256');
+      expect(result.totalLiquidityUSD).toBe('43133.64111865785200325');
+    });
   });
 });

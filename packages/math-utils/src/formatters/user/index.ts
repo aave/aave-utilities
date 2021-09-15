@@ -108,6 +108,7 @@ export function formatUserSummary({
       generateUserReserveSummary({
         userReserve,
         usdPriceMarketReferenceCurrency,
+        marketReferenceCurrencyDecimals,
         currentTimestamp,
       }),
   );

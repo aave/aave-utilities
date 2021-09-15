@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js';
-import { getMarketReferenceCurrencyAndUsdBalance } from 'math-utils/src/pool-math';
 import { BigNumberValue, normalize, valueToBigNumber } from '../../bignumber';
 import { RAY_DECIMALS } from '../../constants';
 import { LTV_PRECISION } from '../../index';
+import { getMarketReferenceCurrencyAndUsdBalance } from '../../pool-math';
 import { calculateReserveDebt } from './calculate-reserve-debt';
 
 export interface FormatReserveResponse {
@@ -20,9 +20,13 @@ export interface FormatReserveResponse {
   totalScaledVariableDebt: string;
   utilizationRate: string;
   totalStableDebt: string;
+  totalStableDebtBn: BigNumber;
   totalVariableDebt: string;
+  totalVariableDebtBn: BigNumber;
   totalDebt: string;
+  totalDebtBn: BigNumber;
   totalLiquidity: string;
+  totalLiquidityBn: BigNumber;
 }
 
 export interface FormatReserveRequest {
@@ -53,34 +57,32 @@ export function formatReserve({
   reserve,
   currentTimestamp,
 }: FormatReserveRequest): FormatReserveResponse {
-  const calculateReserveDebtResult = calculateReserveDebt(
-    reserve,
-    currentTimestamp,
-  );
+  const {
+    totalDebt,
+    totalStableDebt,
+    totalVariableDebt,
+  } = calculateReserveDebt(reserve, currentTimestamp);
 
-  const totalLiquidity = calculateTotalLiquidity(
-    calculateReserveDebtResult.totalDebt,
-    reserve.availableLiquidity,
-  );
+  const totalLiquidity = totalDebt.plus(reserve.availableLiquidity);
 
   const normalizeWithReserve = (n: BigNumberValue) =>
     normalize(n, reserve.decimals);
 
   return {
-    totalVariableDebt: normalizeWithReserve(
-      calculateReserveDebtResult.totalVariableDebt,
-    ),
-    totalStableDebt: normalizeWithReserve(
-      calculateReserveDebtResult.totalStableDebt,
-    ),
+    totalVariableDebt: normalizeWithReserve(totalVariableDebt),
+    totalVariableDebtBn: totalVariableDebt,
+    totalStableDebt: normalizeWithReserve(totalStableDebt),
+    totalStableDebtBn: totalStableDebt,
     totalLiquidity: normalizeWithReserve(totalLiquidity),
+    totalLiquidityBn: totalLiquidity,
     availableLiquidity: normalizeWithReserve(reserve.availableLiquidity),
     utilizationRate: totalLiquidity.eq(0)
       ? '0'
-      : valueToBigNumber(calculateReserveDebtResult.totalDebt)
+      : valueToBigNumber(totalDebt)
           .dividedBy(totalLiquidity)
           .toFixed(),
-    totalDebt: normalizeWithReserve(calculateReserveDebtResult.totalDebt),
+    totalDebt: normalizeWithReserve(totalDebt),
+    totalDebtBn: totalDebt,
     baseLTVasCollateral: normalize(reserve.baseLTVasCollateral, LTV_PRECISION),
     reserveFactor: normalize(reserve.reserveFactor, LTV_PRECISION),
     variableBorrowRate: normalize(reserve.variableBorrowRate, RAY_DECIMALS),
@@ -108,43 +110,44 @@ export function formatReserve({
   };
 }
 
-function calculateTotalLiquidity(
-  totalDebt: BigNumber,
-  availableLiquidity: string,
-): BigNumber {
-  return totalDebt.plus(availableLiquidity);
-}
-
-export interface ReserveDataWithPriceInformation extends FormatReserveResponse {
+export interface FormattedReserveDataWithPriceInformation
+  extends FormatReserveResponse {
   decimals: number;
   priceInMarketReferenceCurrency: BigNumberValue;
 }
-export interface InfuseFormattedReserveRequest {
-  reserve: ReserveDataWithPriceInformation;
+export interface GetUSDValueForFormattedReserveRequest {
+  reserve: FormattedReserveDataWithPriceInformation;
   usdPriceMarketReferenceCurrency: BigNumberValue;
+  marketReferenceCurrencyDecimals: number;
 }
 
-export function infuseFormattedUserSummaryDataWithUSD({
+/**
+ * @returns USD values for totalDebt & totalLiquidity
+ */
+export function getUSDValueForFormattedReserve({
   reserve,
   usdPriceMarketReferenceCurrency,
-}: InfuseFormattedReserveRequest) {
+  marketReferenceCurrencyDecimals,
+}: GetUSDValueForFormattedReserveRequest) {
   const {
     marketReferenceCurrencyBalance: totalDebtMarketReferenceCurrency,
     usdBalance: totalDebtUSD,
   } = getMarketReferenceCurrencyAndUsdBalance({
-    balance: reserve.totalDebt,
+    balance: reserve.totalDebtBn,
     decimals: reserve.decimals,
     priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
     usdPriceMarketReferenceCurrency,
+    marketReferenceCurrencyDecimals,
   });
   const {
     marketReferenceCurrencyBalance: totalLiquidityMarketReferenceCurrency,
     usdBalance: totalLiquidityUSD,
   } = getMarketReferenceCurrencyAndUsdBalance({
-    balance: reserve.totalLiquidity,
+    balance: reserve.totalLiquidityBn,
     decimals: reserve.decimals,
     priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
     usdPriceMarketReferenceCurrency,
+    marketReferenceCurrencyDecimals,
   });
 
   return {
@@ -153,4 +156,34 @@ export function infuseFormattedUserSummaryDataWithUSD({
     totalLiquidityMarketReferenceCurrency,
     totalLiquidityUSD,
   };
+}
+
+export interface ReserveDataWithPriceInformation extends ReserveData {
+  decimals: number;
+  priceInMarketReferenceCurrency: BigNumberValue;
+}
+export interface FormatReserveWithUSDRequest {
+  reserve: ReserveDataWithPriceInformation;
+  usdPriceMarketReferenceCurrency: BigNumberValue;
+  marketReferenceCurrencyDecimals: number;
+  currentTimestamp: number;
+}
+
+export function formatReserveWithUSD({
+  reserve,
+  usdPriceMarketReferenceCurrency,
+  marketReferenceCurrencyDecimals,
+  currentTimestamp,
+}: FormatReserveWithUSDRequest) {
+  const formattedReserve = formatReserve({ reserve, currentTimestamp });
+  const usdPrices = getUSDValueForFormattedReserve({
+    reserve: {
+      ...formattedReserve,
+      priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+      decimals: reserve.decimals,
+    },
+    usdPriceMarketReferenceCurrency,
+    marketReferenceCurrencyDecimals,
+  });
+  return { ...formattedReserve, ...usdPrices };
 }

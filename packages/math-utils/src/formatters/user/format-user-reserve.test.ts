@@ -8,18 +8,20 @@ import { ComputedUserReserve } from './index';
 
 describe('formatUserReserve', () => {
   const usdPriceMarketReferenceCurrency = 309519442156873;
+  const marketReferenceCurrencyDecimals = 18;
   const currentTimestamp = 1629942229;
   const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
       userReserve: usdcUserReserve,
       usdPriceMarketReferenceCurrency,
       currentTimestamp,
+      marketReferenceCurrencyDecimals,
     },
   );
 
   const formattedReserve: ComputedUserReserve = formatUserReserve({
     reserve: rawUSDCSummary,
-    marketReferenceCurrencyDecimals: 18,
+    marketReferenceCurrencyDecimals,
   });
 
   it('should format a user reserve ', () => {

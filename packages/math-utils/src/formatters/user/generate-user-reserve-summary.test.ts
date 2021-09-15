@@ -5,10 +5,13 @@ import {
 import { usdcUserReserve } from './user.mocks';
 
 describe('generateUserReserveSummary', () => {
+  const marketReferenceCurrencyDecimals = 18;
+
   const rawSummary: UserReserveSummaryResponse = generateUserReserveSummary({
     userReserve: usdcUserReserve,
     usdPriceMarketReferenceCurrency: 309519442156873,
     currentTimestamp: 1629942229,
+    marketReferenceCurrencyDecimals,
   });
 
   it('should generate a summary for an individual user reserve', () => {

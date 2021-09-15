@@ -14,12 +14,14 @@ import {
 
 describe('generateRawUserSummary', () => {
   const usdPriceMarketReferenceCurrency = 309519442156873;
+  const marketReferenceCurrencyDecimals = 18;
   const currentTimestamp = 1629942229;
   const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
       userReserve: usdcUserReserve,
       usdPriceMarketReferenceCurrency,
       currentTimestamp,
+      marketReferenceCurrencyDecimals,
     },
   );
 
@@ -28,6 +30,7 @@ describe('generateRawUserSummary', () => {
       userReserve: xSushiUserReserve,
       usdPriceMarketReferenceCurrency,
       currentTimestamp,
+      marketReferenceCurrencyDecimals,
     },
   );
 
@@ -35,6 +38,7 @@ describe('generateRawUserSummary', () => {
     userReserve: ethUserReserve,
     usdPriceMarketReferenceCurrency,
     currentTimestamp,
+    marketReferenceCurrencyDecimals,
   });
 
   const rawSummary: RawUserSummaryResponse = generateRawUserSummary({
@@ -47,6 +51,7 @@ describe('generateRawUserSummary', () => {
       userReserve: { ...usdcUserReserve, scaledATokenBalance: '2528085146' },
       usdPriceMarketReferenceCurrency,
       currentTimestamp,
+      marketReferenceCurrencyDecimals,
     },
   );
 
@@ -58,6 +63,7 @@ describe('generateRawUserSummary', () => {
       },
       usdPriceMarketReferenceCurrency,
       currentTimestamp,
+      marketReferenceCurrencyDecimals,
     },
   );
 

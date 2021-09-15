@@ -198,6 +198,7 @@ describe('pool math', () => {
       priceInMarketReferenceCurrency: 1,
       decimals: 18,
       usdPriceMarketReferenceCurrency: 2500,
+      marketReferenceCurrencyDecimals: 18,
     };
     const {
       marketReferenceCurrencyBalance,

@@ -11,12 +11,14 @@ import {
 
 describe('calculateUserReserveTotals', () => {
   const usdPriceMarketReferenceCurrency = 309519442156873;
+  const marketReferenceCurrencyDecimals = 18;
   const currentTimestamp = 1629942229;
   const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
       userReserve: usdcUserReserve,
       usdPriceMarketReferenceCurrency,
       currentTimestamp,
+      marketReferenceCurrencyDecimals,
     },
   );
 
@@ -25,6 +27,7 @@ describe('calculateUserReserveTotals', () => {
       userReserve: xSushiUserReserve,
       usdPriceMarketReferenceCurrency,
       currentTimestamp,
+      marketReferenceCurrencyDecimals,
     },
   );
 
@@ -32,6 +35,7 @@ describe('calculateUserReserveTotals', () => {
     userReserve: ethUserReserve,
     usdPriceMarketReferenceCurrency,
     currentTimestamp,
+    marketReferenceCurrencyDecimals,
   });
 
   it('should compute totals from user reserve array', () => {
@@ -64,6 +68,7 @@ describe('calculateUserReserveTotals', () => {
         },
         usdPriceMarketReferenceCurrency,
         currentTimestamp,
+        marketReferenceCurrencyDecimals,
       },
     );
     const rawETHSummary: UserReserveSummaryResponse = generateUserReserveSummary(
@@ -74,6 +79,7 @@ describe('calculateUserReserveTotals', () => {
         },
         usdPriceMarketReferenceCurrency,
         currentTimestamp,
+        marketReferenceCurrencyDecimals,
       },
     );
     const userReserveTotals = calculateUserReserveTotals({
