@@ -145,8 +145,12 @@ export function formatReserve({
   return formatEnhancedReserve({ reserve: { ...reserve, ...computedFields } });
 }
 
-interface FormatReserveUSDRequest {
-  reserve: ReserveData & { priceInMarketReferenceCurrency: string };
+export type ReserveDataWithPrice = ReserveData & {
+  priceInMarketReferenceCurrency: string;
+};
+
+export interface FormatReserveUSDRequest {
+  reserve: ReserveDataWithPrice;
   currentTimestamp: number;
   usdPriceMarketReferenceCurrency: string;
   marketReferenceCurrencyDecimals: number;
