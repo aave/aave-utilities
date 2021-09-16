@@ -117,7 +117,7 @@ describe('formatReserve', () => {
         priceInMarketReferenceCurrency: '286130000000000',
       },
       currentTimestamp: formatReserveRequestDAI.currentTimestamp,
-      usdPriceMarketReferenceCurrency: '275718209254522',
+      usdPriceMarketReferenceCurrency: '361129581606',
       marketReferenceCurrencyDecimals: 18,
     });
 

@@ -179,26 +179,26 @@ export function formatReserveUSD({
     totalLiquidityUSD: normalize(
       computedFields.totalLiquidity
         .multipliedBy(reserve.priceInMarketReferenceCurrency)
-        .dividedBy(usdPriceMarketReferenceCurrency),
-      marketReferenceCurrencyDecimals,
+        .multipliedBy(usdPriceMarketReferenceCurrency),
+      marketReferenceCurrencyDecimals + reserve.decimals,
     ),
     totalDebtUSD: normalize(
       computedFields.totalDebt
         .multipliedBy(reserve.priceInMarketReferenceCurrency)
-        .dividedBy(usdPriceMarketReferenceCurrency),
-      marketReferenceCurrencyDecimals,
+        .multipliedBy(usdPriceMarketReferenceCurrency),
+      marketReferenceCurrencyDecimals + reserve.decimals,
     ),
     totalVariableDebtUSD: normalize(
       computedFields.totalVariableDebt
         .multipliedBy(reserve.priceInMarketReferenceCurrency)
-        .dividedBy(usdPriceMarketReferenceCurrency),
-      marketReferenceCurrencyDecimals,
+        .multipliedBy(usdPriceMarketReferenceCurrency),
+      marketReferenceCurrencyDecimals + reserve.decimals,
     ),
     totalStableDebtUSD: normalize(
       computedFields.totalStableDebt
         .multipliedBy(reserve.priceInMarketReferenceCurrency)
-        .dividedBy(usdPriceMarketReferenceCurrency),
-      marketReferenceCurrencyDecimals,
+        .multipliedBy(usdPriceMarketReferenceCurrency),
+      marketReferenceCurrencyDecimals + reserve.decimals,
     ),
   };
 }
