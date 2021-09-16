@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { getMarketReferenceCurrencyAndUsdBalance } from 'math-utils/src/pool-math';
 import { BigNumberValue, normalize, valueToBigNumber } from '../../bignumber';
 import { RAY_DECIMALS } from '../../constants';
 import { LTV_PRECISION } from '../../index';
@@ -112,4 +113,44 @@ function calculateTotalLiquidity(
   availableLiquidity: string,
 ): BigNumber {
   return totalDebt.plus(availableLiquidity);
+}
+
+export interface ReserveDataWithPriceInformation extends FormatReserveResponse {
+  decimals: number;
+  priceInMarketReferenceCurrency: BigNumberValue;
+}
+export interface InfuseFormattedReserveRequest {
+  reserve: ReserveDataWithPriceInformation;
+  usdPriceMarketReferenceCurrency: BigNumberValue;
+}
+
+export function infuseFormattedUserSummaryDataWithUSD({
+  reserve,
+  usdPriceMarketReferenceCurrency,
+}: InfuseFormattedReserveRequest) {
+  const {
+    marketReferenceCurrencyBalance: totalDebtMarketReferenceCurrency,
+    usdBalance: totalDebtUSD,
+  } = getMarketReferenceCurrencyAndUsdBalance({
+    balance: reserve.totalDebt,
+    decimals: reserve.decimals,
+    priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+    usdPriceMarketReferenceCurrency,
+  });
+  const {
+    marketReferenceCurrencyBalance: totalLiquidityMarketReferenceCurrency,
+    usdBalance: totalLiquidityUSD,
+  } = getMarketReferenceCurrencyAndUsdBalance({
+    balance: reserve.totalLiquidity,
+    decimals: reserve.decimals,
+    priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+    usdPriceMarketReferenceCurrency,
+  });
+
+  return {
+    totalDebtMarketReferenceCurrency,
+    totalDebtUSD,
+    totalLiquidityMarketReferenceCurrency,
+    totalLiquidityUSD,
+  };
 }
