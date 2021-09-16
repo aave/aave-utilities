@@ -178,5 +178,23 @@ export function formatReserveUSD({
         .dividedBy(usdPriceMarketReferenceCurrency),
       marketReferenceCurrencyDecimals,
     ),
+    totalDebtUSD: normalize(
+      computedFields.totalDebt
+        .multipliedBy(reserve.priceInMarketReferenceCurrency)
+        .dividedBy(usdPriceMarketReferenceCurrency),
+      marketReferenceCurrencyDecimals,
+    ),
+    totalVariableDebtUSD: normalize(
+      computedFields.totalVariableDebt
+        .multipliedBy(reserve.priceInMarketReferenceCurrency)
+        .dividedBy(usdPriceMarketReferenceCurrency),
+      marketReferenceCurrencyDecimals,
+    ),
+    totalStableDebtUSD: normalize(
+      computedFields.totalStableDebt
+        .multipliedBy(reserve.priceInMarketReferenceCurrency)
+        .dividedBy(usdPriceMarketReferenceCurrency),
+      marketReferenceCurrencyDecimals,
+    ),
   };
 }
