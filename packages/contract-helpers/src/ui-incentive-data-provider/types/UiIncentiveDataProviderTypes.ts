@@ -7,13 +7,14 @@ export interface IncentiveData {
   emissionEndTimestamp: BigNumber;
   tokenAddress: string;
   rewardTokenAddress: string;
-  rewardTokenDecimals: BigNumber;
+  rewardTokenDecimals: number;
   0: BigNumber;
   1: BigNumber;
   2: BigNumber;
   3: BigNumber;
   4: string;
   5: string;
+  6: number;
 }
 
 export interface IncentiveUserData {
@@ -21,11 +22,12 @@ export interface IncentiveUserData {
   userUnclaimedRewards: BigNumber;
   tokenAddress: string;
   rewardTokenAddress: string;
-  rewardTokenDecimals: BigNumber;
+  rewardTokenDecimals: number;
   0: BigNumber;
   1: BigNumber;
   2: string;
   3: string;
+  4: number;
 }
 
 export interface ReserveIncentiveDataResponse {
