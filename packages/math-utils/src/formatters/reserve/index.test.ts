@@ -122,6 +122,6 @@ describe('formatReserve', () => {
     });
 
     expect(reserve.totalLiquidity).toBe('43133.641118657852003256');
-    expect(reserve.totalLiquidityUSD).toBe('44762.4724048912460194238');
+    expect(reserve.totalLiquidityUSD).toBe('44569.99446702882772568164');
   });
 });
