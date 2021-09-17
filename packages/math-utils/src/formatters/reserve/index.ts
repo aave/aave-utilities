@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { BigNumberValue, normalize, valueToBigNumber } from '../../bignumber';
-import { RAY_DECIMALS } from '../../constants';
+import { RAY_DECIMALS, USD_DECIMALS } from '../../constants';
 import { LTV_PRECISION } from '../../index';
 import { calculateReserveDebt } from './calculate-reserve-debt';
 
@@ -180,25 +180,25 @@ export function formatReserveUSD({
       computedFields.totalLiquidity
         .multipliedBy(reserve.priceInMarketReferenceCurrency)
         .multipliedBy(usdPriceMarketReferenceCurrency),
-      marketReferenceCurrencyDecimals + reserve.decimals,
+      marketReferenceCurrencyDecimals + reserve.decimals + USD_DECIMALS,
     ),
     totalDebtUSD: normalize(
       computedFields.totalDebt
         .multipliedBy(reserve.priceInMarketReferenceCurrency)
         .multipliedBy(usdPriceMarketReferenceCurrency),
-      marketReferenceCurrencyDecimals + reserve.decimals,
+      marketReferenceCurrencyDecimals + reserve.decimals + USD_DECIMALS,
     ),
     totalVariableDebtUSD: normalize(
       computedFields.totalVariableDebt
         .multipliedBy(reserve.priceInMarketReferenceCurrency)
         .multipliedBy(usdPriceMarketReferenceCurrency),
-      marketReferenceCurrencyDecimals + reserve.decimals,
+      marketReferenceCurrencyDecimals + reserve.decimals + USD_DECIMALS,
     ),
     totalStableDebtUSD: normalize(
       computedFields.totalStableDebt
         .multipliedBy(reserve.priceInMarketReferenceCurrency)
         .multipliedBy(usdPriceMarketReferenceCurrency),
-      marketReferenceCurrencyDecimals + reserve.decimals,
+      marketReferenceCurrencyDecimals + reserve.decimals + USD_DECIMALS,
     ),
   };
 }
