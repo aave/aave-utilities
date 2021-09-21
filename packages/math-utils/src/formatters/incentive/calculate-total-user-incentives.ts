@@ -49,11 +49,8 @@ export function calculateTotalUserIncentives({
   currentTimestamp,
   precision,
 }: CalculateTotalUserIncentivesRequest): BigNumber {
-  let claimableRewards = new BigNumber('0');
-  if (userReserveIncentives.length > 0) {
-    claimableRewards =
-      userReserveIncentives[0].aIncentiveData.userUnclaimedRewards;
-  }
+  let claimableRewards =
+    userReserveIncentives[0].aIncentiveData.userUnclaimedRewards;
 
   userReserveIncentives.forEach(userReserveIncentive => {
     const reserveIncentive = reserveIncentives.find(
