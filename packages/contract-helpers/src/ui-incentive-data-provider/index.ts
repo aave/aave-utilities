@@ -1,29 +1,34 @@
-import { ethers, providers } from 'ethers';
+import { providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
-import { abi } from './abi';
+import { UiIncentiveDataProvider as UiIncentiveDataProviderContract } from './typechain/UiIncentiveDataProvider';
+import { UiIncentiveDataProviderFactory } from './typechain/UiIncentiveDataProviderFactory';
 import {
-  AggregatedreserveincentivedataResponse,
-  ContractContext,
-  GetFullReservesIncentiveDataResponse,
-  UserreserveincentivedataResponse,
-} from './types/UiIncentiveDataProvider';
+  FullReservesIncentiveDataResponse,
+  ReserveIncentiveDataResponse,
+  UserReserveIncentiveDataResponse,
+} from './types/UiIncentiveDataProviderTypes';
+export * from './types/UiIncentiveDataProviderTypes';
 
-export {
-  AggregatedreserveincentivedataResponse,
-  GetFullReservesIncentiveDataResponse,
-  UserreserveincentivedataResponse,
-} from './types/UiIncentiveDataProvider';
-
+export interface UiIncentiveDataProviderInterface {
+  getAllIncentives: (
+    user: string,
+  ) => Promise<FullReservesIncentiveDataResponse>;
+  getReservesIncentives: () => Promise<ReserveIncentiveDataResponse[]>;
+  getUserReservesIncentives: (
+    user: string,
+  ) => Promise<UserReserveIncentiveDataResponse[]>;
+}
 export interface UiIncentiveDataProviderContext {
   incentiveDataProviderAddress: string;
-  lendingPoolAddress: string;
+  lendingPoolAddressProvider: string;
   provider: providers.Provider;
 }
 
-export class UiIncentiveDataProvider {
-  private readonly _contract: ContractContext;
+export class UiIncentiveDataProvider
+  implements UiIncentiveDataProviderInterface {
+  private readonly _contract: UiIncentiveDataProviderContract;
 
-  private readonly _lendingPoolAddress: string;
+  private readonly _lendingPoolAddressProvider: string;
 
   /**
    * Constructor
@@ -34,17 +39,16 @@ export class UiIncentiveDataProvider {
       throw new Error('contract address is not valid');
     }
 
-    if (!isAddress(context.lendingPoolAddress)) {
+    if (!isAddress(context.lendingPoolAddressProvider)) {
       throw new Error('Lending pool address is not valid');
     }
 
-    this._lendingPoolAddress = context.lendingPoolAddress;
+    this._lendingPoolAddressProvider = context.lendingPoolAddressProvider;
 
-    this._contract = (new ethers.Contract(
+    this._contract = UiIncentiveDataProviderFactory.connect(
       context.incentiveDataProviderAddress,
-      abi,
       context.provider,
-    ) as unknown) as ContractContext;
+    );
   }
 
   /**
@@ -53,13 +57,13 @@ export class UiIncentiveDataProvider {
    */
   public async getAllIncentives(
     user: string,
-  ): Promise<GetFullReservesIncentiveDataResponse> {
+  ): Promise<FullReservesIncentiveDataResponse> {
     if (!isAddress(user)) {
       throw new Error('User address is not a valid ethereum address');
     }
 
     return this._contract.getFullReservesIncentiveData(
-      this._lendingPoolAddress,
+      this._lendingPoolAddressProvider,
       user,
     );
   }
@@ -68,9 +72,11 @@ export class UiIncentiveDataProvider {
    *  Get the reserve incentive data for the lending pool
    */
   public async getReservesIncentives(): Promise<
-    AggregatedreserveincentivedataResponse[]
+    ReserveIncentiveDataResponse[]
   > {
-    return this._contract.getReservesIncentivesData(this._lendingPoolAddress);
+    return this._contract.getReservesIncentivesData(
+      this._lendingPoolAddressProvider,
+    );
   }
 
   /**
@@ -79,13 +85,13 @@ export class UiIncentiveDataProvider {
    */
   public async getUserReservesIncentives(
     user: string,
-  ): Promise<UserreserveincentivedataResponse[]> {
+  ): Promise<UserReserveIncentiveDataResponse[]> {
     if (!isAddress(user)) {
       throw new Error('User address is not a valid ethereum address');
     }
 
     return this._contract.getUserReservesIncentivesData(
-      this._lendingPoolAddress,
+      this._lendingPoolAddressProvider,
       user,
     );
   }

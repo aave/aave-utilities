@@ -1,0 +1,49 @@
+{
+  "name": "@aave/math-utils",
+  "version": "0.1.11",
+  "license": "MIT",
+  "description": "",
+  "scripts": {
+    "clean": "cd ../.. && npx rimraf packages/math-utils/dist packages/math-utils/*.log*",
+    "lint": "cd ../.. && npx eslint packages/math-utils/src/**/*.ts",
+    "check-types": "npm run build -- --noEmit",
+    "prebuild": "npm run clean",
+    "build": "cd ../.. && npx tsc -p packages/math-utils/tsconfig.json && npx tsc -p packages/math-utils/tsconfig.json --module commonjs --outDir ./packages/math-utils/dist/cjs",
+    "test": "cd ../.. && npm test packages/math-utils",
+    "cover": "cd ../.. && npm run cover packages/math-utils",
+    "commit": "cd ../.. && npm run commit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "lerna",
+    "typescript"
+  ],
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "files": [
+    "dist",
+    "package.json",
+    "package-lock.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "bignumber.js": "^9.0.1",
+    "tslib": "^1.10.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/@aave/aave-utilities.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/@aave/aave-utilities/issues"
+  },
+  "sideEffects": false,
+  "homepage": "https://github.com/@aave/aave-utilities#readme",
+  "gitHead": "47a9a6d1f940185ab1e7f6c2bea61564b2abe47a"
+}
