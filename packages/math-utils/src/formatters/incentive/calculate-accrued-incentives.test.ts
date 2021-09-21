@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { normalize } from '../../bignumber';
+import { normalize, valueToZDBigNumber } from '../../bignumber';
 import { calculateSupplies, SuppliesRequest } from '../user/calculate-supplies';
 import {
   calculateAccruedIncentives,
@@ -28,11 +28,11 @@ describe('calculateAccruedIncentives', () => {
 
   const depositRewardsRequest: CalculateAccruedIncentivesRequest = {
     principalUserBalance: new BigNumber('2441092440'),
-    reserveIndex: new BigNumber('14677148010356546110472348'),
-    userIndex: new BigNumber('8399742855606485876888576'),
+    reserveIndex: valueToZDBigNumber('14677148010356546110472348'),
+    userIndex: valueToZDBigNumber('8399742855606485876888576'),
     precision: 18,
     reserveIndexTimestamp: 1629942075,
-    emissionPerSecond: new BigNumber('4629629629629629'),
+    emissionPerSecond: valueToZDBigNumber('4629629629629629'),
     totalSupply: totalLiquidity,
     currentTimestamp: 1629942229,
     emissionEndTimestamp: 1637573428,
@@ -40,11 +40,11 @@ describe('calculateAccruedIncentives', () => {
 
   const variableDebtRewardsRequest: CalculateAccruedIncentivesRequest = {
     principalUserBalance: new BigNumber('52314205'),
-    reserveIndex: new BigNumber('19667478596034441389278095'),
-    userIndex: new BigNumber('0'),
+    reserveIndex: valueToZDBigNumber('19667478596034441389278095'),
+    userIndex: valueToZDBigNumber('0'),
     precision: 18,
     reserveIndexTimestamp: 1629942075,
-    emissionPerSecond: new BigNumber('4629629629629629'),
+    emissionPerSecond: valueToZDBigNumber('4629629629629629'),
     totalSupply: totalVariableDebt,
     currentTimestamp: 1629942229,
     emissionEndTimestamp: 1637573428,
@@ -52,11 +52,11 @@ describe('calculateAccruedIncentives', () => {
 
   const stableDebtRewardsRequest: CalculateAccruedIncentivesRequest = {
     principalUserBalance: new BigNumber('0'),
-    reserveIndex: new BigNumber('0'),
-    userIndex: new BigNumber('0'),
+    reserveIndex: valueToZDBigNumber('0'),
+    userIndex: valueToZDBigNumber('0'),
     precision: 18,
     reserveIndexTimestamp: 1629942075,
-    emissionPerSecond: new BigNumber('0'),
+    emissionPerSecond: valueToZDBigNumber('0'),
     totalSupply: totalStableDebt,
     currentTimestamp: 1629942229,
     emissionEndTimestamp: 1637573428,
@@ -80,7 +80,7 @@ describe('calculateAccruedIncentives', () => {
       emissionEndTimestamp: 1,
     });
     expect(normalize(result, 18)).toBe(
-      stableDebtRewardsRequest.reserveIndex.toFixed(),
+      normalize(stableDebtRewardsRequest.reserveIndex, 18),
     );
   });
 });

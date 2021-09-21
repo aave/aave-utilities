@@ -1,32 +1,32 @@
 import BigNumber from 'bignumber.js';
 
-import { valueToZDBigNumber, normalize } from '../../bignumber';
-
-export interface CalculateRewardRequest {
-  principalUserBalance: string;
-  reserveIndex: string;
-  userIndex: string;
+export interface CalculateAccruedIncentivesRequest {
+  principalUserBalance: BigNumber;
+  reserveIndex: BigNumber;
+  userIndex: BigNumber;
   precision: number;
-  rewardTokenDecimals: number;
   reserveIndexTimestamp: number;
-  emissionPerSecond: string;
+  emissionPerSecond: BigNumber;
   totalSupply: BigNumber;
   currentTimestamp: number;
   emissionEndTimestamp: number;
 }
 
-export function calculateReward({
+export function calculateAccruedIncentives({
   principalUserBalance,
   reserveIndex,
   userIndex,
   precision,
-  rewardTokenDecimals,
   reserveIndexTimestamp,
   emissionPerSecond,
   totalSupply,
   currentTimestamp,
   emissionEndTimestamp,
-}: CalculateRewardRequest): string {
+}: CalculateAccruedIncentivesRequest): BigNumber {
+  if (totalSupply.isEqualTo(new BigNumber(0))) {
+    return new BigNumber(0);
+  }
+
   const actualCurrentTimestamp =
     currentTimestamp > emissionEndTimestamp
       ? emissionEndTimestamp
@@ -39,18 +39,18 @@ export function calculateReward({
     reserveIndexTimestamp === Number(currentTimestamp) ||
     reserveIndexTimestamp >= emissionEndTimestamp
   ) {
-    currentReserveIndex = valueToZDBigNumber(reserveIndex);
+    currentReserveIndex = reserveIndex;
   } else {
-    currentReserveIndex = valueToZDBigNumber(emissionPerSecond)
+    currentReserveIndex = emissionPerSecond
       .multipliedBy(timeDelta)
       .shiftedBy(precision)
       .dividedBy(totalSupply)
       .plus(reserveIndex);
   }
 
-  const reward = valueToZDBigNumber(principalUserBalance)
+  const reward = principalUserBalance
     .multipliedBy(currentReserveIndex.minus(userIndex))
     .shiftedBy(precision * -1);
 
-  return normalize(reward, rewardTokenDecimals);
+  return reward;
 }
