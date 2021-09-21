@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
+import { rayDiv } from '../../ray.math';
 
 import { ReserveData } from '../reserve';
-import { ComputedUserReserve } from '../user';
 import { calculateSupplies } from '../user/calculate-supplies';
 import { calculateAccruedIncentives } from './calculate-accrued-incentives';
 
@@ -26,6 +26,7 @@ interface ReserveTokenIncentives {
   emissionEndTimestamp: BigNumber;
   tokenAddress: string;
   rewardTokenAddress: string;
+  rewardTokenDecimals: number;
 }
 
 interface UserTokenIncentives {
@@ -33,6 +34,7 @@ interface UserTokenIncentives {
   userUnclaimedRewards: BigNumber;
   tokenAddress: string;
   rewardTokenAddress: string;
+  rewardTokenDecimals: number;
 }
 
 export interface CalculateUserReserveIncentivesRequest {
@@ -40,92 +42,91 @@ export interface CalculateUserReserveIncentivesRequest {
   userReserveIncentives: UserReserveIncentiveData;
   currentTimestamp: number;
   reserveData: ReserveData;
-  userReserveData: ComputedUserReserve;
-  rewardTokenDecimals: number;
+  scaledATokenBalance: BigNumber;
+  scaledVariableDebt: BigNumber;
+  principalStableDebt: BigNumber;
   precision: number;
 }
 
-export function calculateUserReserveIncentives(
-  request: CalculateUserReserveIncentivesRequest,
-): BigNumber {
-  const {
-    totalLiquidity,
-    totalStableDebt,
-    totalVariableDebt,
-  } = calculateSupplies({
+export interface CalculateUserReserveIncentivesResponse {
+  aIncentives: BigNumber;
+  vIncentives: BigNumber;
+  sIncentives: BigNumber;
+}
+
+export function calculateUserReserveIncentives({
+  reserveIncentives,
+  userReserveIncentives,
+  currentTimestamp,
+  reserveData,
+  scaledATokenBalance,
+  scaledVariableDebt,
+  principalStableDebt,
+  precision,
+}: CalculateUserReserveIncentivesRequest): CalculateUserReserveIncentivesResponse {
+  const { totalLiquidity } = calculateSupplies({
     reserve: {
-      totalScaledVariableDebt: request.reserveData.totalScaledVariableDebt,
-      variableBorrowIndex: request.reserveData.variableBorrowIndex,
-      variableBorrowRate: request.reserveData.variableBorrowRate,
-      totalPrincipalStableDebt: request.reserveData.totalPrincipalStableDebt,
-      averageStableRate: request.reserveData.averageStableRate,
-      availableLiquidity: request.reserveData.availableLiquidity,
-      stableDebtLastUpdateTimestamp:
-        request.reserveData.stableDebtLastUpdateTimestamp,
-      lastUpdateTimestamp: request.reserveData.lastUpdateTimestamp,
+      totalScaledVariableDebt: reserveData.totalScaledVariableDebt,
+      variableBorrowIndex: reserveData.variableBorrowIndex,
+      variableBorrowRate: reserveData.variableBorrowRate,
+      totalPrincipalStableDebt: reserveData.totalPrincipalStableDebt,
+      averageStableRate: reserveData.averageStableRate,
+      availableLiquidity: reserveData.availableLiquidity,
+      stableDebtLastUpdateTimestamp: reserveData.stableDebtLastUpdateTimestamp,
+      lastUpdateTimestamp: reserveData.lastUpdateTimestamp,
     },
-    currentTimestamp: request.currentTimestamp,
+    currentTimestamp: currentTimestamp,
   });
 
   const aIncentivesRequest = {
-    principalUserBalance: new BigNumber(
-      request.userReserveData.underlyingBalance,
-    ),
-    reserveIndex: request.reserveIncentives.aIncentiveData.tokenIncentivesIndex,
-    userIndex:
-      request.userReserveIncentives.aIncentiveData.tokenIncentivesUserIndex,
-    precision: request.precision,
-    rewardTokenDecimals: request.rewardTokenDecimals,
+    principalUserBalance: scaledATokenBalance,
+    reserveIndex: reserveIncentives.aIncentiveData.tokenIncentivesIndex,
+    userIndex: userReserveIncentives.aIncentiveData.tokenIncentivesUserIndex,
+    precision: precision,
+    rewardTokenDecimals: reserveIncentives.aIncentiveData.rewardTokenDecimals,
     reserveIndexTimestamp: Number(
-      request.reserveIncentives.aIncentiveData.incentivesLastUpdateTimestamp,
+      reserveIncentives.aIncentiveData.incentivesLastUpdateTimestamp,
     ),
-    emissionPerSecond:
-      request.reserveIncentives.aIncentiveData.emissionPerSecond,
-    totalSupply: totalLiquidity,
-    currentTimestamp: request.currentTimestamp,
+    emissionPerSecond: reserveIncentives.aIncentiveData.emissionPerSecond,
+    totalSupply: rayDiv(totalLiquidity, reserveData.liquidityIndex),
+    currentTimestamp: currentTimestamp,
     emissionEndTimestamp: Number(
-      request.reserveIncentives.aIncentiveData.emissionEndTimestamp,
+      reserveIncentives.aIncentiveData.emissionEndTimestamp,
     ),
   };
 
   const vIncentivesRequest = {
-    principalUserBalance: new BigNumber(
-      request.userReserveData.variableBorrows,
-    ),
-    reserveIndex: request.reserveIncentives.vIncentiveData.tokenIncentivesIndex,
-    userIndex:
-      request.userReserveIncentives.vIncentiveData.tokenIncentivesUserIndex,
-    precision: request.precision,
-    rewardTokenDecimals: request.rewardTokenDecimals,
+    principalUserBalance: scaledVariableDebt,
+    reserveIndex: reserveIncentives.vIncentiveData.tokenIncentivesIndex,
+    userIndex: userReserveIncentives.vIncentiveData.tokenIncentivesUserIndex,
+    precision: precision,
+    rewardTokenDecimals: reserveIncentives.vIncentiveData.rewardTokenDecimals,
     reserveIndexTimestamp: Number(
-      request.reserveIncentives.vIncentiveData.incentivesLastUpdateTimestamp,
+      reserveIncentives.vIncentiveData.incentivesLastUpdateTimestamp,
     ),
-    emissionPerSecond:
-      request.reserveIncentives.vIncentiveData.emissionPerSecond,
-    totalSupply: totalVariableDebt,
-    currentTimestamp: request.currentTimestamp,
+    emissionPerSecond: reserveIncentives.vIncentiveData.emissionPerSecond,
+    totalSupply: new BigNumber(reserveData.totalScaledVariableDebt),
+    currentTimestamp: currentTimestamp,
     emissionEndTimestamp: Number(
-      request.reserveIncentives.vIncentiveData.emissionEndTimestamp,
+      reserveIncentives.vIncentiveData.emissionEndTimestamp,
     ),
   };
 
   const sIncentivesRequest = {
-    principalUserBalance: new BigNumber(request.userReserveData.stableBorrows),
-    reserveIndex: request.reserveIncentives.sIncentiveData.tokenIncentivesIndex,
-    userIndex:
-      request.userReserveIncentives.sIncentiveData.tokenIncentivesUserIndex,
-    precision: request.precision,
-    rewardTokenDecimals: request.rewardTokenDecimals,
+    principalUserBalance: principalStableDebt,
+    reserveIndex: reserveIncentives.sIncentiveData.tokenIncentivesIndex,
+    userIndex: userReserveIncentives.sIncentiveData.tokenIncentivesUserIndex,
+    precision: precision,
+    rewardTokenDecimals: reserveIncentives.sIncentiveData.rewardTokenDecimals,
     reserveIndexTimestamp: Number(
-      request.reserveIncentives.sIncentiveData.incentivesLastUpdateTimestamp,
+      reserveIncentives.sIncentiveData.incentivesLastUpdateTimestamp,
     ),
 
-    emissionPerSecond:
-      request.reserveIncentives.sIncentiveData.emissionPerSecond,
-    totalSupply: totalStableDebt,
-    currentTimestamp: request.currentTimestamp,
+    emissionPerSecond: reserveIncentives.sIncentiveData.emissionPerSecond,
+    totalSupply: new BigNumber(reserveData.totalPrincipalStableDebt),
+    currentTimestamp: currentTimestamp,
     emissionEndTimestamp: Number(
-      request.reserveIncentives.sIncentiveData.emissionEndTimestamp,
+      reserveIncentives.sIncentiveData.emissionEndTimestamp,
     ),
   };
 
@@ -133,5 +134,5 @@ export function calculateUserReserveIncentives(
   const vIncentives = calculateAccruedIncentives(vIncentivesRequest);
   const sIncentives = calculateAccruedIncentives(sIncentivesRequest);
 
-  return aIncentives.plus(vIncentives).plus(sIncentives);
+  return { aIncentives, vIncentives, sIncentives };
 }
