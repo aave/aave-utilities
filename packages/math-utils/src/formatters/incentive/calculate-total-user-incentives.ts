@@ -38,6 +38,7 @@ export interface CalculateTotalUserIncentivesRequest {
   reserveIncentives: ReserveIncentiveData[];
   userReserveIncentives: UserReserveIncentiveData[];
   userReserves: RawUserReserveData[];
+  userUnclaimedRewards: BigNumber;
   currentTimestamp: number;
   precision: number;
 }
@@ -46,11 +47,11 @@ export function calculateTotalUserIncentives({
   reserveIncentives,
   userReserveIncentives,
   userReserves,
+  userUnclaimedRewards,
   currentTimestamp,
   precision,
 }: CalculateTotalUserIncentivesRequest): BigNumber {
-  let claimableRewards =
-    userReserveIncentives[0].aIncentiveData.userUnclaimedRewards;
+  let claimableRewards: BigNumber = userUnclaimedRewards;
 
   userReserveIncentives.forEach(userReserveIncentive => {
     const reserveIncentive = reserveIncentives.find(

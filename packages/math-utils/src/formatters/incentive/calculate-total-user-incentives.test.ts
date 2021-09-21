@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { normalize } from '../../bignumber';
 import { userReserves } from '../user/user.mocks';
 import {
@@ -15,6 +16,7 @@ describe('calculateTotalUserIncentives', () => {
     reserveIncentives,
     userReserveIncentives,
     userReserves,
+    userUnclaimedRewards: new BigNumber('43921819137644870'),
     currentTimestamp: 1631587561,
     precision: 18,
   };
@@ -28,6 +30,7 @@ describe('calculateTotalUserIncentives', () => {
     reserveIncentives: reserveIncentivesMissingUSDC,
     userReserveIncentives,
     userReserves,
+    userUnclaimedRewards: new BigNumber('43921819137644870'),
     currentTimestamp: 1631587561,
     precision: 18,
   };
