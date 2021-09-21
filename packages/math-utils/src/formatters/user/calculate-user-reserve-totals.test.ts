@@ -10,12 +10,12 @@ import {
 } from './user.mocks';
 
 describe('calculateUserReserveTotals', () => {
-  const usdPriceEth = 309519442156873;
+  const usdPriceMarketReferenceCurrency = 309519442156873;
   const currentTimestamp = 1629942229;
   const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
       userReserve: usdcUserReserve,
-      usdPriceEth,
+      usdPriceMarketReferenceCurrency,
       currentTimestamp,
     },
   );
@@ -23,14 +23,14 @@ describe('calculateUserReserveTotals', () => {
   const rawXSUSHISummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
       userReserve: xSushiUserReserve,
-      usdPriceEth,
+      usdPriceMarketReferenceCurrency,
       currentTimestamp,
     },
   );
 
   const rawETHSummary: UserReserveSummaryResponse = generateUserReserveSummary({
     userReserve: ethUserReserve,
-    usdPriceEth,
+    usdPriceMarketReferenceCurrency,
     currentTimestamp,
   });
 
@@ -38,15 +38,15 @@ describe('calculateUserReserveTotals', () => {
     const userReserveTotals = calculateUserReserveTotals({
       userReserves: [rawUSDCSummary, rawXSUSHISummary, rawETHSummary],
     });
-    expect(userReserveTotals.totalLiquidityETH.toFixed()).toEqual(
-      '5461791539140663086.919458539672351564',
-    );
-    expect(userReserveTotals.totalBorrowsETH.toFixed()).toEqual(
-      '1793279247840914816.850175',
-    );
-    expect(userReserveTotals.totalCollateralETH.toFixed()).toEqual(
-      '5461791539140663086.919458539672351564',
-    );
+    expect(
+      userReserveTotals.totalLiquidityMarketReferenceCurrency.toFixed(),
+    ).toEqual('5461791539140663086.919458539672351564');
+    expect(
+      userReserveTotals.totalBorrowsMarketReferenceCurrency.toFixed(),
+    ).toEqual('1793279247840914816.850175');
+    expect(
+      userReserveTotals.totalCollateralMarketReferenceCurrency.toFixed(),
+    ).toEqual('5461791539140663086.919458539672351564');
     expect(userReserveTotals.currentLtv.toFixed()).toEqual(
       '3363.36560928956611758556',
     );
@@ -62,7 +62,7 @@ describe('calculateUserReserveTotals', () => {
           ...usdcUserReserve,
           usageAsCollateralEnabledOnUser: false,
         },
-        usdPriceEth,
+        usdPriceMarketReferenceCurrency,
         currentTimestamp,
       },
     );
@@ -72,14 +72,16 @@ describe('calculateUserReserveTotals', () => {
           ...ethUserReserve,
           usageAsCollateralEnabledOnUser: false,
         },
-        usdPriceEth,
+        usdPriceMarketReferenceCurrency,
         currentTimestamp,
       },
     );
     const userReserveTotals = calculateUserReserveTotals({
       userReserves: [rawUSDCSummary, rawETHSummary],
     });
-    expect(userReserveTotals.totalCollateralETH.toFixed()).toEqual('0');
+    expect(
+      userReserveTotals.totalCollateralMarketReferenceCurrency.toFixed(),
+    ).toEqual('0');
     expect(userReserveTotals.currentLtv.toFixed()).toEqual('0');
     expect(userReserveTotals.currentLiquidationThreshold.toFixed()).toEqual(
       '0',

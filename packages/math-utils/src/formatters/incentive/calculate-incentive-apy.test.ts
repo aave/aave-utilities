@@ -10,9 +10,9 @@ describe('calculateIncentiveAPY', () => {
     it('calculates incentives APY', () => {
       const result = calculateIncentiveAPY({
         emissionPerSecond: '198333333333333000',
-        rewardTokenPriceInEth: '317233277449070',
+        rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply: '1000000003465380422',
-        tokenPriceInEth: '1634050000000000',
+        tokenPriceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
       });
 
@@ -22,9 +22,9 @@ describe('calculateIncentiveAPY', () => {
     it('calculates incentives APY', () => {
       const result = calculateIncentiveAPY({
         emissionPerSecond: '22037037037037000',
-        rewardTokenPriceInEth: '317233277449070',
+        rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply: '145530711359639107416907',
-        tokenPriceInEth: '1634050000000000',
+        tokenPriceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
       });
 
@@ -34,9 +34,9 @@ describe('calculateIncentiveAPY', () => {
     it('calculates incentives APY', () => {
       const result = calculateIncentiveAPY({
         emissionPerSecond: '0',
-        rewardTokenPriceInEth: '317233277449070',
+        rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply: '43135641118664782764100',
-        tokenPriceInEth: '1634050000000000',
+        tokenPriceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
       });
 
@@ -46,9 +46,9 @@ describe('calculateIncentiveAPY', () => {
     it('calculates incentives APY', () => {
       const result = calculateIncentiveAPY({
         emissionPerSecond: '136893333333333000',
-        rewardTokenPriceInEth: '317233277449070',
+        rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply: '150629528254290021063240208',
-        tokenPriceInEth: '1634050000000000',
+        tokenPriceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
       });
 
@@ -69,9 +69,9 @@ describe('calculateIncentiveAPY', () => {
     it('calculates deposit incentives APY', () => {
       const result = calculateIncentiveAPY({
         emissionPerSecond: '198333333333333000',
-        rewardTokenPriceInEth: '498035657442060',
+        rewardTokenPriceInMarketReferenceCurrency: '498035657442060',
         totalTokenSupply: totalLiquidity.toFixed(),
-        tokenPriceInEth: '498035657442060',
+        tokenPriceInMarketReferenceCurrency: '498035657442060',
         decimals: 18,
       });
 
@@ -81,9 +81,9 @@ describe('calculateIncentiveAPY', () => {
     it('calculates variable debt incentives APY', () => {
       const result = calculateIncentiveAPY({
         emissionPerSecond: '22037037037037000',
-        rewardTokenPriceInEth: '498035657442060',
+        rewardTokenPriceInMarketReferenceCurrency: '498035657442060',
         totalTokenSupply: calculateReserveDebtResult.totalVariableDebt.toFixed(),
-        tokenPriceInEth: '498035657442060',
+        tokenPriceInMarketReferenceCurrency: '498035657442060',
         decimals: 18,
       });
 
@@ -93,9 +93,9 @@ describe('calculateIncentiveAPY', () => {
     it('calculates stable debt incentives APY', () => {
       const result = calculateIncentiveAPY({
         emissionPerSecond: '0',
-        rewardTokenPriceInEth: '498035657442060',
+        rewardTokenPriceInMarketReferenceCurrency: '498035657442060',
         totalTokenSupply: calculateReserveDebtResult.totalStableDebt.toFixed(),
-        tokenPriceInEth: '498035657442060',
+        tokenPriceInMarketReferenceCurrency: '498035657442060',
         decimals: 18,
       });
 
@@ -116,9 +116,9 @@ describe('calculateIncentiveAPY', () => {
     it('calculates deposit incentives APY', () => {
       const result = calculateIncentiveAPY({
         emissionPerSecond: '0',
-        rewardTokenPriceInEth: '317233277449070',
+        rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply: totalLiquidity.toFixed(),
-        tokenPriceInEth: '1634050000000000',
+        tokenPriceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
       });
 
@@ -128,9 +128,9 @@ describe('calculateIncentiveAPY', () => {
     it('calculates variable debt incentives APY', () => {
       const result = calculateIncentiveAPY({
         emissionPerSecond: '0',
-        rewardTokenPriceInEth: '317233277449070',
+        rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply: calculateReserveDebtResult.totalVariableDebt.toFixed(),
-        tokenPriceInEth: '1634050000000000',
+        tokenPriceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
       });
 
@@ -140,9 +140,9 @@ describe('calculateIncentiveAPY', () => {
     it('calculates stable debt incentives APY', () => {
       const result = calculateIncentiveAPY({
         emissionPerSecond: '0',
-        rewardTokenPriceInEth: '317233277449070',
+        rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply: calculateReserveDebtResult.totalStableDebt.toFixed(),
-        tokenPriceInEth: '1634050000000000',
+        tokenPriceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
       });
 

@@ -7,8 +7,8 @@ import {
   getCompoundedStableBalance,
   calculateHealthFactorFromBalances,
   calculateHealthFactorFromBalancesBigUnits,
-  calculateAvailableBorrowsETH,
-  getEthAndUsdBalance,
+  calculateAvailableBorrowsMarketReferenceCurrency,
+  getMarketReferenceCurrencyAndUsdBalance,
 } from './pool-math';
 
 describe('pool math', () => {
@@ -111,8 +111,8 @@ describe('pool math', () => {
 
   it('should calculate health factor', () => {
     const minHealthFactorRequest = {
-      collateralBalanceETH: 100000000000000000,
-      borrowBalanceETH: 50000000000000000,
+      collateralBalanceMarketReferenceCurrency: 100000000000000000,
+      borrowBalanceMarketReferenceCurrency: 50000000000000000,
       currentLiquidationThreshold: 5000,
     };
     const minHealthFactor = calculateHealthFactorFromBalances(
@@ -120,8 +120,8 @@ describe('pool math', () => {
     );
     expect(minHealthFactor.toFixed()).toEqual('1');
     const healthFactorRequest = {
-      collateralBalanceETH: 100000000000000000,
-      borrowBalanceETH: 30000000000000000,
+      collateralBalanceMarketReferenceCurrency: 100000000000000000,
+      borrowBalanceMarketReferenceCurrency: 30000000000000000,
       currentLiquidationThreshold: 5000,
     };
     const healthFactor = calculateHealthFactorFromBalances(healthFactorRequest);
@@ -130,8 +130,8 @@ describe('pool math', () => {
 
   it('should return -1 health factor if borrowBalance is 0', () => {
     const healthFactorRequest = {
-      collateralBalanceETH: 100000000000000000,
-      borrowBalanceETH: 0,
+      collateralBalanceMarketReferenceCurrency: 100000000000000000,
+      borrowBalanceMarketReferenceCurrency: 0,
       currentLiquidationThreshold: 5000,
     };
     const healthFactor = calculateHealthFactorFromBalances(healthFactorRequest);
@@ -140,8 +140,8 @@ describe('pool math', () => {
 
   it('should calculate big unit health factor', () => {
     const minHealthFactorRequest = {
-      collateralBalanceETH: 100000000000000000,
-      borrowBalanceETH: 50000000000000000,
+      collateralBalanceMarketReferenceCurrency: 100000000000000000,
+      borrowBalanceMarketReferenceCurrency: 50000000000000000,
       currentLiquidationThreshold: 5000,
     };
     const minHealthFactor = calculateHealthFactorFromBalancesBigUnits(
@@ -149,8 +149,8 @@ describe('pool math', () => {
     );
     expect(minHealthFactor.toFixed()).toEqual('10000');
     const healthFactorRequest = {
-      collateralBalanceETH: 100000000000000000,
-      borrowBalanceETH: 30000000000000000,
+      collateralBalanceMarketReferenceCurrency: 100000000000000000,
+      borrowBalanceMarketReferenceCurrency: 30000000000000000,
       currentLiquidationThreshold: 5000,
     };
     const healthFactor = calculateHealthFactorFromBalancesBigUnits(
@@ -161,20 +161,20 @@ describe('pool math', () => {
 
   it('should calculate availableBorrows', () => {
     const availableBorrowsMaxedRequest = {
-      collateralBalanceETH: 1000000000000000000,
-      borrowBalanceETH: 50000000000000000,
+      collateralBalanceMarketReferenceCurrency: 1000000000000000000,
+      borrowBalanceMarketReferenceCurrency: 50000000000000000,
       currentLtv: 0.5,
     };
-    const availableBorrowsMaxed = calculateAvailableBorrowsETH(
+    const availableBorrowsMaxed = calculateAvailableBorrowsMarketReferenceCurrency(
       availableBorrowsMaxedRequest,
     );
     expect(availableBorrowsMaxed.toFixed()).toEqual('0');
     const availableBorrowsRequest = {
-      collateralBalanceETH: 1000000000000000000,
-      borrowBalanceETH: 30000000000000000,
+      collateralBalanceMarketReferenceCurrency: 1000000000000000000,
+      borrowBalanceMarketReferenceCurrency: 30000000000000000,
       currentLtv: 0.5,
     };
-    const availableBorrows = calculateAvailableBorrowsETH(
+    const availableBorrows = calculateAvailableBorrowsMarketReferenceCurrency(
       availableBorrowsRequest,
     );
     expect(availableBorrows.toFixed()).toEqual('0');
@@ -182,25 +182,28 @@ describe('pool math', () => {
 
   it('should return availableBorrows = 0 if currentLtv = 0', () => {
     const availableBorrowsRequest = {
-      collateralBalanceETH: 1000000000000000000,
-      borrowBalanceETH: 50000000000000000,
+      collateralBalanceMarketReferenceCurrency: 1000000000000000000,
+      borrowBalanceMarketReferenceCurrency: 50000000000000000,
       currentLtv: 0,
     };
-    const availableBorrows = calculateAvailableBorrowsETH(
+    const availableBorrows = calculateAvailableBorrowsMarketReferenceCurrency(
       availableBorrowsRequest,
     );
     expect(availableBorrows.toFixed()).toEqual('0');
   });
 
-  it('should convert balances to ETH and USD', () => {
+  it('should convert balances to MarketReferenceCurrency and USD', () => {
     const balanceRequest = {
       balance: 10000000000000000000,
-      priceInEth: 1,
+      priceInMarketReferenceCurrency: 1,
       decimals: 18,
-      usdPriceEth: 2500,
+      usdPriceMarketReferenceCurrency: 2500,
     };
-    const { ethBalance, usdBalance } = getEthAndUsdBalance(balanceRequest);
-    expect(ethBalance.toFixed()).toEqual('10');
+    const {
+      marketReferenceCurrencyBalance,
+      usdBalance,
+    } = getMarketReferenceCurrencyAndUsdBalance(balanceRequest);
+    expect(marketReferenceCurrencyBalance.toFixed()).toEqual('10');
     expect(usdBalance.toFixed()).toEqual('40000000');
   });
 });

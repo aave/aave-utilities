@@ -1,6 +1,6 @@
 {
   "name": "@aave/math-utils",
-  "version": "0.1.4",
+  "version": "0.1.11",
   "license": "MIT",
   "description": "",
   "scripts": {
@@ -43,6 +43,7 @@
   "bugs": {
     "url": "https://github.com/@aave/aave-utilities/issues"
   },
+  "sideEffects": false,
   "homepage": "https://github.com/@aave/aave-utilities#readme",
   "gitHead": "47a9a6d1f940185ab1e7f6c2bea61564b2abe47a"
 }

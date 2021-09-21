@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { BigNumberValue } from '../../bignumber';
 import { USD_DECIMALS } from '../../constants';
 import {
-  calculateAvailableBorrowsETH,
+  calculateAvailableBorrowsMarketReferenceCurrency,
   calculateHealthFactorFromBalances,
 } from '../../pool-math';
 import { calculateUserReserveTotals } from './calculate-user-reserve-totals';
@@ -10,17 +10,17 @@ import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
 
 export interface RawUserSummaryRequest {
   userReserves: UserReserveSummaryResponse[];
-  usdPriceEth: BigNumberValue;
+  usdPriceMarketReferenceCurrency: BigNumberValue;
 }
 
 export interface RawUserSummaryResponse {
   totalLiquidityUSD: BigNumber;
   totalCollateralUSD: BigNumber;
   totalBorrowsUSD: BigNumber;
-  totalLiquidityETH: BigNumber;
-  totalCollateralETH: BigNumber;
-  totalBorrowsETH: BigNumber;
-  availableBorrowsETH: BigNumber;
+  totalLiquidityMarketReferenceCurrency: BigNumber;
+  totalCollateralMarketReferenceCurrency: BigNumber;
+  totalBorrowsMarketReferenceCurrency: BigNumber;
+  availableBorrowsMarketReferenceCurrency: BigNumber;
   currentLoanToValue: BigNumber;
   currentLiquidationThreshold: BigNumber;
   healthFactor: BigNumber;
@@ -35,33 +35,44 @@ function convertToUsd(
 
 export function generateRawUserSummary({
   userReserves,
-  usdPriceEth,
+  usdPriceMarketReferenceCurrency,
 }: RawUserSummaryRequest): RawUserSummaryResponse {
   const {
-    totalLiquidityETH,
-    totalBorrowsETH,
-    totalCollateralETH,
+    totalLiquidityMarketReferenceCurrency,
+    totalBorrowsMarketReferenceCurrency,
+    totalCollateralMarketReferenceCurrency,
     currentLtv,
     currentLiquidationThreshold,
   } = calculateUserReserveTotals({ userReserves: userReserves });
 
   return {
-    totalLiquidityUSD: convertToUsd(totalLiquidityETH, usdPriceEth),
-    totalCollateralUSD: convertToUsd(totalCollateralETH, usdPriceEth),
-    totalBorrowsUSD: convertToUsd(totalBorrowsETH, usdPriceEth),
-    totalLiquidityETH,
-    totalCollateralETH,
-    totalBorrowsETH,
-    availableBorrowsETH: calculateAvailableBorrowsETH({
-      collateralBalanceETH: totalCollateralETH,
-      borrowBalanceETH: totalBorrowsETH,
-      currentLtv,
-    }),
+    totalLiquidityUSD: convertToUsd(
+      totalLiquidityMarketReferenceCurrency,
+      usdPriceMarketReferenceCurrency,
+    ),
+    totalCollateralUSD: convertToUsd(
+      totalCollateralMarketReferenceCurrency,
+      usdPriceMarketReferenceCurrency,
+    ),
+    totalBorrowsUSD: convertToUsd(
+      totalBorrowsMarketReferenceCurrency,
+      usdPriceMarketReferenceCurrency,
+    ),
+    totalLiquidityMarketReferenceCurrency,
+    totalCollateralMarketReferenceCurrency,
+    totalBorrowsMarketReferenceCurrency,
+    availableBorrowsMarketReferenceCurrency: calculateAvailableBorrowsMarketReferenceCurrency(
+      {
+        collateralBalanceMarketReferenceCurrency: totalCollateralMarketReferenceCurrency,
+        borrowBalanceMarketReferenceCurrency: totalBorrowsMarketReferenceCurrency,
+        currentLtv,
+      },
+    ),
     currentLoanToValue: currentLtv,
     currentLiquidationThreshold,
     healthFactor: calculateHealthFactorFromBalances({
-      collateralBalanceETH: totalCollateralETH,
-      borrowBalanceETH: totalBorrowsETH,
+      collateralBalanceMarketReferenceCurrency: totalCollateralMarketReferenceCurrency,
+      borrowBalanceMarketReferenceCurrency: totalBorrowsMarketReferenceCurrency,
       currentLiquidationThreshold,
     }),
   };
