@@ -3,12 +3,13 @@ import { ETH_DECIMALS, SECONDS_PER_YEAR } from '../../constants';
 
 export interface CalculateIncentiveAPYRequest {
   emissionPerSecond: string;
-  rewardTokenPriceInMarketReferenceCurrency: string;
+  rewardTokenPriceInMarketReferenceCurrency: string; // Can be priced in ETH or USD depending on market
   totalTokenSupply: string;
   decimals: number;
-  tokenPriceInMarketReferenceCurrency: string;
+  tokenPriceInMarketReferenceCurrency: string; // Can be priced in ETH or USD depending on market
 }
 
+// Calculate the APY for an incentive emission
 export function calculateIncentiveAPY({
   emissionPerSecond,
   rewardTokenPriceInMarketReferenceCurrency,

@@ -43,7 +43,7 @@ export const xSushiUserReserve: RawUserReserveData = {
   stableBorrowLastUpdateTimestamp: 0,
   reserve: {
     id:
-      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb480xb53c1a33016b2dc2ff3653530bff1848a515c8c5',
+      '0x8798249c2e607446efb7ad49ec89dd1865ff42720xb53c1a33016b2dc2ff3653530bff1848a515c8c5',
     symbol: 'XSUSHI',
     decimals: 18,
     liquidityRate: '60907795848090763073598',
@@ -100,8 +100,14 @@ export const ethUserReserve: RawUserReserveData = {
   },
 };
 
+export const userReserves = [
+  usdcUserReserve,
+  xSushiUserReserve,
+  ethUserReserve,
+];
+
 export const formatUserSummaryRequest: FormatUserSummaryRequest = {
-  rawUserReserves: [usdcUserReserve, xSushiUserReserve, ethUserReserve],
+  rawUserReserves: userReserves,
   usdPriceMarketReferenceCurrency: 309519442156873,
   marketReferenceCurrencyDecimals: 18,
   currentTimestamp: 1629942229,
