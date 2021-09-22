@@ -35,14 +35,15 @@ interface UserTokenIncentives {
 }
 
 export interface CalculateTotalUserIncentivesRequest {
-  reserveIncentives: ReserveIncentiveData[];
-  userReserveIncentives: UserReserveIncentiveData[];
-  userReserves: RawUserReserveData[];
-  userUnclaimedRewards: BigNumber;
+  reserveIncentives: ReserveIncentiveData[]; // token incentive data, from UiIncentiveDataProvider
+  userReserveIncentives: UserReserveIncentiveData[]; // user incentive data, from UiIncentiveDataProvider
+  userReserves: RawUserReserveData[]; // deposit and borrow data for user assets, from UiPoolDataProvider
+  userUnclaimedRewards: BigNumber; // total unclaimed rewards up to users last protocol interaction, from UiIncentiveDataProvider
   currentTimestamp: number;
-  precision: number;
+  precision: number; // decimal precision for rewards calculation
 }
 
+// Calculate total claimable incentives for a user
 export function calculateTotalUserIncentives({
   reserveIncentives,
   userReserveIncentives,
@@ -53,6 +54,7 @@ export function calculateTotalUserIncentives({
 }: CalculateTotalUserIncentivesRequest): BigNumber {
   let claimableRewards: BigNumber = userUnclaimedRewards;
 
+  // For each asset a user is earning incentives, compute rewards since last protocol interaction and add to total
   userReserveIncentives.forEach(userReserveIncentive => {
     const reserveIncentive = reserveIncentives.find(
       reserve =>

@@ -38,22 +38,23 @@ interface UserTokenIncentives {
 }
 
 export interface CalculateUserReserveIncentivesRequest {
-  reserveIncentives: ReserveIncentiveData;
-  userReserveIncentives: UserReserveIncentiveData;
+  reserveIncentives: ReserveIncentiveData; // token incentive data, from UiIncentiveDataProvider
+  userReserveIncentives: UserReserveIncentiveData; // user incentive data, from UiIncentiveDataProvider
   currentTimestamp: number;
-  reserveData: ReserveData;
-  scaledATokenBalance: BigNumber;
-  scaledVariableDebt: BigNumber;
-  principalStableDebt: BigNumber;
-  precision: number;
+  reserveData: ReserveData; // deposit and borrow data for an Aave reserve asset (UiPoolDataProvider)
+  scaledATokenBalance: BigNumber; // principal aToken balance: from user reserve data (UiPoolDataProvider)
+  scaledVariableDebt: BigNumber; // principal variableDebt balance: from user reserve data (UiPoolDataProvider)
+  principalStableDebt: BigNumber; // principal stableDebt balance: from user reserve data (UiPoolDataProvider)
+  precision: number; // decimal precision for rewards calculation
 }
 
 export interface CalculateUserReserveIncentivesResponse {
-  aIncentives: BigNumber;
-  vIncentives: BigNumber;
-  sIncentives: BigNumber;
+  aIncentives: BigNumber; // deposit incentives
+  vIncentives: BigNumber; // variable debt incentives
+  sIncentives: BigNumber; // stable debt incentives
 }
 
+// Calculate user deposit and borrow incentives for an individual reserve asset
 export function calculateUserReserveIncentives({
   reserveIncentives,
   userReserveIncentives,
@@ -88,7 +89,7 @@ export function calculateUserReserveIncentives({
       reserveIncentives.aIncentiveData.incentivesLastUpdateTimestamp,
     ),
     emissionPerSecond: reserveIncentives.aIncentiveData.emissionPerSecond,
-    totalSupply: rayDiv(totalLiquidity, reserveData.liquidityIndex),
+    totalSupply: rayDiv(totalLiquidity, reserveData.liquidityIndex), // Calculates total deposit amount
     currentTimestamp: currentTimestamp,
     emissionEndTimestamp: Number(
       reserveIncentives.aIncentiveData.emissionEndTimestamp,

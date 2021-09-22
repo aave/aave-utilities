@@ -1,17 +1,20 @@
 import BigNumber from 'bignumber.js';
 
 export interface CalculateAccruedIncentivesRequest {
-  principalUserBalance: BigNumber;
-  reserveIndex: BigNumber;
-  userIndex: BigNumber;
-  precision: number;
-  reserveIndexTimestamp: number;
+  principalUserBalance: BigNumber; // principal deposit or borrow amount
+  reserveIndex: BigNumber; // tracks the interest earned by a reserve
+  userIndex: BigNumber; // tracks the interest earned by a user from a particular reserve
+  precision: number; // decimal precision of rewards calculation
+  reserveIndexTimestamp: number; // timestamp of last protocol interaction
   emissionPerSecond: BigNumber;
-  totalSupply: BigNumber;
+  totalSupply: BigNumber; // total deposits or borrows of a reserve
   currentTimestamp: number;
   emissionEndTimestamp: number;
 }
 
+// Calculate incentives earned by user since reserveIndexTimestamp
+// Incentives earned before reserveIndexTimestamp are tracked seperately (userUnclaimedRewards from UiIncentiveDataProvider)
+// This function is used for deposit, variableDebt, and stableDebt incentives
 export function calculateAccruedIncentives({
   principalUserBalance,
   reserveIndex,
