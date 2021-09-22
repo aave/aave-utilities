@@ -83,6 +83,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -90,7 +91,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         vIncentiveData: {
           emissionPerSecond: BigNumber;
@@ -99,6 +101,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -106,7 +109,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         sIncentiveData: {
           emissionPerSecond: BigNumber;
@@ -115,6 +119,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -122,7 +127,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         0: string;
         1: {
@@ -132,6 +138,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -139,7 +146,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         2: {
           emissionPerSecond: BigNumber;
@@ -148,6 +156,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -155,7 +164,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         3: {
           emissionPerSecond: BigNumber;
@@ -164,6 +174,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -171,7 +182,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
       }[];
       1: {
@@ -181,36 +193,42 @@ export class UiIncentiveDataProvider extends Contract {
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         vTokenIncentivesUserData: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         sTokenIncentivesUserData: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         0: string;
         1: {
@@ -218,36 +236,42 @@ export class UiIncentiveDataProvider extends Contract {
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         2: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         3: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
       }[];
     }>;
@@ -266,6 +290,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -273,7 +298,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         vIncentiveData: {
           emissionPerSecond: BigNumber;
@@ -282,6 +308,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -289,7 +316,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         sIncentiveData: {
           emissionPerSecond: BigNumber;
@@ -298,6 +326,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -305,7 +334,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         0: string;
         1: {
@@ -315,6 +345,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -322,7 +353,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         2: {
           emissionPerSecond: BigNumber;
@@ -331,6 +363,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -338,7 +371,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         3: {
           emissionPerSecond: BigNumber;
@@ -347,6 +381,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -354,7 +389,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
       }[];
       1: {
@@ -364,36 +400,42 @@ export class UiIncentiveDataProvider extends Contract {
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         vTokenIncentivesUserData: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         sTokenIncentivesUserData: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         0: string;
         1: {
@@ -401,36 +443,42 @@ export class UiIncentiveDataProvider extends Contract {
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         2: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         3: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
       }[];
     }>;
@@ -448,6 +496,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -455,7 +504,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         vIncentiveData: {
           emissionPerSecond: BigNumber;
@@ -464,6 +514,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -471,7 +522,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         sIncentiveData: {
           emissionPerSecond: BigNumber;
@@ -480,6 +532,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -487,7 +540,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         0: string;
         1: {
@@ -497,6 +551,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -504,7 +559,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         2: {
           emissionPerSecond: BigNumber;
@@ -513,6 +569,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -520,7 +577,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         3: {
           emissionPerSecond: BigNumber;
@@ -529,6 +587,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -536,7 +595,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
       }[];
     }>;
@@ -554,6 +614,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -561,7 +622,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         vIncentiveData: {
           emissionPerSecond: BigNumber;
@@ -570,6 +632,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -577,7 +640,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         sIncentiveData: {
           emissionPerSecond: BigNumber;
@@ -586,6 +650,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -593,7 +658,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         0: string;
         1: {
@@ -603,6 +669,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -610,7 +677,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         2: {
           emissionPerSecond: BigNumber;
@@ -619,6 +687,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -626,7 +695,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         3: {
           emissionPerSecond: BigNumber;
@@ -635,6 +705,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -642,7 +713,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
       }[];
     }>;
@@ -659,36 +731,42 @@ export class UiIncentiveDataProvider extends Contract {
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         vTokenIncentivesUserData: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         sTokenIncentivesUserData: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         0: string;
         1: {
@@ -696,36 +774,42 @@ export class UiIncentiveDataProvider extends Contract {
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         2: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         3: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
       }[];
     }>;
@@ -742,36 +826,42 @@ export class UiIncentiveDataProvider extends Contract {
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         vTokenIncentivesUserData: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         sTokenIncentivesUserData: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         0: string;
         1: {
@@ -779,36 +869,42 @@ export class UiIncentiveDataProvider extends Contract {
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         2: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         3: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
       }[];
     }>;
@@ -828,6 +924,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -835,7 +932,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
       vIncentiveData: {
         emissionPerSecond: BigNumber;
@@ -844,6 +942,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -851,7 +950,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
       sIncentiveData: {
         emissionPerSecond: BigNumber;
@@ -860,6 +960,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -867,7 +968,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
       0: string;
       1: {
@@ -877,6 +979,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -884,7 +987,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
       2: {
         emissionPerSecond: BigNumber;
@@ -893,6 +997,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -900,7 +1005,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
       3: {
         emissionPerSecond: BigNumber;
@@ -909,6 +1015,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -916,7 +1023,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
     }[];
     1: {
@@ -926,36 +1034,42 @@ export class UiIncentiveDataProvider extends Contract {
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
       vTokenIncentivesUserData: {
         tokenincentivesUserIndex: BigNumber;
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
       sTokenIncentivesUserData: {
         tokenincentivesUserIndex: BigNumber;
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
       0: string;
       1: {
@@ -963,36 +1077,42 @@ export class UiIncentiveDataProvider extends Contract {
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
       2: {
         tokenincentivesUserIndex: BigNumber;
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
       3: {
         tokenincentivesUserIndex: BigNumber;
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
     }[];
   }>;
@@ -1011,6 +1131,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -1018,7 +1139,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
       vIncentiveData: {
         emissionPerSecond: BigNumber;
@@ -1027,6 +1149,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -1034,7 +1157,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
       sIncentiveData: {
         emissionPerSecond: BigNumber;
@@ -1043,6 +1167,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -1050,7 +1175,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
       0: string;
       1: {
@@ -1060,6 +1186,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -1067,7 +1194,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
       2: {
         emissionPerSecond: BigNumber;
@@ -1076,6 +1204,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -1083,7 +1212,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
       3: {
         emissionPerSecond: BigNumber;
@@ -1092,6 +1222,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -1099,7 +1230,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
     }[];
     1: {
@@ -1109,36 +1241,42 @@ export class UiIncentiveDataProvider extends Contract {
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
       vTokenIncentivesUserData: {
         tokenincentivesUserIndex: BigNumber;
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
       sTokenIncentivesUserData: {
         tokenincentivesUserIndex: BigNumber;
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
       0: string;
       1: {
@@ -1146,36 +1284,42 @@ export class UiIncentiveDataProvider extends Contract {
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
       2: {
         tokenincentivesUserIndex: BigNumber;
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
       3: {
         tokenincentivesUserIndex: BigNumber;
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
     }[];
   }>;
@@ -1193,6 +1337,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -1200,7 +1345,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
       vIncentiveData: {
         emissionPerSecond: BigNumber;
@@ -1209,6 +1355,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -1216,7 +1363,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
       sIncentiveData: {
         emissionPerSecond: BigNumber;
@@ -1225,6 +1373,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -1232,7 +1381,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
       0: string;
       1: {
@@ -1242,6 +1392,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -1249,7 +1400,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
       2: {
         emissionPerSecond: BigNumber;
@@ -1258,6 +1410,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -1265,7 +1418,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
       3: {
         emissionPerSecond: BigNumber;
@@ -1274,6 +1428,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -1281,7 +1436,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
     }[]
   >;
@@ -1299,6 +1455,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -1306,7 +1463,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
       vIncentiveData: {
         emissionPerSecond: BigNumber;
@@ -1315,6 +1473,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -1322,7 +1481,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
       sIncentiveData: {
         emissionPerSecond: BigNumber;
@@ -1331,6 +1491,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -1338,7 +1499,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
       0: string;
       1: {
@@ -1348,6 +1510,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -1355,7 +1518,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
       2: {
         emissionPerSecond: BigNumber;
@@ -1364,6 +1528,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -1371,7 +1536,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
       3: {
         emissionPerSecond: BigNumber;
@@ -1380,6 +1546,7 @@ export class UiIncentiveDataProvider extends Contract {
         emissionEndTimestamp: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
@@ -1387,7 +1554,8 @@ export class UiIncentiveDataProvider extends Contract {
         3: BigNumber;
         4: string;
         5: string;
-        6: number;
+        6: string;
+        7: number;
       };
     }[]
   >;
@@ -1404,36 +1572,42 @@ export class UiIncentiveDataProvider extends Contract {
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
       vTokenIncentivesUserData: {
         tokenincentivesUserIndex: BigNumber;
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
       sTokenIncentivesUserData: {
         tokenincentivesUserIndex: BigNumber;
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
       0: string;
       1: {
@@ -1441,36 +1615,42 @@ export class UiIncentiveDataProvider extends Contract {
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
       2: {
         tokenincentivesUserIndex: BigNumber;
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
       3: {
         tokenincentivesUserIndex: BigNumber;
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
     }[]
   >;
@@ -1487,36 +1667,42 @@ export class UiIncentiveDataProvider extends Contract {
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
       vTokenIncentivesUserData: {
         tokenincentivesUserIndex: BigNumber;
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
       sTokenIncentivesUserData: {
         tokenincentivesUserIndex: BigNumber;
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
       0: string;
       1: {
@@ -1524,36 +1710,42 @@ export class UiIncentiveDataProvider extends Contract {
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
       2: {
         tokenincentivesUserIndex: BigNumber;
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
       3: {
         tokenincentivesUserIndex: BigNumber;
         userUnclaimedRewards: BigNumber;
         tokenAddress: string;
         rewardTokenAddress: string;
+        incentiveControllerAddress: string;
         rewardTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
         2: string;
         3: string;
-        4: number;
+        4: string;
+        5: number;
       };
     }[]
   >;
@@ -1573,6 +1765,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -1580,7 +1773,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         vIncentiveData: {
           emissionPerSecond: BigNumber;
@@ -1589,6 +1783,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -1596,7 +1791,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         sIncentiveData: {
           emissionPerSecond: BigNumber;
@@ -1605,6 +1801,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -1612,7 +1809,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         0: string;
         1: {
@@ -1622,6 +1820,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -1629,7 +1828,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         2: {
           emissionPerSecond: BigNumber;
@@ -1638,6 +1838,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -1645,7 +1846,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         3: {
           emissionPerSecond: BigNumber;
@@ -1654,6 +1856,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -1661,7 +1864,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
       }[];
       1: {
@@ -1671,36 +1875,42 @@ export class UiIncentiveDataProvider extends Contract {
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         vTokenIncentivesUserData: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         sTokenIncentivesUserData: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         0: string;
         1: {
@@ -1708,36 +1918,42 @@ export class UiIncentiveDataProvider extends Contract {
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         2: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         3: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
       }[];
     }>;
@@ -1756,6 +1972,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -1763,7 +1980,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         vIncentiveData: {
           emissionPerSecond: BigNumber;
@@ -1772,6 +1990,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -1779,7 +1998,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         sIncentiveData: {
           emissionPerSecond: BigNumber;
@@ -1788,6 +2008,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -1795,7 +2016,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         0: string;
         1: {
@@ -1805,6 +2027,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -1812,7 +2035,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         2: {
           emissionPerSecond: BigNumber;
@@ -1821,6 +2045,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -1828,7 +2053,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         3: {
           emissionPerSecond: BigNumber;
@@ -1837,6 +2063,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -1844,7 +2071,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
       }[];
       1: {
@@ -1854,36 +2082,42 @@ export class UiIncentiveDataProvider extends Contract {
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         vTokenIncentivesUserData: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         sTokenIncentivesUserData: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         0: string;
         1: {
@@ -1891,36 +2125,42 @@ export class UiIncentiveDataProvider extends Contract {
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         2: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         3: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
       }[];
     }>;
@@ -1938,6 +2178,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -1945,7 +2186,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         vIncentiveData: {
           emissionPerSecond: BigNumber;
@@ -1954,6 +2196,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -1961,7 +2204,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         sIncentiveData: {
           emissionPerSecond: BigNumber;
@@ -1970,6 +2214,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -1977,7 +2222,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         0: string;
         1: {
@@ -1987,6 +2233,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -1994,7 +2241,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         2: {
           emissionPerSecond: BigNumber;
@@ -2003,6 +2251,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -2010,7 +2259,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         3: {
           emissionPerSecond: BigNumber;
@@ -2019,6 +2269,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -2026,7 +2277,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
       }[]
     >;
@@ -2044,6 +2296,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -2051,7 +2304,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         vIncentiveData: {
           emissionPerSecond: BigNumber;
@@ -2060,6 +2314,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -2067,7 +2322,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         sIncentiveData: {
           emissionPerSecond: BigNumber;
@@ -2076,6 +2332,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -2083,7 +2340,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         0: string;
         1: {
@@ -2093,6 +2351,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -2100,7 +2359,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         2: {
           emissionPerSecond: BigNumber;
@@ -2109,6 +2369,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -2116,7 +2377,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
         3: {
           emissionPerSecond: BigNumber;
@@ -2125,6 +2387,7 @@ export class UiIncentiveDataProvider extends Contract {
           emissionEndTimestamp: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
@@ -2132,7 +2395,8 @@ export class UiIncentiveDataProvider extends Contract {
           3: BigNumber;
           4: string;
           5: string;
-          6: number;
+          6: string;
+          7: number;
         };
       }[]
     >;
@@ -2149,36 +2413,42 @@ export class UiIncentiveDataProvider extends Contract {
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         vTokenIncentivesUserData: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         sTokenIncentivesUserData: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         0: string;
         1: {
@@ -2186,36 +2456,42 @@ export class UiIncentiveDataProvider extends Contract {
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         2: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         3: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
       }[]
     >;
@@ -2232,36 +2508,42 @@ export class UiIncentiveDataProvider extends Contract {
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         vTokenIncentivesUserData: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         sTokenIncentivesUserData: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         0: string;
         1: {
@@ -2269,36 +2551,42 @@ export class UiIncentiveDataProvider extends Contract {
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         2: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
         3: {
           tokenincentivesUserIndex: BigNumber;
           userUnclaimedRewards: BigNumber;
           tokenAddress: string;
           rewardTokenAddress: string;
+          incentiveControllerAddress: string;
           rewardTokenDecimals: number;
           0: BigNumber;
           1: BigNumber;
           2: string;
           3: string;
-          4: number;
+          4: string;
+          5: number;
         };
       }[]
     >;
