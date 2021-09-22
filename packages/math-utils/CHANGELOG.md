@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.2.0 (2021-09-22)
+
+
+### Features
+
+* add interface for UiPoolDataProvider contract ([#44](https://github.com/@aave/aave-utilities/issues/44)) ([01b3cb9](https://github.com/@aave/aave-utilities/commit/01b3cb9eacf242f2948c0cf728616b2ed1e2f553))
+
+
+
+
+
 ## 0.1.11 (2021-09-17)
 
 **Note:** Version bump only for package @aave/math-utils
