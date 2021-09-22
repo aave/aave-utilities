@@ -26,22 +26,18 @@ jobs:
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> ~/.npmrc
           git config user.name "GitHub Actions Build"
           git config user.email "developers@aave.com"
-
       - name: install
         id: install
         run: |
           yarn install --frozen-lockfile
-
       - id: lint
         name: lint
         run: |
           yarn lint
-
       - id: cover
         name: cover
         run: |
           yarn cover
-
       - id: build
         name: build
         run: |
