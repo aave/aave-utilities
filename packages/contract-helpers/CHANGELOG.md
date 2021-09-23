@@ -1,5 +1,21 @@
 # Change Log
 
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# 0.3.0 (2021-09-23)
+
+
+### Features
+
+* export incentive helpers ([#63](https://github.com/@aave/aave-utilities/issues/63)) ([adfbf17](https://github.com/@aave/aave-utilities/commit/adfbf17364b63d2af85e358c83fddc75e2c3ab2d))
+
+
+
+
+
+# Change Log
+
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
