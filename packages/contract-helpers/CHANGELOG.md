@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.5.0 (2021-09-23)
+
+
+### Features
+
+* modify incentive helper parameter types to accomodate aave-ui ([#66](https://github.com/@aave/aave-utilities/issues/66)) ([f2ca35e](https://github.com/@aave/aave-utilities/commit/f2ca35ec914734d54f1a7e585adeafb7d1059189))
+
+
+
+
+
 # 0.4.0 (2021-09-23)
 
 
