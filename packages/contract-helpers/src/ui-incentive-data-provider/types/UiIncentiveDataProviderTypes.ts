@@ -9,6 +9,7 @@ export interface IncentiveData {
   rewardTokenAddress: string;
   incentiveControllerAddress: string;
   rewardTokenDecimals: number;
+  precision: number;
   0: BigNumber;
   1: BigNumber;
   2: BigNumber;
@@ -17,6 +18,7 @@ export interface IncentiveData {
   5: string;
   6: string;
   7: number;
+  8: number;
 }
 
 export interface IncentiveUserData {
