@@ -1,15 +1,14 @@
 import BigNumber from 'bignumber.js';
-import { RawUserReserveData } from '../user';
 import { calculateUserReserveIncentives } from './calculate-user-reserve-incentives';
 
-interface ReserveIncentiveData {
+export interface ReserveIncentiveData {
   underlyingAsset: string;
   aIncentiveData: ReserveTokenIncentives;
   vIncentiveData: ReserveTokenIncentives;
   sIncentiveData: ReserveTokenIncentives;
 }
 
-interface UserReserveIncentiveData {
+export interface UserReserveIncentiveData {
   underlyingAsset: string;
   aIncentiveData: UserTokenIncentives;
   vIncentiveData: UserTokenIncentives;
@@ -17,30 +16,41 @@ interface UserReserveIncentiveData {
 }
 
 interface ReserveTokenIncentives {
-  emissionPerSecond: BigNumber;
-  incentivesLastUpdateTimestamp: BigNumber;
-  tokenIncentivesIndex: BigNumber;
-  emissionEndTimestamp: BigNumber;
+  emissionPerSecond: string;
+  incentivesLastUpdateTimestamp: string;
+  tokenIncentivesIndex: string;
+  emissionEndTimestamp: string;
   tokenAddress: string;
   rewardTokenAddress: string;
   rewardTokenDecimals: number;
+  precision: number;
 }
 
 interface UserTokenIncentives {
-  tokenIncentivesUserIndex: BigNumber;
-  userUnclaimedRewards: BigNumber;
+  tokenIncentivesUserIndex: string;
+  userUnclaimedRewards: string;
   tokenAddress: string;
   rewardTokenAddress: string;
   rewardTokenDecimals: number;
 }
 
+export interface UserReserveData {
+  underlyingAsset: string;
+  totalLiquidity: string;
+  liquidityIndex: string;
+  totalScaledVariableDebt: string;
+  totalPrincipalStableDebt: string;
+  scaledATokenBalance: string;
+  scaledVariableDebt: string;
+  principalStableDebt: string;
+}
+
 export interface CalculateTotalUserIncentivesRequest {
-  reserveIncentives: ReserveIncentiveData[]; // token incentive data, from UiIncentiveDataProvider
-  userReserveIncentives: UserReserveIncentiveData[]; // user incentive data, from UiIncentiveDataProvider
-  userReserves: RawUserReserveData[]; // deposit and borrow data for user assets, from UiPoolDataProvider
-  userUnclaimedRewards: BigNumber; // total unclaimed rewards up to users last protocol interaction, from UiIncentiveDataProvider
+  reserveIncentives: ReserveIncentiveData[]; // token incentive data
+  userReserveIncentives: UserReserveIncentiveData[]; // user incentive data
+  userReserves: UserReserveData[]; // deposit and borrow data for user assets
+  userUnclaimedRewards: string; // total unclaimed rewards up to users last protocol interaction
   currentTimestamp: number;
-  precision: number; // decimal precision for rewards calculation
 }
 
 // Calculate total claimable incentives for a user
@@ -50,9 +60,8 @@ export function calculateTotalUserIncentives({
   userReserves,
   userUnclaimedRewards,
   currentTimestamp,
-  precision,
-}: CalculateTotalUserIncentivesRequest): BigNumber {
-  let claimableRewards: BigNumber = userUnclaimedRewards;
+}: CalculateTotalUserIncentivesRequest): string {
+  let claimableRewards: BigNumber = new BigNumber(userUnclaimedRewards);
 
   // For each asset a user is earning incentives, compute rewards since last protocol interaction and add to total
   userReserveIncentives.forEach(userReserveIncentive => {
@@ -62,19 +71,14 @@ export function calculateTotalUserIncentives({
     );
     const userReserve = userReserves.find(
       userReserve =>
-        userReserve.reserve.id.substr(0, 42) ===
-        userReserveIncentive.underlyingAsset,
+        userReserve.underlyingAsset === userReserveIncentive.underlyingAsset,
     );
     if (reserveIncentive && userReserve) {
       const rewards = calculateUserReserveIncentives({
         reserveIncentives: reserveIncentive,
         userReserveIncentives: userReserveIncentive,
-        reserveData: userReserve.reserve,
-        scaledATokenBalance: new BigNumber(userReserve.scaledATokenBalance),
-        scaledVariableDebt: new BigNumber(userReserve.scaledVariableDebt),
-        principalStableDebt: new BigNumber(userReserve.principalStableDebt),
+        userReserveData: userReserve,
         currentTimestamp,
-        precision,
       });
       claimableRewards = claimableRewards
         .plus(rewards.aIncentives)
@@ -83,5 +87,5 @@ export function calculateTotalUserIncentives({
     }
   });
 
-  return claimableRewards;
+  return claimableRewards.toString();
 }
