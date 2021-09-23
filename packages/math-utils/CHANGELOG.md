@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.4.0 (2021-09-23)
+
+
+### Features
+
+* add precision ([#65](https://github.com/@aave/aave-utilities/issues/65)) ([0fefd66](https://github.com/@aave/aave-utilities/commit/0fefd66984fb3649c72a2c3cb8742d6f0be2461e))
+
+
+
+
+
 # 0.3.0 (2021-09-23)
 
 
