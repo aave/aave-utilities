@@ -1,3 +1,4 @@
+import { rayDiv } from '../../ray.math';
 import { calculateReserveDebt } from '../reserve/calculate-reserve-debt';
 import {
   formatReserveRequestDAI,
@@ -70,12 +71,15 @@ describe('calculateIncentiveAPY', () => {
       const result = calculateIncentiveAPY({
         emissionPerSecond: '198333333333333000',
         rewardTokenPriceInMarketReferenceCurrency: '498035657442060',
-        totalTokenSupply: totalLiquidity.toFixed(),
+        totalTokenSupply: rayDiv(
+          totalLiquidity,
+          formatReserveRequestWMATIC.reserve.liquidityIndex,
+        ).toString(),
         tokenPriceInMarketReferenceCurrency: '498035657442060',
         decimals: 18,
       });
 
-      expect(result).toEqual('0.03459120784662872218');
+      expect(result).toEqual('0.03490948667901282833');
     });
 
     it('calculates variable debt incentives APY', () => {
