@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.6.0 (2021-09-23)
+
+
+### Features
+
+* update incentive exports ([#67](https://github.com/@aave/aave-utilities/issues/67)) ([9683825](https://github.com/@aave/aave-utilities/commit/9683825b5ba92eb7d1c1692d2ad21a3d3ad49754))
+
+
+
+
+
 # 0.5.0 (2021-09-23)
 
 
