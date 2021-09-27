@@ -10,9 +10,9 @@ export interface ReserveIncentiveData {
 
 export interface UserReserveIncentiveData {
   underlyingAsset: string;
-  aIncentiveData: UserTokenIncentives;
-  vIncentiveData: UserTokenIncentives;
-  sIncentiveData: UserTokenIncentives;
+  aTokenIncentivesUserData: UserTokenIncentives;
+  vTokenIncentivesUserData: UserTokenIncentives;
+  sTokenIncentivesUserData: UserTokenIncentives;
 }
 
 interface ReserveTokenIncentives {
@@ -22,6 +22,7 @@ interface ReserveTokenIncentives {
   emissionEndTimestamp: string;
   tokenAddress: string;
   rewardTokenAddress: string;
+  incentiveControllerAddress: string;
   rewardTokenDecimals: number;
   precision: number;
 }
@@ -31,6 +32,7 @@ interface UserTokenIncentives {
   userUnclaimedRewards: string;
   tokenAddress: string;
   rewardTokenAddress: string;
+  incentiveControllerAddress: string;
   rewardTokenDecimals: number;
 }
 

@@ -37,7 +37,7 @@ export function calculateUserReserveIncentives({
       reserveIncentives.aIncentiveData.tokenIncentivesIndex,
     ),
     userIndex: new BigNumber(
-      userReserveIncentives.aIncentiveData.tokenIncentivesUserIndex,
+      userReserveIncentives.aTokenIncentivesUserData.tokenIncentivesUserIndex,
     ),
     precision: Number(reserveIncentives.aIncentiveData.precision),
     rewardTokenDecimals: reserveIncentives.aIncentiveData.rewardTokenDecimals,
@@ -60,7 +60,7 @@ export function calculateUserReserveIncentives({
       reserveIncentives.vIncentiveData.tokenIncentivesIndex,
     ),
     userIndex: new BigNumber(
-      userReserveIncentives.vIncentiveData.tokenIncentivesUserIndex,
+      userReserveIncentives.vTokenIncentivesUserData.tokenIncentivesUserIndex,
     ),
     precision: Number(reserveIncentives.vIncentiveData.precision),
     rewardTokenDecimals: reserveIncentives.vIncentiveData.rewardTokenDecimals,
@@ -83,7 +83,7 @@ export function calculateUserReserveIncentives({
       reserveIncentives.sIncentiveData.tokenIncentivesIndex,
     ),
     userIndex: new BigNumber(
-      userReserveIncentives.sIncentiveData.tokenIncentivesUserIndex,
+      userReserveIncentives.sTokenIncentivesUserData.tokenIncentivesUserIndex,
     ),
     precision: Number(reserveIncentives.sIncentiveData.precision),
     rewardTokenDecimals: reserveIncentives.sIncentiveData.rewardTokenDecimals,
