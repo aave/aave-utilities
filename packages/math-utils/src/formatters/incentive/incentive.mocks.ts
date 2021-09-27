@@ -9,6 +9,7 @@ export const aETHReserveIncentiveData = {
     emissionEndTimestamp: '1637573428',
     tokenAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenDecimals: 18,
     precision: 18,
   },
@@ -19,6 +20,7 @@ export const aETHReserveIncentiveData = {
     emissionEndTimestamp: '1637573428',
     tokenAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenDecimals: 18,
     precision: 18,
   },
@@ -29,6 +31,7 @@ export const aETHReserveIncentiveData = {
     emissionEndTimestamp: '1637573428',
     tokenAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenDecimals: 18,
     precision: 18,
   },
@@ -43,6 +46,7 @@ export const aUSDCReserveIncentiveData = {
     emissionEndTimestamp: '1637573428',
     tokenAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenDecimals: 18,
     precision: 18,
   },
@@ -53,6 +57,7 @@ export const aUSDCReserveIncentiveData = {
     emissionEndTimestamp: '1637573428',
     tokenAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenDecimals: 18,
     precision: 18,
   },
@@ -63,6 +68,7 @@ export const aUSDCReserveIncentiveData = {
     emissionEndTimestamp: '1637573428',
     tokenAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenDecimals: 18,
     precision: 18,
   },
@@ -77,6 +83,7 @@ export const aXSUSHIReserveIncentiveData = {
     emissionEndTimestamp: '1637573428',
     tokenAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenDecimals: 18,
     precision: 18,
   },
@@ -87,6 +94,7 @@ export const aXSUSHIReserveIncentiveData = {
     emissionEndTimestamp: '1637573428',
     tokenAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenDecimals: 18,
     precision: 18,
   },
@@ -97,6 +105,7 @@ export const aXSUSHIReserveIncentiveData = {
     emissionEndTimestamp: '1637573428',
     tokenAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenDecimals: 18,
     precision: 18,
   },
@@ -106,75 +115,84 @@ export const aXSUSHIReserveIncentiveData = {
 
 export const aETHUserIncentiveData = {
   underlyingAsset: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-  aIncentiveData: {
+  aTokenIncentivesUserData: {
     tokenIncentivesUserIndex: '0',
     userUnclaimedRewards: '43921819137644870',
     tokenAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenDecimals: 18,
   },
-  vIncentiveData: {
+  vTokenIncentivesUserData: {
     tokenIncentivesUserIndex: '24934844000963410',
     userUnclaimedRewards: '43921819137644870',
     tokenAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenDecimals: 18,
   },
-  sIncentiveData: {
+  sTokenIncentivesUserData: {
     tokenIncentivesUserIndex: '0',
     userUnclaimedRewards: '43921819137644870',
     tokenAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenDecimals: 18,
   },
 };
 
 export const aUSDCUserIncentiveData = {
   underlyingAsset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-  aIncentiveData: {
+  aTokenIncentivesUserData: {
     tokenIncentivesUserIndex: '8399742855606485876888576',
     userUnclaimedRewards: '43921819137644870',
     tokenAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenDecimals: 18,
   },
-  vIncentiveData: {
+  vTokenIncentivesUserData: {
     tokenIncentivesUserIndex: '0',
     userUnclaimedRewards: '43921819137644870',
     tokenAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenDecimals: 18,
   },
-  sIncentiveData: {
+  sTokenIncentivesUserData: {
     tokenIncentivesUserIndex: '0',
     userUnclaimedRewards: '43921819137644870',
     tokenAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenDecimals: 18,
   },
 };
 
 export const aXSUSHIUserIncentiveData = {
   underlyingAsset: '0x8798249c2e607446efb7ad49ec89dd1865ff4272',
-  aIncentiveData: {
+  aTokenIncentivesUserData: {
     tokenIncentivesUserIndex: '0',
     userUnclaimedRewards: '43921819137644870',
     tokenAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenDecimals: 18,
   },
-  vIncentiveData: {
+  vTokenIncentivesUserData: {
     tokenIncentivesUserIndex: '0',
     userUnclaimedRewards: '43921819137644870',
     tokenAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenDecimals: 18,
   },
-  sIncentiveData: {
+  sTokenIncentivesUserData: {
     tokenIncentivesUserIndex: '0',
     userUnclaimedRewards: '43921819137644870',
     tokenAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenDecimals: 18,
   },
 };
