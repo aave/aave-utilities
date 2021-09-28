@@ -19,6 +19,7 @@ describe('generateRawUserSummary', () => {
     {
       userReserve: usdcUserReserve,
       usdPriceMarketReferenceCurrency,
+      marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
     },
   );
@@ -27,6 +28,7 @@ describe('generateRawUserSummary', () => {
     {
       userReserve: xSushiUserReserve,
       usdPriceMarketReferenceCurrency,
+      marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
     },
   );
@@ -34,6 +36,7 @@ describe('generateRawUserSummary', () => {
   const rawETHSummary: UserReserveSummaryResponse = generateUserReserveSummary({
     userReserve: ethUserReserve,
     usdPriceMarketReferenceCurrency,
+    marketReferenceCurrencyDecimals: 18,
     currentTimestamp,
   });
 
@@ -46,6 +49,7 @@ describe('generateRawUserSummary', () => {
     {
       userReserve: { ...usdcUserReserve, scaledATokenBalance: '2528085146' },
       usdPriceMarketReferenceCurrency,
+      marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
     },
   );
@@ -57,6 +61,7 @@ describe('generateRawUserSummary', () => {
         scaledVariableDebt: '1961463562232346784',
       },
       usdPriceMarketReferenceCurrency,
+      marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
     },
   );
@@ -76,9 +81,9 @@ describe('generateRawUserSummary', () => {
   );
 
   it('should generate the correct user summary ', () => {
-    expect(rawSummary.totalLiquidityUSD.toFixed()).toEqual('176460370343148');
-    expect(rawSummary.totalCollateralUSD.toFixed()).toEqual('176460370343148');
-    expect(rawSummary.totalBorrowsUSD.toFixed()).toEqual('57937531656962');
+    expect(rawSummary.totalLiquidityUSD.toFixed()).toEqual('1764603703431');
+    expect(rawSummary.totalCollateralUSD.toFixed()).toEqual('1764603703431');
+    expect(rawSummary.totalBorrowsUSD.toFixed()).toEqual('579375316569');
     expect(rawSummary.totalLiquidityMarketReferenceCurrency.toFixed()).toEqual(
       '5461791539140663086.919458539672351564',
     );

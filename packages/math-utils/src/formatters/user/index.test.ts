@@ -14,15 +14,15 @@ describe('formatUserSummary', () => {
     expect(result.totalLiquidityMarketReferenceCurrency).toEqual(
       '5.46179153914066308692',
     );
-    expect(result.totalLiquidityUSD).toEqual('17646.0370343148');
+    expect(result.totalLiquidityUSD).toEqual('17646.03703431');
     expect(result.totalCollateralMarketReferenceCurrency).toEqual(
       '5.46179153914066308692',
     );
-    expect(result.totalCollateralUSD).toEqual('17646.0370343148');
+    expect(result.totalCollateralUSD).toEqual('17646.03703431');
     expect(result.totalBorrowsMarketReferenceCurrency).toEqual(
       '1.79327924784091481685',
     );
-    expect(result.totalBorrowsUSD).toEqual('5793.7531656962');
+    expect(result.totalBorrowsUSD).toEqual('5793.75316569');
     expect(result.availableBorrowsMarketReferenceCurrency).toEqual(
       '0.04372093494452852425',
     );

@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { BigNumberValue } from '../../bignumber';
-import { USD_DECIMALS_FIXED } from '../../constants';
+import { USD_DECIMALS } from '../../constants';
 
 interface NativeToUSD {
   amount: BigNumber;
@@ -22,7 +22,7 @@ export function nativeToUSD({
     .multipliedBy(usdPriceMarketReferenceCurrency)
     .dividedBy(
       new BigNumber(1).shiftedBy(
-        currencyDecimals + marketReferenceCurrencyDecimals + USD_DECIMALS_FIXED,
+        currencyDecimals + marketReferenceCurrencyDecimals + USD_DECIMALS,
       ),
     )
     .toString();
