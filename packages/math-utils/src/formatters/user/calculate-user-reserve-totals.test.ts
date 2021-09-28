@@ -16,6 +16,7 @@ describe('calculateUserReserveTotals', () => {
     {
       userReserve: usdcUserReserve,
       usdPriceMarketReferenceCurrency,
+      marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
     },
   );
@@ -24,6 +25,7 @@ describe('calculateUserReserveTotals', () => {
     {
       userReserve: xSushiUserReserve,
       usdPriceMarketReferenceCurrency,
+      marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
     },
   );
@@ -31,6 +33,7 @@ describe('calculateUserReserveTotals', () => {
   const rawETHSummary: UserReserveSummaryResponse = generateUserReserveSummary({
     userReserve: ethUserReserve,
     usdPriceMarketReferenceCurrency,
+    marketReferenceCurrencyDecimals: 18,
     currentTimestamp,
   });
 
@@ -63,6 +66,7 @@ describe('calculateUserReserveTotals', () => {
           usageAsCollateralEnabledOnUser: false,
         },
         usdPriceMarketReferenceCurrency,
+        marketReferenceCurrencyDecimals: 18,
         currentTimestamp,
       },
     );
@@ -73,6 +77,7 @@ describe('calculateUserReserveTotals', () => {
           usageAsCollateralEnabledOnUser: false,
         },
         usdPriceMarketReferenceCurrency,
+        marketReferenceCurrencyDecimals: 18,
         currentTimestamp,
       },
     );

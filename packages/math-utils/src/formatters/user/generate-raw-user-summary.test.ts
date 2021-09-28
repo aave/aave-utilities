@@ -19,6 +19,7 @@ describe('generateRawUserSummary', () => {
     {
       userReserve: usdcUserReserve,
       usdPriceMarketReferenceCurrency,
+      marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
     },
   );
@@ -27,6 +28,7 @@ describe('generateRawUserSummary', () => {
     {
       userReserve: xSushiUserReserve,
       usdPriceMarketReferenceCurrency,
+      marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
     },
   );
@@ -34,6 +36,7 @@ describe('generateRawUserSummary', () => {
   const rawETHSummary: UserReserveSummaryResponse = generateUserReserveSummary({
     userReserve: ethUserReserve,
     usdPriceMarketReferenceCurrency,
+    marketReferenceCurrencyDecimals: 18,
     currentTimestamp,
   });
 
@@ -46,6 +49,7 @@ describe('generateRawUserSummary', () => {
     {
       userReserve: { ...usdcUserReserve, scaledATokenBalance: '2528085146' },
       usdPriceMarketReferenceCurrency,
+      marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
     },
   );
@@ -57,6 +61,7 @@ describe('generateRawUserSummary', () => {
         scaledVariableDebt: '1961463562232346784',
       },
       usdPriceMarketReferenceCurrency,
+      marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
     },
   );

@@ -12,6 +12,7 @@ import { RawUserReserveData } from './index';
 export interface UserReserveSummaryRequest {
   userReserve: RawUserReserveData;
   usdPriceMarketReferenceCurrency: BigNumberValue;
+  marketReferenceCurrencyDecimals: number;
   currentTimestamp: number;
 }
 
@@ -37,6 +38,7 @@ export interface UserReserveSummaryResponse {
 export function generateUserReserveSummary({
   userReserve,
   usdPriceMarketReferenceCurrency,
+  marketReferenceCurrencyDecimals,
   currentTimestamp,
 }: UserReserveSummaryRequest): UserReserveSummaryResponse {
   const poolReserve = userReserve.reserve;
@@ -54,6 +56,7 @@ export function generateUserReserveSummary({
   } = getMarketReferenceCurrencyAndUsdBalance({
     balance: underlyingBalance,
     priceInMarketReferenceCurrency,
+    marketReferenceCurrencyDecimals,
     decimals,
     usdPriceMarketReferenceCurrency,
   });
@@ -72,6 +75,7 @@ export function generateUserReserveSummary({
   } = getMarketReferenceCurrencyAndUsdBalance({
     balance: variableBorrows,
     priceInMarketReferenceCurrency,
+    marketReferenceCurrencyDecimals,
     decimals,
     usdPriceMarketReferenceCurrency,
   });
@@ -89,6 +93,7 @@ export function generateUserReserveSummary({
   } = getMarketReferenceCurrencyAndUsdBalance({
     balance: stableBorrows,
     priceInMarketReferenceCurrency,
+    marketReferenceCurrencyDecimals,
     decimals,
     usdPriceMarketReferenceCurrency,
   });

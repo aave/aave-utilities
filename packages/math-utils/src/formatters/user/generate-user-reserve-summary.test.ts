@@ -8,6 +8,7 @@ describe('generateUserReserveSummary', () => {
   const rawSummary: UserReserveSummaryResponse = generateUserReserveSummary({
     userReserve: usdcUserReserve,
     usdPriceMarketReferenceCurrency: 309519442156873,
+    marketReferenceCurrencyDecimals: 18,
     currentTimestamp: 1629942229,
   });
 

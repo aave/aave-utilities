@@ -229,6 +229,7 @@ export function calculateAvailableBorrowsMarketReferenceCurrency({
 interface MarketReferenceCurrencyAndUsdBalanceRequest {
   balance: BigNumberValue;
   priceInMarketReferenceCurrency: BigNumberValue;
+  marketReferenceCurrencyDecimals: number;
   decimals: number;
   usdPriceMarketReferenceCurrency: BigNumberValue;
 }
@@ -240,12 +241,13 @@ interface EthAndUsdBalanceResponse {
 export function getMarketReferenceCurrencyAndUsdBalance({
   balance,
   priceInMarketReferenceCurrency,
+  marketReferenceCurrencyDecimals,
   decimals,
   usdPriceMarketReferenceCurrency,
 }: MarketReferenceCurrencyAndUsdBalanceRequest): EthAndUsdBalanceResponse {
   const marketReferenceCurrencyBalance = valueToZDBigNumber(balance)
     .multipliedBy(priceInMarketReferenceCurrency)
-    .shiftedBy(decimals * -1);
+    .shiftedBy(decimals + marketReferenceCurrencyDecimals);
   const usdBalance = marketReferenceCurrencyBalance
     .shiftedBy(USD_DECIMALS)
     .dividedBy(usdPriceMarketReferenceCurrency);
