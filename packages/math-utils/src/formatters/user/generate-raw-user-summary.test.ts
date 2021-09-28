@@ -81,9 +81,9 @@ describe('generateRawUserSummary', () => {
   );
 
   it('should generate the correct user summary ', () => {
-    expect(rawSummary.totalLiquidityUSD.toFixed()).toEqual('176460370343148');
-    expect(rawSummary.totalCollateralUSD.toFixed()).toEqual('176460370343148');
-    expect(rawSummary.totalBorrowsUSD.toFixed()).toEqual('57937531656962');
+    expect(rawSummary.totalLiquidityUSD.toFixed()).toEqual('1764603703431');
+    expect(rawSummary.totalCollateralUSD.toFixed()).toEqual('1764603703431');
+    expect(rawSummary.totalBorrowsUSD.toFixed()).toEqual('579375316569');
     expect(rawSummary.totalLiquidityMarketReferenceCurrency.toFixed()).toEqual(
       '5461791539140663086.919458539672351564',
     );

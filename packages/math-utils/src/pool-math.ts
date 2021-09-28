@@ -4,7 +4,7 @@ import {
   valueToBigNumber,
   valueToZDBigNumber,
 } from './bignumber';
-import { SECONDS_PER_YEAR, LTV_PRECISION, USD_DECIMALS } from './constants';
+import { SECONDS_PER_YEAR, LTV_PRECISION } from './constants';
 import * as RayMath from './ray.math';
 
 interface CalculateCompoundedInterestRequest {
@@ -238,6 +238,9 @@ interface EthAndUsdBalanceResponse {
   marketReferenceCurrencyBalance: BigNumber;
   usdBalance: BigNumber;
 }
+/**
+ * @returns non humanized/normalized values for usd/marketReference
+ */
 export function getMarketReferenceCurrencyAndUsdBalance({
   balance,
   priceInMarketReferenceCurrency,
@@ -247,9 +250,9 @@ export function getMarketReferenceCurrencyAndUsdBalance({
 }: MarketReferenceCurrencyAndUsdBalanceRequest): EthAndUsdBalanceResponse {
   const marketReferenceCurrencyBalance = valueToZDBigNumber(balance)
     .multipliedBy(priceInMarketReferenceCurrency)
-    .shiftedBy(decimals + marketReferenceCurrencyDecimals);
+    .shiftedBy(decimals * -1);
   const usdBalance = marketReferenceCurrencyBalance
-    .shiftedBy(USD_DECIMALS)
-    .dividedBy(usdPriceMarketReferenceCurrency);
+    .multipliedBy(usdPriceMarketReferenceCurrency)
+    .shiftedBy(marketReferenceCurrencyDecimals * -1);
   return { marketReferenceCurrencyBalance, usdBalance };
 }
