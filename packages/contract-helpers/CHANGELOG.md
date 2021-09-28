@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.6.2 (2021-09-28)
+
+
+### Bug Fixes
+
+* remove legacy USD decimals ([#69](https://github.com/@aave/aave-utilities/issues/69)) ([9ac911b](https://github.com/@aave/aave-utilities/commit/9ac911bbfff2f3928404cedff31ec551c398cf11))
+
+
+
+
+
 ## 0.6.1 (2021-09-27)
 
 **Note:** Version bump only for package @aave/contract-helpers
