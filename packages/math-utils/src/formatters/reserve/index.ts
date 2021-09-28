@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js';
 import { BigNumberValue, normalize, valueToBigNumber } from '../../bignumber';
-import { RAY_DECIMALS, USD_DECIMALS_FIXED } from '../../constants';
+import { RAY_DECIMALS } from '../../constants';
 import { LTV_PRECISION } from '../../index';
+import { nativeToUSD } from '../usd/native-to-usd';
 import { calculateReserveDebt } from './calculate-reserve-debt';
 
 export interface FormatReserveResponse {
@@ -176,29 +177,33 @@ export function formatReserveUSD({
 
   return {
     ...formattedReserve,
-    totalLiquidityUSD: normalize(
-      computedFields.totalLiquidity
-        .multipliedBy(reserve.priceInMarketReferenceCurrency)
-        .multipliedBy(usdPriceMarketReferenceCurrency),
-      marketReferenceCurrencyDecimals + reserve.decimals + USD_DECIMALS_FIXED,
-    ),
-    totalDebtUSD: normalize(
-      computedFields.totalDebt
-        .multipliedBy(reserve.priceInMarketReferenceCurrency)
-        .multipliedBy(usdPriceMarketReferenceCurrency),
-      marketReferenceCurrencyDecimals + reserve.decimals + USD_DECIMALS_FIXED,
-    ),
-    totalVariableDebtUSD: normalize(
-      computedFields.totalVariableDebt
-        .multipliedBy(reserve.priceInMarketReferenceCurrency)
-        .multipliedBy(usdPriceMarketReferenceCurrency),
-      marketReferenceCurrencyDecimals + reserve.decimals + USD_DECIMALS_FIXED,
-    ),
-    totalStableDebtUSD: normalize(
-      computedFields.totalStableDebt
-        .multipliedBy(reserve.priceInMarketReferenceCurrency)
-        .multipliedBy(usdPriceMarketReferenceCurrency),
-      marketReferenceCurrencyDecimals + reserve.decimals + USD_DECIMALS_FIXED,
-    ),
+    totalLiquidityUSD: nativeToUSD({
+      amount: computedFields.totalLiquidity,
+      currencyDecimals: reserve.decimals,
+      marketReferenceCurrencyDecimals,
+      priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+      usdPriceMarketReferenceCurrency,
+    }),
+    totalDebtUSD: nativeToUSD({
+      amount: computedFields.totalDebt,
+      currencyDecimals: reserve.decimals,
+      marketReferenceCurrencyDecimals,
+      priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+      usdPriceMarketReferenceCurrency,
+    }),
+    totalVariableDebtUSD: nativeToUSD({
+      amount: computedFields.totalVariableDebt,
+      currencyDecimals: reserve.decimals,
+      marketReferenceCurrencyDecimals,
+      priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+      usdPriceMarketReferenceCurrency,
+    }),
+    totalStableDebtUSD: nativeToUSD({
+      amount: computedFields.totalStableDebt,
+      currencyDecimals: reserve.decimals,
+      marketReferenceCurrencyDecimals,
+      priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+      usdPriceMarketReferenceCurrency,
+    }),
   };
 }

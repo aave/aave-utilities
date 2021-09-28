@@ -114,14 +114,14 @@ describe('formatReserve', () => {
     const reserve = formatReserveUSD({
       reserve: {
         ...formatReserveRequestDAI.reserve,
-        priceInMarketReferenceCurrency: '286130000000000',
+        priceInMarketReferenceCurrency: '323337881619534',
       },
       currentTimestamp: formatReserveRequestDAI.currentTimestamp,
-      usdPriceMarketReferenceCurrency: '361129581606',
+      usdPriceMarketReferenceCurrency: '291464715827',
       marketReferenceCurrencyDecimals: 18,
     });
 
     expect(reserve.totalLiquidity).toBe('43133.641118657852003256');
-    expect(reserve.totalLiquidityUSD).toBe('44569.99446702882772568164');
+    expect(reserve.totalLiquidityUSD).toBe('40649.82653321450505835335');
   });
 });
