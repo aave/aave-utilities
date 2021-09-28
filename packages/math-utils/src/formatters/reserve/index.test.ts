@@ -4,7 +4,7 @@ import {
   formatReserveRequestDAI,
   formatReserveRequestWMATIC,
 } from './reserve.mocks';
-import { formatReserve, FormatReserveRequest } from './index';
+import { formatReserve, FormatReserveRequest, formatReserveUSD } from './index';
 
 describe('formatReserve', () => {
   describe('WMATIC', () => {
@@ -108,5 +108,20 @@ describe('formatReserve', () => {
 
     const result = formatReserve(request);
     expect(result.utilizationRate).toEqual('0');
+  });
+
+  it('should calculate usd values', () => {
+    const reserve = formatReserveUSD({
+      reserve: {
+        ...formatReserveRequestDAI.reserve,
+        priceInMarketReferenceCurrency: '323337881619534',
+      },
+      currentTimestamp: formatReserveRequestDAI.currentTimestamp,
+      usdPriceMarketReferenceCurrency: '291464715827',
+      marketReferenceCurrencyDecimals: 18,
+    });
+
+    expect(reserve.totalLiquidity).toBe('43133.641118657852003256');
+    expect(reserve.totalLiquidityUSD).toBe('40649.82653321450505835335');
   });
 });
