@@ -23,7 +23,9 @@ interface ReserveIncentiveData {
 
 export interface CalculateReserveIncentivesRequest {
   reserveIncentiveData: ReserveIncentiveData;
-  rewardTokenPriceInMarketReferenceCurrency: string; // Can be priced in ETH or USD depending on market
+  aRewardTokenPriceInMarketReferenceCurrency: string; // Can be priced in ETH or USD depending on market
+  vRewardTokenPriceInMarketReferenceCurrency: string;
+  sRewardTokenPriceInMarketReferenceCurrency: string;
   totalLiquidity: string;
   liquidityIndex: string;
   totalScaledVariableDebt: string;
@@ -32,17 +34,23 @@ export interface CalculateReserveIncentivesRequest {
   tokenPriceInMarketReferenceCurrency: string; // Can be priced in ETH or USD depending on market
 }
 
+interface ReserveIncentiveResponse {
+  incentiveAPY: string;
+  rewardTokenAddress: string;
+}
 export interface CalculateReserveIncentivesResponse {
   underlyingAsset: string;
-  aIncentivesAPY: string;
-  vIncentivesAPY: string;
-  sIncentivesAPY: string;
+  aIncentivesData: ReserveIncentiveResponse;
+  vIncentivesData: ReserveIncentiveResponse;
+  sIncentivesData: ReserveIncentiveResponse;
 }
 
 // Calculate deposit, variableBorrow, and stableBorrow incentives APY for a reserve asset
 export function calculateReserveIncentives({
   reserveIncentiveData,
-  rewardTokenPriceInMarketReferenceCurrency,
+  aRewardTokenPriceInMarketReferenceCurrency,
+  vRewardTokenPriceInMarketReferenceCurrency,
+  sRewardTokenPriceInMarketReferenceCurrency,
   totalLiquidity,
   liquidityIndex,
   totalScaledVariableDebt,
@@ -52,7 +60,7 @@ export function calculateReserveIncentives({
 }: CalculateReserveIncentivesRequest): CalculateReserveIncentivesResponse {
   const aIncentivesAPY = calculateIncentiveAPY({
     emissionPerSecond: reserveIncentiveData.aIncentiveData.emissionPerSecond,
-    rewardTokenPriceInMarketReferenceCurrency,
+    rewardTokenPriceInMarketReferenceCurrency: aRewardTokenPriceInMarketReferenceCurrency,
     tokenPriceInMarketReferenceCurrency,
     totalTokenSupply: rayDiv(
       new BigNumber(totalLiquidity),
@@ -65,7 +73,7 @@ export function calculateReserveIncentives({
 
   const vIncentivesAPY = calculateIncentiveAPY({
     emissionPerSecond: reserveIncentiveData.vIncentiveData.emissionPerSecond,
-    rewardTokenPriceInMarketReferenceCurrency,
+    rewardTokenPriceInMarketReferenceCurrency: vRewardTokenPriceInMarketReferenceCurrency,
     tokenPriceInMarketReferenceCurrency,
     totalTokenSupply: totalScaledVariableDebt,
     decimals,
@@ -75,7 +83,7 @@ export function calculateReserveIncentives({
 
   const sIncentivesAPY = calculateIncentiveAPY({
     emissionPerSecond: reserveIncentiveData.sIncentiveData.emissionPerSecond,
-    rewardTokenPriceInMarketReferenceCurrency,
+    rewardTokenPriceInMarketReferenceCurrency: sRewardTokenPriceInMarketReferenceCurrency,
     tokenPriceInMarketReferenceCurrency,
     totalTokenSupply: totalPrincipalStableDebt,
     decimals,
@@ -85,8 +93,20 @@ export function calculateReserveIncentives({
 
   return {
     underlyingAsset: reserveIncentiveData.underlyingAsset,
-    aIncentivesAPY,
-    vIncentivesAPY,
-    sIncentivesAPY,
+    aIncentivesData: {
+      incentiveAPY: aIncentivesAPY,
+      rewardTokenAddress:
+        reserveIncentiveData.aIncentiveData.rewardTokenAddress,
+    },
+    vIncentivesData: {
+      incentiveAPY: vIncentivesAPY,
+      rewardTokenAddress:
+        reserveIncentiveData.vIncentiveData.rewardTokenAddress,
+    },
+    sIncentivesData: {
+      incentiveAPY: sIncentivesAPY,
+      rewardTokenAddress:
+        reserveIncentiveData.sIncentiveData.rewardTokenAddress,
+    },
   };
 }

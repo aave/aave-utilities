@@ -22,7 +22,7 @@ describe('calculateReserveIncentives', () => {
           tokenIncentivesIndex: '0',
           emissionEndTimestamp: '0',
           tokenAddress: '0x0000000000000000000000000000000000000000',
-          rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+          rewardTokenAddress: '0x0000000000000000000000000000000000000001',
           incentiveControllerAddress:
             '0x0000000000000000000000000000000000000000',
           rewardTokenDecimals: 18,
@@ -34,7 +34,7 @@ describe('calculateReserveIncentives', () => {
           tokenIncentivesIndex: '0',
           emissionEndTimestamp: '0',
           tokenAddress: '0x0000000000000000000000000000000000000000',
-          rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+          rewardTokenAddress: '0x0000000000000000000000000000000000000002',
           incentiveControllerAddress:
             '0x0000000000000000000000000000000000000000',
           rewardTokenDecimals: 18,
@@ -56,7 +56,9 @@ describe('calculateReserveIncentives', () => {
 
       const result = calculateReserveIncentives({
         reserveIncentiveData,
-        rewardTokenPriceInMarketReferenceCurrency: '498035657442060',
+        aRewardTokenPriceInMarketReferenceCurrency: '498035657442060',
+        vRewardTokenPriceInMarketReferenceCurrency: '500000000000000',
+        sRewardTokenPriceInMarketReferenceCurrency: '498035657442060',
         totalLiquidity: totalLiquidity.toString(),
         liquidityIndex: formatReserveRequestWMATIC.reserve.liquidityIndex.toString(),
         totalScaledVariableDebt: calculateReserveDebtResult.totalVariableDebt.toString(),
@@ -65,9 +67,19 @@ describe('calculateReserveIncentives', () => {
         tokenPriceInMarketReferenceCurrency: '498035657442060',
       });
 
-      expect(result.aIncentivesAPY).toBe('0.03490948667901282833');
-      expect(result.vIncentivesAPY).toBe('0.02302231808500517936');
-      expect(result.sIncentivesAPY).toBe('0');
+      expect(result.aIncentivesData.incentiveAPY).toBe(
+        '0.03490948667901282833',
+      );
+      expect(result.vIncentivesData.incentiveAPY).toBe(
+        '0.02311312226442694815',
+      );
+      expect(result.sIncentivesData.incentiveAPY).toBe('0');
+      expect(result.aIncentivesData.rewardTokenAddress).toBe(
+        '0x0000000000000000000000000000000000000001',
+      );
+      expect(result.vIncentivesData.rewardTokenAddress).toBe(
+        '0x0000000000000000000000000000000000000002',
+      );
     });
   });
   describe('USDC reserve data from client', () => {
