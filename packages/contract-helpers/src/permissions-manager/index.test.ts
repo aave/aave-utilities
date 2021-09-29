@@ -26,10 +26,10 @@ describe('PermissionManager', () => {
       provider: new providers.JsonRpcProvider(),
     });
 
-    it('should throw an error if the user is not valid', () => {
-      expect(() => {
-        instance.getHumanizedUserPermissions(mockInvalidEthereumAddress);
-      }).toThrowError('User address is not a valid ethereum address');
+    it('should throw an error if the user is not valid', async () => {
+      await expect(
+        instance.getHumanizedUserPermissions(mockInvalidEthereumAddress),
+      ).rejects.toThrow('User address is not a valid ethereum address');
     });
 
     it('should return human readable response', async () => {
