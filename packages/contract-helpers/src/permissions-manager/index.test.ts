@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/require-await */
-import { providers } from 'ethers';
+import { BigNumber, providers } from 'ethers';
 import { getUserPermissionsResponseMock } from './_mocks';
 import { PERMISSION } from './types/PermissionManagerTypes';
 import { PermissionManager } from './index';
@@ -26,16 +26,30 @@ describe('PermissionManager', () => {
       provider: new providers.JsonRpcProvider(),
     });
 
+    const mock = jest.fn();
+    // @ts-ignore
+    instance._contract = {
+      getUserPermissions: mock,
+    };
+
     it('should throw an error if the user is not valid', async () => {
       await expect(
         instance.getHumanizedUserPermissions(mockInvalidEthereumAddress),
       ).rejects.toThrow('User address is not a valid ethereum address');
     });
 
+    it('should throw an error if the permission is not known', async () => {
+      mock.mockResolvedValueOnce({
+        0: [BigNumber.from(5), ...getUserPermissionsResponseMock[0]],
+        1: getUserPermissionsResponseMock[1],
+      });
+      await expect(
+        instance.getHumanizedUserPermissions(mockValidEthereumAddress),
+      ).rejects.toThrow('Error parsing permission');
+    });
+
     it('should return human readable response', async () => {
-      const spy = jest
-        .spyOn(instance, 'getUserPermissions')
-        .mockImplementation(async () => getUserPermissionsResponseMock);
+      mock.mockResolvedValueOnce(getUserPermissionsResponseMock);
 
       const response = await instance.getHumanizedUserPermissions(
         mockValidEthereumAddress,
@@ -45,8 +59,6 @@ describe('PermissionManager', () => {
         PERMISSION.DEPOSITOR,
         PERMISSION.BORROWER,
       ]);
-
-      spy.mockRestore();
     });
   });
 });

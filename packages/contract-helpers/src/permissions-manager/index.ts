@@ -47,7 +47,7 @@ export class PermissionManager {
       if (index < permissionsNumber.toNumber()) {
         const permissionIndex = permission.toNumber();
         if (permissionIndex < 0 || permissionIndex > 4)
-          throw new Error('error parsing permissions');
+          throw new Error('Error parsing permission');
         parsedPermissions[index] =
           PERMISSION_MAP[permissionIndex as 0 | 1 | 2 | 3];
       }
