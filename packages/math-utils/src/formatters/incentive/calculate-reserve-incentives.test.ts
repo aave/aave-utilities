@@ -126,7 +126,9 @@ describe('calculateReserveIncentives', () => {
 
       const result = calculateReserveIncentives({
         reserveIncentiveData: reserveIncentiveUSDC,
-        rewardTokenPriceInMarketReferenceCurrency: '94170917437245430',
+        aRewardTokenPriceInMarketReferenceCurrency: '94170917437245430',
+        sRewardTokenPriceInMarketReferenceCurrency: '94170917437245430',
+        vRewardTokenPriceInMarketReferenceCurrency: '94170917437245430',
         totalLiquidity: '4689276757732258',
         liquidityIndex: '1053500517589216842914921776',
         totalScaledVariableDebt: '3891257648076622',
@@ -135,9 +137,13 @@ describe('calculateReserveIncentives', () => {
         decimals: 6,
       });
 
-      expect(result.aIncentivesAPY).toBe('0.00888164801282262266');
-      expect(result.vIncentivesAPY).toBe('0.01015955492045879679');
-      expect(result.sIncentivesAPY).toBe('0');
+      expect(result.aIncentivesData.incentiveAPY).toBe(
+        '0.00888164801282262266',
+      );
+      expect(result.vIncentivesData.incentiveAPY).toBe(
+        '0.01015955492045879679',
+      );
+      expect(result.sIncentivesData.incentiveAPY).toBe('0');
     });
   });
   describe('DAI reserve data from client', () => {
@@ -183,7 +189,9 @@ describe('calculateReserveIncentives', () => {
       };
       const result = calculateReserveIncentives({
         reserveIncentiveData: reserveIncentiveDAI,
-        rewardTokenPriceInMarketReferenceCurrency: '94170917437245430',
+        aRewardTokenPriceInMarketReferenceCurrency: '94170917437245430',
+        vRewardTokenPriceInMarketReferenceCurrency: '94170917437245430',
+        sRewardTokenPriceInMarketReferenceCurrency: '94170917437245430',
         totalLiquidity: '1937317748307449835437672174',
         liquidityIndex: '1053207642011596990084101590',
         totalScaledVariableDebt: '1440029626743923505023111127',
@@ -192,9 +200,13 @@ describe('calculateReserveIncentives', () => {
         decimals: 18,
       });
 
-      expect(result.aIncentivesAPY).toBe('0.01065161133338641259');
-      expect(result.vIncentivesAPY).toBe('0.01360600854482013582');
-      expect(result.sIncentivesAPY).toBe('0');
+      expect(result.aIncentivesData.incentiveAPY).toBe(
+        '0.01065161133338641259',
+      );
+      expect(result.vIncentivesData.incentiveAPY).toBe(
+        '0.01360600854482013582',
+      );
+      expect(result.sIncentivesData.incentiveAPY).toBe('0');
     });
   });
 });

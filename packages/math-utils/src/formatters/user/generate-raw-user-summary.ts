@@ -28,9 +28,11 @@ export interface RawUserSummaryResponse {
 
 function convertToUsd(
   value: BigNumber,
-  usdPriceEth: BigNumberValue,
+  usdPriceMarketReferenceCurrency: BigNumberValue,
 ): BigNumber {
-  return value.shiftedBy(USD_DECIMALS).dividedBy(usdPriceEth);
+  return value
+    .shiftedBy(USD_DECIMALS)
+    .dividedBy(usdPriceMarketReferenceCurrency);
 }
 
 export function generateRawUserSummary({

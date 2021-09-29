@@ -234,7 +234,7 @@ interface MarketReferenceCurrencyAndUsdBalanceRequest {
   usdPriceMarketReferenceCurrency: BigNumberValue;
 }
 
-interface EthAndUsdBalanceResponse {
+interface MarketReferenceAndUsdBalanceResponse {
   marketReferenceCurrencyBalance: BigNumber;
   usdBalance: BigNumber;
 }
@@ -247,7 +247,7 @@ export function getMarketReferenceCurrencyAndUsdBalance({
   marketReferenceCurrencyDecimals,
   decimals,
   usdPriceMarketReferenceCurrency,
-}: MarketReferenceCurrencyAndUsdBalanceRequest): EthAndUsdBalanceResponse {
+}: MarketReferenceCurrencyAndUsdBalanceRequest): MarketReferenceAndUsdBalanceResponse {
   const marketReferenceCurrencyBalance = valueToZDBigNumber(balance)
     .multipliedBy(priceInMarketReferenceCurrency)
     .shiftedBy(decimals * -1);
