@@ -7,6 +7,7 @@ import {
   reserveIncentives,
   userReserveIncentives,
   reserveIncentivesMissingUSDC,
+  aUSDCUserIncentiveDataMultiController,
   userReserves,
 } from './incentive.mocks';
 
@@ -15,20 +16,21 @@ describe('calculateTotalUserIncentives', () => {
     reserveIncentives,
     userReserveIncentives,
     userReserves,
-    userUnclaimedRewards: '43921819137644870',
     currentTimestamp: 1631587561,
   };
 
   it('should calculate the correct total incentives for mock user', () => {
     const result = calculateTotalUserIncentives(totalUserIncentivesRequest);
-    expect(normalize(result, 18)).toBe('0.08915763270718076481');
+    const claimable =
+      result.userIncentives['0x0000000000000000000000000000000000000000']
+        .claimableRewards;
+    expect(normalize(claimable, 18)).toBe('0.08915763270718076481');
   });
 
   const totalUserIncentivesMissingDataRequest: CalculateTotalUserIncentivesRequest = {
     reserveIncentives: reserveIncentivesMissingUSDC,
     userReserveIncentives,
     userReserves,
-    userUnclaimedRewards: '43921819137644870',
     currentTimestamp: 1631587561,
   };
 
@@ -36,6 +38,56 @@ describe('calculateTotalUserIncentives', () => {
     const result = calculateTotalUserIncentives(
       totalUserIncentivesMissingDataRequest,
     );
-    expect(normalize(result, 18)).toBe('0.07029534828528322115');
+    const claimable =
+      result.userIncentives['0x0000000000000000000000000000000000000000']
+        .claimableRewards;
+    expect(normalize(claimable, 18)).toBe('0.07029534828528322115');
+  });
+});
+
+describe('calculateTotalUserIncentives for multiple IncentiveControllers', () => {
+  const totalUserIncentivesRequest: CalculateTotalUserIncentivesRequest = {
+    reserveIncentives,
+    userReserveIncentives: [aUSDCUserIncentiveDataMultiController],
+    userReserves,
+    currentTimestamp: 1631587561,
+  };
+
+  it('should calculate incentives for isolated IncentiveControllers', () => {
+    const result = calculateTotalUserIncentives(totalUserIncentivesRequest);
+    const claimableController1 =
+      result.userIncentives['0x0000000000000000000000000000000000000001']
+        .claimableRewards;
+
+    // Will be userUnclaimedRewards + accumulated deposit incentives
+    expect(normalize(claimableController1, 18)).toBe('0.06174637776527728642');
+
+    expect(
+      result.userIncentives[
+        '0x0000000000000000000000000000000000000001'
+      ].assets.includes('0x0000000000000000000000000000000000000004'),
+    ).toBe(true);
+    expect(
+      result.userIncentives[
+        '0x0000000000000000000000000000000000000001'
+      ].assets.includes('0x0000000000000000000000000000000000000005'),
+    ).toBe(false);
+
+    const claimableController2 =
+      result.userIncentives['0x0000000000000000000000000000000000000002']
+        .claimableRewards;
+    // Will be userUnclaimedRewards + accumulated variable debt incentives
+    expect(normalize(claimableController2, 18)).toBe('0.04495954493190999725');
+
+    expect(
+      result.userIncentives[
+        '0x0000000000000000000000000000000000000002'
+      ].assets.includes('0x0000000000000000000000000000000000000004'),
+    ).toBe(false);
+    expect(
+      result.userIncentives[
+        '0x0000000000000000000000000000000000000002'
+      ].assets.includes('0x0000000000000000000000000000000000000005'),
+    ).toBe(true);
   });
 });
