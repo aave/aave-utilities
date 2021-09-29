@@ -15,6 +15,7 @@ describe('calculateIncentiveAPY', () => {
         totalTokenSupply: '1000000003465380422',
         tokenPriceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
+        rewardTokenDecimals: 18,
       });
 
       expect(result).toEqual('1214271.25215758975164163271');
@@ -27,6 +28,7 @@ describe('calculateIncentiveAPY', () => {
         totalTokenSupply: '145530711359639107416907',
         tokenPriceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
+        rewardTokenDecimals: 18,
       });
 
       expect(result).toEqual('0.92708286261063121887');
@@ -39,6 +41,7 @@ describe('calculateIncentiveAPY', () => {
         totalTokenSupply: '43135641118664782764100',
         tokenPriceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
+        rewardTokenDecimals: 18,
       });
 
       expect(result).toEqual('0');
@@ -51,6 +54,7 @@ describe('calculateIncentiveAPY', () => {
         totalTokenSupply: '150629528254290021063240208',
         tokenPriceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
+        rewardTokenDecimals: 18,
       });
 
       expect(result).toEqual('0.00556406489198376119');
@@ -77,6 +81,7 @@ describe('calculateIncentiveAPY', () => {
         ).toString(),
         tokenPriceInMarketReferenceCurrency: '498035657442060',
         decimals: 18,
+        rewardTokenDecimals: 18,
       });
 
       expect(result).toEqual('0.03490948667901282833');
@@ -89,6 +94,7 @@ describe('calculateIncentiveAPY', () => {
         totalTokenSupply: calculateReserveDebtResult.totalVariableDebt.toFixed(),
         tokenPriceInMarketReferenceCurrency: '498035657442060',
         decimals: 18,
+        rewardTokenDecimals: 18,
       });
 
       expect(result).toEqual('0.02302231808500517936');
@@ -101,6 +107,7 @@ describe('calculateIncentiveAPY', () => {
         totalTokenSupply: calculateReserveDebtResult.totalStableDebt.toFixed(),
         tokenPriceInMarketReferenceCurrency: '498035657442060',
         decimals: 18,
+        rewardTokenDecimals: 18,
       });
 
       expect(result).toEqual('0');
@@ -124,6 +131,7 @@ describe('calculateIncentiveAPY', () => {
         totalTokenSupply: totalLiquidity.toFixed(),
         tokenPriceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
+        rewardTokenDecimals: 18,
       });
 
       expect(result).toEqual('0');
@@ -136,6 +144,7 @@ describe('calculateIncentiveAPY', () => {
         totalTokenSupply: calculateReserveDebtResult.totalVariableDebt.toFixed(),
         tokenPriceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
+        rewardTokenDecimals: 18,
       });
 
       expect(result).toEqual('0');
@@ -148,6 +157,7 @@ describe('calculateIncentiveAPY', () => {
         totalTokenSupply: calculateReserveDebtResult.totalStableDebt.toFixed(),
         tokenPriceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
+        rewardTokenDecimals: 18,
       });
 
       expect(result).toEqual('0');
