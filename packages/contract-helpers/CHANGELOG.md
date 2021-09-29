@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.6.3 (2021-09-29)
+
+
+### Bug Fixes
+
+* update incentives calculation wit configurable decimal shifts ([#71](https://github.com/@aave/aave-utilities/issues/71)) ([5cc8337](https://github.com/@aave/aave-utilities/commit/5cc8337192624dc2e8a914b377f8dac38ffaa028))
+
+
+
+
+
 ## 0.6.2 (2021-09-28)
 
 
