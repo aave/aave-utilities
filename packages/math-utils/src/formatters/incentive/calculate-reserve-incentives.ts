@@ -47,6 +47,7 @@ export function calculateReserveIncentives({
   liquidityIndex,
   totalScaledVariableDebt,
   totalPrincipalStableDebt,
+  decimals,
   tokenPriceInMarketReferenceCurrency,
 }: CalculateReserveIncentivesRequest): CalculateReserveIncentivesResponse {
   const aIncentivesAPY = calculateIncentiveAPY({
@@ -57,7 +58,9 @@ export function calculateReserveIncentives({
       new BigNumber(totalLiquidity),
       new BigNumber(liquidityIndex),
     ).toString(),
-    decimals: reserveIncentiveData.aIncentiveData.rewardTokenDecimals,
+    decimals,
+    rewardTokenDecimals:
+      reserveIncentiveData.aIncentiveData.rewardTokenDecimals,
   });
 
   const vIncentivesAPY = calculateIncentiveAPY({
@@ -65,7 +68,9 @@ export function calculateReserveIncentives({
     rewardTokenPriceInMarketReferenceCurrency,
     tokenPriceInMarketReferenceCurrency,
     totalTokenSupply: totalScaledVariableDebt,
-    decimals: reserveIncentiveData.vIncentiveData.rewardTokenDecimals,
+    decimals,
+    rewardTokenDecimals:
+      reserveIncentiveData.aIncentiveData.rewardTokenDecimals,
   });
 
   const sIncentivesAPY = calculateIncentiveAPY({
@@ -73,7 +78,9 @@ export function calculateReserveIncentives({
     rewardTokenPriceInMarketReferenceCurrency,
     tokenPriceInMarketReferenceCurrency,
     totalTokenSupply: totalPrincipalStableDebt,
-    decimals: reserveIncentiveData.sIncentiveData.rewardTokenDecimals,
+    decimals,
+    rewardTokenDecimals:
+      reserveIncentiveData.aIncentiveData.rewardTokenDecimals,
   });
 
   return {
