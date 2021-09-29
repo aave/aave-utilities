@@ -20,6 +20,7 @@ module.exports = {
     },
   },
   coveragePathIgnorePatterns: [
+    'packages/contract-helpers/src/permissions-manager/typechain',
     'packages/contract-helpers/src/ui-incentive-data-provider/typechain',
     'packages/contract-helpers/src/wallet-balance-provider/typechain',
     'packages/contract-helpers/src/ui-pool-data-provider/typechain',
