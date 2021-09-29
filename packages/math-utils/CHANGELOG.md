@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.7.0 (2021-09-29)
+
+
+### Features
+
+* permissions manager ([#73](https://github.com/@aave/aave-utilities/issues/73)) ([7931421](https://github.com/@aave/aave-utilities/commit/7931421e2844c631db2abef65dd859a7edc87335))
+
+
+
+
+
 ## 0.6.3 (2021-09-29)
 
 
