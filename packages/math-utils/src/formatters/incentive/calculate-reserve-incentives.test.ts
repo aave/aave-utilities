@@ -18,9 +18,9 @@ describe('calculateReserveIncentives', () => {
         underlyingAsset: '0x0000000000000000000000000000000000000000',
         aIncentiveData: {
           emissionPerSecond: '198333333333333000',
-          incentivesLastUpdateTimestamp: '0',
+          incentivesLastUpdateTimestamp: 0,
           tokenIncentivesIndex: '0',
-          emissionEndTimestamp: '0',
+          emissionEndTimestamp: 0,
           tokenAddress: '0x0000000000000000000000000000000000000000',
           rewardTokenAddress: '0x0000000000000000000000000000000000000001',
           incentiveControllerAddress:
@@ -30,9 +30,9 @@ describe('calculateReserveIncentives', () => {
         },
         vIncentiveData: {
           emissionPerSecond: '22037037037037000',
-          incentivesLastUpdateTimestamp: '0',
+          incentivesLastUpdateTimestamp: 0,
           tokenIncentivesIndex: '0',
-          emissionEndTimestamp: '0',
+          emissionEndTimestamp: 0,
           tokenAddress: '0x0000000000000000000000000000000000000000',
           rewardTokenAddress: '0x0000000000000000000000000000000000000002',
           incentiveControllerAddress:
@@ -42,9 +42,9 @@ describe('calculateReserveIncentives', () => {
         },
         sIncentiveData: {
           emissionPerSecond: '0',
-          incentivesLastUpdateTimestamp: '0',
+          incentivesLastUpdateTimestamp: 0,
           tokenIncentivesIndex: '0',
-          emissionEndTimestamp: '0',
+          emissionEndTimestamp: 0,
           tokenAddress: '0x0000000000000000000000000000000000000000',
           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
           incentiveControllerAddress:
@@ -88,9 +88,9 @@ describe('calculateReserveIncentives', () => {
         underlyingAsset: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
         aIncentiveData: {
           emissionPerSecond: '4629629629629629',
-          incentivesLastUpdateTimestamp: '1632883598',
+          incentivesLastUpdateTimestamp: 1632883598,
           tokenIncentivesIndex: '17165951328937142571968723',
-          emissionEndTimestamp: '1637573428',
+          emissionEndTimestamp: 1637573428,
           tokenAddress: '0xBcca60bB61934080951369a648Fb03DF4F96263C',
           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
           incentiveControllerAddress:
@@ -100,9 +100,9 @@ describe('calculateReserveIncentives', () => {
         },
         vIncentiveData: {
           emissionPerSecond: '4629629629629629',
-          incentivesLastUpdateTimestamp: '1632883598',
+          incentivesLastUpdateTimestamp: 1632883598,
           tokenIncentivesIndex: '22512367540317665709789244',
-          emissionEndTimestamp: '1637573428',
+          emissionEndTimestamp: 1637573428,
           tokenAddress: '0x619beb58998eD2278e08620f97007e1116D5D25b',
           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
           incentiveControllerAddress:
@@ -112,9 +112,9 @@ describe('calculateReserveIncentives', () => {
         },
         sIncentiveData: {
           emissionPerSecond: '0',
-          incentivesLastUpdateTimestamp: '0',
+          incentivesLastUpdateTimestamp: 0,
           tokenIncentivesIndex: '0',
-          emissionEndTimestamp: '0',
+          emissionEndTimestamp: 0,
           tokenAddress: '0x0000000000000000000000000000000000000000',
           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
           incentiveControllerAddress:
@@ -152,9 +152,9 @@ describe('calculateReserveIncentives', () => {
         underlyingAsset: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
         aIncentiveData: {
           emissionPerSecond: '2314814814814814',
-          incentivesLastUpdateTimestamp: '1632885146',
+          incentivesLastUpdateTimestamp: 1632885146,
           tokenIncentivesIndex: '19549435160115',
-          emissionEndTimestamp: '1637573428',
+          emissionEndTimestamp: 1637573428,
           tokenAddress: '0x028171bCA77440897B824Ca71D1c56caC55b68A3',
           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
           incentiveControllerAddress:
@@ -164,9 +164,9 @@ describe('calculateReserveIncentives', () => {
         },
         vIncentiveData: {
           emissionPerSecond: '2314814814814814',
-          incentivesLastUpdateTimestamp: '1632876638',
+          incentivesLastUpdateTimestamp: 1632876638,
           tokenIncentivesIndex: '26895229234375',
-          emissionEndTimestamp: '1637573428',
+          emissionEndTimestamp: 1637573428,
           tokenAddress: '0x6C3c78838c761c6Ac7bE9F59fe808ea2A6E4379d',
           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
           incentiveControllerAddress:
@@ -176,9 +176,9 @@ describe('calculateReserveIncentives', () => {
         },
         sIncentiveData: {
           emissionPerSecond: '0',
-          incentivesLastUpdateTimestamp: '0',
+          incentivesLastUpdateTimestamp: 0,
           tokenIncentivesIndex: '0',
-          emissionEndTimestamp: '0',
+          emissionEndTimestamp: 0,
           tokenAddress: '0x0000000000000000000000000000000000000000',
           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
           incentiveControllerAddress:
