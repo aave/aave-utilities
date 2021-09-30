@@ -3,7 +3,12 @@ import { BigNumber, providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import { PermissionManager as PermissionManagerContract } from './typechain/PermissionManager';
 import { PermissionManagerFactory } from './typechain/PermissionManagerFactory';
-import { PERMISSION, PERMISSION_MAP } from './types/PermissionManagerTypes';
+import {
+  GetHumanizedUserPermissionsResponse,
+  GetUserPermissionsResponse,
+  PERMISSION,
+  PERMISSION_MAP,
+} from './types/PermissionManagerTypes';
 
 export interface PermissionManagerContext {
   permissionManagerAddress: string;
@@ -26,7 +31,7 @@ export class PermissionManager {
 
   public async getUserPermissions(
     user: string,
-  ): Promise<{ 0: BigNumber[]; 1: BigNumber }> {
+  ): Promise<GetUserPermissionsResponse> {
     if (!isAddress(user)) {
       throw new Error('User address is not a valid ethereum address');
     }
@@ -36,7 +41,7 @@ export class PermissionManager {
 
   public async getHumanizedUserPermissions(
     user: string,
-  ): Promise<PERMISSION[]> {
+  ): Promise<GetHumanizedUserPermissionsResponse> {
     const {
       0: permissions,
       1: permissionsNumber,
