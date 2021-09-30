@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 import { calculateUserReserveIncentives } from './calculate-user-reserve-incentives';
 
 export interface ReserveIncentiveData {
@@ -17,9 +17,9 @@ export interface UserReserveIncentiveData {
 
 interface ReserveTokenIncentives {
   emissionPerSecond: string;
-  incentivesLastUpdateTimestamp: string;
+  incentivesLastUpdateTimestamp: number;
   tokenIncentivesIndex: string;
-  emissionEndTimestamp: string;
+  emissionEndTimestamp: number;
   tokenAddress: string;
   rewardTokenAddress: string;
   incentiveControllerAddress: string;
@@ -38,6 +38,9 @@ interface UserTokenIncentives {
 
 export interface UserReserveData {
   underlyingAsset: string;
+  aTokenAddress: string;
+  variableDebtTokenAddress: string;
+  stableDebtTokenAddress: string;
   totalLiquidity: string;
   liquidityIndex: string;
   totalScaledVariableDebt: string;
@@ -47,47 +50,112 @@ export interface UserReserveData {
   principalStableDebt: string;
 }
 
+interface UserIncentiveDict {
+  [incentiveControllerAddress: string]: UserIncentiveData;
+}
+
+interface UserIncentiveData {
+  rewardTokenAddress: string;
+  claimableRewards: BigNumber;
+  assets: string[];
+}
+
 export interface CalculateTotalUserIncentivesRequest {
   reserveIncentives: ReserveIncentiveData[]; // token incentive data
   userReserveIncentives: UserReserveIncentiveData[]; // user incentive data
   userReserves: UserReserveData[]; // deposit and borrow data for user assets
-  userUnclaimedRewards: string; // total unclaimed rewards up to users last protocol interaction
   currentTimestamp: number;
 }
 
-// Calculate total claimable incentives for a user
 export function calculateTotalUserIncentives({
   reserveIncentives,
   userReserveIncentives,
   userReserves,
-  userUnclaimedRewards,
   currentTimestamp,
-}: CalculateTotalUserIncentivesRequest): string {
-  let claimableRewards: BigNumber = new BigNumber(userUnclaimedRewards);
+}: CalculateTotalUserIncentivesRequest): UserIncentiveDict {
+  // calculate incentive per token
+  const rewards = userReserveIncentives
+    .map(userReserveIncentive => {
+      const reserve = reserveIncentives.find(
+        reserve =>
+          reserve.underlyingAsset === userReserveIncentive.underlyingAsset,
+      );
+      const userReserve = userReserves.find(
+        reserve =>
+          reserve.underlyingAsset === userReserveIncentive.underlyingAsset,
+      );
+      if (reserve && userReserve) {
+        const rewards = calculateUserReserveIncentives({
+          reserveIncentives: reserve,
+          userReserveIncentives: userReserveIncentive,
+          userReserveData: userReserve,
+          currentTimestamp,
+        });
 
-  // For each asset a user is earning incentives, compute rewards since last protocol interaction and add to total
-  userReserveIncentives.forEach(userReserveIncentive => {
-    const reserveIncentive = reserveIncentives.find(
-      reserve =>
-        reserve.underlyingAsset === userReserveIncentive.underlyingAsset,
-    );
-    const userReserve = userReserves.find(
-      userReserve =>
-        userReserve.underlyingAsset === userReserveIncentive.underlyingAsset,
-    );
-    if (reserveIncentive && userReserve) {
-      const rewards = calculateUserReserveIncentives({
-        reserveIncentives: reserveIncentive,
-        userReserveIncentives: userReserveIncentive,
-        userReserveData: userReserve,
-        currentTimestamp,
-      });
-      claimableRewards = claimableRewards
-        .plus(rewards.aIncentives)
-        .plus(rewards.vIncentives)
-        .plus(rewards.sIncentives);
+        return [
+          {
+            tokenAddress:
+              userReserveIncentive.aTokenIncentivesUserData.tokenAddress,
+            incentiveController:
+              userReserveIncentive.aTokenIncentivesUserData
+                .incentiveControllerAddress,
+            rewardTokenAddress:
+              userReserveIncentive.aTokenIncentivesUserData.rewardTokenAddress,
+            accruedRewards: new BigNumber(rewards.aIncentives),
+            unclaimedRewards: new BigNumber(
+              userReserveIncentive.aTokenIncentivesUserData.userUnclaimedRewards,
+            ),
+          },
+          {
+            tokenAddress:
+              userReserveIncentive.vTokenIncentivesUserData.tokenAddress,
+            incentiveController:
+              userReserveIncentive.vTokenIncentivesUserData
+                .incentiveControllerAddress,
+            rewardTokenAddress:
+              userReserveIncentive.vTokenIncentivesUserData.rewardTokenAddress,
+            accruedRewards: new BigNumber(rewards.vIncentives),
+            unclaimedRewards: new BigNumber(
+              userReserveIncentive.vTokenIncentivesUserData.userUnclaimedRewards,
+            ),
+          },
+          {
+            tokenAddress:
+              userReserveIncentive.sTokenIncentivesUserData.tokenAddress,
+            incentiveController:
+              userReserveIncentive.sTokenIncentivesUserData
+                .incentiveControllerAddress,
+            rewardTokenAddress:
+              userReserveIncentive.sTokenIncentivesUserData.rewardTokenAddress,
+            accruedRewards: new BigNumber(rewards.sIncentives),
+            unclaimedRewards: new BigNumber(
+              userReserveIncentive.sTokenIncentivesUserData.userUnclaimedRewards,
+            ),
+          },
+        ];
+      }
+
+      return [];
+    })
+    .flat();
+
+  // normalize incentives per controller
+  return rewards.reduce((acc, reward) => {
+    if (!acc[reward.incentiveController]) {
+      acc[reward.incentiveController] = {
+        assets: [],
+        claimableRewards: reward.unclaimedRewards,
+        rewardTokenAddress: reward.rewardTokenAddress,
+      };
     }
-  });
 
-  return claimableRewards.toString();
+    if (reward.accruedRewards.gt(0)) {
+      acc[reward.incentiveController].claimableRewards = acc[
+        reward.incentiveController
+      ].claimableRewards.plus(reward.accruedRewards);
+      acc[reward.incentiveController].assets.push(reward.tokenAddress);
+    }
+
+    return acc;
+  }, {} as UserIncentiveDict);
 }

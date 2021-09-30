@@ -1,3 +1,5 @@
+import { BigNumber } from 'ethers';
+
 export enum PERMISSION {
   DEPOSITOR = 'DEPOSITOR',
   BORROWER = 'BORROWER',
@@ -11,3 +13,10 @@ export const PERMISSION_MAP = {
   2: PERMISSION.LIQUIDATOR,
   3: PERMISSION.STABLE_RATE_MANAGER,
 };
+
+export interface GetUserPermissionsResponse {
+  0: BigNumber[];
+  1: BigNumber;
+}
+
+export type GetHumanizedUserPermissionsResponse = PERMISSION[];
