@@ -74,6 +74,10 @@ export class UiIncentiveDataProvider
   public async getReservesIncentives(
     lendingPoolAddressProvider: string,
   ): Promise<ReserveIncentiveDataResponse[]> {
+    if (!isAddress(lendingPoolAddressProvider)) {
+      throw new Error('Lending pool address provider is not valid');
+    }
+
     return this._contract.getReservesIncentivesData(lendingPoolAddressProvider);
   }
 
@@ -85,6 +89,10 @@ export class UiIncentiveDataProvider
     user: string,
     lendingPoolAddressProvider: string,
   ): Promise<UserReserveIncentiveDataResponse[]> {
+    if (!isAddress(lendingPoolAddressProvider)) {
+      throw new Error('Lending pool address provider is not valid');
+    }
+
     if (!isAddress(user)) {
       throw new Error('User address is not a valid ethereum address');
     }
