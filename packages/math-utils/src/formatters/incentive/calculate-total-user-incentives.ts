@@ -17,9 +17,9 @@ export interface UserReserveIncentiveData {
 
 interface ReserveTokenIncentives {
   emissionPerSecond: string;
-  incentivesLastUpdateTimestamp: string;
+  incentivesLastUpdateTimestamp: number;
   tokenIncentivesIndex: string;
-  emissionEndTimestamp: string;
+  emissionEndTimestamp: number;
   tokenAddress: string;
   rewardTokenAddress: string;
   incentiveControllerAddress: string;

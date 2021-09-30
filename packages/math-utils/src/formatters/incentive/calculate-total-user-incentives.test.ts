@@ -60,10 +60,8 @@ describe('calculateTotalUserIncentives for multiple IncentiveControllers', () =>
     expect(normalize(claimableController1, 18)).toBe('0.06174637776527728642');
 
     expect(
-      result['0x0000000000000000000000000000000000000001'].assets.includes(
-        '0x0000000000000000000000000000000000000005',
-      ),
-    ).toBe(false);
+      result['0x0000000000000000000000000000000000000001'].assets,
+    ).toStrictEqual(['0x000000000000000000000000000000000000000a']);
 
     const claimableController2 =
       result['0x0000000000000000000000000000000000000002'].claimableRewards;
@@ -71,9 +69,7 @@ describe('calculateTotalUserIncentives for multiple IncentiveControllers', () =>
     expect(normalize(claimableController2, 18)).toBe('0.04495954493190999725');
 
     expect(
-      result['0x0000000000000000000000000000000000000002'].assets.includes(
-        '0x0000000000000000000000000000000000000004',
-      ),
-    ).toBe(false);
+      result['0x0000000000000000000000000000000000000002'].assets,
+    ).toStrictEqual(['0x000000000000000000000000000000000000000v']);
   });
 });

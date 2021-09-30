@@ -4,9 +4,9 @@ import { calculateIncentiveAPY } from './calculate-incentive-apy';
 
 interface ReserveIncentiveEmission {
   emissionPerSecond: string;
-  incentivesLastUpdateTimestamp: string;
+  incentivesLastUpdateTimestamp: number;
   tokenIncentivesIndex: string;
-  emissionEndTimestamp: string;
+  emissionEndTimestamp: number;
   tokenAddress: string;
   rewardTokenAddress: string;
   incentiveControllerAddress: string;
