@@ -38,9 +38,6 @@ interface UserTokenIncentives {
 
 export interface UserReserveData {
   underlyingAsset: string;
-  aTokenAddress: string;
-  variableDebtTokenAddress: string;
-  stableDebtTokenAddress: string;
   totalLiquidity: string;
   liquidityIndex: string;
   totalScaledVariableDebt: string;
@@ -50,7 +47,7 @@ export interface UserReserveData {
   principalStableDebt: string;
 }
 
-interface UserIncentiveDict {
+export interface UserIncentiveDict {
   [incentiveControllerAddress: string]: UserIncentiveData;
 }
 
