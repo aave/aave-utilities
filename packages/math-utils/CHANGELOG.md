@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.8.1 (2021-09-30)
+
+
+### Bug Fixes
+
+* user incentives input type and export response type ([#76](https://github.com/@aave/aave-utilities/issues/76)) ([363dd86](https://github.com/@aave/aave-utilities/commit/363dd86737ba602bb7a8a68628af44b6e8a8e5e4))
+
+
+
+
+
 # 0.8.0 (2021-09-30)
 
 
