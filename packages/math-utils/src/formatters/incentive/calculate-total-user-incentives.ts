@@ -1,8 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import {
-  calculateUserReserveIncentives,
-  CalculateUserReserveIncentivesResponse,
-} from './calculate-user-reserve-incentives';
+import { calculateUserReserveIncentives } from './calculate-user-reserve-incentives';
 
 export interface ReserveIncentiveData {
   underlyingAsset: string;
@@ -20,9 +17,9 @@ export interface UserReserveIncentiveData {
 
 interface ReserveTokenIncentives {
   emissionPerSecond: string;
-  incentivesLastUpdateTimestamp: string;
+  incentivesLastUpdateTimestamp: number;
   tokenIncentivesIndex: string;
-  emissionEndTimestamp: string;
+  emissionEndTimestamp: number;
   tokenAddress: string;
   rewardTokenAddress: string;
   incentiveControllerAddress: string;
@@ -70,106 +67,95 @@ export interface CalculateTotalUserIncentivesRequest {
   currentTimestamp: number;
 }
 
-export interface CalculateTotalUserIncentivesResponse {
-  userIncentives: UserIncentiveDict;
-}
-
-// Add data for a deposit or debt incentive to overall userIncentives dictionary
-function updateUserIncentive(
-  userIncentives: UserIncentiveDict,
-  tokenIncentivesUserData: UserTokenIncentives,
-  accumulatedIncentives: BigNumber,
-  tokenAddress: string, // Address of the aToken, variableDebt, or stableDebt token earning incentives
-): UserIncentiveDict {
-  if (tokenIncentivesUserData.incentiveControllerAddress in userIncentives) {
-    let userIncentive =
-      userIncentives[tokenIncentivesUserData.incentiveControllerAddress];
-    userIncentive.claimableRewards = userIncentive.claimableRewards.plus(
-      accumulatedIncentives,
-    );
-    userIncentive.assets.push(tokenAddress);
-    userIncentives[
-      tokenIncentivesUserData.incentiveControllerAddress
-    ] = userIncentive;
-  } else {
-    userIncentives[tokenIncentivesUserData.incentiveControllerAddress] = {
-      claimableRewards: new BigNumber(
-        tokenIncentivesUserData.userUnclaimedRewards,
-      ).plus(accumulatedIncentives),
-      assets: [tokenAddress],
-      rewardTokenAddress: tokenIncentivesUserData.rewardTokenAddress,
-    };
-  }
-
-  return userIncentives;
-}
-
-// Add all deposit and debt incentives for a reserve asset to overall userIncentives dictionary
-function updateUserIncentives(
-  userIncentives: UserIncentiveDict,
-  userReserveIncentive: UserReserveIncentiveData,
-  rewards: CalculateUserReserveIncentivesResponse,
-  userReserve: UserReserveData,
-): UserIncentiveDict {
-  userIncentives = updateUserIncentive(
-    userIncentives,
-    userReserveIncentive.aTokenIncentivesUserData,
-    rewards.aIncentives,
-    userReserve.aTokenAddress,
-  );
-  userIncentives = updateUserIncentive(
-    userIncentives,
-    userReserveIncentive.vTokenIncentivesUserData,
-    rewards.vIncentives,
-    userReserve.variableDebtTokenAddress,
-  );
-  userIncentives = updateUserIncentive(
-    userIncentives,
-    userReserveIncentive.sTokenIncentivesUserData,
-    rewards.sIncentives,
-    userReserve.stableDebtTokenAddress,
-  );
-  return userIncentives;
-}
-
-// Calculate total claimable incentives for a user
 export function calculateTotalUserIncentives({
   reserveIncentives,
   userReserveIncentives,
   userReserves,
   currentTimestamp,
-}: CalculateTotalUserIncentivesRequest): CalculateTotalUserIncentivesResponse {
-  let userIncentives: UserIncentiveDict = {};
-
-  // Loop through each asset with user incentive data
-  userReserveIncentives.forEach(
-    (userReserveIncentive: UserReserveIncentiveData) => {
-      // Find the corresponding incentive data for the reserve asset
-      const reserveIncentive = reserveIncentives.find(
+}: CalculateTotalUserIncentivesRequest): UserIncentiveDict {
+  // calculate incentive per token
+  const rewards = userReserveIncentives
+    .map(userReserveIncentive => {
+      const reserve = reserveIncentives.find(
         reserve =>
           reserve.underlyingAsset === userReserveIncentive.underlyingAsset,
       );
-      // Find the corresponding user data for the reserve asset
       const userReserve = userReserves.find(
-        userReserve =>
-          userReserve.underlyingAsset === userReserveIncentive.underlyingAsset,
+        reserve =>
+          reserve.underlyingAsset === userReserveIncentive.underlyingAsset,
       );
-      if (reserveIncentive && userReserve) {
+      if (reserve && userReserve) {
         const rewards = calculateUserReserveIncentives({
-          reserveIncentives: reserveIncentive,
+          reserveIncentives: reserve,
           userReserveIncentives: userReserveIncentive,
           userReserveData: userReserve,
           currentTimestamp,
         });
-        // Update userIncentives dictionary by grouping claimableRewards and assets by incentiveControllerAddress
-        userIncentives = updateUserIncentives(
-          userIncentives,
-          userReserveIncentive,
-          rewards,
-          userReserve,
-        );
+
+        return [
+          {
+            tokenAddress:
+              userReserveIncentive.aTokenIncentivesUserData.tokenAddress,
+            incentiveController:
+              userReserveIncentive.aTokenIncentivesUserData
+                .incentiveControllerAddress,
+            rewardTokenAddress:
+              userReserveIncentive.aTokenIncentivesUserData.rewardTokenAddress,
+            accruedRewards: new BigNumber(rewards.aIncentives),
+            unclaimedRewards: new BigNumber(
+              userReserveIncentive.aTokenIncentivesUserData.userUnclaimedRewards,
+            ),
+          },
+          {
+            tokenAddress:
+              userReserveIncentive.vTokenIncentivesUserData.tokenAddress,
+            incentiveController:
+              userReserveIncentive.vTokenIncentivesUserData
+                .incentiveControllerAddress,
+            rewardTokenAddress:
+              userReserveIncentive.vTokenIncentivesUserData.rewardTokenAddress,
+            accruedRewards: new BigNumber(rewards.vIncentives),
+            unclaimedRewards: new BigNumber(
+              userReserveIncentive.vTokenIncentivesUserData.userUnclaimedRewards,
+            ),
+          },
+          {
+            tokenAddress:
+              userReserveIncentive.sTokenIncentivesUserData.tokenAddress,
+            incentiveController:
+              userReserveIncentive.sTokenIncentivesUserData
+                .incentiveControllerAddress,
+            rewardTokenAddress:
+              userReserveIncentive.sTokenIncentivesUserData.rewardTokenAddress,
+            accruedRewards: new BigNumber(rewards.sIncentives),
+            unclaimedRewards: new BigNumber(
+              userReserveIncentive.sTokenIncentivesUserData.userUnclaimedRewards,
+            ),
+          },
+        ];
       }
-    },
-  );
-  return { userIncentives };
+
+      return [];
+    })
+    .flat();
+
+  // normalize incentives per controller
+  return rewards.reduce((acc, reward) => {
+    if (!acc[reward.incentiveController]) {
+      acc[reward.incentiveController] = {
+        assets: [],
+        claimableRewards: reward.unclaimedRewards,
+        rewardTokenAddress: reward.rewardTokenAddress,
+      };
+    }
+
+    if (reward.accruedRewards.gt(0)) {
+      acc[reward.incentiveController].claimableRewards = acc[
+        reward.incentiveController
+      ].claimableRewards.plus(reward.accruedRewards);
+      acc[reward.incentiveController].assets.push(reward.tokenAddress);
+    }
+
+    return acc;
+  }, {} as UserIncentiveDict);
 }
