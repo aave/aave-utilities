@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.8.0 (2021-09-30)
+
+
+### Features
+
+* group claimable rewards and assets by IncentiveController ([#74](https://github.com/@aave/aave-utilities/issues/74)) ([20335a3](https://github.com/@aave/aave-utilities/commit/20335a37f53ce938c4f0ae6e93a079b030c1aaf4)), closes [#75](https://github.com/@aave/aave-utilities/issues/75)
+
+
+
+
+
 # 0.7.0 (2021-09-29)
 
 
