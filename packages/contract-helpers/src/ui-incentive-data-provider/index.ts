@@ -12,23 +12,24 @@ export * from './types/UiIncentiveDataProviderTypes';
 export interface UiIncentiveDataProviderInterface {
   getAllIncentives: (
     user: string,
+    incentiveDataProviderAddress: string,
+    lendingPoolAddressProvider: string,
   ) => Promise<FullReservesIncentiveDataResponse>;
-  getReservesIncentives: () => Promise<ReserveIncentiveDataResponse[]>;
+  getReservesIncentives: (
+    lendingPoolAddressProvider: string,
+  ) => Promise<ReserveIncentiveDataResponse[]>;
   getUserReservesIncentives: (
     user: string,
+    lendingPoolAddressProvider: string,
   ) => Promise<UserReserveIncentiveDataResponse[]>;
 }
 export interface UiIncentiveDataProviderContext {
   incentiveDataProviderAddress: string;
-  lendingPoolAddressProvider: string;
   provider: providers.Provider;
 }
-
 export class UiIncentiveDataProvider
   implements UiIncentiveDataProviderInterface {
   private readonly _contract: UiIncentiveDataProviderContract;
-
-  private readonly _lendingPoolAddressProvider: string;
 
   /**
    * Constructor
@@ -38,12 +39,6 @@ export class UiIncentiveDataProvider
     if (!isAddress(context.incentiveDataProviderAddress)) {
       throw new Error('contract address is not valid');
     }
-
-    if (!isAddress(context.lendingPoolAddressProvider)) {
-      throw new Error('Lending pool address is not valid');
-    }
-
-    this._lendingPoolAddressProvider = context.lendingPoolAddressProvider;
 
     this._contract = UiIncentiveDataProviderFactory.connect(
       context.incentiveDataProviderAddress,
@@ -57,13 +52,18 @@ export class UiIncentiveDataProvider
    */
   public async getAllIncentives(
     user: string,
+    lendingPoolAddressProvider: string,
   ): Promise<FullReservesIncentiveDataResponse> {
+    if (!isAddress(lendingPoolAddressProvider)) {
+      throw new Error('Lending pool address provider is not valid');
+    }
+
     if (!isAddress(user)) {
       throw new Error('User address is not a valid ethereum address');
     }
 
     return this._contract.getFullReservesIncentiveData(
-      this._lendingPoolAddressProvider,
+      lendingPoolAddressProvider,
       user,
     );
   }
@@ -71,12 +71,14 @@ export class UiIncentiveDataProvider
   /**
    *  Get the reserve incentive data for the lending pool
    */
-  public async getReservesIncentives(): Promise<
-    ReserveIncentiveDataResponse[]
-  > {
-    return this._contract.getReservesIncentivesData(
-      this._lendingPoolAddressProvider,
-    );
+  public async getReservesIncentives(
+    lendingPoolAddressProvider: string,
+  ): Promise<ReserveIncentiveDataResponse[]> {
+    if (!isAddress(lendingPoolAddressProvider)) {
+      throw new Error('Lending pool address provider is not valid');
+    }
+
+    return this._contract.getReservesIncentivesData(lendingPoolAddressProvider);
   }
 
   /**
@@ -85,13 +87,18 @@ export class UiIncentiveDataProvider
    */
   public async getUserReservesIncentives(
     user: string,
+    lendingPoolAddressProvider: string,
   ): Promise<UserReserveIncentiveDataResponse[]> {
+    if (!isAddress(lendingPoolAddressProvider)) {
+      throw new Error('Lending pool address provider is not valid');
+    }
+
     if (!isAddress(user)) {
       throw new Error('User address is not a valid ethereum address');
     }
 
     return this._contract.getUserReservesIncentivesData(
-      this._lendingPoolAddressProvider,
+      lendingPoolAddressProvider,
       user,
     );
   }

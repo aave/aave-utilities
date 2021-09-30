@@ -8,7 +8,6 @@ describe('UiIncentiveDataProvider', () => {
   const createValidInstance = () => {
     const instance = new UiIncentiveDataProvider({
       incentiveDataProviderAddress: mockValidEthereumAddress,
-      lendingPoolAddressProvider: mockValidEthereumAddress,
       provider: new providers.JsonRpcProvider(),
     });
 
@@ -28,37 +27,51 @@ describe('UiIncentiveDataProvider', () => {
         () =>
           new UiIncentiveDataProvider({
             incentiveDataProviderAddress: mockInvalidEthereumAddress,
-            lendingPoolAddressProvider: mockValidEthereumAddress,
             provider: new providers.JsonRpcProvider(),
           }),
       ).toThrowError('contract address is not valid');
     });
 
-    it('should throw an error if the lendingPoolAddress is not valid', () => {
-      expect(
-        () =>
-          new UiIncentiveDataProvider({
-            incentiveDataProviderAddress: mockValidEthereumAddress,
-            lendingPoolAddressProvider: mockInvalidEthereumAddress,
-            provider: new providers.JsonRpcProvider(),
-          }),
-      ).toThrowError('Lending pool address is not valid');
-    });
+    // it('should throw an error if the lendingPoolAddress is not valid', () => {
+    //   expect(
+    //     () =>
+    //       new UiIncentiveDataProvider({
+    //         incentiveDataProviderAddress: mockValidEthereumAddress,
+    //         provider: new providers.JsonRpcProvider(),
+    //       }),
+    //   ).toThrowError('Lending pool address is not valid');
+    // });
   });
 
   describe('getAllIncentives', () => {
     it('should throw if user is not a valid ethereum address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getAllIncentives(mockInvalidEthereumAddress),
+        instance.getAllIncentives(
+          mockInvalidEthereumAddress,
+          mockValidEthereumAddress,
+        ),
       ).rejects.toThrow('User address is not a valid ethereum address');
     });
 
-    it('should not throw if user is a valid ethereum address', async () => {
+    it('should throw if lending pool address is not a valid ethereum address', async () => {
+      const instance = createValidInstance();
+      await expect(
+        instance.getAllIncentives(
+          mockValidEthereumAddress,
+          mockInvalidEthereumAddress,
+        ),
+      ).rejects.toThrow('Lending pool address provider is not valid');
+    });
+
+    it('should not throw if user and lending pool address provider is a valid ethereum address', async () => {
       const instance = createValidInstance();
       let errored = false;
       try {
-        await instance.getAllIncentives(mockValidEthereumAddress);
+        await instance.getAllIncentives(
+          mockValidEthereumAddress,
+          mockValidEthereumAddress,
+        );
       } catch (_) {
         errored = true;
       }
@@ -68,11 +81,17 @@ describe('UiIncentiveDataProvider', () => {
   });
 
   describe('getReservesIncentives - to get 100% in coverage :( pointless test', () => {
+    it('should throw if lending pool address is not a valid ethereum address', async () => {
+      const instance = createValidInstance();
+      await expect(
+        instance.getReservesIncentives(mockInvalidEthereumAddress),
+      ).rejects.toThrow('Lending pool address provider is not valid');
+    });
     it('should not throw', async () => {
       const instance = createValidInstance();
       let errored = false;
       try {
-        await instance.getReservesIncentives();
+        await instance.getReservesIncentives(mockValidEthereumAddress);
       } catch (_) {
         errored = true;
       }
@@ -82,10 +101,22 @@ describe('UiIncentiveDataProvider', () => {
   });
 
   describe('getUserReserves', () => {
+    it('should throw if lending pool address is not a valid ethereum address', async () => {
+      const instance = createValidInstance();
+      await expect(
+        instance.getUserReservesIncentives(
+          mockValidEthereumAddress,
+          mockInvalidEthereumAddress,
+        ),
+      ).rejects.toThrow('Lending pool address provider is not valid');
+    });
     it('should throw if user is not a valid ethereum address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getUserReservesIncentives(mockInvalidEthereumAddress),
+        instance.getUserReservesIncentives(
+          mockInvalidEthereumAddress,
+          mockValidEthereumAddress,
+        ),
       ).rejects.toThrow('User address is not a valid ethereum address');
     });
 
@@ -93,7 +124,10 @@ describe('UiIncentiveDataProvider', () => {
       const instance = createValidInstance();
       let errored = false;
       try {
-        await instance.getUserReservesIncentives(mockValidEthereumAddress);
+        await instance.getUserReservesIncentives(
+          mockValidEthereumAddress,
+          mockValidEthereumAddress,
+        );
       } catch (_) {
         errored = true;
       }
