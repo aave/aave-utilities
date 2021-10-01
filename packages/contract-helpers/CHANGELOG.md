@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.9.0 (2021-10-01)
+
+
+### Features
+
+* added chainlink feeds registry ([8185176](https://github.com/@aave/aave-utilities/commit/8185176ea7d16213d641e4786a078185f6d2cf71))
+
+
+
+
+
 ## 0.8.2 (2021-09-30)
 
 **Note:** Version bump only for package @aave/contract-helpers
