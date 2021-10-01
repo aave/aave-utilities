@@ -11,10 +11,14 @@ describe('UiIncentiveDataProvider', () => {
       provider: new providers.JsonRpcProvider(),
     });
 
+    const getReservesIncentivesDataMock = jest.fn();
+
+    // TODO: more reasonable mock so we can do more reasonable tests
+    getReservesIncentivesDataMock.mockResolvedValue([]);
     // @ts-ignore
     instance._contract = {
       getFullReservesIncentiveData: jest.fn(),
-      getReservesIncentivesData: jest.fn(),
+      getReservesIncentivesData: getReservesIncentivesDataMock,
       getUserReservesIncentivesData: jest.fn(),
     };
 
@@ -43,11 +47,11 @@ describe('UiIncentiveDataProvider', () => {
     // });
   });
 
-  describe('getAllIncentives', () => {
+  describe('getFullReservesIncentiveData', () => {
     it('should throw if user is not a valid ethereum address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getAllIncentives(
+        instance.getFullReservesIncentiveData(
           mockInvalidEthereumAddress,
           mockValidEthereumAddress,
         ),
@@ -57,7 +61,7 @@ describe('UiIncentiveDataProvider', () => {
     it('should throw if lending pool address is not a valid ethereum address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getAllIncentives(
+        instance.getFullReservesIncentiveData(
           mockValidEthereumAddress,
           mockInvalidEthereumAddress,
         ),
@@ -68,7 +72,7 @@ describe('UiIncentiveDataProvider', () => {
       const instance = createValidInstance();
       let errored = false;
       try {
-        await instance.getAllIncentives(
+        await instance.getFullReservesIncentiveData(
           mockValidEthereumAddress,
           mockValidEthereumAddress,
         );
@@ -80,18 +84,35 @@ describe('UiIncentiveDataProvider', () => {
     });
   });
 
-  describe('getReservesIncentives - to get 100% in coverage :( pointless test', () => {
+  describe('getReservesIncentivesData - to get 100% in coverage :( pointless test', () => {
     it('should throw if lending pool address is not a valid ethereum address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getReservesIncentives(mockInvalidEthereumAddress),
+        instance.getReservesIncentivesData(mockInvalidEthereumAddress),
       ).rejects.toThrow('Lending pool address provider is not valid');
     });
     it('should not throw', async () => {
       const instance = createValidInstance();
       let errored = false;
       try {
-        await instance.getReservesIncentives(mockValidEthereumAddress);
+        await instance.getReservesIncentivesData(mockValidEthereumAddress);
+      } catch (_) {
+        errored = true;
+      }
+
+      expect(errored).toEqual(false);
+    });
+  });
+
+  describe('getReservesIncentivesDataHumanized', () => {
+    it('should not throw', async () => {
+      const instance = createValidInstance();
+
+      let errored = false;
+      try {
+        await instance.getReservesIncentivesDataHumanized(
+          mockValidEthereumAddress,
+        );
       } catch (_) {
         errored = true;
       }
@@ -104,7 +125,7 @@ describe('UiIncentiveDataProvider', () => {
     it('should throw if lending pool address is not a valid ethereum address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getUserReservesIncentives(
+        instance.getUserReservesIncentivesData(
           mockValidEthereumAddress,
           mockInvalidEthereumAddress,
         ),
@@ -113,7 +134,7 @@ describe('UiIncentiveDataProvider', () => {
     it('should throw if user is not a valid ethereum address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getUserReservesIncentives(
+        instance.getUserReservesIncentivesData(
           mockInvalidEthereumAddress,
           mockValidEthereumAddress,
         ),
@@ -124,7 +145,7 @@ describe('UiIncentiveDataProvider', () => {
       const instance = createValidInstance();
       let errored = false;
       try {
-        await instance.getUserReservesIncentives(
+        await instance.getUserReservesIncentivesData(
           mockValidEthereumAddress,
           mockValidEthereumAddress,
         );
