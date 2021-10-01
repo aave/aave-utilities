@@ -13,7 +13,7 @@ describe('calculateIncentiveAPY', () => {
         emissionPerSecond: '198333333333333000',
         rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply: '1000000003465380422',
-        tokenPriceInMarketReferenceCurrency: '1634050000000000',
+        priceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
         rewardTokenDecimals: 18,
       });
@@ -26,7 +26,7 @@ describe('calculateIncentiveAPY', () => {
         emissionPerSecond: '22037037037037000',
         rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply: '145530711359639107416907',
-        tokenPriceInMarketReferenceCurrency: '1634050000000000',
+        priceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
         rewardTokenDecimals: 18,
       });
@@ -39,7 +39,7 @@ describe('calculateIncentiveAPY', () => {
         emissionPerSecond: '0',
         rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply: '43135641118664782764100',
-        tokenPriceInMarketReferenceCurrency: '1634050000000000',
+        priceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
         rewardTokenDecimals: 18,
       });
@@ -52,7 +52,7 @@ describe('calculateIncentiveAPY', () => {
         emissionPerSecond: '136893333333333000',
         rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply: '150629528254290021063240208',
-        tokenPriceInMarketReferenceCurrency: '1634050000000000',
+        priceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
         rewardTokenDecimals: 18,
       });
@@ -79,7 +79,7 @@ describe('calculateIncentiveAPY', () => {
           totalLiquidity,
           formatReserveRequestWMATIC.reserve.liquidityIndex,
         ).toString(),
-        tokenPriceInMarketReferenceCurrency: '498035657442060',
+        priceInMarketReferenceCurrency: '498035657442060',
         decimals: 18,
         rewardTokenDecimals: 18,
       });
@@ -92,7 +92,7 @@ describe('calculateIncentiveAPY', () => {
         emissionPerSecond: '22037037037037000',
         rewardTokenPriceInMarketReferenceCurrency: '498035657442060',
         totalTokenSupply: calculateReserveDebtResult.totalVariableDebt.toFixed(),
-        tokenPriceInMarketReferenceCurrency: '498035657442060',
+        priceInMarketReferenceCurrency: '498035657442060',
         decimals: 18,
         rewardTokenDecimals: 18,
       });
@@ -105,7 +105,7 @@ describe('calculateIncentiveAPY', () => {
         emissionPerSecond: '0',
         rewardTokenPriceInMarketReferenceCurrency: '498035657442060',
         totalTokenSupply: calculateReserveDebtResult.totalStableDebt.toFixed(),
-        tokenPriceInMarketReferenceCurrency: '498035657442060',
+        priceInMarketReferenceCurrency: '498035657442060',
         decimals: 18,
         rewardTokenDecimals: 18,
       });
@@ -129,7 +129,7 @@ describe('calculateIncentiveAPY', () => {
         emissionPerSecond: '0',
         rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply: totalLiquidity.toFixed(),
-        tokenPriceInMarketReferenceCurrency: '1634050000000000',
+        priceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
         rewardTokenDecimals: 18,
       });
@@ -142,7 +142,7 @@ describe('calculateIncentiveAPY', () => {
         emissionPerSecond: '0',
         rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply: calculateReserveDebtResult.totalVariableDebt.toFixed(),
-        tokenPriceInMarketReferenceCurrency: '1634050000000000',
+        priceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
         rewardTokenDecimals: 18,
       });
@@ -155,7 +155,7 @@ describe('calculateIncentiveAPY', () => {
         emissionPerSecond: '0',
         rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply: calculateReserveDebtResult.totalStableDebt.toFixed(),
-        tokenPriceInMarketReferenceCurrency: '1634050000000000',
+        priceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
         rewardTokenDecimals: 18,
       });

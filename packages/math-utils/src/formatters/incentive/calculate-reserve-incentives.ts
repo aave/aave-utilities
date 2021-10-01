@@ -31,7 +31,7 @@ export interface CalculateReserveIncentivesRequest {
   totalScaledVariableDebt: string;
   totalPrincipalStableDebt: string;
   decimals: number;
-  tokenPriceInMarketReferenceCurrency: string; // Can be priced in ETH or USD depending on market
+  priceInMarketReferenceCurrency: string; // Can be priced in ETH or USD depending on market
 }
 
 interface ReserveIncentiveResponse {
@@ -56,12 +56,12 @@ export function calculateReserveIncentives({
   totalScaledVariableDebt,
   totalPrincipalStableDebt,
   decimals,
-  tokenPriceInMarketReferenceCurrency,
+  priceInMarketReferenceCurrency,
 }: CalculateReserveIncentivesRequest): CalculateReserveIncentivesResponse {
   const aIncentivesAPY = calculateIncentiveAPY({
     emissionPerSecond: reserveIncentiveData.aIncentiveData.emissionPerSecond,
     rewardTokenPriceInMarketReferenceCurrency: aRewardTokenPriceInMarketReferenceCurrency,
-    tokenPriceInMarketReferenceCurrency,
+    priceInMarketReferenceCurrency,
     totalTokenSupply: rayDiv(
       new BigNumber(totalLiquidity),
       new BigNumber(liquidityIndex),
@@ -74,7 +74,7 @@ export function calculateReserveIncentives({
   const vIncentivesAPY = calculateIncentiveAPY({
     emissionPerSecond: reserveIncentiveData.vIncentiveData.emissionPerSecond,
     rewardTokenPriceInMarketReferenceCurrency: vRewardTokenPriceInMarketReferenceCurrency,
-    tokenPriceInMarketReferenceCurrency,
+    priceInMarketReferenceCurrency,
     totalTokenSupply: totalScaledVariableDebt,
     decimals,
     rewardTokenDecimals:
@@ -84,7 +84,7 @@ export function calculateReserveIncentives({
   const sIncentivesAPY = calculateIncentiveAPY({
     emissionPerSecond: reserveIncentiveData.sIncentiveData.emissionPerSecond,
     rewardTokenPriceInMarketReferenceCurrency: sRewardTokenPriceInMarketReferenceCurrency,
-    tokenPriceInMarketReferenceCurrency,
+    priceInMarketReferenceCurrency,
     totalTokenSupply: totalPrincipalStableDebt,
     decimals,
     rewardTokenDecimals:

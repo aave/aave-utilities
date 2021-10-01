@@ -64,7 +64,7 @@ describe('calculateReserveIncentives', () => {
         totalScaledVariableDebt: calculateReserveDebtResult.totalVariableDebt.toString(),
         totalPrincipalStableDebt: calculateReserveDebtResult.totalStableDebt.toString(),
         decimals: 18,
-        tokenPriceInMarketReferenceCurrency: '498035657442060',
+        priceInMarketReferenceCurrency: '498035657442060',
       });
 
       expect(result.aIncentivesData.incentiveAPY).toBe(
@@ -133,7 +133,7 @@ describe('calculateReserveIncentives', () => {
         liquidityIndex: '1053500517589216842914921776',
         totalScaledVariableDebt: '3891257648076622',
         totalPrincipalStableDebt: '41801112749722',
-        tokenPriceInMarketReferenceCurrency: '347780307856538',
+        priceInMarketReferenceCurrency: '347780307856538',
         decimals: 6,
       });
 
@@ -196,7 +196,7 @@ describe('calculateReserveIncentives', () => {
         liquidityIndex: '1053207642011596990084101590',
         totalScaledVariableDebt: '1440029626743923505023111127',
         totalPrincipalStableDebt: '9751179387008545009745124',
-        tokenPriceInMarketReferenceCurrency: '350862937422119',
+        priceInMarketReferenceCurrency: '350862937422119',
         decimals: 18,
       });
 

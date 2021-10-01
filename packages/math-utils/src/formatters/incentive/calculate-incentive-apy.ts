@@ -5,7 +5,7 @@ export interface CalculateIncentiveAPYRequest {
   emissionPerSecond: string;
   rewardTokenPriceInMarketReferenceCurrency: string; // Can be priced in ETH or USD depending on market
   totalTokenSupply: string;
-  tokenPriceInMarketReferenceCurrency: string; // Can be priced in ETH or USD depending on market
+  priceInMarketReferenceCurrency: string; // Can be priced in ETH or USD depending on market
   decimals: number;
   rewardTokenDecimals: number;
 }
@@ -14,7 +14,7 @@ export interface CalculateIncentiveAPYRequest {
 export function calculateIncentiveAPY({
   emissionPerSecond,
   rewardTokenPriceInMarketReferenceCurrency,
-  tokenPriceInMarketReferenceCurrency,
+  priceInMarketReferenceCurrency,
   totalTokenSupply,
   decimals,
   rewardTokenDecimals,
@@ -34,7 +34,7 @@ export function calculateIncentiveAPY({
 
   const totalSupplyNormalized = valueToBigNumber(
     normalize(totalTokenSupply, decimals),
-  ).multipliedBy(tokenPriceInMarketReferenceCurrency);
+  ).multipliedBy(priceInMarketReferenceCurrency);
 
   return emissionPerYear.dividedBy(totalSupplyNormalized).toFixed();
 }
