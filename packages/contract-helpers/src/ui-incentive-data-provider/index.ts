@@ -32,7 +32,7 @@ export interface UiIncentiveDataProviderContext {
 }
 export class UiIncentiveDataProvider
   implements UiIncentiveDataProviderInterface {
-  private readonly _contract: UiIncentiveDataProviderContract;
+  public readonly _contract: UiIncentiveDataProviderContract;
 
   /**
    * Constructor
@@ -96,9 +96,6 @@ export class UiIncentiveDataProvider
       aIncentiveData: this._formatIncentiveData(r.aIncentiveData),
       vIncentiveData: this._formatIncentiveData(r.vIncentiveData),
       sIncentiveData: this._formatIncentiveData(r.sIncentiveData),
-      1: this._formatIncentiveData(r['1']),
-      2: this._formatIncentiveData(r['2']),
-      3: this._formatIncentiveData(r['3']),
     }));
   }
 
@@ -131,10 +128,6 @@ export class UiIncentiveDataProvider
       incentivesLastUpdateTimestamp: data.incentivesLastUpdateTimestamp.toNumber(),
       tokenIncentivesIndex: data.tokenIncentivesIndex.toString(),
       emissionEndTimestamp: data.emissionEndTimestamp.toNumber(),
-      0: data[0].toString(),
-      1: data[1].toString(),
-      2: data[2].toString(),
-      3: data[3].toString(),
     };
   }
 }

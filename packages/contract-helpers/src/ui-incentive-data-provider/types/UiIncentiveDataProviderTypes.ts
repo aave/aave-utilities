@@ -31,10 +31,10 @@ export interface IncentiveDataHumanized {
   incentiveControllerAddress: string;
   rewardTokenDecimals: number;
   precision: number;
-  0: string;
-  1: string;
-  2: string;
-  3: string;
+  0: BigNumber;
+  1: BigNumber;
+  2: BigNumber;
+  3: BigNumber;
   4: string;
   5: string;
   6: string;
@@ -74,9 +74,9 @@ export interface ReserveIncentiveDataHumanizedResponse {
   vIncentiveData: IncentiveDataHumanized;
   sIncentiveData: IncentiveDataHumanized;
   0: string;
-  1: IncentiveDataHumanized;
-  2: IncentiveDataHumanized;
-  3: IncentiveDataHumanized;
+  1: IncentiveData;
+  2: IncentiveData;
+  3: IncentiveData;
 }
 
 export interface UserReserveIncentiveDataResponse {

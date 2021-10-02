@@ -1,4 +1,5 @@
 import { providers } from 'ethers';
+import { getReservesIncentivesDataMock } from './_mocks';
 import { UiIncentiveDataProvider } from './index';
 
 describe('UiIncentiveDataProvider', () => {
@@ -11,14 +12,17 @@ describe('UiIncentiveDataProvider', () => {
       provider: new providers.JsonRpcProvider(),
     });
 
-    const getReservesIncentivesDataMock = jest.fn();
+    const mockGetReservesIncentivesData = jest.fn();
 
     // TODO: more reasonable mock so we can do more reasonable tests
-    getReservesIncentivesDataMock.mockResolvedValue([]);
+    mockGetReservesIncentivesData.mockResolvedValue(
+      getReservesIncentivesDataMock,
+    );
+
     // @ts-ignore
     instance._contract = {
       getFullReservesIncentiveData: jest.fn(),
-      getReservesIncentivesData: getReservesIncentivesDataMock,
+      getReservesIncentivesData: mockGetReservesIncentivesData,
       getUserReservesIncentivesData: jest.fn(),
     };
 
