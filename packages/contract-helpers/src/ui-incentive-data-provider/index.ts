@@ -4,21 +4,24 @@ import { UiIncentiveDataProvider as UiIncentiveDataProviderContract } from './ty
 import { UiIncentiveDataProviderFactory } from './typechain/UiIncentiveDataProviderFactory';
 import {
   FullReservesIncentiveDataResponse,
+  IncentiveData,
+  IncentiveDataHumanized,
+  ReserveIncentiveDataHumanizedResponse,
   ReserveIncentiveDataResponse,
   UserReserveIncentiveDataResponse,
 } from './types/UiIncentiveDataProviderTypes';
 export * from './types/UiIncentiveDataProviderTypes';
 
 export interface UiIncentiveDataProviderInterface {
-  getAllIncentives: (
+  getFullReservesIncentiveData: (
     user: string,
     incentiveDataProviderAddress: string,
     lendingPoolAddressProvider: string,
   ) => Promise<FullReservesIncentiveDataResponse>;
-  getReservesIncentives: (
+  getReservesIncentivesData: (
     lendingPoolAddressProvider: string,
   ) => Promise<ReserveIncentiveDataResponse[]>;
-  getUserReservesIncentives: (
+  getUserReservesIncentivesData: (
     user: string,
     lendingPoolAddressProvider: string,
   ) => Promise<UserReserveIncentiveDataResponse[]>;
@@ -29,7 +32,7 @@ export interface UiIncentiveDataProviderContext {
 }
 export class UiIncentiveDataProvider
   implements UiIncentiveDataProviderInterface {
-  private readonly _contract: UiIncentiveDataProviderContract;
+  public readonly _contract: UiIncentiveDataProviderContract;
 
   /**
    * Constructor
@@ -50,7 +53,7 @@ export class UiIncentiveDataProvider
    *  Get the full reserve incentive data for the lending pool and the user
    * @param user The user address
    */
-  public async getAllIncentives(
+  public async getFullReservesIncentiveData(
     user: string,
     lendingPoolAddressProvider: string,
   ): Promise<FullReservesIncentiveDataResponse> {
@@ -71,7 +74,7 @@ export class UiIncentiveDataProvider
   /**
    *  Get the reserve incentive data for the lending pool
    */
-  public async getReservesIncentives(
+  public async getReservesIncentivesData(
     lendingPoolAddressProvider: string,
   ): Promise<ReserveIncentiveDataResponse[]> {
     if (!isAddress(lendingPoolAddressProvider)) {
@@ -81,11 +84,26 @@ export class UiIncentiveDataProvider
     return this._contract.getReservesIncentivesData(lendingPoolAddressProvider);
   }
 
+  public async getReservesIncentivesDataHumanized(
+    lendingPoolAddressProvider: string,
+  ): Promise<ReserveIncentiveDataHumanizedResponse[]> {
+    const response = await this.getReservesIncentivesData(
+      lendingPoolAddressProvider,
+    );
+
+    return response.map(r => ({
+      ...r,
+      aIncentiveData: this._formatIncentiveData(r.aIncentiveData),
+      vIncentiveData: this._formatIncentiveData(r.vIncentiveData),
+      sIncentiveData: this._formatIncentiveData(r.sIncentiveData),
+    }));
+  }
+
   /**
    *  Get the reserve incentive data for the user
    * @param user The user address
    */
-  public async getUserReservesIncentives(
+  public async getUserReservesIncentivesData(
     user: string,
     lendingPoolAddressProvider: string,
   ): Promise<UserReserveIncentiveDataResponse[]> {
@@ -101,5 +119,15 @@ export class UiIncentiveDataProvider
       lendingPoolAddressProvider,
       user,
     );
+  }
+
+  private _formatIncentiveData(data: IncentiveData): IncentiveDataHumanized {
+    return {
+      ...data,
+      emissionPerSecond: data.emissionPerSecond.toString(),
+      incentivesLastUpdateTimestamp: data.incentivesLastUpdateTimestamp.toNumber(),
+      tokenIncentivesIndex: data.tokenIncentivesIndex.toString(),
+      emissionEndTimestamp: data.emissionEndTimestamp.toNumber(),
+    };
   }
 }

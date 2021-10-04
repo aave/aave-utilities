@@ -21,6 +21,27 @@ export interface IncentiveData {
   8: number;
 }
 
+export interface IncentiveDataHumanized {
+  emissionPerSecond: string;
+  incentivesLastUpdateTimestamp: number;
+  tokenIncentivesIndex: string;
+  emissionEndTimestamp: number;
+  tokenAddress: string;
+  rewardTokenAddress: string;
+  incentiveControllerAddress: string;
+  rewardTokenDecimals: number;
+  precision: number;
+  0: BigNumber;
+  1: BigNumber;
+  2: BigNumber;
+  3: BigNumber;
+  4: string;
+  5: string;
+  6: string;
+  7: number;
+  8: number;
+}
+
 export interface IncentiveUserData {
   tokenincentivesUserIndex: BigNumber;
   userUnclaimedRewards: BigNumber;
@@ -41,6 +62,17 @@ export interface ReserveIncentiveDataResponse {
   aIncentiveData: IncentiveData;
   vIncentiveData: IncentiveData;
   sIncentiveData: IncentiveData;
+  0: string;
+  1: IncentiveData;
+  2: IncentiveData;
+  3: IncentiveData;
+}
+
+export interface ReserveIncentiveDataHumanizedResponse {
+  underlyingAsset: string;
+  aIncentiveData: IncentiveDataHumanized;
+  vIncentiveData: IncentiveDataHumanized;
+  sIncentiveData: IncentiveDataHumanized;
   0: string;
   1: IncentiveData;
   2: IncentiveData;
