@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.10.0 (2021-10-04)
+
+
+### Features
+
+* add networks enum ([#79](https://github.com/@aave/aave-utilities/issues/79)) ([8ab2f20](https://github.com/@aave/aave-utilities/commit/8ab2f209767228d4c5cf1e6b9a56bbe2760420e4))
+
+
+
+
+
 ## 0.9.1 (2021-10-04)
 
 
