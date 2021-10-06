@@ -114,7 +114,7 @@ export class UiIncentiveDataProvider
     );
 
     return response.map(r => ({
-      ...r,
+      underlyingAsset: r.underlyingAsset,
       aIncentiveData: this._formatIncentiveData(r.aIncentiveData),
       vIncentiveData: this._formatIncentiveData(r.vIncentiveData),
       sIncentiveData: this._formatIncentiveData(r.sIncentiveData),
@@ -131,7 +131,7 @@ export class UiIncentiveDataProvider
     );
 
     return response.map(r => ({
-      ...r,
+      underlyingAsset: r.underlyingAsset,
       aTokenIncentivesUserData: this._formatUserIncentiveData(
         r.aTokenIncentivesUserData,
       ),
@@ -195,6 +195,9 @@ export class UiIncentiveDataProvider
             chainlinkFeedsRegistry
           ].getPriceFeed(incentive.aIncentiveData.rewardTokenAddress, quote);
         } catch (error) {
+          console.error(
+            `feed not found for token: ${incentive.aIncentiveData.rewardTokenAddress} and quote: ${quote} with error: ${error}`,
+          );
           tokensToGetFeed[
             incentive.aIncentiveData.rewardTokenAddress
             // eslint-disable-next-line no-await-in-loop
@@ -215,8 +218,11 @@ export class UiIncentiveDataProvider
             chainlinkFeedsRegistry
           ].getPriceFeed(incentive.vIncentiveData.rewardTokenAddress, quote);
         } catch (error) {
+          console.error(
+            `feed not found for token: ${incentive.vIncentiveData.rewardTokenAddress} and quote: ${quote} with error: ${error}`,
+          );
           tokensToGetFeed[
-            incentive.aIncentiveData.rewardTokenAddress
+            incentive.vIncentiveData.rewardTokenAddress
             // eslint-disable-next-line no-await-in-loop
           ] = {
             answer: '0',
@@ -235,8 +241,11 @@ export class UiIncentiveDataProvider
             chainlinkFeedsRegistry
           ].getPriceFeed(incentive.sIncentiveData.rewardTokenAddress, quote);
         } catch (error) {
+          console.error(
+            `feed not found for token: ${incentive.sIncentiveData.rewardTokenAddress} and quote: ${quote} with error: ${error}`,
+          );
           tokensToGetFeed[
-            incentive.aIncentiveData.rewardTokenAddress
+            incentive.sIncentiveData.rewardTokenAddress
             // eslint-disable-next-line no-await-in-loop
           ] = {
             answer: '0',
