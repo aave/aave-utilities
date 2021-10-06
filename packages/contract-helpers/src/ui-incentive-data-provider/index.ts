@@ -36,6 +36,18 @@ export interface UiIncentiveDataProviderInterface {
     user: string,
     lendingPoolAddressProvider: string,
   ) => Promise<UserReserveIncentiveDataResponse[]>;
+  getReservesIncentivesDataHumanized: (
+    lendingPoolAddressProvider: string,
+  ) => Promise<ReserveIncentiveDataHumanizedResponse[]>;
+  getUserReservesIncentivesDataHumanized: (
+    user: string,
+    lendingPoolAddressProvider: string,
+  ) => Promise<UserReserveIncentiveDataHumanizedResponse[]>;
+  getIncentivesDataWithPrice: (
+    lendingPoolAddressProvider: string,
+    chainlinkFeedsRegistry: string,
+    quote: Denominations,
+  ) => Promise<ReserveIncentiveWithFeedsResponse[]>;
 }
 export interface UiIncentiveDataProviderContext {
   incentiveDataProviderAddress: string;
