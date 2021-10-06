@@ -42,7 +42,7 @@ export interface UiIncentiveDataProviderContext {
   provider: providers.Provider;
 }
 
-export default class UiIncentiveDataProvider
+export class UiIncentiveDataProvider
   implements UiIncentiveDataProviderInterface {
   public readonly _contract: UiIncentiveDataProviderContract;
 

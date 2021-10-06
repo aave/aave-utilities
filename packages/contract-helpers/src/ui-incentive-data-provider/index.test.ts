@@ -4,7 +4,7 @@ import { ChainlinkFeedsRegistry } from '../cl-feed-registry/index';
 import { Denominations } from '../cl-feed-registry/types/ChainlinkFeedsRegistryTypes';
 import { getReservesIncentivesDataMock } from './_mocks';
 import { ReserveIncentiveWithFeedsResponse } from './types/UiIncentiveDataProviderTypes';
-import UiIncentiveDataProvider from './index';
+import { UiIncentiveDataProvider } from './index';
 
 jest.mock('../cl-feed-registry/index', () => {
   const clInstance = { getPriceFeed: jest.fn() };
@@ -127,7 +127,19 @@ describe('UiIncentiveDataProvider', () => {
     });
   });
 
-  describe('getReservesIncentivesDataHumanized', () => {
+  describe('getUserReservesIncentivesDataHumanized', () => {
+    it('Should throw error if token address is wrong', async () => {
+      const instance = createValidInstance();
+      await expect(
+        instance.getUserReservesIncentivesDataHumanized(
+          mockInvalidEthereumAddress,
+          mockInvalidEthereumAddress,
+        ),
+      ).rejects.toThrow('Lending pool address provider is not valid');
+    });
+  });
+
+  describe('getIncentivesDataWithPrice', () => {
     it('Should throw error if token address is wrong', async () => {
       const instance = createValidInstance();
       await expect(
