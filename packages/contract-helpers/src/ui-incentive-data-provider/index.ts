@@ -44,9 +44,7 @@ export interface UiIncentiveDataProviderInterface {
     lendingPoolAddressProvider: string,
   ) => Promise<UserReserveIncentiveDataHumanizedResponse[]>;
   getIncentivesDataWithPrice: (
-    lendingPoolAddressProvider: string,
-    chainlinkFeedsRegistry: string,
-    quote: Denominations,
+    args: GetIncentivesDataWithPriceType,
   ) => Promise<ReserveIncentiveWithFeedsResponse[]>;
 }
 export interface UiIncentiveDataProviderContext {
@@ -59,6 +57,12 @@ export interface FeedResultSuccessful {
   answer: string;
   updatedAt: number;
   decimals: number;
+}
+
+export interface GetIncentivesDataWithPriceType {
+  lendingPoolAddressProvider: string;
+  chainlinkFeedsRegistry?: string;
+  quote?: Denominations;
 }
 
 export class UiIncentiveDataProvider
@@ -185,47 +189,57 @@ export class UiIncentiveDataProvider
     );
   }
 
-  public async getIncentivesDataWithPrice(
-    lendingPoolAddressProvider: string,
-    chainlinkFeedsRegistry: string,
-    quote: Denominations,
-  ): Promise<ReserveIncentiveWithFeedsResponse[]> {
+  public async getIncentivesDataWithPrice({
+    lendingPoolAddressProvider,
+    chainlinkFeedsRegistry,
+    quote = Denominations.eth,
+  }: GetIncentivesDataWithPriceType): Promise<
+    ReserveIncentiveWithFeedsResponse[]
+  > {
     const incentives: ReserveIncentiveDataHumanizedResponse[] = await this.getReservesIncentivesDataHumanized(
       lendingPoolAddressProvider,
     );
-
-    if (!this._chainlinkFeedsRegistries[chainlinkFeedsRegistry]) {
-      this._chainlinkFeedsRegistries[
-        chainlinkFeedsRegistry
-      ] = new ChainlinkFeedsRegistry({
-        provider: this._context.provider,
-        chainlinkFeedsRegistry,
-      });
-    }
-
-    const allIncentiveRewardTokens: Set<string> = new Set();
-
-    incentives.forEach(incentive => {
-      allIncentiveRewardTokens.add(incentive.aIncentiveData.rewardTokenAddress);
-      allIncentiveRewardTokens.add(incentive.vIncentiveData.rewardTokenAddress);
-      allIncentiveRewardTokens.add(incentive.sIncentiveData.rewardTokenAddress);
-    });
-
-    const incentiveRewardTokens: string[] = Array.from(
-      allIncentiveRewardTokens,
-    );
-
-    // eslint-disable-next-line @typescript-eslint/promise-function-async
-    const rewardFeedPromises = incentiveRewardTokens.map(rewardToken =>
-      this._getFeed(rewardToken, chainlinkFeedsRegistry, quote),
-    );
-
-    const feedResults = await Promise.allSettled(rewardFeedPromises);
     const feeds: FeedResultSuccessful[] = [];
 
-    feedResults.forEach(feedResult => {
-      if (feedResult.status === 'fulfilled') feeds.push(feedResult.value);
-    });
+    if (chainlinkFeedsRegistry && isAddress(chainlinkFeedsRegistry)) {
+      if (!this._chainlinkFeedsRegistries[chainlinkFeedsRegistry]) {
+        this._chainlinkFeedsRegistries[
+          chainlinkFeedsRegistry
+        ] = new ChainlinkFeedsRegistry({
+          provider: this._context.provider,
+          chainlinkFeedsRegistry,
+        });
+      }
+
+      const allIncentiveRewardTokens: Set<string> = new Set();
+
+      incentives.forEach(incentive => {
+        allIncentiveRewardTokens.add(
+          incentive.aIncentiveData.rewardTokenAddress,
+        );
+        allIncentiveRewardTokens.add(
+          incentive.vIncentiveData.rewardTokenAddress,
+        );
+        allIncentiveRewardTokens.add(
+          incentive.sIncentiveData.rewardTokenAddress,
+        );
+      });
+
+      const incentiveRewardTokens: string[] = Array.from(
+        allIncentiveRewardTokens,
+      );
+
+      // eslint-disable-next-line @typescript-eslint/promise-function-async
+      const rewardFeedPromises = incentiveRewardTokens.map(rewardToken =>
+        this._getFeed(rewardToken, chainlinkFeedsRegistry, quote),
+      );
+
+      const feedResults = await Promise.allSettled(rewardFeedPromises);
+
+      feedResults.forEach(feedResult => {
+        if (feedResult.status === 'fulfilled') feeds.push(feedResult.value);
+      });
+    }
 
     return incentives.map(
       (incentive: ReserveIncentiveDataHumanizedResponse) => {
