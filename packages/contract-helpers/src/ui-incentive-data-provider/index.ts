@@ -191,33 +191,17 @@ export class UiIncentiveDataProvider
       });
     }
 
-    const incentiveRewardTokens: string[] = [];
+    const allIncentiveRewardTokens: Set<string> = new Set();
 
-    incentives.forEach((incentive: ReserveIncentiveDataHumanizedResponse) => {
-      if (
-        !incentiveRewardTokens.includes(
-          incentive.aIncentiveData.rewardTokenAddress,
-        )
-      ) {
-        incentiveRewardTokens.push(incentive.aIncentiveData.rewardTokenAddress);
-      }
-
-      if (
-        !incentiveRewardTokens.includes(
-          incentive.vIncentiveData.rewardTokenAddress,
-        )
-      ) {
-        incentiveRewardTokens.push(incentive.vIncentiveData.rewardTokenAddress);
-      }
-
-      if (
-        !incentiveRewardTokens.includes(
-          incentive.sIncentiveData.rewardTokenAddress,
-        )
-      ) {
-        incentiveRewardTokens.push(incentive.sIncentiveData.rewardTokenAddress);
-      }
+    incentives.forEach(incentive => {
+      allIncentiveRewardTokens.add(incentive.aIncentiveData.rewardTokenAddress);
+      allIncentiveRewardTokens.add(incentive.vIncentiveData.rewardTokenAddress);
+      allIncentiveRewardTokens.add(incentive.sIncentiveData.rewardTokenAddress);
     });
+
+    const incentiveRewardTokens: string[] = Array.from(
+      allIncentiveRewardTokens,
+    );
 
     // eslint-disable-next-line @typescript-eslint/promise-function-async
     const rewardFeedPromises = incentiveRewardTokens.map(rewardToken =>
