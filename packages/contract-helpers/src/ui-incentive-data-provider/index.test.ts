@@ -152,7 +152,7 @@ describe('UiIncentiveDataProvider', () => {
 
       expect(response).toEqual([
         {
-          underlyingAsset: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           aTokenIncentivesUserData: {
             tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
             rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
@@ -224,7 +224,7 @@ describe('UiIncentiveDataProvider', () => {
       );
       expect(result).toEqual([
         {
-          underlyingAsset: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           aIncentiveData: {
             tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
             precision: 18,
@@ -272,7 +272,7 @@ describe('UiIncentiveDataProvider', () => {
           },
         },
         {
-          underlyingAsset: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           aIncentiveData: {
             tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
             precision: 18,
@@ -351,7 +351,7 @@ describe('UiIncentiveDataProvider', () => {
       );
       expect(result).toEqual([
         {
-          underlyingAsset: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           aIncentiveData: {
             tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
             precision: 18,
@@ -399,7 +399,7 @@ describe('UiIncentiveDataProvider', () => {
           },
         },
         {
-          underlyingAsset: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           aIncentiveData: {
             tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
             precision: 18,
@@ -477,7 +477,7 @@ describe('UiIncentiveDataProvider', () => {
       );
       expect(result).toEqual([
         {
-          underlyingAsset: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           aIncentiveData: {
             tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
             precision: 18,
@@ -525,7 +525,7 @@ describe('UiIncentiveDataProvider', () => {
           },
         },
         {
-          underlyingAsset: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           aIncentiveData: {
             tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
             precision: 18,
@@ -598,7 +598,7 @@ describe('UiIncentiveDataProvider', () => {
       );
       expect(result).toEqual([
         {
-          underlyingAsset: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           aIncentiveData: {
             tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
             precision: 18,
@@ -646,7 +646,7 @@ describe('UiIncentiveDataProvider', () => {
           },
         },
         {
-          underlyingAsset: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           aIncentiveData: {
             tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
             precision: 18,
@@ -726,7 +726,7 @@ describe('UiIncentiveDataProvider', () => {
       );
       expect(result).toEqual([
         {
-          underlyingAsset: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           aIncentiveData: {
             tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
             precision: 18,
@@ -774,7 +774,7 @@ describe('UiIncentiveDataProvider', () => {
           },
         },
         {
-          underlyingAsset: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           aIncentiveData: {
             tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
             precision: 18,
@@ -824,7 +824,7 @@ describe('UiIncentiveDataProvider', () => {
       ]);
       expect(result2).toEqual([
         {
-          underlyingAsset: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           aIncentiveData: {
             tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
             precision: 18,
@@ -872,7 +872,7 @@ describe('UiIncentiveDataProvider', () => {
           },
         },
         {
-          underlyingAsset: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           aIncentiveData: {
             tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
             precision: 18,
@@ -941,7 +941,7 @@ describe('UiIncentiveDataProvider', () => {
 
       expect(result).toEqual([
         {
-          underlyingAsset: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           aIncentiveData: {
             tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
             precision: 18,
@@ -989,7 +989,7 @@ describe('UiIncentiveDataProvider', () => {
           },
         },
         {
-          underlyingAsset: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           aIncentiveData: {
             tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
             precision: 18,
@@ -1056,7 +1056,7 @@ describe('UiIncentiveDataProvider', () => {
 
       expect(result).toEqual([
         {
-          underlyingAsset: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           aIncentiveData: {
             tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
             precision: 18,
@@ -1104,7 +1104,7 @@ describe('UiIncentiveDataProvider', () => {
           },
         },
         {
-          underlyingAsset: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           aIncentiveData: {
             tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
             precision: 18,
@@ -1172,7 +1172,7 @@ describe('UiIncentiveDataProvider', () => {
 
       expect(result).toEqual([
         {
-          underlyingAsset: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           aIncentiveData: {
             tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
             precision: 18,
@@ -1220,7 +1220,7 @@ describe('UiIncentiveDataProvider', () => {
           },
         },
         {
-          underlyingAsset: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           aIncentiveData: {
             tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
             precision: 18,

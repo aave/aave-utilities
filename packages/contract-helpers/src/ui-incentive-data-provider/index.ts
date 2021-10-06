@@ -137,7 +137,7 @@ export class UiIncentiveDataProvider
     );
 
     return response.map(r => ({
-      underlyingAsset: r.underlyingAsset,
+      underlyingAsset: r.underlyingAsset.toLowerCase(),
       aIncentiveData: this._formatIncentiveData(r.aIncentiveData),
       vIncentiveData: this._formatIncentiveData(r.vIncentiveData),
       sIncentiveData: this._formatIncentiveData(r.sIncentiveData),
@@ -154,7 +154,7 @@ export class UiIncentiveDataProvider
     );
 
     return response.map(r => ({
-      underlyingAsset: r.underlyingAsset,
+      underlyingAsset: r.underlyingAsset.toLowerCase(),
       aTokenIncentivesUserData: this._formatUserIncentiveData(
         r.aTokenIncentivesUserData,
       ),
