@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.11.0 (2021-10-06)
+
+
+### Features
+
+* incentives feeds ([#81](https://github.com/@aave/aave-utilities/issues/81)) ([68b0a4d](https://github.com/@aave/aave-utilities/commit/68b0a4d568a9bdba1cdebfedea49ca95a0c72bf7)), closes [#82](https://github.com/@aave/aave-utilities/issues/82)
+
+
+
+
+
 # 0.10.0 (2021-10-04)
 
 
