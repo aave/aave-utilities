@@ -1,177 +1,122 @@
 # Change Log
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 # 0.12.0 (2021-10-06)
 
-
 ### Features
 
-* added interface ([#83](https://github.com/@aave/aave-utilities/issues/83)) ([dd02480](https://github.com/@aave/aave-utilities/commit/dd02480da174b017e54968b8913b6985eb347284))
-
-
-
-
+- added interface ([#83](https://github.com/@aave/aave-utilities/issues/83))
+  ([dd02480](https://github.com/@aave/aave-utilities/commit/dd02480da174b017e54968b8913b6985eb347284))
 
 # 0.11.0 (2021-10-06)
 
-
 ### Features
 
-* incentives feeds ([#81](https://github.com/@aave/aave-utilities/issues/81)) ([68b0a4d](https://github.com/@aave/aave-utilities/commit/68b0a4d568a9bdba1cdebfedea49ca95a0c72bf7)), closes [#82](https://github.com/@aave/aave-utilities/issues/82)
-
-
-
-
+- incentives feeds ([#81](https://github.com/@aave/aave-utilities/issues/81))
+  ([68b0a4d](https://github.com/@aave/aave-utilities/commit/68b0a4d568a9bdba1cdebfedea49ca95a0c72bf7)),
+  closes [#82](https://github.com/@aave/aave-utilities/issues/82)
 
 # 0.10.0 (2021-10-04)
 
-
 ### Features
 
-* add networks enum ([#79](https://github.com/@aave/aave-utilities/issues/79)) ([8ab2f20](https://github.com/@aave/aave-utilities/commit/8ab2f209767228d4c5cf1e6b9a56bbe2760420e4))
-
-
-
-
+- add networks enum ([#79](https://github.com/@aave/aave-utilities/issues/79))
+  ([8ab2f20](https://github.com/@aave/aave-utilities/commit/8ab2f209767228d4c5cf1e6b9a56bbe2760420e4))
 
 ## 0.9.1 (2021-10-04)
 
-
 ### Bug Fixes
 
-* batch of fixes ([#78](https://github.com/@aave/aave-utilities/issues/78)) ([37fc7f8](https://github.com/@aave/aave-utilities/commit/37fc7f8b1d3c1dd15834f28afd9e9bd251c354f6))
-
-
-
-
+- batch of fixes ([#78](https://github.com/@aave/aave-utilities/issues/78))
+  ([37fc7f8](https://github.com/@aave/aave-utilities/commit/37fc7f8b1d3c1dd15834f28afd9e9bd251c354f6))
 
 # 0.9.0 (2021-10-01)
 
-
 ### Features
 
-* added chainlink feeds registry ([8185176](https://github.com/@aave/aave-utilities/commit/8185176ea7d16213d641e4786a078185f6d2cf71))
-
-
-
-
+- added chainlink feeds registry
+  ([8185176](https://github.com/@aave/aave-utilities/commit/8185176ea7d16213d641e4786a078185f6d2cf71))
 
 ## 0.8.2 (2021-09-30)
 
 **Note:** Version bump only for package @aave/contract-helpers
 
-
-
-
-
 ## 0.8.1 (2021-09-30)
-
 
 ### Bug Fixes
 
-* user incentives input type and export response type ([#76](https://github.com/@aave/aave-utilities/issues/76)) ([363dd86](https://github.com/@aave/aave-utilities/commit/363dd86737ba602bb7a8a68628af44b6e8a8e5e4))
-
-
-
-
+- user incentives input type and export response type
+  ([#76](https://github.com/@aave/aave-utilities/issues/76))
+  ([363dd86](https://github.com/@aave/aave-utilities/commit/363dd86737ba602bb7a8a68628af44b6e8a8e5e4))
 
 # 0.8.0 (2021-09-30)
 
-
 ### Features
 
-* group claimable rewards and assets by IncentiveController ([#74](https://github.com/@aave/aave-utilities/issues/74)) ([20335a3](https://github.com/@aave/aave-utilities/commit/20335a37f53ce938c4f0ae6e93a079b030c1aaf4)), closes [#75](https://github.com/@aave/aave-utilities/issues/75)
-
-
-
-
+- group claimable rewards and assets by IncentiveController
+  ([#74](https://github.com/@aave/aave-utilities/issues/74))
+  ([20335a3](https://github.com/@aave/aave-utilities/commit/20335a37f53ce938c4f0ae6e93a079b030c1aaf4)),
+  closes [#75](https://github.com/@aave/aave-utilities/issues/75)
 
 # 0.7.0 (2021-09-29)
 
-
 ### Features
 
-* permissions manager ([#73](https://github.com/@aave/aave-utilities/issues/73)) ([7931421](https://github.com/@aave/aave-utilities/commit/7931421e2844c631db2abef65dd859a7edc87335))
-
-
-
-
+- permissions manager ([#73](https://github.com/@aave/aave-utilities/issues/73))
+  ([7931421](https://github.com/@aave/aave-utilities/commit/7931421e2844c631db2abef65dd859a7edc87335))
 
 ## 0.6.3 (2021-09-29)
 
-
 ### Bug Fixes
 
-* update incentives calculation wit configurable decimal shifts ([#71](https://github.com/@aave/aave-utilities/issues/71)) ([5cc8337](https://github.com/@aave/aave-utilities/commit/5cc8337192624dc2e8a914b377f8dac38ffaa028))
-
-
-
-
+- update incentives calculation wit configurable decimal shifts
+  ([#71](https://github.com/@aave/aave-utilities/issues/71))
+  ([5cc8337](https://github.com/@aave/aave-utilities/commit/5cc8337192624dc2e8a914b377f8dac38ffaa028))
 
 ## 0.6.2 (2021-09-28)
 
-
 ### Bug Fixes
 
-* remove legacy USD decimals ([#69](https://github.com/@aave/aave-utilities/issues/69)) ([9ac911b](https://github.com/@aave/aave-utilities/commit/9ac911bbfff2f3928404cedff31ec551c398cf11))
-
-
-
-
+- remove legacy USD decimals
+  ([#69](https://github.com/@aave/aave-utilities/issues/69))
+  ([9ac911b](https://github.com/@aave/aave-utilities/commit/9ac911bbfff2f3928404cedff31ec551c398cf11))
 
 ## 0.6.1 (2021-09-27)
 
 **Note:** Version bump only for package @aave/contract-helpers
 
-
-
-
-
 # 0.6.0 (2021-09-23)
-
 
 ### Features
 
-* update incentive exports ([#67](https://github.com/@aave/aave-utilities/issues/67)) ([9683825](https://github.com/@aave/aave-utilities/commit/9683825b5ba92eb7d1c1692d2ad21a3d3ad49754))
-
-
-
-
+- update incentive exports
+  ([#67](https://github.com/@aave/aave-utilities/issues/67))
+  ([9683825](https://github.com/@aave/aave-utilities/commit/9683825b5ba92eb7d1c1692d2ad21a3d3ad49754))
 
 # 0.5.0 (2021-09-23)
 
-
 ### Features
 
-* modify incentive helper parameter types to accomodate aave-ui ([#66](https://github.com/@aave/aave-utilities/issues/66)) ([f2ca35e](https://github.com/@aave/aave-utilities/commit/f2ca35ec914734d54f1a7e585adeafb7d1059189))
-
-
-
-
+- modify incentive helper parameter types to accomodate aave-ui
+  ([#66](https://github.com/@aave/aave-utilities/issues/66))
+  ([f2ca35e](https://github.com/@aave/aave-utilities/commit/f2ca35ec914734d54f1a7e585adeafb7d1059189))
 
 # 0.4.0 (2021-09-23)
 
-
 ### Features
 
-* add precision ([#65](https://github.com/@aave/aave-utilities/issues/65)) ([0fefd66](https://github.com/@aave/aave-utilities/commit/0fefd66984fb3649c72a2c3cb8742d6f0be2461e))
-
-
-
-
+- add precision ([#65](https://github.com/@aave/aave-utilities/issues/65))
+  ([0fefd66](https://github.com/@aave/aave-utilities/commit/0fefd66984fb3649c72a2c3cb8742d6f0be2461e))
 
 # 0.3.0 (2021-09-23)
 
-
 ### Features
 
-* export incentive helpers ([#63](https://github.com/@aave/aave-utilities/issues/63)) ([adfbf17](https://github.com/@aave/aave-utilities/commit/adfbf17364b63d2af85e358c83fddc75e2c3ab2d))
-
-
-
-
+- export incentive helpers
+  ([#63](https://github.com/@aave/aave-utilities/issues/63))
+  ([adfbf17](https://github.com/@aave/aave-utilities/commit/adfbf17364b63d2af85e358c83fddc75e2c3ab2d))
 
 # Change Log
 
