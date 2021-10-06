@@ -24,6 +24,7 @@ module.exports = {
     'packages/contract-helpers/src/ui-incentive-data-provider/typechain',
     'packages/contract-helpers/src/wallet-balance-provider/typechain',
     'packages/contract-helpers/src/ui-pool-data-provider/typechain',
+    'packages/contract-helpers/src/cl-feed-registry/typechain',
     'packages/contract-helpers/src/index.ts',
   ],
   modulePathIgnorePatterns: ['node_modules'],
