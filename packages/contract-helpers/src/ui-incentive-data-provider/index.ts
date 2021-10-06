@@ -42,6 +42,13 @@ export interface UiIncentiveDataProviderContext {
   provider: providers.Provider;
 }
 
+export interface FeedResultSuccessful {
+  rewardTokenAddress: string;
+  answer: string;
+  updatedAt: number;
+  decimals: number;
+}
+
 export class UiIncentiveDataProvider
   implements UiIncentiveDataProviderInterface {
   public readonly _contract: UiIncentiveDataProviderContract;
@@ -184,117 +191,87 @@ export class UiIncentiveDataProvider
       });
     }
 
-    const tokensToGetFeed: { [tokenAddress: string]: PriceFeed } = {};
-    for (const incentive of incentives) {
-      if (!tokensToGetFeed[incentive.aIncentiveData.rewardTokenAddress]) {
-        try {
-          tokensToGetFeed[
-            incentive.aIncentiveData.rewardTokenAddress
-            // eslint-disable-next-line no-await-in-loop
-          ] = await this._chainlinkFeedsRegistries[
-            chainlinkFeedsRegistry
-          ].getPriceFeed(incentive.aIncentiveData.rewardTokenAddress, quote);
-        } catch (error) {
-          console.error(
-            `feed not found for token: ${incentive.aIncentiveData.rewardTokenAddress} and quote: ${quote} with error: ${error}`,
-          );
-          tokensToGetFeed[
-            incentive.aIncentiveData.rewardTokenAddress
-            // eslint-disable-next-line no-await-in-loop
-          ] = {
-            answer: '0',
-            updatedAt: 0,
-            decimals: 0,
-          };
-        }
-      }
+    const allIncentiveRewardTokens: Set<string> = new Set();
 
-      if (!tokensToGetFeed[incentive.vIncentiveData.rewardTokenAddress]) {
-        try {
-          tokensToGetFeed[
-            incentive.vIncentiveData.rewardTokenAddress
-            // eslint-disable-next-line no-await-in-loop
-          ] = await this._chainlinkFeedsRegistries[
-            chainlinkFeedsRegistry
-          ].getPriceFeed(incentive.vIncentiveData.rewardTokenAddress, quote);
-        } catch (error) {
-          console.error(
-            `feed not found for token: ${incentive.vIncentiveData.rewardTokenAddress} and quote: ${quote} with error: ${error}`,
-          );
-          tokensToGetFeed[
-            incentive.vIncentiveData.rewardTokenAddress
-            // eslint-disable-next-line no-await-in-loop
-          ] = {
-            answer: '0',
-            updatedAt: 0,
-            decimals: 0,
-          };
-        }
-      }
+    incentives.forEach(incentive => {
+      allIncentiveRewardTokens.add(incentive.aIncentiveData.rewardTokenAddress);
+      allIncentiveRewardTokens.add(incentive.vIncentiveData.rewardTokenAddress);
+      allIncentiveRewardTokens.add(incentive.sIncentiveData.rewardTokenAddress);
+    });
 
-      if (!tokensToGetFeed[incentive.sIncentiveData.rewardTokenAddress]) {
-        try {
-          tokensToGetFeed[
-            incentive.sIncentiveData.rewardTokenAddress
-            // eslint-disable-next-line no-await-in-loop
-          ] = await this._chainlinkFeedsRegistries[
-            chainlinkFeedsRegistry
-          ].getPriceFeed(incentive.sIncentiveData.rewardTokenAddress, quote);
-        } catch (error) {
-          console.error(
-            `feed not found for token: ${incentive.sIncentiveData.rewardTokenAddress} and quote: ${quote} with error: ${error}`,
-          );
-          tokensToGetFeed[
-            incentive.sIncentiveData.rewardTokenAddress
-            // eslint-disable-next-line no-await-in-loop
-          ] = {
-            answer: '0',
-            updatedAt: 0,
-            decimals: 0,
-          };
-        }
-      }
-    }
+    const incentiveRewardTokens: string[] = Array.from(
+      allIncentiveRewardTokens,
+    );
+
+    // eslint-disable-next-line @typescript-eslint/promise-function-async
+    const rewardFeedPromises = incentiveRewardTokens.map(rewardToken =>
+      this._getFeed(rewardToken, chainlinkFeedsRegistry, quote),
+    );
+
+    const feedResults = await Promise.allSettled(rewardFeedPromises);
+    const feeds: FeedResultSuccessful[] = [];
+
+    feedResults.forEach(feedResult => {
+      if (feedResult.status === 'fulfilled') feeds.push(feedResult.value);
+    });
 
     return incentives.map(
-      (incentive: ReserveIncentiveDataHumanizedResponse) => ({
-        underlyingAsset: incentive.underlyingAsset,
-        aIncentiveData: {
-          ...incentive.aIncentiveData,
-          priceFeed:
-            tokensToGetFeed[incentive.aIncentiveData.rewardTokenAddress].answer,
-          priceFeedTimestamp:
-            tokensToGetFeed[incentive.aIncentiveData.rewardTokenAddress]
-              .updatedAt,
-          priceFeedDecimals:
-            tokensToGetFeed[incentive.aIncentiveData.rewardTokenAddress]
-              .decimals,
-        },
-        vIncentiveData: {
-          ...incentive.vIncentiveData,
-          priceFeed:
-            tokensToGetFeed[incentive.vIncentiveData.rewardTokenAddress].answer,
-          priceFeedTimestamp:
-            tokensToGetFeed[incentive.vIncentiveData.rewardTokenAddress]
-              .updatedAt,
-          priceFeedDecimals:
-            tokensToGetFeed[incentive.vIncentiveData.rewardTokenAddress]
-              .decimals,
-        },
-        sIncentiveData: {
-          ...incentive.sIncentiveData,
-          priceFeed:
-            tokensToGetFeed[incentive.sIncentiveData.rewardTokenAddress].answer,
-          priceFeedTimestamp:
-            tokensToGetFeed[incentive.sIncentiveData.rewardTokenAddress]
-              .updatedAt,
-          priceFeedDecimals:
-            tokensToGetFeed[incentive.sIncentiveData.rewardTokenAddress]
-              .decimals,
-        },
-      }),
+      (incentive: ReserveIncentiveDataHumanizedResponse) => {
+        const aFeed = feeds.find(
+          feed =>
+            feed.rewardTokenAddress ===
+            incentive.aIncentiveData.rewardTokenAddress,
+        );
+        const vFeed = feeds.find(
+          feed =>
+            feed.rewardTokenAddress ===
+            incentive.vIncentiveData.rewardTokenAddress,
+        );
+        const sFeed = feeds.find(
+          feed =>
+            feed.rewardTokenAddress ===
+            incentive.sIncentiveData.rewardTokenAddress,
+        );
+
+        return {
+          underlyingAsset: incentive.underlyingAsset,
+          aIncentiveData: {
+            ...incentive.aIncentiveData,
+            priceFeed: aFeed ? aFeed.answer : '0',
+            priceFeedTimestamp: aFeed ? aFeed.updatedAt : 0,
+            priceFeedDecimals: aFeed ? aFeed.decimals : 0,
+          },
+          vIncentiveData: {
+            ...incentive.vIncentiveData,
+            priceFeed: vFeed ? vFeed.answer : '0',
+            priceFeedTimestamp: vFeed ? vFeed.updatedAt : 0,
+            priceFeedDecimals: vFeed ? vFeed.decimals : 0,
+          },
+          sIncentiveData: {
+            ...incentive.sIncentiveData,
+            priceFeed: sFeed ? sFeed.answer : '0',
+            priceFeedTimestamp: sFeed ? sFeed.updatedAt : 0,
+            priceFeedDecimals: sFeed ? sFeed.decimals : 0,
+          },
+        };
+      },
     );
   }
+
+  private readonly _getFeed = async (
+    rewardToken: string,
+    chainlinkFeedsRegistry: string,
+    quote: Denominations,
+  ): Promise<FeedResultSuccessful> => {
+    const feed: PriceFeed = await this._chainlinkFeedsRegistries[
+      chainlinkFeedsRegistry
+    ].getPriceFeed(rewardToken, quote);
+
+    return {
+      ...feed,
+      rewardTokenAddress: rewardToken,
+    };
+  };
 
   private _formatIncentiveData(data: IncentiveData): IncentiveDataHumanized {
     return {
