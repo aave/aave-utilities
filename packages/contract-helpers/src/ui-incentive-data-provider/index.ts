@@ -4,9 +4,9 @@ import { isAddress } from 'ethers/lib/utils';
 import {
   ChainlinkFeedsRegistry,
   ChainlinkFeedsRegistryInterface,
-  Denominations,
   PriceFeed,
 } from '../cl-feed-registry/index';
+import { Denominations } from '../cl-feed-registry/types/ChainlinkFeedsRegistryTypes';
 import { UiIncentiveDataProvider as UiIncentiveDataProviderContract } from './typechain/UiIncentiveDataProvider';
 import { UiIncentiveDataProviderFactory } from './typechain/UiIncentiveDataProviderFactory';
 import {
