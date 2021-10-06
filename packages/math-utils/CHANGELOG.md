@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.12.0 (2021-10-06)
+
+
+### Features
+
+* added interface ([#83](https://github.com/@aave/aave-utilities/issues/83)) ([dd02480](https://github.com/@aave/aave-utilities/commit/dd02480da174b017e54968b8913b6985eb347284))
+
+
+
+
+
 # 0.11.0 (2021-10-06)
 
 
