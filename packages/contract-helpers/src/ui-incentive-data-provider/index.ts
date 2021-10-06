@@ -1,13 +1,24 @@
+/* eslint-disable require-atomic-updates */
 import { providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
+import {
+  ChainlinkFeedsRegistry,
+  ChainlinkFeedsRegistryInterface,
+  Denominations,
+  PriceFeed,
+} from '../cl-feed-registry/index';
 import { UiIncentiveDataProvider as UiIncentiveDataProviderContract } from './typechain/UiIncentiveDataProvider';
 import { UiIncentiveDataProviderFactory } from './typechain/UiIncentiveDataProviderFactory';
 import {
   FullReservesIncentiveDataResponse,
   IncentiveData,
   IncentiveDataHumanized,
+  IncentiveUserData,
+  IncentiveUserDataHumanized,
   ReserveIncentiveDataHumanizedResponse,
   ReserveIncentiveDataResponse,
+  ReserveIncentiveWithFeedsResponse,
+  UserReserveIncentiveDataHumanizedResponse,
   UserReserveIncentiveDataResponse,
 } from './types/UiIncentiveDataProviderTypes';
 export * from './types/UiIncentiveDataProviderTypes';
@@ -30,9 +41,23 @@ export interface UiIncentiveDataProviderContext {
   incentiveDataProviderAddress: string;
   provider: providers.Provider;
 }
+
+export interface FeedResultSuccessful {
+  rewardTokenAddress: string;
+  answer: string;
+  updatedAt: number;
+  decimals: number;
+}
+
 export class UiIncentiveDataProvider
   implements UiIncentiveDataProviderInterface {
   public readonly _contract: UiIncentiveDataProviderContract;
+
+  private readonly _chainlinkFeedsRegistries: {
+    [address: string]: ChainlinkFeedsRegistryInterface;
+  };
+
+  private readonly _context: UiIncentiveDataProviderContext;
 
   /**
    * Constructor
@@ -42,6 +67,10 @@ export class UiIncentiveDataProvider
     if (!isAddress(context.incentiveDataProviderAddress)) {
       throw new Error('contract address is not valid');
     }
+
+    this._context = context;
+
+    this._chainlinkFeedsRegistries = {};
 
     this._contract = UiIncentiveDataProviderFactory.connect(
       context.incentiveDataProviderAddress,
@@ -92,10 +121,33 @@ export class UiIncentiveDataProvider
     );
 
     return response.map(r => ({
-      ...r,
+      underlyingAsset: r.underlyingAsset,
       aIncentiveData: this._formatIncentiveData(r.aIncentiveData),
       vIncentiveData: this._formatIncentiveData(r.vIncentiveData),
       sIncentiveData: this._formatIncentiveData(r.sIncentiveData),
+    }));
+  }
+
+  public async getUserReservesIncentivesDataHumanized(
+    user: string,
+    lendingPoolAddressProvider: string,
+  ): Promise<UserReserveIncentiveDataHumanizedResponse[]> {
+    const response = await this.getUserReservesIncentivesData(
+      user,
+      lendingPoolAddressProvider,
+    );
+
+    return response.map(r => ({
+      underlyingAsset: r.underlyingAsset,
+      aTokenIncentivesUserData: this._formatUserIncentiveData(
+        r.aTokenIncentivesUserData,
+      ),
+      vTokenIncentivesUserData: this._formatUserIncentiveData(
+        r.vTokenIncentivesUserData,
+      ),
+      sTokenIncentivesUserData: this._formatUserIncentiveData(
+        r.sTokenIncentivesUserData,
+      ),
     }));
   }
 
@@ -121,13 +173,130 @@ export class UiIncentiveDataProvider
     );
   }
 
+  public async getIncentivesDataWithPrice(
+    lendingPoolAddressProvider: string,
+    chainlinkFeedsRegistry: string,
+    quote: Denominations,
+  ): Promise<ReserveIncentiveWithFeedsResponse[]> {
+    const incentives: ReserveIncentiveDataHumanizedResponse[] = await this.getReservesIncentivesDataHumanized(
+      lendingPoolAddressProvider,
+    );
+
+    if (!this._chainlinkFeedsRegistries[chainlinkFeedsRegistry]) {
+      this._chainlinkFeedsRegistries[
+        chainlinkFeedsRegistry
+      ] = new ChainlinkFeedsRegistry({
+        provider: this._context.provider,
+        chainlinkFeedsRegistry,
+      });
+    }
+
+    const allIncentiveRewardTokens: Set<string> = new Set();
+
+    incentives.forEach(incentive => {
+      allIncentiveRewardTokens.add(incentive.aIncentiveData.rewardTokenAddress);
+      allIncentiveRewardTokens.add(incentive.vIncentiveData.rewardTokenAddress);
+      allIncentiveRewardTokens.add(incentive.sIncentiveData.rewardTokenAddress);
+    });
+
+    const incentiveRewardTokens: string[] = Array.from(
+      allIncentiveRewardTokens,
+    );
+
+    // eslint-disable-next-line @typescript-eslint/promise-function-async
+    const rewardFeedPromises = incentiveRewardTokens.map(rewardToken =>
+      this._getFeed(rewardToken, chainlinkFeedsRegistry, quote),
+    );
+
+    const feedResults = await Promise.allSettled(rewardFeedPromises);
+    const feeds: FeedResultSuccessful[] = [];
+
+    feedResults.forEach(feedResult => {
+      if (feedResult.status === 'fulfilled') feeds.push(feedResult.value);
+    });
+
+    return incentives.map(
+      (incentive: ReserveIncentiveDataHumanizedResponse) => {
+        const aFeed = feeds.find(
+          feed =>
+            feed.rewardTokenAddress ===
+            incentive.aIncentiveData.rewardTokenAddress,
+        );
+        const vFeed = feeds.find(
+          feed =>
+            feed.rewardTokenAddress ===
+            incentive.vIncentiveData.rewardTokenAddress,
+        );
+        const sFeed = feeds.find(
+          feed =>
+            feed.rewardTokenAddress ===
+            incentive.sIncentiveData.rewardTokenAddress,
+        );
+
+        return {
+          underlyingAsset: incentive.underlyingAsset,
+          aIncentiveData: {
+            ...incentive.aIncentiveData,
+            priceFeed: aFeed ? aFeed.answer : '0',
+            priceFeedTimestamp: aFeed ? aFeed.updatedAt : 0,
+            priceFeedDecimals: aFeed ? aFeed.decimals : 0,
+          },
+          vIncentiveData: {
+            ...incentive.vIncentiveData,
+            priceFeed: vFeed ? vFeed.answer : '0',
+            priceFeedTimestamp: vFeed ? vFeed.updatedAt : 0,
+            priceFeedDecimals: vFeed ? vFeed.decimals : 0,
+          },
+          sIncentiveData: {
+            ...incentive.sIncentiveData,
+            priceFeed: sFeed ? sFeed.answer : '0',
+            priceFeedTimestamp: sFeed ? sFeed.updatedAt : 0,
+            priceFeedDecimals: sFeed ? sFeed.decimals : 0,
+          },
+        };
+      },
+    );
+  }
+
+  private readonly _getFeed = async (
+    rewardToken: string,
+    chainlinkFeedsRegistry: string,
+    quote: Denominations,
+  ): Promise<FeedResultSuccessful> => {
+    const feed: PriceFeed = await this._chainlinkFeedsRegistries[
+      chainlinkFeedsRegistry
+    ].getPriceFeed(rewardToken, quote);
+
+    return {
+      ...feed,
+      rewardTokenAddress: rewardToken,
+    };
+  };
+
   private _formatIncentiveData(data: IncentiveData): IncentiveDataHumanized {
     return {
-      ...data,
+      tokenAddress: data.tokenAddress,
+      precision: data.precision,
+      rewardTokenAddress: data.rewardTokenAddress,
+      incentiveControllerAddress: data.incentiveControllerAddress,
+      rewardTokenDecimals: data.rewardTokenDecimals,
       emissionPerSecond: data.emissionPerSecond.toString(),
       incentivesLastUpdateTimestamp: data.incentivesLastUpdateTimestamp.toNumber(),
       tokenIncentivesIndex: data.tokenIncentivesIndex.toString(),
       emissionEndTimestamp: data.emissionEndTimestamp.toNumber(),
+    };
+  }
+
+  private _formatUserIncentiveData(
+    data: IncentiveUserData,
+  ): IncentiveUserDataHumanized {
+    return {
+      tokenAddress: data.tokenAddress,
+      rewardTokenAddress: data.rewardTokenAddress,
+      incentiveControllerAddress: data.incentiveControllerAddress,
+      rewardTokenDecimals: data.rewardTokenDecimals,
+      tokenincentivesUserIndex: data.tokenincentivesUserIndex.toString(),
+      userUnclaimedRewards: data.userUnclaimedRewards.toString(),
     };
   }
 }
