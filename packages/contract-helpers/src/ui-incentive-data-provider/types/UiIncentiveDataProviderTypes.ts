@@ -55,7 +55,7 @@ export interface IncentiveUserData {
 }
 
 export interface IncentiveUserDataHumanized {
-  tokenincentivesUserIndex: string;
+  tokenIncentivesUserIndex: string;
   userUnclaimedRewards: string;
   tokenAddress: string;
   rewardTokenAddress: string;

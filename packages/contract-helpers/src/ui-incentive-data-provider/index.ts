@@ -321,7 +321,7 @@ export class UiIncentiveDataProvider
       rewardTokenAddress: data.rewardTokenAddress,
       incentiveControllerAddress: data.incentiveControllerAddress,
       rewardTokenDecimals: data.rewardTokenDecimals,
-      tokenincentivesUserIndex: data.tokenincentivesUserIndex.toString(),
+      tokenIncentivesUserIndex: data.tokenincentivesUserIndex.toString(),
       userUnclaimedRewards: data.userUnclaimedRewards.toString(),
     };
   }

@@ -159,7 +159,7 @@ describe('UiIncentiveDataProvider', () => {
             incentiveControllerAddress:
               '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
             rewardTokenDecimals: 18,
-            tokenincentivesUserIndex: '43565143328112327495233486',
+            tokenIncentivesUserIndex: '43565143328112327495233486',
             userUnclaimedRewards: '1637573428',
           },
           vTokenIncentivesUserData: {
@@ -168,7 +168,7 @@ describe('UiIncentiveDataProvider', () => {
             incentiveControllerAddress:
               '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
             rewardTokenDecimals: 18,
-            tokenincentivesUserIndex: '43565143328112327495233486',
+            tokenIncentivesUserIndex: '43565143328112327495233486',
             userUnclaimedRewards: '1637573428',
           },
           sTokenIncentivesUserData: {
@@ -177,7 +177,7 @@ describe('UiIncentiveDataProvider', () => {
             incentiveControllerAddress:
               '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
             rewardTokenDecimals: 18,
-            tokenincentivesUserIndex: '43565143328112327495233486',
+            tokenIncentivesUserIndex: '43565143328112327495233486',
             userUnclaimedRewards: '1637573428',
           },
         },
