@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.13.0 (2021-10-08)
+
+
+### Features
+
+* add reward token decimals to user dictionary ([#87](https://github.com/@aave/aave-utilities/issues/87)) ([c70f38d](https://github.com/@aave/aave-utilities/commit/c70f38dfb3e2e88c5a5cfff716050bf332422111))
+
+
+
+
+
 ## 0.12.3 (2021-10-07)
 
 **Note:** Version bump only for package @aave/contract-helpers
