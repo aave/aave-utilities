@@ -53,6 +53,7 @@ export interface UserIncentiveDict {
 
 interface UserIncentiveData {
   rewardTokenAddress: string;
+  rewardTokenDecimals: number;
   claimableRewards: BigNumber;
   assets: string[];
 }
@@ -98,6 +99,8 @@ export function calculateTotalUserIncentives({
                 .incentiveControllerAddress,
             rewardTokenAddress:
               userReserveIncentive.aTokenIncentivesUserData.rewardTokenAddress,
+            rewardTokenDecimals:
+              userReserveIncentive.aTokenIncentivesUserData.rewardTokenDecimals,
             accruedRewards: new BigNumber(rewards.aIncentives),
             unclaimedRewards: new BigNumber(
               userReserveIncentive.aTokenIncentivesUserData.userUnclaimedRewards,
@@ -111,6 +114,8 @@ export function calculateTotalUserIncentives({
                 .incentiveControllerAddress,
             rewardTokenAddress:
               userReserveIncentive.vTokenIncentivesUserData.rewardTokenAddress,
+            rewardTokenDecimals:
+              userReserveIncentive.vTokenIncentivesUserData.rewardTokenDecimals,
             accruedRewards: new BigNumber(rewards.vIncentives),
             unclaimedRewards: new BigNumber(
               userReserveIncentive.vTokenIncentivesUserData.userUnclaimedRewards,
@@ -124,6 +129,8 @@ export function calculateTotalUserIncentives({
                 .incentiveControllerAddress,
             rewardTokenAddress:
               userReserveIncentive.sTokenIncentivesUserData.rewardTokenAddress,
+            rewardTokenDecimals:
+              userReserveIncentive.sTokenIncentivesUserData.rewardTokenDecimals,
             accruedRewards: new BigNumber(rewards.sIncentives),
             unclaimedRewards: new BigNumber(
               userReserveIncentive.sTokenIncentivesUserData.userUnclaimedRewards,
@@ -143,6 +150,7 @@ export function calculateTotalUserIncentives({
         assets: [],
         claimableRewards: reward.unclaimedRewards,
         rewardTokenAddress: reward.rewardTokenAddress,
+        rewardTokenDecimals: reward.rewardTokenDecimals,
       };
     }
 
