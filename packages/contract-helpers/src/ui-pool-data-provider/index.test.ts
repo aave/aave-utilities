@@ -8,7 +8,6 @@ describe('UiPoolDataProvider', () => {
   const createValidInstance = () => {
     const instance = new UiPoolDataProvider({
       uiPoolDataProviderAddress: mockValidEthereumAddress,
-      lendingPoolAddressProvider: mockValidEthereumAddress,
       provider: new providers.JsonRpcProvider(),
     });
 
@@ -29,7 +28,6 @@ describe('UiPoolDataProvider', () => {
         () =>
           new UiPoolDataProvider({
             uiPoolDataProviderAddress: mockInvalidEthereumAddress,
-            lendingPoolAddressProvider: mockValidEthereumAddress,
             provider: new providers.JsonRpcProvider(),
           }),
       ).toThrowError('contract address is not valid');
@@ -40,7 +38,6 @@ describe('UiPoolDataProvider', () => {
         () =>
           new UiPoolDataProvider({
             uiPoolDataProviderAddress: mockValidEthereumAddress,
-            lendingPoolAddressProvider: mockInvalidEthereumAddress,
             provider: new providers.JsonRpcProvider(),
           }),
       ).toThrowError('Lending pool address is not valid');
@@ -52,7 +49,7 @@ describe('UiPoolDataProvider', () => {
       const instance = createValidInstance();
       let errored = false;
       try {
-        await instance.getReservesList();
+        await instance.getReservesList(mockValidEthereumAddress);
       } catch (_) {
         errored = true;
       }
@@ -66,7 +63,7 @@ describe('UiPoolDataProvider', () => {
       const instance = createValidInstance();
       let errored = false;
       try {
-        await instance.getReserves();
+        await instance.getReserves(mockValidEthereumAddress);
       } catch (_) {
         errored = true;
       }
@@ -79,7 +76,10 @@ describe('UiPoolDataProvider', () => {
     it('should throw if user is not a valid ethereum address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getUserReserves(mockInvalidEthereumAddress),
+        instance.getUserReserves(
+          mockValidEthereumAddress,
+          mockInvalidEthereumAddress,
+        ),
       ).rejects.toThrow('User address is not a valid ethereum address');
     });
 
@@ -87,28 +87,10 @@ describe('UiPoolDataProvider', () => {
       const instance = createValidInstance();
       let errored = false;
       try {
-        await instance.getUserReserves(mockValidEthereumAddress);
-      } catch (_) {
-        errored = true;
-      }
-
-      expect(errored).toEqual(false);
-    });
-  });
-
-  describe('getAllReserves', () => {
-    it('should throw if user is not a valid ethereum address', async () => {
-      const instance = createValidInstance();
-      await expect(
-        instance.getAllReserves(mockInvalidEthereumAddress),
-      ).rejects.toThrow('User address is not a valid ethereum address');
-    });
-
-    it('should not throw if user is a valid ethereum address', async () => {
-      const instance = createValidInstance();
-      let errored = false;
-      try {
-        await instance.getAllReserves(mockValidEthereumAddress);
+        await instance.getUserReserves(
+          mockValidEthereumAddress,
+          mockValidEthereumAddress,
+        );
       } catch (_) {
         errored = true;
       }
