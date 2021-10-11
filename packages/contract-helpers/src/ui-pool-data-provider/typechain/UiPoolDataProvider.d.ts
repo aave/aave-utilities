@@ -19,13 +19,25 @@ import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
-interface IUiPoolDataProviderInterface extends ethers.utils.Interface {
+interface UiPoolDataProviderInterface extends ethers.utils.Interface {
   functions: {
+    "ETH_CURRENCY_DECIMALS()": FunctionFragment;
+    "MOCK_USD_ADDRESS()": FunctionFragment;
+    "USD_PRICE()": FunctionFragment;
     "getReservesData(address)": FunctionFragment;
     "getReservesList(address)": FunctionFragment;
     "getUserReservesData(address,address)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "ETH_CURRENCY_DECIMALS",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "MOCK_USD_ADDRESS",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "USD_PRICE", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getReservesData",
     values: [string]
@@ -39,6 +51,15 @@ interface IUiPoolDataProviderInterface extends ethers.utils.Interface {
     values: [string, string]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "ETH_CURRENCY_DECIMALS",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "MOCK_USD_ADDRESS",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "USD_PRICE", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getReservesData",
     data: BytesLike
@@ -55,7 +76,7 @@ interface IUiPoolDataProviderInterface extends ethers.utils.Interface {
   events: {};
 }
 
-export class IUiPoolDataProvider extends Contract {
+export class UiPoolDataProvider extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -66,9 +87,33 @@ export class IUiPoolDataProvider extends Contract {
   removeAllListeners(eventName: EventFilter | string): this;
   removeListener(eventName: any, listener: Listener): this;
 
-  interface: IUiPoolDataProviderInterface;
+  interface: UiPoolDataProviderInterface;
 
   functions: {
+    ETH_CURRENCY_DECIMALS(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "ETH_CURRENCY_DECIMALS()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    MOCK_USD_ADDRESS(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    "MOCK_USD_ADDRESS()"(overrides?: CallOverrides): Promise<{
+      0: string;
+    }>;
+
+    USD_PRICE(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "USD_PRICE()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
     getReservesData(
       provider: string,
       overrides?: CallOverrides
@@ -290,6 +335,18 @@ export class IUiPoolDataProvider extends Contract {
     }>;
   };
 
+  ETH_CURRENCY_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "ETH_CURRENCY_DECIMALS()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  MOCK_USD_ADDRESS(overrides?: CallOverrides): Promise<string>;
+
+  "MOCK_USD_ADDRESS()"(overrides?: CallOverrides): Promise<string>;
+
+  USD_PRICE(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "USD_PRICE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   getReservesData(
     provider: string,
     overrides?: CallOverrides
@@ -507,6 +564,18 @@ export class IUiPoolDataProvider extends Contract {
   >;
 
   callStatic: {
+    ETH_CURRENCY_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "ETH_CURRENCY_DECIMALS()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    MOCK_USD_ADDRESS(overrides?: CallOverrides): Promise<string>;
+
+    "MOCK_USD_ADDRESS()"(overrides?: CallOverrides): Promise<string>;
+
+    USD_PRICE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "USD_PRICE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getReservesData(
       provider: string,
       overrides?: CallOverrides
@@ -727,6 +796,18 @@ export class IUiPoolDataProvider extends Contract {
   filters: {};
 
   estimateGas: {
+    ETH_CURRENCY_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "ETH_CURRENCY_DECIMALS()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    MOCK_USD_ADDRESS(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "MOCK_USD_ADDRESS()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    USD_PRICE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "USD_PRICE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getReservesData(
       provider: string,
       overrides?: CallOverrides
@@ -761,6 +842,24 @@ export class IUiPoolDataProvider extends Contract {
   };
 
   populateTransaction: {
+    ETH_CURRENCY_DECIMALS(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "ETH_CURRENCY_DECIMALS()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    MOCK_USD_ADDRESS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "MOCK_USD_ADDRESS()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    USD_PRICE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "USD_PRICE()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getReservesData(
       provider: string,
       overrides?: CallOverrides

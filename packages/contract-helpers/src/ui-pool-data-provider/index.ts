@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/require-await */
 import { providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
-import { IUiPoolDataProvider } from './typechain/IUiPoolDataProvider';
-import { IUiPoolDataProviderFactory } from './typechain/IUiPoolDataProviderFactory';
+import { UiPoolDataProvider as UiPoolDataProviderContract } from './typechain/UiPoolDataProvider';
+import { UiPoolDataProviderFactory } from './typechain/UiPoolDataProviderFactory';
 import {
   ReservesData,
   UserReserveData,
@@ -21,8 +21,10 @@ export interface UiPoolDataProviderContext {
 
 export interface UiPoolDataProviderInterface {
   getReservesList: (lendingPoolAddressProvider: string) => Promise<string[]>;
-  getReserves: (lendingPoolAddressProvider: string) => Promise<ReservesData>;
-  getUserReserves: (
+  getReservesData: (
+    lendingPoolAddressProvider: string,
+  ) => Promise<ReservesData>;
+  getUserReservesData: (
     lendingPoolAddressProvider: string,
     user: string,
   ) => Promise<UserReserveData[]>;
@@ -36,7 +38,7 @@ export interface UiPoolDataProviderInterface {
 }
 
 export class UiPoolDataProvider implements UiPoolDataProviderInterface {
-  private readonly _contract: IUiPoolDataProvider;
+  private readonly _contract: UiPoolDataProviderContract;
 
   /**
    * Constructor
@@ -47,7 +49,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
       throw new Error('contract address is not valid');
     }
 
-    this._contract = IUiPoolDataProviderFactory.connect(
+    this._contract = UiPoolDataProviderFactory.connect(
       context.uiPoolDataProviderAddress,
       context.provider,
     );
@@ -69,7 +71,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
   /**
    * Get data for each lending pool reserve
    */
-  public async getReserves(
+  public async getReservesData(
     lendingPoolAddressProvider: string,
   ): Promise<ReservesData> {
     if (!isAddress(lendingPoolAddressProvider)) {
@@ -82,7 +84,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
   /**
    * Get data for each user reserve on the lending pool
    */
-  public async getUserReserves(
+  public async getUserReservesData(
     lendingPoolAddressProvider: string,
     user: string,
   ): Promise<UserReserveData[]> {
@@ -103,7 +105,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
     const {
       0: reservesRaw,
       1: poolBaseCurrencyRaw,
-    }: ReservesData = await this.getReserves(lendingPoolAddressProvider);
+    }: ReservesData = await this.getReservesData(lendingPoolAddressProvider);
 
     const reservesData: ReserveDataHumanized[] = reservesRaw.map(
       reserveRaw => ({
@@ -158,7 +160,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
     lendingPoolAddressProvider: string,
     user: string,
   ): Promise<UserReserveDataHumanized[]> {
-    const userReservesRaw: UserReserveData[] = await this.getUserReserves(
+    const userReservesRaw: UserReserveData[] = await this.getUserReservesData(
       lendingPoolAddressProvider,
       user,
     );
