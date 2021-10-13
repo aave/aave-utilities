@@ -109,6 +109,9 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
 
     const reservesData: ReserveDataHumanized[] = reservesRaw.map(
       reserveRaw => ({
+        id: (
+          reserveRaw.underlyingAsset + lendingPoolAddressProvider
+        ).toLowerCase(),
         underlyingAsset: reserveRaw.underlyingAsset.toLowerCase(),
         name: reserveRaw.name,
         symbol: reserveRaw.symbol,
