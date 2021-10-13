@@ -47,9 +47,7 @@ export interface UserReserveData {
   principalStableDebt: string;
 }
 
-export interface UserIncentiveDict {
-  [incentiveControllerAddress: string]: UserIncentiveData;
-}
+export type UserIncentiveDict = Record<string, UserIncentiveData>;
 
 interface UserIncentiveData {
   rewardTokenAddress: string;
@@ -144,7 +142,7 @@ export function calculateTotalUserIncentives({
     .flat();
 
   // normalize incentives per controller
-  return rewards.reduce((acc, reward) => {
+  return rewards.reduce<UserIncentiveDict>((acc, reward) => {
     if (!acc[reward.incentiveController]) {
       acc[reward.incentiveController] = {
         assets: [],
@@ -162,5 +160,5 @@ export function calculateTotalUserIncentives({
     }
 
     return acc;
-  }, {} as UserIncentiveDict);
+  }, {});
 }

@@ -16,11 +16,8 @@ describe('calculateSupplies', () => {
   };
 
   it('should calculate the correct supplies', () => {
-    const {
-      totalLiquidity,
-      totalStableDebt,
-      totalVariableDebt,
-    } = calculateSupplies(reserveSuppliesInput);
+    const { totalLiquidity, totalStableDebt, totalVariableDebt } =
+      calculateSupplies(reserveSuppliesInput);
     expect(totalLiquidity.toFixed()).toBe('5735354323645633');
     expect(totalStableDebt.toFixed()).toBe('47382324949680');
     expect(totalVariableDebt.toFixed()).toBe('5129955915675441');

@@ -65,17 +65,12 @@ function getComputedReserveFields({
   reserve,
   currentTimestamp,
 }: FormatReserveRequest): GetComputedReserveFieldsResponse {
-  const {
-    totalDebt,
-    totalStableDebt,
-    totalVariableDebt,
-  } = calculateReserveDebt(reserve, currentTimestamp);
+  const { totalDebt, totalStableDebt, totalVariableDebt } =
+    calculateReserveDebt(reserve, currentTimestamp);
   const totalLiquidity = totalDebt.plus(reserve.availableLiquidity);
   const utilizationRate = totalLiquidity.eq(0)
     ? '0'
-    : valueToBigNumber(totalDebt)
-        .dividedBy(totalLiquidity)
-        .toFixed();
+    : valueToBigNumber(totalDebt).dividedBy(totalLiquidity).toFixed();
   // https://github.com/aave/protocol-v2/blob/baeb455fad42d3160d571bd8d3a795948b72dd85/contracts/protocol/lendingpool/LendingPoolConfigurator.sol#L284
   const reserveLiquidationBonus = normalize(
     valueToBigNumber(reserve.reserveLiquidationBonus).minus(

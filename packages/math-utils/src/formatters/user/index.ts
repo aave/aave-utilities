@@ -103,15 +103,15 @@ export function formatUserSummary({
   marketReferenceCurrencyDecimals,
   rawUserReserves,
 }: FormatUserSummaryRequest): FormatUserSummaryResponse {
-  const computedUserReserves: UserReserveSummaryResponse[] = rawUserReserves.map(
-    userReserve =>
+  const computedUserReserves: UserReserveSummaryResponse[] =
+    rawUserReserves.map(userReserve =>
       generateUserReserveSummary({
         userReserve,
         usdPriceMarketReferenceCurrency,
         marketReferenceCurrencyDecimals,
         currentTimestamp,
       }),
-  );
+    );
 
   const formattedUserReserves = computedUserReserves.map(computedUserReserve =>
     formatUserReserve({

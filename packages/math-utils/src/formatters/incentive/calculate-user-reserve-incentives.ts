@@ -47,7 +47,7 @@ export function calculateUserReserveIncentives({
       reserveIncentives.aIncentiveData.emissionPerSecond,
     ),
     totalSupply: totalDeposits,
-    currentTimestamp: currentTimestamp,
+    currentTimestamp,
     emissionEndTimestamp: reserveIncentives.aIncentiveData.emissionEndTimestamp,
   };
 
@@ -67,7 +67,7 @@ export function calculateUserReserveIncentives({
       reserveIncentives.vIncentiveData.emissionPerSecond,
     ),
     totalSupply: new BigNumber(userReserveData.totalScaledVariableDebt),
-    currentTimestamp: currentTimestamp,
+    currentTimestamp,
     emissionEndTimestamp: reserveIncentives.vIncentiveData.emissionEndTimestamp,
   };
 
@@ -87,7 +87,7 @@ export function calculateUserReserveIncentives({
       reserveIncentives.sIncentiveData.emissionPerSecond,
     ),
     totalSupply: new BigNumber(userReserveData.totalPrincipalStableDebt),
-    currentTimestamp: currentTimestamp,
+    currentTimestamp,
     emissionEndTimestamp: reserveIncentives.sIncentiveData.emissionEndTimestamp,
   };
 

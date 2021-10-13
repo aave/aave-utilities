@@ -24,14 +24,13 @@ describe('generateRawUserSummary', () => {
     },
   );
 
-  const rawXSUSHISummary: UserReserveSummaryResponse = generateUserReserveSummary(
-    {
+  const rawXSUSHISummary: UserReserveSummaryResponse =
+    generateUserReserveSummary({
       userReserve: xSushiUserReserve,
       usdPriceMarketReferenceCurrency,
       marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
-    },
-  );
+    });
 
   const rawETHSummary: UserReserveSummaryResponse = generateUserReserveSummary({
     userReserve: ethUserReserve,
@@ -45,17 +44,16 @@ describe('generateRawUserSummary', () => {
     usdPriceMarketReferenceCurrency,
   });
 
-  const rawUSDCSummaryModified: UserReserveSummaryResponse = generateUserReserveSummary(
-    {
+  const rawUSDCSummaryModified: UserReserveSummaryResponse =
+    generateUserReserveSummary({
       userReserve: { ...usdcUserReserve, scaledATokenBalance: '2528085146' },
       usdPriceMarketReferenceCurrency,
       marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
-    },
-  );
+    });
 
-  const rawETHSummaryModified: UserReserveSummaryResponse = generateUserReserveSummary(
-    {
+  const rawETHSummaryModified: UserReserveSummaryResponse =
+    generateUserReserveSummary({
       userReserve: {
         ...ethUserReserve,
         scaledVariableDebt: '1961463562232346784',
@@ -63,15 +61,13 @@ describe('generateRawUserSummary', () => {
       usdPriceMarketReferenceCurrency,
       marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
-    },
-  );
+    });
 
-  const rawSummaryCollateralChange: RawUserSummaryResponse = generateRawUserSummary(
-    {
+  const rawSummaryCollateralChange: RawUserSummaryResponse =
+    generateRawUserSummary({
       userReserves: [rawUSDCSummaryModified, rawXSUSHISummary, rawETHSummary],
       usdPriceMarketReferenceCurrency,
-    },
-  );
+    });
 
   const rawSummaryBorrowChange: RawUserSummaryResponse = generateRawUserSummary(
     {

@@ -28,9 +28,8 @@ export function calculateIncentiveAPY({
     return '0';
   }
 
-  const emissionPerYear = emissionPerSecondNormalized.multipliedBy(
-    SECONDS_PER_YEAR,
-  );
+  const emissionPerYear =
+    emissionPerSecondNormalized.multipliedBy(SECONDS_PER_YEAR);
 
   const totalSupplyNormalized = valueToBigNumber(
     normalize(totalTokenSupply, decimals),

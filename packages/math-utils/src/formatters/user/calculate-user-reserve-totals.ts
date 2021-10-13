@@ -24,9 +24,10 @@ export function calculateUserReserveTotals({
   let currentLiquidationThreshold = valueToBigNumber('0');
 
   userReserves.forEach(userReserveSummary => {
-    totalLiquidityMarketReferenceCurrency = totalLiquidityMarketReferenceCurrency.plus(
-      userReserveSummary.underlyingBalanceMarketReferenceCurrency,
-    );
+    totalLiquidityMarketReferenceCurrency =
+      totalLiquidityMarketReferenceCurrency.plus(
+        userReserveSummary.underlyingBalanceMarketReferenceCurrency,
+      );
     totalBorrowsMarketReferenceCurrency = totalBorrowsMarketReferenceCurrency
       .plus(userReserveSummary.variableBorrowsMarketReferenceCurrency)
       .plus(userReserveSummary.stableBorrowsMarketReferenceCurrency);
@@ -35,9 +36,10 @@ export function calculateUserReserveTotals({
       userReserveSummary.userReserve.reserve.usageAsCollateralEnabled &&
       userReserveSummary.userReserve.usageAsCollateralEnabledOnUser
     ) {
-      totalCollateralMarketReferenceCurrency = totalCollateralMarketReferenceCurrency.plus(
-        userReserveSummary.underlyingBalanceMarketReferenceCurrency,
-      );
+      totalCollateralMarketReferenceCurrency =
+        totalCollateralMarketReferenceCurrency.plus(
+          userReserveSummary.underlyingBalanceMarketReferenceCurrency,
+        );
       currentLtv = currentLtv.plus(
         valueToBigNumber(
           userReserveSummary.underlyingBalanceMarketReferenceCurrency,
