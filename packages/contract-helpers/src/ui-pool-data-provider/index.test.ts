@@ -126,7 +126,52 @@ describe('UiPoolDataProvider', () => {
       const result = await instance.getReservesHumanized(
         mockValidEthereumAddress,
       );
-      expect(result).toEqual(reservesMock);
+      expect(result).toEqual({
+        reservesData: [
+          {
+            underlyingAsset: '0x3e0437898a5667a4769b1ca5a34aab1ae7e81377',
+            name: '',
+            symbol: 'AMPL',
+            decimals: 0,
+            baseLTVasCollateral: '0',
+            reserveLiquidationThreshold: '0',
+            reserveLiquidationBonus: '0',
+            reserveFactor: '0',
+            usageAsCollateralEnabled: false,
+            borrowingEnabled: true,
+            stableBorrowRateEnabled: false,
+            isActive: true,
+            isFrozen: false,
+            liquidityIndex: '0',
+            variableBorrowIndex: '0',
+            liquidityRate: '0',
+            variableBorrowRate: '0',
+            stableBorrowRate: '0',
+            lastUpdateTimestamp: 1631772892,
+            aTokenAddress: '0xb8a16bbab34FA7A5C09Ec7679EAfb8fEC06897bc',
+            stableDebtTokenAddress:
+              '0x9157d57DC97A7AFFC7b0a78E78fe25e1401B1dCc',
+            variableDebtTokenAddress:
+              '0xb7b7AF565495670713C92B8848fC8A650a968F81',
+            interestRateStrategyAddress:
+              '0x796ec26fc7df8D81BCB5BABF74ccdE0E2B122164',
+            availableLiquidity: '0',
+            totalPrincipalStableDebt: '0',
+            averageStableRate: '0',
+            stableDebtLastUpdateTimestamp: 0,
+            totalScaledVariableDebt: '0',
+            priceInMarketReferenceCurrency: '0',
+            variableRateSlope1: '0',
+            variableRateSlope2: '0',
+            stableRateSlope1: '0',
+            stableRateSlope2: '0',
+          },
+        ],
+        baseCurrencyData: {
+          baseCurrencyDecimals: 0,
+          baseCurrencyPriceInUsd: '0',
+        },
+      });
     });
   });
   describe('getUserReservesHumanized', () => {
