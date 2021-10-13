@@ -201,8 +201,16 @@ export const reservesMock: ReservesData = {
       _hex: '0x0',
       _isBigNumber: true,
     }),
+
+    networkBaseTokenPriceInUsd: BigNumber.from({
+      _hex: '0x0',
+      _isBigNumber: true,
+    }),
+    networkBaseTokenDecimals: 0,
     0: BigNumber.from({ _hex: '0x0', _isBigNumber: true }),
     1: BigNumber.from({ _hex: '0x0', _isBigNumber: true }),
+    2: BigNumber.from({ _hex: '0x0', _isBigNumber: true }),
+    3: 0,
   },
 };
 

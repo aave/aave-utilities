@@ -151,6 +151,8 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
     const baseCurrencyData: PoolBaseCurrencyHumanized = {
       baseCurrencyDecimals: poolBaseCurrencyRaw.baseCurrencyDecimals.toNumber(),
       baseCurrencyPriceInUsd: poolBaseCurrencyRaw.baseCurrencyPriceInUsd.toString(),
+      networkBaseTokenPriceInUsd: poolBaseCurrencyRaw.networkBaseTokenPriceInUsd.toString(),
+      networkBaseTokenDecimals: poolBaseCurrencyRaw.networkBaseTokenDecimals,
     };
 
     return {

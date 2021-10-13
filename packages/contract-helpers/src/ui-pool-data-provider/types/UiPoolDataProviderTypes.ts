@@ -72,8 +72,12 @@ export interface ReservesData {
   1: {
     baseCurrencyDecimals: BigNumber;
     baseCurrencyPriceInUsd: BigNumber;
+    networkBaseTokenPriceInUsd: BigNumber;
+    networkBaseTokenDecimals: number;
     0: BigNumber;
     1: BigNumber;
+    2: BigNumber;
+    3: number;
   };
 }
 
@@ -97,6 +101,8 @@ export interface UserReserveData {
 export interface PoolBaseCurrencyHumanized {
   baseCurrencyDecimals: number;
   baseCurrencyPriceInUsd: string;
+  networkBaseTokenPriceInUsd: string;
+  networkBaseTokenDecimals: number;
 }
 export interface ReserveDataHumanized {
   underlyingAsset: string;
