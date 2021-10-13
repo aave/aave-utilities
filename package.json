@@ -11,6 +11,7 @@
     "clean": "rimraf coverage && lerna run clean",
     "lint": "lerna run lint",
     "lint:fix": "lerna run lint -- --fix",
+    "lint:staged": "lint-staged",
     "check-types": "lerna run check-types",
     "build": "lerna run build",
     "test": "jest",
@@ -20,18 +21,12 @@
     "commit": "git-cz",
     "release:check": "lerna changed",
     "release:latest": "lerna publish --yes --conventional-commits --create-release github --message 'chore(release): publish [ci skip]'",
-    "release:canary": "lerna publish --canary"
+    "release:canary": "lerna publish --canary",
+    "prepare": "husky install"
   },
   "workspaces": [
     "packages/*"
   ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-push": "yarn check-types && yarn cover"
-    }
-  },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional",
@@ -73,7 +68,7 @@
     "eslint-config-xo-typescript": "^0.45.2",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-prettier": "^4.0.0",
-    "husky": "^3.0.3",
+    "husky": "^7.0.2",
     "jest": "^27.2.5",
     "jest-watch-typeahead": "^1.0.0",
     "lerna": "^3.16.4",
