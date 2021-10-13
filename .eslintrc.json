@@ -37,7 +37,8 @@
         }
       }
     ],
-    "capitalized-comments": "off"
+    "capitalized-comments": "off",
+    "@typescript-eslint/naming-convention": "off"
   },
   "overrides": [
     {

@@ -5,14 +5,14 @@
   "description": "",
   "scripts": {
     "clean": "cd ../.. && npx rimraf packages/math-utils/dist packages/math-utils/*.log*",
-    "lint": "cd ../.. && npx eslint packages/math-utils/src/**/*.ts",
+    "lint": "cd ../.. && eslint packages/math-utils/src/**/*.ts",
     "check-types": "npm run build -- --noEmit",
     "prebuild": "npm run clean",
-    "build": "cd ../.. && npx tsc -p packages/math-utils/tsconfig.json && npx tsc -p packages/math-utils/tsconfig.json --module commonjs --outDir ./packages/math-utils/dist/cjs",
-    "test": "cd ../.. && npm test packages/math-utils",
-    "cover": "cd ../.. && npm run cover packages/math-utils",
-    "commit": "cd ../.. && npm run commit",
-    "prepublishOnly": "npm run build"
+    "build": "cd ../.. && tsc -p packages/math-utils/tsconfig.json && npx tsc -p packages/math-utils/tsconfig.json --module commonjs --outDir ./packages/math-utils/dist/cjs",
+    "test": "cd ../.. && yarn test packages/math-utils",
+    "cover": "cd ../.. && yarn cover packages/math-utils",
+    "commit": "cd ../.. && yarn commit",
+    "prepublishOnly": "yarn build"
   },
   "keywords": [
     "lerna",

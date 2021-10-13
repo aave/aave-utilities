@@ -101,10 +101,8 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
   public async getReservesHumanized(
     lendingPoolAddressProvider: string,
   ): Promise<ReservesDataHumanized> {
-    const {
-      0: reservesRaw,
-      1: poolBaseCurrencyRaw,
-    }: ReservesData = await this.getReservesData(lendingPoolAddressProvider);
+    const { 0: reservesRaw, 1: poolBaseCurrencyRaw }: ReservesData =
+      await this.getReservesData(lendingPoolAddressProvider);
 
     const reservesData: ReserveDataHumanized[] = reservesRaw.map(
       reserveRaw => ({
@@ -116,7 +114,8 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
         symbol: reserveRaw.symbol,
         decimals: reserveRaw.decimals.toNumber(),
         baseLTVasCollateral: reserveRaw.baseLTVasCollateral.toString(),
-        reserveLiquidationThreshold: reserveRaw.reserveLiquidationThreshold.toString(),
+        reserveLiquidationThreshold:
+          reserveRaw.reserveLiquidationThreshold.toString(),
         reserveLiquidationBonus: reserveRaw.reserveLiquidationBonus.toString(),
         reserveFactor: reserveRaw.reserveFactor.toString(),
         usageAsCollateralEnabled: reserveRaw.usageAsCollateralEnabled,
@@ -132,14 +131,19 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
         lastUpdateTimestamp: reserveRaw.lastUpdateTimestamp,
         aTokenAddress: reserveRaw.aTokenAddress.toString(),
         stableDebtTokenAddress: reserveRaw.stableDebtTokenAddress.toString(),
-        variableDebtTokenAddress: reserveRaw.variableDebtTokenAddress.toString(),
-        interestRateStrategyAddress: reserveRaw.interestRateStrategyAddress.toString(),
+        variableDebtTokenAddress:
+          reserveRaw.variableDebtTokenAddress.toString(),
+        interestRateStrategyAddress:
+          reserveRaw.interestRateStrategyAddress.toString(),
         availableLiquidity: reserveRaw.availableLiquidity.toString(),
-        totalPrincipalStableDebt: reserveRaw.totalPrincipalStableDebt.toString(),
+        totalPrincipalStableDebt:
+          reserveRaw.totalPrincipalStableDebt.toString(),
         averageStableRate: reserveRaw.averageStableRate.toString(),
-        stableDebtLastUpdateTimestamp: reserveRaw.stableDebtLastUpdateTimestamp.toNumber(),
+        stableDebtLastUpdateTimestamp:
+          reserveRaw.stableDebtLastUpdateTimestamp.toNumber(),
         totalScaledVariableDebt: reserveRaw.totalScaledVariableDebt.toString(),
-        priceInMarketReferenceCurrency: reserveRaw.priceInMarketReferenceCurrency.toString(),
+        priceInMarketReferenceCurrency:
+          reserveRaw.priceInMarketReferenceCurrency.toString(),
         variableRateSlope1: reserveRaw.variableRateSlope1.toString(),
         variableRateSlope2: reserveRaw.variableRateSlope2.toString(),
         stableRateSlope1: reserveRaw.stableRateSlope1.toString(),
@@ -149,8 +153,10 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
 
     const baseCurrencyData: PoolBaseCurrencyHumanized = {
       baseCurrencyDecimals: poolBaseCurrencyRaw.baseCurrencyDecimals.toNumber(),
-      baseCurrencyPriceInUsd: poolBaseCurrencyRaw.baseCurrencyPriceInUsd.toString(),
-      networkBaseTokenPriceInUsd: poolBaseCurrencyRaw.networkBaseTokenPriceInUsd.toString(),
+      baseCurrencyPriceInUsd:
+        poolBaseCurrencyRaw.baseCurrencyPriceInUsd.toString(),
+      networkBaseTokenPriceInUsd:
+        poolBaseCurrencyRaw.networkBaseTokenPriceInUsd.toString(),
       networkBaseTokenDecimals: poolBaseCurrencyRaw.networkBaseTokenDecimals,
     };
 
@@ -177,7 +183,8 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
       stableBorrowRate: userReserveRaw.stableBorrowRate.toString(),
       scaledVariableDebt: userReserveRaw.scaledVariableDebt.toString(),
       principalStableDebt: userReserveRaw.principalStableDebt.toString(),
-      stableBorrowLastUpdateTimestamp: userReserveRaw.stableBorrowLastUpdateTimestamp.toNumber(),
+      stableBorrowLastUpdateTimestamp:
+        userReserveRaw.stableBorrowLastUpdateTimestamp.toNumber(),
     }));
   }
 }

@@ -28,13 +28,11 @@ describe('UiIncentiveDataProvider', () => {
     const mockGetReservesIncentivesData = jest.fn();
     const mockGetUserIncentivesData = jest.fn();
 
-    // TODO: more reasonable mock so we can do more reasonable tests
     mockGetReservesIncentivesData.mockResolvedValue(
       getReservesIncentivesDataMock,
     );
 
     mockGetUserIncentivesData.mockResolvedValue(getUserIncentivesDataMock);
-
 
     // @ts-expect-error readonly
     instance._contract = {
@@ -190,9 +188,8 @@ describe('UiIncentiveDataProvider', () => {
       });
       const instance = createValidInstance();
 
-      // eslint-disable-next-line @typescript-eslint/require-await
       mocked(clInstance).getPriceFeed.mockReturnValueOnce(Promise.reject());
-      // eslint-disable-next-line @typescript-eslint/require-await
+
       mocked(clInstance).getPriceFeed.mockReturnValue(
         Promise.resolve({
           answer: '2',
@@ -201,13 +198,12 @@ describe('UiIncentiveDataProvider', () => {
         }),
       );
 
-      const result: ReserveIncentiveWithFeedsResponse[] = await instance.getIncentivesDataWithPrice(
-        {
+      const result: ReserveIncentiveWithFeedsResponse[] =
+        await instance.getIncentivesDataWithPrice({
           lendingPoolAddressProvider: mockValidEthereumAddress,
           chainlinkFeedsRegistry: mockValidEthereumAddress,
           quote: Denominations.eth,
-        },
-      );
+        });
 
       expect(clInstance.getPriceFeed).toBeCalled();
       expect(typeof result[0].aIncentiveData.emissionEndTimestamp).toEqual(
@@ -319,7 +315,6 @@ describe('UiIncentiveDataProvider', () => {
       });
       const instance = createValidInstance();
 
-      // eslint-disable-next-line @typescript-eslint/require-await
       mocked(clInstance).getPriceFeed.mockReturnValue(
         Promise.resolve({
           answer: '2',
@@ -328,13 +323,12 @@ describe('UiIncentiveDataProvider', () => {
         }),
       );
 
-      const result: ReserveIncentiveWithFeedsResponse[] = await instance.getIncentivesDataWithPrice(
-        {
+      const result: ReserveIncentiveWithFeedsResponse[] =
+        await instance.getIncentivesDataWithPrice({
           lendingPoolAddressProvider: mockValidEthereumAddress,
           chainlinkFeedsRegistry: mockValidEthereumAddress,
           quote: Denominations.eth,
-        },
-      );
+        });
 
       expect(clInstance.getPriceFeed).toBeCalled();
       expect(typeof result[0].aIncentiveData.emissionEndTimestamp).toEqual(
@@ -446,7 +440,6 @@ describe('UiIncentiveDataProvider', () => {
       });
       const instance = createValidInstance();
 
-      // eslint-disable-next-line @typescript-eslint/require-await
       mocked(clInstance).getPriceFeed.mockReturnValue(
         Promise.resolve({
           answer: '2',
@@ -455,12 +448,11 @@ describe('UiIncentiveDataProvider', () => {
         }),
       );
 
-      const result: ReserveIncentiveWithFeedsResponse[] = await instance.getIncentivesDataWithPrice(
-        {
+      const result: ReserveIncentiveWithFeedsResponse[] =
+        await instance.getIncentivesDataWithPrice({
           lendingPoolAddressProvider: mockValidEthereumAddress,
           chainlinkFeedsRegistry: mockValidEthereumAddress,
-        },
-      );
+        });
 
       expect(clInstance.getPriceFeed).toBeCalled();
       expect(typeof result[0].aIncentiveData.emissionEndTimestamp).toEqual(
@@ -572,16 +564,14 @@ describe('UiIncentiveDataProvider', () => {
       });
       const instance = createValidInstance();
 
-      // eslint-disable-next-line @typescript-eslint/require-await
       mocked(clInstance).getPriceFeed.mockReturnValue(Promise.reject());
 
-      const result: ReserveIncentiveWithFeedsResponse[] = await instance.getIncentivesDataWithPrice(
-        {
+      const result: ReserveIncentiveWithFeedsResponse[] =
+        await instance.getIncentivesDataWithPrice({
           lendingPoolAddressProvider: mockValidEthereumAddress,
           chainlinkFeedsRegistry: mockValidEthereumAddress,
           quote: Denominations.eth,
-        },
-      );
+        });
 
       expect(clInstance.getPriceFeed).toBeCalled();
       expect(typeof result[0].aIncentiveData.emissionEndTimestamp).toEqual(
@@ -693,23 +683,20 @@ describe('UiIncentiveDataProvider', () => {
       });
       const instance = createValidInstance();
 
-      // eslint-disable-next-line @typescript-eslint/require-await
       mocked(clInstance).getPriceFeed.mockReturnValue(Promise.reject());
 
-      const result: ReserveIncentiveWithFeedsResponse[] = await instance.getIncentivesDataWithPrice(
-        {
+      const result: ReserveIncentiveWithFeedsResponse[] =
+        await instance.getIncentivesDataWithPrice({
           lendingPoolAddressProvider: mockValidEthereumAddress,
           chainlinkFeedsRegistry: mockValidEthereumAddress,
           quote: Denominations.eth,
-        },
-      );
-      const result2: ReserveIncentiveWithFeedsResponse[] = await instance.getIncentivesDataWithPrice(
-        {
+        });
+      const result2: ReserveIncentiveWithFeedsResponse[] =
+        await instance.getIncentivesDataWithPrice({
           lendingPoolAddressProvider: mockValidEthereumAddress,
           chainlinkFeedsRegistry: mockValidEthereumAddress,
           quote: Denominations.eth,
-        },
-      );
+        });
 
       expect(clInstance.getPriceFeed).toBeCalled();
       expect(typeof result[0].aIncentiveData.emissionEndTimestamp).toEqual(
@@ -919,16 +906,14 @@ describe('UiIncentiveDataProvider', () => {
       });
       const instance = createValidInstance();
 
-      // eslint-disable-next-line @typescript-eslint/require-await
       mocked(clInstance).getPriceFeed.mockReturnValue(Promise.reject());
 
-      const result: ReserveIncentiveWithFeedsResponse[] = await instance.getIncentivesDataWithPrice(
-        {
+      const result: ReserveIncentiveWithFeedsResponse[] =
+        await instance.getIncentivesDataWithPrice({
           lendingPoolAddressProvider: mockValidEthereumAddress,
           chainlinkFeedsRegistry: mockInvalidEthereumAddress,
           quote: Denominations.usd,
-        },
-      );
+        });
 
       expect(result).toEqual([
         {
@@ -1036,14 +1021,12 @@ describe('UiIncentiveDataProvider', () => {
       });
       const instance = createValidInstance();
 
-      // eslint-disable-next-line @typescript-eslint/require-await
       mocked(clInstance).getPriceFeed.mockReturnValue(Promise.reject());
 
-      const result: ReserveIncentiveWithFeedsResponse[] = await instance.getIncentivesDataWithPrice(
-        {
+      const result: ReserveIncentiveWithFeedsResponse[] =
+        await instance.getIncentivesDataWithPrice({
           lendingPoolAddressProvider: mockValidEthereumAddress,
-        },
-      );
+        });
 
       expect(result).toEqual([
         {
@@ -1151,15 +1134,13 @@ describe('UiIncentiveDataProvider', () => {
       });
       const instance = createValidInstance();
 
-      // eslint-disable-next-line @typescript-eslint/require-await
       mocked(clInstance).getPriceFeed.mockReturnValue(Promise.reject());
 
-      const result: ReserveIncentiveWithFeedsResponse[] = await instance.getIncentivesDataWithPrice(
-        {
+      const result: ReserveIncentiveWithFeedsResponse[] =
+        await instance.getIncentivesDataWithPrice({
           lendingPoolAddressProvider: mockValidEthereumAddress,
           quote: Denominations.usd,
-        },
-      );
+        });
 
       expect(result).toEqual([
         {

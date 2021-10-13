@@ -1,4 +1,3 @@
-/* eslint-disable require-atomic-updates */
 import { providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import {
@@ -70,9 +69,10 @@ export class UiIncentiveDataProvider
 {
   public readonly _contract: UiIncentiveDataProviderContract;
 
-  private readonly _chainlinkFeedsRegistries: {
-    [address: string]: ChainlinkFeedsRegistryInterface;
-  };
+  private readonly _chainlinkFeedsRegistries: Record<
+    string,
+    ChainlinkFeedsRegistryInterface
+  >;
 
   private readonly _context: UiIncentiveDataProviderContext;
 
