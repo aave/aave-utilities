@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.14.1 (2021-10-13)
+
+
+### Bug Fixes
+
+* added id to reserves object ([#90](https://github.com/@aave/aave-utilities/issues/90)) ([3fff4ad](https://github.com/@aave/aave-utilities/commit/3fff4ad3fb422f94df9c55a2be5d1c8f7d325a83))
+
+
+
+
+
 # 0.14.0 (2021-10-13)
 
 
