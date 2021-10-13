@@ -9,51 +9,69 @@ import {
   BigNumber,
   BigNumberish,
   PopulatedTransaction,
-} from 'ethers';
+} from "ethers";
 import {
   Contract,
   ContractTransaction,
   CallOverrides,
-} from '@ethersproject/contracts';
-import { BytesLike } from '@ethersproject/bytes';
-import { Listener, Provider } from '@ethersproject/providers';
-import { FunctionFragment, EventFragment, Result } from '@ethersproject/abi';
+} from "@ethersproject/contracts";
+import { BytesLike } from "@ethersproject/bytes";
+import { Listener, Provider } from "@ethersproject/providers";
+import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface UiPoolDataProviderInterface extends ethers.utils.Interface {
   functions: {
-    'MOCK_USD_ADDRESS()': FunctionFragment;
-    'getReservesData(address,address)': FunctionFragment;
-    'incentivesController()': FunctionFragment;
-    'oracle()': FunctionFragment;
+    "ETH_CURRENCY_DECIMALS()": FunctionFragment;
+    "MOCK_USD_ADDRESS()": FunctionFragment;
+    "USD_PRICE()": FunctionFragment;
+    "getReservesData(address)": FunctionFragment;
+    "getReservesList(address)": FunctionFragment;
+    "getUserReservesData(address,address)": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: 'MOCK_USD_ADDRESS',
-    values?: undefined,
+    functionFragment: "ETH_CURRENCY_DECIMALS",
+    values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'getReservesData',
-    values: [string, string],
+    functionFragment: "MOCK_USD_ADDRESS",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "USD_PRICE", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "getReservesData",
+    values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: 'incentivesController',
-    values?: undefined,
+    functionFragment: "getReservesList",
+    values: [string]
   ): string;
-  encodeFunctionData(functionFragment: 'oracle', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "getUserReservesData",
+    values: [string, string]
+  ): string;
 
   decodeFunctionResult(
-    functionFragment: 'MOCK_USD_ADDRESS',
-    data: BytesLike,
+    functionFragment: "ETH_CURRENCY_DECIMALS",
+    data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getReservesData',
-    data: BytesLike,
+    functionFragment: "MOCK_USD_ADDRESS",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "USD_PRICE", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getReservesData",
+    data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'incentivesController',
-    data: BytesLike,
+    functionFragment: "getReservesList",
+    data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'oracle', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getUserReservesData",
+    data: BytesLike
+  ): Result;
 
   events: {};
 }
@@ -72,22 +90,33 @@ export class UiPoolDataProvider extends Contract {
   interface: UiPoolDataProviderInterface;
 
   functions: {
-    MOCK_USD_ADDRESS(
-      overrides?: CallOverrides,
-    ): Promise<{
+    ETH_CURRENCY_DECIMALS(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "ETH_CURRENCY_DECIMALS()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    MOCK_USD_ADDRESS(overrides?: CallOverrides): Promise<{
       0: string;
     }>;
 
-    'MOCK_USD_ADDRESS()'(
-      overrides?: CallOverrides,
-    ): Promise<{
+    "MOCK_USD_ADDRESS()"(overrides?: CallOverrides): Promise<{
       0: string;
+    }>;
+
+    USD_PRICE(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
+    }>;
+
+    "USD_PRICE()"(overrides?: CallOverrides): Promise<{
+      0: BigNumber;
     }>;
 
     getReservesData(
       provider: string,
-      user: string,
-      overrides?: CallOverrides,
+      overrides?: CallOverrides
     ): Promise<{
       0: {
         underlyingAsset: string;
@@ -118,20 +147,11 @@ export class UiPoolDataProvider extends Contract {
         averageStableRate: BigNumber;
         stableDebtLastUpdateTimestamp: BigNumber;
         totalScaledVariableDebt: BigNumber;
-        priceForAsset: BigNumber;
+        priceInMarketReferenceCurrency: BigNumber;
         variableRateSlope1: BigNumber;
         variableRateSlope2: BigNumber;
         stableRateSlope1: BigNumber;
         stableRateSlope2: BigNumber;
-        aEmissionPerSecond: BigNumber;
-        vEmissionPerSecond: BigNumber;
-        sEmissionPerSecond: BigNumber;
-        aIncentivesLastUpdateTimestamp: BigNumber;
-        vIncentivesLastUpdateTimestamp: BigNumber;
-        sIncentivesLastUpdateTimestamp: BigNumber;
-        aTokenIncentivesIndex: BigNumber;
-        vTokenIncentivesIndex: BigNumber;
-        sTokenIncentivesIndex: BigNumber;
         0: string;
         1: string;
         2: string;
@@ -165,139 +185,115 @@ export class UiPoolDataProvider extends Contract {
         30: BigNumber;
         31: BigNumber;
         32: BigNumber;
-        33: BigNumber;
-        34: BigNumber;
-        35: BigNumber;
-        36: BigNumber;
-        37: BigNumber;
-        38: BigNumber;
-        39: BigNumber;
-        40: BigNumber;
-        41: BigNumber;
       }[];
       1: {
-        underlyingAsset: string;
-        scaledATokenBalance: BigNumber;
-        usageAsCollateralEnabledOnUser: boolean;
-        stableBorrowRate: BigNumber;
-        scaledVariableDebt: BigNumber;
-        principalStableDebt: BigNumber;
-        stableBorrowLastUpdateTimestamp: BigNumber;
-        aTokenincentivesUserIndex: BigNumber;
-        vTokenincentivesUserIndex: BigNumber;
-        sTokenincentivesUserIndex: BigNumber;
-        0: string;
-        1: BigNumber;
-        2: boolean;
-        3: BigNumber;
-        4: BigNumber;
-        5: BigNumber;
-        6: BigNumber;
-        7: BigNumber;
-        8: BigNumber;
-        9: BigNumber;
-      }[];
-      2: BigNumber;
-      3: {
-        userUnclaimedRewards: BigNumber;
-        emissionEndTimestamp: BigNumber;
+        baseCurrencyDecimals: BigNumber;
+        baseCurrencyPriceInUsd: BigNumber;
         0: BigNumber;
         1: BigNumber;
       };
     }>;
 
-    'getReservesData(address,address)'(
+    "getReservesData(address)"(
+      provider: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: {
+        underlyingAsset: string;
+        name: string;
+        symbol: string;
+        decimals: BigNumber;
+        baseLTVasCollateral: BigNumber;
+        reserveLiquidationThreshold: BigNumber;
+        reserveLiquidationBonus: BigNumber;
+        reserveFactor: BigNumber;
+        usageAsCollateralEnabled: boolean;
+        borrowingEnabled: boolean;
+        stableBorrowRateEnabled: boolean;
+        isActive: boolean;
+        isFrozen: boolean;
+        liquidityIndex: BigNumber;
+        variableBorrowIndex: BigNumber;
+        liquidityRate: BigNumber;
+        variableBorrowRate: BigNumber;
+        stableBorrowRate: BigNumber;
+        lastUpdateTimestamp: number;
+        aTokenAddress: string;
+        stableDebtTokenAddress: string;
+        variableDebtTokenAddress: string;
+        interestRateStrategyAddress: string;
+        availableLiquidity: BigNumber;
+        totalPrincipalStableDebt: BigNumber;
+        averageStableRate: BigNumber;
+        stableDebtLastUpdateTimestamp: BigNumber;
+        totalScaledVariableDebt: BigNumber;
+        priceInMarketReferenceCurrency: BigNumber;
+        variableRateSlope1: BigNumber;
+        variableRateSlope2: BigNumber;
+        stableRateSlope1: BigNumber;
+        stableRateSlope2: BigNumber;
+        0: string;
+        1: string;
+        2: string;
+        3: BigNumber;
+        4: BigNumber;
+        5: BigNumber;
+        6: BigNumber;
+        7: BigNumber;
+        8: boolean;
+        9: boolean;
+        10: boolean;
+        11: boolean;
+        12: boolean;
+        13: BigNumber;
+        14: BigNumber;
+        15: BigNumber;
+        16: BigNumber;
+        17: BigNumber;
+        18: number;
+        19: string;
+        20: string;
+        21: string;
+        22: string;
+        23: BigNumber;
+        24: BigNumber;
+        25: BigNumber;
+        26: BigNumber;
+        27: BigNumber;
+        28: BigNumber;
+        29: BigNumber;
+        30: BigNumber;
+        31: BigNumber;
+        32: BigNumber;
+      }[];
+      1: {
+        baseCurrencyDecimals: BigNumber;
+        baseCurrencyPriceInUsd: BigNumber;
+        0: BigNumber;
+        1: BigNumber;
+      };
+    }>;
+
+    getReservesList(
+      provider: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string[];
+    }>;
+
+    "getReservesList(address)"(
+      provider: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string[];
+    }>;
+
+    getUserReservesData(
       provider: string,
       user: string,
-      overrides?: CallOverrides,
+      overrides?: CallOverrides
     ): Promise<{
       0: {
-        underlyingAsset: string;
-        name: string;
-        symbol: string;
-        decimals: BigNumber;
-        baseLTVasCollateral: BigNumber;
-        reserveLiquidationThreshold: BigNumber;
-        reserveLiquidationBonus: BigNumber;
-        reserveFactor: BigNumber;
-        usageAsCollateralEnabled: boolean;
-        borrowingEnabled: boolean;
-        stableBorrowRateEnabled: boolean;
-        isActive: boolean;
-        isFrozen: boolean;
-        liquidityIndex: BigNumber;
-        variableBorrowIndex: BigNumber;
-        liquidityRate: BigNumber;
-        variableBorrowRate: BigNumber;
-        stableBorrowRate: BigNumber;
-        lastUpdateTimestamp: number;
-        aTokenAddress: string;
-        stableDebtTokenAddress: string;
-        variableDebtTokenAddress: string;
-        interestRateStrategyAddress: string;
-        availableLiquidity: BigNumber;
-        totalPrincipalStableDebt: BigNumber;
-        averageStableRate: BigNumber;
-        stableDebtLastUpdateTimestamp: BigNumber;
-        totalScaledVariableDebt: BigNumber;
-        priceForAsset: BigNumber;
-        variableRateSlope1: BigNumber;
-        variableRateSlope2: BigNumber;
-        stableRateSlope1: BigNumber;
-        stableRateSlope2: BigNumber;
-        aEmissionPerSecond: BigNumber;
-        vEmissionPerSecond: BigNumber;
-        sEmissionPerSecond: BigNumber;
-        aIncentivesLastUpdateTimestamp: BigNumber;
-        vIncentivesLastUpdateTimestamp: BigNumber;
-        sIncentivesLastUpdateTimestamp: BigNumber;
-        aTokenIncentivesIndex: BigNumber;
-        vTokenIncentivesIndex: BigNumber;
-        sTokenIncentivesIndex: BigNumber;
-        0: string;
-        1: string;
-        2: string;
-        3: BigNumber;
-        4: BigNumber;
-        5: BigNumber;
-        6: BigNumber;
-        7: BigNumber;
-        8: boolean;
-        9: boolean;
-        10: boolean;
-        11: boolean;
-        12: boolean;
-        13: BigNumber;
-        14: BigNumber;
-        15: BigNumber;
-        16: BigNumber;
-        17: BigNumber;
-        18: number;
-        19: string;
-        20: string;
-        21: string;
-        22: string;
-        23: BigNumber;
-        24: BigNumber;
-        25: BigNumber;
-        26: BigNumber;
-        27: BigNumber;
-        28: BigNumber;
-        29: BigNumber;
-        30: BigNumber;
-        31: BigNumber;
-        32: BigNumber;
-        33: BigNumber;
-        34: BigNumber;
-        35: BigNumber;
-        36: BigNumber;
-        37: BigNumber;
-        38: BigNumber;
-        39: BigNumber;
-        40: BigNumber;
-        41: BigNumber;
-      }[];
-      1: {
         underlyingAsset: string;
         scaledATokenBalance: BigNumber;
         usageAsCollateralEnabledOnUser: boolean;
@@ -305,9 +301,6 @@ export class UiPoolDataProvider extends Contract {
         scaledVariableDebt: BigNumber;
         principalStableDebt: BigNumber;
         stableBorrowLastUpdateTimestamp: BigNumber;
-        aTokenincentivesUserIndex: BigNumber;
-        vTokenincentivesUserIndex: BigNumber;
-        sTokenincentivesUserIndex: BigNumber;
         0: string;
         1: BigNumber;
         2: boolean;
@@ -315,52 +308,48 @@ export class UiPoolDataProvider extends Contract {
         4: BigNumber;
         5: BigNumber;
         6: BigNumber;
-        7: BigNumber;
-        8: BigNumber;
-        9: BigNumber;
       }[];
-      2: BigNumber;
-      3: {
-        userUnclaimedRewards: BigNumber;
-        emissionEndTimestamp: BigNumber;
-        0: BigNumber;
+    }>;
+
+    "getUserReservesData(address,address)"(
+      provider: string,
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: {
+        underlyingAsset: string;
+        scaledATokenBalance: BigNumber;
+        usageAsCollateralEnabledOnUser: boolean;
+        stableBorrowRate: BigNumber;
+        scaledVariableDebt: BigNumber;
+        principalStableDebt: BigNumber;
+        stableBorrowLastUpdateTimestamp: BigNumber;
+        0: string;
         1: BigNumber;
-      };
-    }>;
-
-    incentivesController(
-      overrides?: CallOverrides,
-    ): Promise<{
-      0: string;
-    }>;
-
-    'incentivesController()'(
-      overrides?: CallOverrides,
-    ): Promise<{
-      0: string;
-    }>;
-
-    oracle(
-      overrides?: CallOverrides,
-    ): Promise<{
-      0: string;
-    }>;
-
-    'oracle()'(
-      overrides?: CallOverrides,
-    ): Promise<{
-      0: string;
+        2: boolean;
+        3: BigNumber;
+        4: BigNumber;
+        5: BigNumber;
+        6: BigNumber;
+      }[];
     }>;
   };
 
+  ETH_CURRENCY_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "ETH_CURRENCY_DECIMALS()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   MOCK_USD_ADDRESS(overrides?: CallOverrides): Promise<string>;
 
-  'MOCK_USD_ADDRESS()'(overrides?: CallOverrides): Promise<string>;
+  "MOCK_USD_ADDRESS()"(overrides?: CallOverrides): Promise<string>;
+
+  USD_PRICE(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "USD_PRICE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   getReservesData(
     provider: string,
-    user: string,
-    overrides?: CallOverrides,
+    overrides?: CallOverrides
   ): Promise<{
     0: {
       underlyingAsset: string;
@@ -391,20 +380,11 @@ export class UiPoolDataProvider extends Contract {
       averageStableRate: BigNumber;
       stableDebtLastUpdateTimestamp: BigNumber;
       totalScaledVariableDebt: BigNumber;
-      priceForAsset: BigNumber;
+      priceInMarketReferenceCurrency: BigNumber;
       variableRateSlope1: BigNumber;
       variableRateSlope2: BigNumber;
       stableRateSlope1: BigNumber;
       stableRateSlope2: BigNumber;
-      aEmissionPerSecond: BigNumber;
-      vEmissionPerSecond: BigNumber;
-      sEmissionPerSecond: BigNumber;
-      aIncentivesLastUpdateTimestamp: BigNumber;
-      vIncentivesLastUpdateTimestamp: BigNumber;
-      sIncentivesLastUpdateTimestamp: BigNumber;
-      aTokenIncentivesIndex: BigNumber;
-      vTokenIncentivesIndex: BigNumber;
-      sTokenIncentivesIndex: BigNumber;
       0: string;
       1: string;
       2: string;
@@ -438,139 +418,111 @@ export class UiPoolDataProvider extends Contract {
       30: BigNumber;
       31: BigNumber;
       32: BigNumber;
-      33: BigNumber;
-      34: BigNumber;
-      35: BigNumber;
-      36: BigNumber;
-      37: BigNumber;
-      38: BigNumber;
-      39: BigNumber;
-      40: BigNumber;
-      41: BigNumber;
     }[];
     1: {
-      underlyingAsset: string;
-      scaledATokenBalance: BigNumber;
-      usageAsCollateralEnabledOnUser: boolean;
-      stableBorrowRate: BigNumber;
-      scaledVariableDebt: BigNumber;
-      principalStableDebt: BigNumber;
-      stableBorrowLastUpdateTimestamp: BigNumber;
-      aTokenincentivesUserIndex: BigNumber;
-      vTokenincentivesUserIndex: BigNumber;
-      sTokenincentivesUserIndex: BigNumber;
-      0: string;
-      1: BigNumber;
-      2: boolean;
-      3: BigNumber;
-      4: BigNumber;
-      5: BigNumber;
-      6: BigNumber;
-      7: BigNumber;
-      8: BigNumber;
-      9: BigNumber;
-    }[];
-    2: BigNumber;
-    3: {
-      userUnclaimedRewards: BigNumber;
-      emissionEndTimestamp: BigNumber;
+      baseCurrencyDecimals: BigNumber;
+      baseCurrencyPriceInUsd: BigNumber;
       0: BigNumber;
       1: BigNumber;
     };
   }>;
 
-  'getReservesData(address,address)'(
+  "getReservesData(address)"(
+    provider: string,
+    overrides?: CallOverrides
+  ): Promise<{
+    0: {
+      underlyingAsset: string;
+      name: string;
+      symbol: string;
+      decimals: BigNumber;
+      baseLTVasCollateral: BigNumber;
+      reserveLiquidationThreshold: BigNumber;
+      reserveLiquidationBonus: BigNumber;
+      reserveFactor: BigNumber;
+      usageAsCollateralEnabled: boolean;
+      borrowingEnabled: boolean;
+      stableBorrowRateEnabled: boolean;
+      isActive: boolean;
+      isFrozen: boolean;
+      liquidityIndex: BigNumber;
+      variableBorrowIndex: BigNumber;
+      liquidityRate: BigNumber;
+      variableBorrowRate: BigNumber;
+      stableBorrowRate: BigNumber;
+      lastUpdateTimestamp: number;
+      aTokenAddress: string;
+      stableDebtTokenAddress: string;
+      variableDebtTokenAddress: string;
+      interestRateStrategyAddress: string;
+      availableLiquidity: BigNumber;
+      totalPrincipalStableDebt: BigNumber;
+      averageStableRate: BigNumber;
+      stableDebtLastUpdateTimestamp: BigNumber;
+      totalScaledVariableDebt: BigNumber;
+      priceInMarketReferenceCurrency: BigNumber;
+      variableRateSlope1: BigNumber;
+      variableRateSlope2: BigNumber;
+      stableRateSlope1: BigNumber;
+      stableRateSlope2: BigNumber;
+      0: string;
+      1: string;
+      2: string;
+      3: BigNumber;
+      4: BigNumber;
+      5: BigNumber;
+      6: BigNumber;
+      7: BigNumber;
+      8: boolean;
+      9: boolean;
+      10: boolean;
+      11: boolean;
+      12: boolean;
+      13: BigNumber;
+      14: BigNumber;
+      15: BigNumber;
+      16: BigNumber;
+      17: BigNumber;
+      18: number;
+      19: string;
+      20: string;
+      21: string;
+      22: string;
+      23: BigNumber;
+      24: BigNumber;
+      25: BigNumber;
+      26: BigNumber;
+      27: BigNumber;
+      28: BigNumber;
+      29: BigNumber;
+      30: BigNumber;
+      31: BigNumber;
+      32: BigNumber;
+    }[];
+    1: {
+      baseCurrencyDecimals: BigNumber;
+      baseCurrencyPriceInUsd: BigNumber;
+      0: BigNumber;
+      1: BigNumber;
+    };
+  }>;
+
+  getReservesList(
+    provider: string,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
+  "getReservesList(address)"(
+    provider: string,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
+  getUserReservesData(
     provider: string,
     user: string,
-    overrides?: CallOverrides,
-  ): Promise<{
-    0: {
-      underlyingAsset: string;
-      name: string;
-      symbol: string;
-      decimals: BigNumber;
-      baseLTVasCollateral: BigNumber;
-      reserveLiquidationThreshold: BigNumber;
-      reserveLiquidationBonus: BigNumber;
-      reserveFactor: BigNumber;
-      usageAsCollateralEnabled: boolean;
-      borrowingEnabled: boolean;
-      stableBorrowRateEnabled: boolean;
-      isActive: boolean;
-      isFrozen: boolean;
-      liquidityIndex: BigNumber;
-      variableBorrowIndex: BigNumber;
-      liquidityRate: BigNumber;
-      variableBorrowRate: BigNumber;
-      stableBorrowRate: BigNumber;
-      lastUpdateTimestamp: number;
-      aTokenAddress: string;
-      stableDebtTokenAddress: string;
-      variableDebtTokenAddress: string;
-      interestRateStrategyAddress: string;
-      availableLiquidity: BigNumber;
-      totalPrincipalStableDebt: BigNumber;
-      averageStableRate: BigNumber;
-      stableDebtLastUpdateTimestamp: BigNumber;
-      totalScaledVariableDebt: BigNumber;
-      priceForAsset: BigNumber;
-      variableRateSlope1: BigNumber;
-      variableRateSlope2: BigNumber;
-      stableRateSlope1: BigNumber;
-      stableRateSlope2: BigNumber;
-      aEmissionPerSecond: BigNumber;
-      vEmissionPerSecond: BigNumber;
-      sEmissionPerSecond: BigNumber;
-      aIncentivesLastUpdateTimestamp: BigNumber;
-      vIncentivesLastUpdateTimestamp: BigNumber;
-      sIncentivesLastUpdateTimestamp: BigNumber;
-      aTokenIncentivesIndex: BigNumber;
-      vTokenIncentivesIndex: BigNumber;
-      sTokenIncentivesIndex: BigNumber;
-      0: string;
-      1: string;
-      2: string;
-      3: BigNumber;
-      4: BigNumber;
-      5: BigNumber;
-      6: BigNumber;
-      7: BigNumber;
-      8: boolean;
-      9: boolean;
-      10: boolean;
-      11: boolean;
-      12: boolean;
-      13: BigNumber;
-      14: BigNumber;
-      15: BigNumber;
-      16: BigNumber;
-      17: BigNumber;
-      18: number;
-      19: string;
-      20: string;
-      21: string;
-      22: string;
-      23: BigNumber;
-      24: BigNumber;
-      25: BigNumber;
-      26: BigNumber;
-      27: BigNumber;
-      28: BigNumber;
-      29: BigNumber;
-      30: BigNumber;
-      31: BigNumber;
-      32: BigNumber;
-      33: BigNumber;
-      34: BigNumber;
-      35: BigNumber;
-      36: BigNumber;
-      37: BigNumber;
-      38: BigNumber;
-      39: BigNumber;
-      40: BigNumber;
-      41: BigNumber;
-    }[];
-    1: {
+    overrides?: CallOverrides
+  ): Promise<
+    {
       underlyingAsset: string;
       scaledATokenBalance: BigNumber;
       usageAsCollateralEnabledOnUser: boolean;
@@ -578,9 +530,6 @@ export class UiPoolDataProvider extends Contract {
       scaledVariableDebt: BigNumber;
       principalStableDebt: BigNumber;
       stableBorrowLastUpdateTimestamp: BigNumber;
-      aTokenincentivesUserIndex: BigNumber;
-      vTokenincentivesUserIndex: BigNumber;
-      sTokenincentivesUserIndex: BigNumber;
       0: string;
       1: BigNumber;
       2: boolean;
@@ -588,36 +537,48 @@ export class UiPoolDataProvider extends Contract {
       4: BigNumber;
       5: BigNumber;
       6: BigNumber;
-      7: BigNumber;
-      8: BigNumber;
-      9: BigNumber;
-    }[];
-    2: BigNumber;
-    3: {
-      userUnclaimedRewards: BigNumber;
-      emissionEndTimestamp: BigNumber;
-      0: BigNumber;
+    }[]
+  >;
+
+  "getUserReservesData(address,address)"(
+    provider: string,
+    user: string,
+    overrides?: CallOverrides
+  ): Promise<
+    {
+      underlyingAsset: string;
+      scaledATokenBalance: BigNumber;
+      usageAsCollateralEnabledOnUser: boolean;
+      stableBorrowRate: BigNumber;
+      scaledVariableDebt: BigNumber;
+      principalStableDebt: BigNumber;
+      stableBorrowLastUpdateTimestamp: BigNumber;
+      0: string;
       1: BigNumber;
-    };
-  }>;
-
-  incentivesController(overrides?: CallOverrides): Promise<string>;
-
-  'incentivesController()'(overrides?: CallOverrides): Promise<string>;
-
-  oracle(overrides?: CallOverrides): Promise<string>;
-
-  'oracle()'(overrides?: CallOverrides): Promise<string>;
+      2: boolean;
+      3: BigNumber;
+      4: BigNumber;
+      5: BigNumber;
+      6: BigNumber;
+    }[]
+  >;
 
   callStatic: {
+    ETH_CURRENCY_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "ETH_CURRENCY_DECIMALS()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     MOCK_USD_ADDRESS(overrides?: CallOverrides): Promise<string>;
 
-    'MOCK_USD_ADDRESS()'(overrides?: CallOverrides): Promise<string>;
+    "MOCK_USD_ADDRESS()"(overrides?: CallOverrides): Promise<string>;
+
+    USD_PRICE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "USD_PRICE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getReservesData(
       provider: string,
-      user: string,
-      overrides?: CallOverrides,
+      overrides?: CallOverrides
     ): Promise<{
       0: {
         underlyingAsset: string;
@@ -648,20 +609,11 @@ export class UiPoolDataProvider extends Contract {
         averageStableRate: BigNumber;
         stableDebtLastUpdateTimestamp: BigNumber;
         totalScaledVariableDebt: BigNumber;
-        priceForAsset: BigNumber;
+        priceInMarketReferenceCurrency: BigNumber;
         variableRateSlope1: BigNumber;
         variableRateSlope2: BigNumber;
         stableRateSlope1: BigNumber;
         stableRateSlope2: BigNumber;
-        aEmissionPerSecond: BigNumber;
-        vEmissionPerSecond: BigNumber;
-        sEmissionPerSecond: BigNumber;
-        aIncentivesLastUpdateTimestamp: BigNumber;
-        vIncentivesLastUpdateTimestamp: BigNumber;
-        sIncentivesLastUpdateTimestamp: BigNumber;
-        aTokenIncentivesIndex: BigNumber;
-        vTokenIncentivesIndex: BigNumber;
-        sTokenIncentivesIndex: BigNumber;
         0: string;
         1: string;
         2: string;
@@ -695,139 +647,111 @@ export class UiPoolDataProvider extends Contract {
         30: BigNumber;
         31: BigNumber;
         32: BigNumber;
-        33: BigNumber;
-        34: BigNumber;
-        35: BigNumber;
-        36: BigNumber;
-        37: BigNumber;
-        38: BigNumber;
-        39: BigNumber;
-        40: BigNumber;
-        41: BigNumber;
       }[];
       1: {
-        underlyingAsset: string;
-        scaledATokenBalance: BigNumber;
-        usageAsCollateralEnabledOnUser: boolean;
-        stableBorrowRate: BigNumber;
-        scaledVariableDebt: BigNumber;
-        principalStableDebt: BigNumber;
-        stableBorrowLastUpdateTimestamp: BigNumber;
-        aTokenincentivesUserIndex: BigNumber;
-        vTokenincentivesUserIndex: BigNumber;
-        sTokenincentivesUserIndex: BigNumber;
-        0: string;
-        1: BigNumber;
-        2: boolean;
-        3: BigNumber;
-        4: BigNumber;
-        5: BigNumber;
-        6: BigNumber;
-        7: BigNumber;
-        8: BigNumber;
-        9: BigNumber;
-      }[];
-      2: BigNumber;
-      3: {
-        userUnclaimedRewards: BigNumber;
-        emissionEndTimestamp: BigNumber;
+        baseCurrencyDecimals: BigNumber;
+        baseCurrencyPriceInUsd: BigNumber;
         0: BigNumber;
         1: BigNumber;
       };
     }>;
 
-    'getReservesData(address,address)'(
+    "getReservesData(address)"(
+      provider: string,
+      overrides?: CallOverrides
+    ): Promise<{
+      0: {
+        underlyingAsset: string;
+        name: string;
+        symbol: string;
+        decimals: BigNumber;
+        baseLTVasCollateral: BigNumber;
+        reserveLiquidationThreshold: BigNumber;
+        reserveLiquidationBonus: BigNumber;
+        reserveFactor: BigNumber;
+        usageAsCollateralEnabled: boolean;
+        borrowingEnabled: boolean;
+        stableBorrowRateEnabled: boolean;
+        isActive: boolean;
+        isFrozen: boolean;
+        liquidityIndex: BigNumber;
+        variableBorrowIndex: BigNumber;
+        liquidityRate: BigNumber;
+        variableBorrowRate: BigNumber;
+        stableBorrowRate: BigNumber;
+        lastUpdateTimestamp: number;
+        aTokenAddress: string;
+        stableDebtTokenAddress: string;
+        variableDebtTokenAddress: string;
+        interestRateStrategyAddress: string;
+        availableLiquidity: BigNumber;
+        totalPrincipalStableDebt: BigNumber;
+        averageStableRate: BigNumber;
+        stableDebtLastUpdateTimestamp: BigNumber;
+        totalScaledVariableDebt: BigNumber;
+        priceInMarketReferenceCurrency: BigNumber;
+        variableRateSlope1: BigNumber;
+        variableRateSlope2: BigNumber;
+        stableRateSlope1: BigNumber;
+        stableRateSlope2: BigNumber;
+        0: string;
+        1: string;
+        2: string;
+        3: BigNumber;
+        4: BigNumber;
+        5: BigNumber;
+        6: BigNumber;
+        7: BigNumber;
+        8: boolean;
+        9: boolean;
+        10: boolean;
+        11: boolean;
+        12: boolean;
+        13: BigNumber;
+        14: BigNumber;
+        15: BigNumber;
+        16: BigNumber;
+        17: BigNumber;
+        18: number;
+        19: string;
+        20: string;
+        21: string;
+        22: string;
+        23: BigNumber;
+        24: BigNumber;
+        25: BigNumber;
+        26: BigNumber;
+        27: BigNumber;
+        28: BigNumber;
+        29: BigNumber;
+        30: BigNumber;
+        31: BigNumber;
+        32: BigNumber;
+      }[];
+      1: {
+        baseCurrencyDecimals: BigNumber;
+        baseCurrencyPriceInUsd: BigNumber;
+        0: BigNumber;
+        1: BigNumber;
+      };
+    }>;
+
+    getReservesList(
+      provider: string,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
+    "getReservesList(address)"(
+      provider: string,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
+    getUserReservesData(
       provider: string,
       user: string,
-      overrides?: CallOverrides,
-    ): Promise<{
-      0: {
-        underlyingAsset: string;
-        name: string;
-        symbol: string;
-        decimals: BigNumber;
-        baseLTVasCollateral: BigNumber;
-        reserveLiquidationThreshold: BigNumber;
-        reserveLiquidationBonus: BigNumber;
-        reserveFactor: BigNumber;
-        usageAsCollateralEnabled: boolean;
-        borrowingEnabled: boolean;
-        stableBorrowRateEnabled: boolean;
-        isActive: boolean;
-        isFrozen: boolean;
-        liquidityIndex: BigNumber;
-        variableBorrowIndex: BigNumber;
-        liquidityRate: BigNumber;
-        variableBorrowRate: BigNumber;
-        stableBorrowRate: BigNumber;
-        lastUpdateTimestamp: number;
-        aTokenAddress: string;
-        stableDebtTokenAddress: string;
-        variableDebtTokenAddress: string;
-        interestRateStrategyAddress: string;
-        availableLiquidity: BigNumber;
-        totalPrincipalStableDebt: BigNumber;
-        averageStableRate: BigNumber;
-        stableDebtLastUpdateTimestamp: BigNumber;
-        totalScaledVariableDebt: BigNumber;
-        priceForAsset: BigNumber;
-        variableRateSlope1: BigNumber;
-        variableRateSlope2: BigNumber;
-        stableRateSlope1: BigNumber;
-        stableRateSlope2: BigNumber;
-        aEmissionPerSecond: BigNumber;
-        vEmissionPerSecond: BigNumber;
-        sEmissionPerSecond: BigNumber;
-        aIncentivesLastUpdateTimestamp: BigNumber;
-        vIncentivesLastUpdateTimestamp: BigNumber;
-        sIncentivesLastUpdateTimestamp: BigNumber;
-        aTokenIncentivesIndex: BigNumber;
-        vTokenIncentivesIndex: BigNumber;
-        sTokenIncentivesIndex: BigNumber;
-        0: string;
-        1: string;
-        2: string;
-        3: BigNumber;
-        4: BigNumber;
-        5: BigNumber;
-        6: BigNumber;
-        7: BigNumber;
-        8: boolean;
-        9: boolean;
-        10: boolean;
-        11: boolean;
-        12: boolean;
-        13: BigNumber;
-        14: BigNumber;
-        15: BigNumber;
-        16: BigNumber;
-        17: BigNumber;
-        18: number;
-        19: string;
-        20: string;
-        21: string;
-        22: string;
-        23: BigNumber;
-        24: BigNumber;
-        25: BigNumber;
-        26: BigNumber;
-        27: BigNumber;
-        28: BigNumber;
-        29: BigNumber;
-        30: BigNumber;
-        31: BigNumber;
-        32: BigNumber;
-        33: BigNumber;
-        34: BigNumber;
-        35: BigNumber;
-        36: BigNumber;
-        37: BigNumber;
-        38: BigNumber;
-        39: BigNumber;
-        40: BigNumber;
-        41: BigNumber;
-      }[];
-      1: {
+      overrides?: CallOverrides
+    ): Promise<
+      {
         underlyingAsset: string;
         scaledATokenBalance: BigNumber;
         usageAsCollateralEnabledOnUser: boolean;
@@ -835,9 +759,6 @@ export class UiPoolDataProvider extends Contract {
         scaledVariableDebt: BigNumber;
         principalStableDebt: BigNumber;
         stableBorrowLastUpdateTimestamp: BigNumber;
-        aTokenincentivesUserIndex: BigNumber;
-        vTokenincentivesUserIndex: BigNumber;
-        sTokenincentivesUserIndex: BigNumber;
         0: string;
         1: BigNumber;
         2: boolean;
@@ -845,85 +766,130 @@ export class UiPoolDataProvider extends Contract {
         4: BigNumber;
         5: BigNumber;
         6: BigNumber;
-        7: BigNumber;
-        8: BigNumber;
-        9: BigNumber;
-      }[];
-      2: BigNumber;
-      3: {
-        userUnclaimedRewards: BigNumber;
-        emissionEndTimestamp: BigNumber;
-        0: BigNumber;
+      }[]
+    >;
+
+    "getUserReservesData(address,address)"(
+      provider: string,
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<
+      {
+        underlyingAsset: string;
+        scaledATokenBalance: BigNumber;
+        usageAsCollateralEnabledOnUser: boolean;
+        stableBorrowRate: BigNumber;
+        scaledVariableDebt: BigNumber;
+        principalStableDebt: BigNumber;
+        stableBorrowLastUpdateTimestamp: BigNumber;
+        0: string;
         1: BigNumber;
-      };
-    }>;
-
-    incentivesController(overrides?: CallOverrides): Promise<string>;
-
-    'incentivesController()'(overrides?: CallOverrides): Promise<string>;
-
-    oracle(overrides?: CallOverrides): Promise<string>;
-
-    'oracle()'(overrides?: CallOverrides): Promise<string>;
+        2: boolean;
+        3: BigNumber;
+        4: BigNumber;
+        5: BigNumber;
+        6: BigNumber;
+      }[]
+    >;
   };
 
   filters: {};
 
   estimateGas: {
+    ETH_CURRENCY_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "ETH_CURRENCY_DECIMALS()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     MOCK_USD_ADDRESS(overrides?: CallOverrides): Promise<BigNumber>;
 
-    'MOCK_USD_ADDRESS()'(overrides?: CallOverrides): Promise<BigNumber>;
+    "MOCK_USD_ADDRESS()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    USD_PRICE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "USD_PRICE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getReservesData(
       provider: string,
-      user: string,
-      overrides?: CallOverrides,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    'getReservesData(address,address)'(
+    "getReservesData(address)"(
+      provider: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getReservesList(
+      provider: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getReservesList(address)"(
+      provider: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getUserReservesData(
       provider: string,
       user: string,
-      overrides?: CallOverrides,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    incentivesController(overrides?: CallOverrides): Promise<BigNumber>;
-
-    'incentivesController()'(overrides?: CallOverrides): Promise<BigNumber>;
-
-    oracle(overrides?: CallOverrides): Promise<BigNumber>;
-
-    'oracle()'(overrides?: CallOverrides): Promise<BigNumber>;
+    "getUserReservesData(address,address)"(
+      provider: string,
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    ETH_CURRENCY_DECIMALS(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "ETH_CURRENCY_DECIMALS()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     MOCK_USD_ADDRESS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    'MOCK_USD_ADDRESS()'(
-      overrides?: CallOverrides,
+    "MOCK_USD_ADDRESS()"(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    USD_PRICE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "USD_PRICE()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getReservesData(
       provider: string,
-      user: string,
-      overrides?: CallOverrides,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    'getReservesData(address,address)'(
+    "getReservesData(address)"(
+      provider: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getReservesList(
+      provider: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getReservesList(address)"(
+      provider: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getUserReservesData(
       provider: string,
       user: string,
-      overrides?: CallOverrides,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    incentivesController(
-      overrides?: CallOverrides,
+    "getUserReservesData(address,address)"(
+      provider: string,
+      user: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    'incentivesController()'(
-      overrides?: CallOverrides,
-    ): Promise<PopulatedTransaction>;
-
-    oracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    'oracle()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }
