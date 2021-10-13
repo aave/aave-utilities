@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.14.0 (2021-10-13)
+
+
+### Features
+
+* new uipooldataprovider ([#89](https://github.com/@aave/aave-utilities/issues/89)) ([9995fc2](https://github.com/@aave/aave-utilities/commit/9995fc267572c5ec5a014ead700b932e7c0082e8))
+
+
+
+
+
 # 0.13.0 (2021-10-08)
 
 
