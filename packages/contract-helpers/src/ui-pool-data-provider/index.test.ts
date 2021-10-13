@@ -171,6 +171,8 @@ describe('UiPoolDataProvider', () => {
         baseCurrencyData: {
           baseCurrencyDecimals: 0,
           baseCurrencyPriceInUsd: '0',
+          networkBaseTokenPriceInUsd: '0',
+          networkBaseTokenDecimals: 0,
         },
       });
     });

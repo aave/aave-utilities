@@ -24,6 +24,7 @@ interface UiPoolDataProviderInterface extends ethers.utils.Interface {
     "ETH_CURRENCY_DECIMALS()": FunctionFragment;
     "MOCK_USD_ADDRESS()": FunctionFragment;
     "USD_PRICE()": FunctionFragment;
+    "_networkBaseTokenPriceInUsdProxyAggregator()": FunctionFragment;
     "getReservesData(address)": FunctionFragment;
     "getReservesList(address)": FunctionFragment;
     "getUserReservesData(address,address)": FunctionFragment;
@@ -38,6 +39,10 @@ interface UiPoolDataProviderInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "USD_PRICE", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "_networkBaseTokenPriceInUsdProxyAggregator",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "getReservesData",
     values: [string]
@@ -60,6 +65,10 @@ interface UiPoolDataProviderInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "USD_PRICE", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "_networkBaseTokenPriceInUsdProxyAggregator",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getReservesData",
     data: BytesLike
@@ -112,6 +121,18 @@ export class UiPoolDataProvider extends Contract {
 
     "USD_PRICE()"(overrides?: CallOverrides): Promise<{
       0: BigNumber;
+    }>;
+
+    _networkBaseTokenPriceInUsdProxyAggregator(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
+    }>;
+
+    "_networkBaseTokenPriceInUsdProxyAggregator()"(
+      overrides?: CallOverrides
+    ): Promise<{
+      0: string;
     }>;
 
     getReservesData(
@@ -189,8 +210,12 @@ export class UiPoolDataProvider extends Contract {
       1: {
         baseCurrencyDecimals: BigNumber;
         baseCurrencyPriceInUsd: BigNumber;
+        networkBaseTokenPriceInUsd: BigNumber;
+        networkBaseTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
+        2: BigNumber;
+        3: number;
       };
     }>;
 
@@ -269,8 +294,12 @@ export class UiPoolDataProvider extends Contract {
       1: {
         baseCurrencyDecimals: BigNumber;
         baseCurrencyPriceInUsd: BigNumber;
+        networkBaseTokenPriceInUsd: BigNumber;
+        networkBaseTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
+        2: BigNumber;
+        3: number;
       };
     }>;
 
@@ -347,6 +376,14 @@ export class UiPoolDataProvider extends Contract {
 
   "USD_PRICE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+  _networkBaseTokenPriceInUsdProxyAggregator(
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "_networkBaseTokenPriceInUsdProxyAggregator()"(
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   getReservesData(
     provider: string,
     overrides?: CallOverrides
@@ -422,8 +459,12 @@ export class UiPoolDataProvider extends Contract {
     1: {
       baseCurrencyDecimals: BigNumber;
       baseCurrencyPriceInUsd: BigNumber;
+      networkBaseTokenPriceInUsd: BigNumber;
+      networkBaseTokenDecimals: number;
       0: BigNumber;
       1: BigNumber;
+      2: BigNumber;
+      3: number;
     };
   }>;
 
@@ -502,8 +543,12 @@ export class UiPoolDataProvider extends Contract {
     1: {
       baseCurrencyDecimals: BigNumber;
       baseCurrencyPriceInUsd: BigNumber;
+      networkBaseTokenPriceInUsd: BigNumber;
+      networkBaseTokenDecimals: number;
       0: BigNumber;
       1: BigNumber;
+      2: BigNumber;
+      3: number;
     };
   }>;
 
@@ -575,6 +620,14 @@ export class UiPoolDataProvider extends Contract {
     USD_PRICE(overrides?: CallOverrides): Promise<BigNumber>;
 
     "USD_PRICE()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    _networkBaseTokenPriceInUsdProxyAggregator(
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "_networkBaseTokenPriceInUsdProxyAggregator()"(
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     getReservesData(
       provider: string,
@@ -651,8 +704,12 @@ export class UiPoolDataProvider extends Contract {
       1: {
         baseCurrencyDecimals: BigNumber;
         baseCurrencyPriceInUsd: BigNumber;
+        networkBaseTokenPriceInUsd: BigNumber;
+        networkBaseTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
+        2: BigNumber;
+        3: number;
       };
     }>;
 
@@ -731,8 +788,12 @@ export class UiPoolDataProvider extends Contract {
       1: {
         baseCurrencyDecimals: BigNumber;
         baseCurrencyPriceInUsd: BigNumber;
+        networkBaseTokenPriceInUsd: BigNumber;
+        networkBaseTokenDecimals: number;
         0: BigNumber;
         1: BigNumber;
+        2: BigNumber;
+        3: number;
       };
     }>;
 
@@ -808,6 +869,14 @@ export class UiPoolDataProvider extends Contract {
 
     "USD_PRICE()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    _networkBaseTokenPriceInUsdProxyAggregator(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "_networkBaseTokenPriceInUsdProxyAggregator()"(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getReservesData(
       provider: string,
       overrides?: CallOverrides
@@ -859,6 +928,14 @@ export class UiPoolDataProvider extends Contract {
     USD_PRICE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "USD_PRICE()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    _networkBaseTokenPriceInUsdProxyAggregator(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "_networkBaseTokenPriceInUsdProxyAggregator()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     getReservesData(
       provider: string,
