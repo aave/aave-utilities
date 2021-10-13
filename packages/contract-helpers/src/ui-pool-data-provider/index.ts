@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/require-await */
 import { providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import { UiPoolDataProvider as UiPoolDataProviderContract } from './typechain/UiPoolDataProvider';

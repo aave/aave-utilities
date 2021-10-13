@@ -11,7 +11,7 @@ describe('WalletBalanceProvider', () => {
       provider: new providers.JsonRpcProvider(),
     });
 
-    // @ts-ignore
+    // @ts-expect-error readonly
     instance._contract = {
       balanceOf: jest.fn(),
       batchBalanceOf: jest.fn(),
@@ -44,17 +44,9 @@ describe('WalletBalanceProvider', () => {
 
     it('should not throw if user and token are a valid ethereum address', async () => {
       const instance = createValidInstance();
-      let errored = false;
-      try {
-        await instance.balanceOf(
-          mockValidEthereumAddress,
-          mockValidEthereumAddress,
-        );
-      } catch (_) {
-        errored = true;
-      }
-
-      expect(errored).toEqual(false);
+      await expect(
+        instance.balanceOf(mockValidEthereumAddress, mockValidEthereumAddress),
+      ).resolves.not.toThrow();
     });
   });
 
@@ -85,17 +77,12 @@ describe('WalletBalanceProvider', () => {
 
     it('should not throw if users and tokens are a all valid ethereum address', async () => {
       const instance = createValidInstance();
-      let errored = false;
-      try {
-        await instance.batchBalanceOf(
+      await expect(
+        instance.batchBalanceOf(
           [mockValidEthereumAddress],
           [mockValidEthereumAddress],
-        );
-      } catch (_) {
-        errored = true;
-      }
-
-      expect(errored).toEqual(false);
+        ),
+      ).resolves.not.toThrow();
     });
   });
 
@@ -124,17 +111,12 @@ describe('WalletBalanceProvider', () => {
 
     it('should not throw if user and lendingPoolAddressProvider are a valid ethereum address', async () => {
       const instance = createValidInstance();
-      let errored = false;
-      try {
-        await instance.getUserWalletBalancesForLendingPoolProvider(
+      await expect(
+        instance.getUserWalletBalancesForLendingPoolProvider(
           mockValidEthereumAddress,
           mockValidEthereumAddress,
-        );
-      } catch (_) {
-        errored = true;
-      }
-
-      expect(errored).toEqual(false);
+        ),
+      ).resolves.not.toThrow();
     });
   });
 });

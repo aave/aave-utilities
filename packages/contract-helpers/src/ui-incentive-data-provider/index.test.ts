@@ -35,7 +35,8 @@ describe('UiIncentiveDataProvider', () => {
 
     mockGetUserIncentivesData.mockResolvedValue(getUserIncentivesDataMock);
 
-    // @ts-ignore
+
+    // @ts-expect-error readonly
     instance._contract = {
       getFullReservesIncentiveData: jest.fn(),
       getReservesIncentivesData: mockGetReservesIncentivesData,
@@ -90,17 +91,12 @@ describe('UiIncentiveDataProvider', () => {
 
     it('should not throw if user and lending pool address provider is a valid ethereum address', async () => {
       const instance = createValidInstance();
-      let errored = false;
-      try {
-        await instance.getFullReservesIncentiveData(
+      await expect(
+        instance.getFullReservesIncentiveData(
           mockValidEthereumAddress,
           mockValidEthereumAddress,
-        );
-      } catch (_) {
-        errored = true;
-      }
-
-      expect(errored).toEqual(false);
+        ),
+      ).resolves.not.toThrow();
     });
   });
 
@@ -113,14 +109,9 @@ describe('UiIncentiveDataProvider', () => {
     });
     it('should not throw', async () => {
       const instance = createValidInstance();
-      let errored = false;
-      try {
-        await instance.getReservesIncentivesData(mockValidEthereumAddress);
-      } catch (_) {
-        errored = true;
-      }
-
-      expect(errored).toEqual(false);
+      await expect(
+        instance.getReservesIncentivesData(mockValidEthereumAddress),
+      ).resolves.not.toThrow();
     });
   });
 
@@ -1293,17 +1284,12 @@ describe('UiIncentiveDataProvider', () => {
 
     it('should not throw if user is a valid ethereum address', async () => {
       const instance = createValidInstance();
-      let errored = false;
-      try {
-        await instance.getUserReservesIncentivesData(
+      await expect(
+        instance.getUserReservesIncentivesData(
           mockValidEthereumAddress,
           mockValidEthereumAddress,
-        );
-      } catch (_) {
-        errored = true;
-      }
-
-      expect(errored).toEqual(false);
+        ),
+      ).resolves.not.toThrow();
     });
   });
 });
