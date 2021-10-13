@@ -15,7 +15,6 @@ describe('UiPoolDataProvider', () => {
     const mockGetReservesData = jest.fn();
     const mockGetUserReservesData = jest.fn();
 
-    // TODO: more reasonable mock so we can do more reasonable tests
     mockGetReservesData.mockResolvedValue(reservesMock);
     mockGetUserReservesData.mockResolvedValue(userReservesMock);
 
