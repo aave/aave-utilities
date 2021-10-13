@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.15.0 (2021-10-13)
+
+
+### Features
+
+* updated version with network base currency ([#92](https://github.com/@aave/aave-utilities/issues/92)) ([072c775](https://github.com/@aave/aave-utilities/commit/072c775f2386bd34f2c4fa4da8ddb7e5f2893c86))
+
+
+
+
+
 ## 0.14.1 (2021-10-13)
 
 
