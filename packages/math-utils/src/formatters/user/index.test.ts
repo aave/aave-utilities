@@ -1,10 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { formatUserSummaryRequest } from './user.mocks';
-import {
-  ComputedUserReserve,
-  formatUserSummary,
-  FormatUserSummaryRequest,
-} from './index';
+import { formatUserSummary, FormatUserSummaryRequest } from './index';
 
 describe('formatUserSummary', () => {
   const request: FormatUserSummaryRequest = formatUserSummaryRequest;
