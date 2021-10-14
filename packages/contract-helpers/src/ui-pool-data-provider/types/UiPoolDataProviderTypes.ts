@@ -105,6 +105,7 @@ export interface PoolBaseCurrencyHumanized {
   networkBaseTokenDecimals: number;
 }
 export interface ReserveDataHumanized {
+  id: string;
   underlyingAsset: string;
   name: string;
   symbol: string;
