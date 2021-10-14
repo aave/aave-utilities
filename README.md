@@ -2,11 +2,8 @@
 
 <p align="center">
   <a href="https://aave.com/" rel="noopener" target="_blank"><img width="150" src="https://aave.com/static/media/ghostGradient.77808e40.svg" alt="Aave logo"></a></p>
-</p>
 
 <h1 align="center">Aave utilities</h1>
-
-<div align="center">
 
 ## Installation
 
