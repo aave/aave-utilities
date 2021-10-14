@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/require-await */
 import { BigNumber, providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import { PermissionManager as PermissionManagerContract } from './typechain/PermissionManager';
@@ -42,10 +41,8 @@ export class PermissionManager {
   public async getHumanizedUserPermissions(
     user: string,
   ): Promise<GetHumanizedUserPermissionsResponse> {
-    const {
-      0: permissions,
-      1: permissionsNumber,
-    } = await this.getUserPermissions(user);
+    const { 0: permissions, 1: permissionsNumber } =
+      await this.getUserPermissions(user);
 
     const parsedPermissions: PERMISSION[] = [];
     permissions.forEach((permission: BigNumber, index: number) => {

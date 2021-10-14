@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/require-await */
 import { BigNumber, providers } from 'ethers';
 import { getUserPermissionsResponseMock } from './_mocks';
 import { PERMISSION } from './types/PermissionManagerTypes';
@@ -27,7 +26,7 @@ describe('PermissionManager', () => {
     });
 
     const mock = jest.fn();
-    // @ts-ignore
+    // @ts-expect-error readonly
     instance._contract = {
       getUserPermissions: mock,
     };

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/require-await */
 import { BigNumber, providers } from 'ethers';
 import { ChainlinkFeedsRegistry, Denominations } from './index';
 
@@ -31,7 +30,7 @@ describe('ChainlinkFeedsRegistry', () => {
       chainlinkFeedsRegistry: mockValidEthereumAddress,
     });
 
-    // @ts-ignore
+    // @ts-expect-error readonly
     registry._registryContract = {
       decimals: jest.fn().mockImplementation(() => 1),
     };
@@ -55,7 +54,7 @@ describe('ChainlinkFeedsRegistry', () => {
       provider: new providers.JsonRpcProvider(),
       chainlinkFeedsRegistry: mockValidEthereumAddress,
     });
-    // @ts-ignore
+    // @ts-expect-error readonly
     registry._registryContract = {
       latestRoundData: jest.fn().mockImplementation(() => ({
         0: BigNumber.from(1),
@@ -90,7 +89,7 @@ describe('ChainlinkFeedsRegistry', () => {
       provider: new providers.JsonRpcProvider(),
       chainlinkFeedsRegistry: mockValidEthereumAddress,
     });
-    // @ts-ignore
+    // @ts-expect-error readonly
     registry._registryContract = {
       decimals: jest.fn().mockImplementation(() => 1),
       latestRoundData: jest.fn().mockImplementation(() => ({

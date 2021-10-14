@@ -28,13 +28,11 @@ export function calculateSupplies({
   reserve,
   currentTimestamp,
 }: SuppliesRequest): SuppliesResponse {
-  const {
-    totalVariableDebt,
-    totalStableDebt,
-  } = calculateReserveDebtSuppliesRaw({
-    reserve: reserve,
-    currentTimestamp: currentTimestamp,
-  });
+  const { totalVariableDebt, totalStableDebt } =
+    calculateReserveDebtSuppliesRaw({
+      reserve,
+      currentTimestamp,
+    });
 
   const totalDebt = totalVariableDebt.plus(totalStableDebt);
 

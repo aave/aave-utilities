@@ -60,9 +60,12 @@ describe('calculateReserveIncentives', () => {
         vRewardTokenPriceInMarketReferenceCurrency: '500000000000000',
         sRewardTokenPriceInMarketReferenceCurrency: '498035657442060',
         totalLiquidity: totalLiquidity.toString(),
-        liquidityIndex: formatReserveRequestWMATIC.reserve.liquidityIndex.toString(),
-        totalScaledVariableDebt: calculateReserveDebtResult.totalVariableDebt.toString(),
-        totalPrincipalStableDebt: calculateReserveDebtResult.totalStableDebt.toString(),
+        liquidityIndex:
+          formatReserveRequestWMATIC.reserve.liquidityIndex.toString(),
+        totalScaledVariableDebt:
+          calculateReserveDebtResult.totalVariableDebt.toString(),
+        totalPrincipalStableDebt:
+          calculateReserveDebtResult.totalStableDebt.toString(),
         decimals: 18,
         priceInMarketReferenceCurrency: '498035657442060',
       });

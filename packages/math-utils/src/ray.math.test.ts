@@ -196,7 +196,7 @@ describe('ray math', () => {
     );
 
     it('should increase values over time', () => {
-      const rate = valueToZDBigNumber(109284371694014197840985614);
+      const rate = valueToZDBigNumber('109284371694014197840985614');
       const ts1 = 2;
       const ts2 = 3;
       const accurateInterest1 = legacyCalculateCompoundedInterest(rate, ts1, 0);

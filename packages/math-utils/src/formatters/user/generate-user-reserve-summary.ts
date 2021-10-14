@@ -98,23 +98,21 @@ export function generateUserReserveSummary({
     usdPriceMarketReferenceCurrency,
   });
 
-  const {
-    totalLiquidity,
-    totalStableDebt,
-    totalVariableDebt,
-  } = calculateSupplies({
-    reserve: {
-      totalScaledVariableDebt: poolReserve.totalScaledVariableDebt,
-      variableBorrowIndex: poolReserve.variableBorrowIndex,
-      variableBorrowRate: poolReserve.variableBorrowRate,
-      totalPrincipalStableDebt: poolReserve.totalPrincipalStableDebt,
-      averageStableRate: poolReserve.averageStableRate,
-      availableLiquidity: poolReserve.availableLiquidity,
-      stableDebtLastUpdateTimestamp: poolReserve.stableDebtLastUpdateTimestamp,
-      lastUpdateTimestamp: poolReserve.lastUpdateTimestamp,
-    },
-    currentTimestamp,
-  });
+  const { totalLiquidity, totalStableDebt, totalVariableDebt } =
+    calculateSupplies({
+      reserve: {
+        totalScaledVariableDebt: poolReserve.totalScaledVariableDebt,
+        variableBorrowIndex: poolReserve.variableBorrowIndex,
+        variableBorrowRate: poolReserve.variableBorrowRate,
+        totalPrincipalStableDebt: poolReserve.totalPrincipalStableDebt,
+        averageStableRate: poolReserve.averageStableRate,
+        availableLiquidity: poolReserve.availableLiquidity,
+        stableDebtLastUpdateTimestamp:
+          poolReserve.stableDebtLastUpdateTimestamp,
+        lastUpdateTimestamp: poolReserve.lastUpdateTimestamp,
+      },
+      currentTimestamp,
+    });
 
   return {
     userReserve,
@@ -128,9 +126,10 @@ export function generateUserReserveSummary({
     stableBorrowsMarketReferenceCurrency,
     stableBorrowsUSD,
     totalBorrows: variableBorrows.plus(stableBorrows),
-    totalBorrowsMarketReferenceCurrency: variableBorrowsMarketReferenceCurrency.plus(
-      stableBorrowsMarketReferenceCurrency,
-    ),
+    totalBorrowsMarketReferenceCurrency:
+      variableBorrowsMarketReferenceCurrency.plus(
+        stableBorrowsMarketReferenceCurrency,
+      ),
     totalBorrowsUSD: variableBorrowsUSD.plus(stableBorrowsUSD),
     totalLiquidity,
     totalStableDebt,

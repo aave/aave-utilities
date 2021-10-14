@@ -20,11 +20,8 @@ describe('calculateAccruedIncentives', () => {
     },
     currentTimestamp: 1629942075,
   };
-  const {
-    totalLiquidity,
-    totalVariableDebt,
-    totalStableDebt,
-  } = calculateSupplies(reserveSuppliesInput);
+  const { totalLiquidity, totalVariableDebt, totalStableDebt } =
+    calculateSupplies(reserveSuppliesInput);
 
   const depositRewardsRequest: CalculateAccruedIncentivesRequest = {
     principalUserBalance: new BigNumber('2441092440'),

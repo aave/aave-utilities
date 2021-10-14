@@ -91,7 +91,8 @@ describe('calculateIncentiveAPY', () => {
       const result = calculateIncentiveAPY({
         emissionPerSecond: '22037037037037000',
         rewardTokenPriceInMarketReferenceCurrency: '498035657442060',
-        totalTokenSupply: calculateReserveDebtResult.totalVariableDebt.toFixed(),
+        totalTokenSupply:
+          calculateReserveDebtResult.totalVariableDebt.toFixed(),
         priceInMarketReferenceCurrency: '498035657442060',
         decimals: 18,
         rewardTokenDecimals: 18,
@@ -141,7 +142,8 @@ describe('calculateIncentiveAPY', () => {
       const result = calculateIncentiveAPY({
         emissionPerSecond: '0',
         rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
-        totalTokenSupply: calculateReserveDebtResult.totalVariableDebt.toFixed(),
+        totalTokenSupply:
+          calculateReserveDebtResult.totalVariableDebt.toFixed(),
         priceInMarketReferenceCurrency: '1634050000000000',
         decimals: 18,
         rewardTokenDecimals: 18,

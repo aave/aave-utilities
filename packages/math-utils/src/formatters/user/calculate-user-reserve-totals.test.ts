@@ -21,14 +21,13 @@ describe('calculateUserReserveTotals', () => {
     },
   );
 
-  const rawXSUSHISummary: UserReserveSummaryResponse = generateUserReserveSummary(
-    {
+  const rawXSUSHISummary: UserReserveSummaryResponse =
+    generateUserReserveSummary({
       userReserve: xSushiUserReserve,
       usdPriceMarketReferenceCurrency,
       marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
-    },
-  );
+    });
 
   const rawETHSummary: UserReserveSummaryResponse = generateUserReserveSummary({
     userReserve: ethUserReserve,
@@ -59,8 +58,8 @@ describe('calculateUserReserveTotals', () => {
   });
 
   it('should not compute collateral or LTV if usageAsCollateralEnabledOnUser is false', () => {
-    const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
-      {
+    const rawUSDCSummary: UserReserveSummaryResponse =
+      generateUserReserveSummary({
         userReserve: {
           ...usdcUserReserve,
           usageAsCollateralEnabledOnUser: false,
@@ -68,10 +67,9 @@ describe('calculateUserReserveTotals', () => {
         usdPriceMarketReferenceCurrency,
         marketReferenceCurrencyDecimals: 18,
         currentTimestamp,
-      },
-    );
-    const rawETHSummary: UserReserveSummaryResponse = generateUserReserveSummary(
-      {
+      });
+    const rawETHSummary: UserReserveSummaryResponse =
+      generateUserReserveSummary({
         userReserve: {
           ...ethUserReserve,
           usageAsCollateralEnabledOnUser: false,
@@ -79,8 +77,7 @@ describe('calculateUserReserveTotals', () => {
         usdPriceMarketReferenceCurrency,
         marketReferenceCurrencyDecimals: 18,
         currentTimestamp,
-      },
-    );
+      });
     const userReserveTotals = calculateUserReserveTotals({
       userReserves: [rawUSDCSummary, rawETHSummary],
     });

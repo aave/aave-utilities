@@ -16,8 +16,8 @@ export function formatUserReserve({
   reserve: _reserve,
   marketReferenceCurrencyDecimals,
 }: FormatUserReserveRequest): ComputedUserReserve {
-  const userReserve = _reserve.userReserve;
-  const reserve = userReserve.reserve;
+  const { userReserve } = _reserve;
+  const { reserve } = userReserve;
   const reserveDecimals = reserve.decimals;
 
   const normalizeWithReserve = (n: BigNumberValue) =>

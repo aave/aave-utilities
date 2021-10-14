@@ -1,7 +1,6 @@
 import { providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import { FeedRegistryInterface } from './typechain/FeedRegistryInterface';
-// eslint-disable-next-line @typescript-eslint/camelcase
 import { FeedRegistryInterface__factory } from './typechain/FeedRegistryInterface__factory';
 import {
   DenominationAddresses,
@@ -40,7 +39,6 @@ export class ChainlinkFeedsRegistry implements ChainlinkFeedsRegistryInterface {
       throw new Error('contract address is not valid');
     }
 
-    // eslint-disable-next-line @typescript-eslint/camelcase
     this._registryContract = FeedRegistryInterface__factory.connect(
       chainlinkFeedsRegistry,
       provider,

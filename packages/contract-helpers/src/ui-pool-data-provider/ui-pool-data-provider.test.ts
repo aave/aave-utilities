@@ -18,7 +18,7 @@ describe('UiPoolDataProvider', () => {
     mockGetReservesData.mockResolvedValue(reservesMock);
     mockGetUserReservesData.mockResolvedValue(userReservesMock);
 
-    // @ts-ignore
+    // @ts-expect-error readonly
     instance._contract = {
       getReservesList: jest.fn(),
       getReservesData: mockGetReservesData,
@@ -51,14 +51,9 @@ describe('UiPoolDataProvider', () => {
   describe('getReservesList - to get 100% in coverage :( pointless test', () => {
     it('should not throw', async () => {
       const instance = createValidInstance();
-      let errored = false;
-      try {
-        await instance.getReservesList(mockValidEthereumAddress);
-      } catch (_) {
-        errored = true;
-      }
-
-      expect(errored).toEqual(false);
+      await expect(
+        instance.getReservesList(mockValidEthereumAddress),
+      ).resolves.not.toThrow();
     });
     it('should throw when lendingPoolAddressProvider is not valid address', async () => {
       const instance = createValidInstance();
@@ -77,8 +72,9 @@ describe('UiPoolDataProvider', () => {
     });
     it('should not throw', async () => {
       const instance = createValidInstance();
-      const result = await instance.getReservesData(mockValidEthereumAddress);
-      expect(result).toEqual(reservesMock);
+      await expect(
+        instance.getReservesData(mockValidEthereumAddress),
+      ).resolves.not.toThrow();
     });
   });
 
@@ -104,12 +100,12 @@ describe('UiPoolDataProvider', () => {
 
     it('should not throw if user is a valid ethereum address', async () => {
       const instance = createValidInstance();
-      const result = await instance.getUserReservesData(
-        mockValidEthereumAddress,
-        mockValidEthereumAddress,
-      );
-
-      expect(result).toEqual(userReservesMock);
+      await expect(
+        instance.getUserReservesData(
+          mockValidEthereumAddress,
+          mockValidEthereumAddress,
+        ),
+      ).resolves.not.toThrow();
     });
   });
 
@@ -128,8 +124,7 @@ describe('UiPoolDataProvider', () => {
       expect(result).toEqual({
         reservesData: [
           {
-            id:
-              '0x3e0437898a5667a4769b1ca5a34aab1ae7e813770x88757f2f99175387ab4c6a4b3067c77a695b0349',
+            id: '0x3e0437898a5667a4769b1ca5a34aab1ae7e813770x88757f2f99175387ab4c6a4b3067c77a695b0349',
             underlyingAsset: '0x3e0437898a5667a4769b1ca5a34aab1ae7e81377',
             name: '',
             symbol: 'AMPL',

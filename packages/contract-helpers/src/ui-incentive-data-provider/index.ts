@@ -1,4 +1,3 @@
-/* eslint-disable require-atomic-updates */
 import { providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import {
@@ -66,12 +65,14 @@ export interface GetIncentivesDataWithPriceType {
 }
 
 export class UiIncentiveDataProvider
-  implements UiIncentiveDataProviderInterface {
+  implements UiIncentiveDataProviderInterface
+{
   public readonly _contract: UiIncentiveDataProviderContract;
 
-  private readonly _chainlinkFeedsRegistries: {
-    [address: string]: ChainlinkFeedsRegistryInterface;
-  };
+  private readonly _chainlinkFeedsRegistries: Record<
+    string,
+    ChainlinkFeedsRegistryInterface
+  >;
 
   private readonly _context: UiIncentiveDataProviderContext;
 
@@ -196,19 +197,17 @@ export class UiIncentiveDataProvider
   }: GetIncentivesDataWithPriceType): Promise<
     ReserveIncentiveWithFeedsResponse[]
   > {
-    const incentives: ReserveIncentiveDataHumanizedResponse[] = await this.getReservesIncentivesDataHumanized(
-      lendingPoolAddressProvider,
-    );
+    const incentives: ReserveIncentiveDataHumanizedResponse[] =
+      await this.getReservesIncentivesDataHumanized(lendingPoolAddressProvider);
     const feeds: FeedResultSuccessful[] = [];
 
     if (chainlinkFeedsRegistry && isAddress(chainlinkFeedsRegistry)) {
       if (!this._chainlinkFeedsRegistries[chainlinkFeedsRegistry]) {
-        this._chainlinkFeedsRegistries[
-          chainlinkFeedsRegistry
-        ] = new ChainlinkFeedsRegistry({
-          provider: this._context.provider,
-          chainlinkFeedsRegistry,
-        });
+        this._chainlinkFeedsRegistries[chainlinkFeedsRegistry] =
+          new ChainlinkFeedsRegistry({
+            provider: this._context.provider,
+            chainlinkFeedsRegistry,
+          });
       }
 
       const allIncentiveRewardTokens: Set<string> = new Set();
@@ -307,7 +306,8 @@ export class UiIncentiveDataProvider
       incentiveControllerAddress: data.incentiveControllerAddress,
       rewardTokenDecimals: data.rewardTokenDecimals,
       emissionPerSecond: data.emissionPerSecond.toString(),
-      incentivesLastUpdateTimestamp: data.incentivesLastUpdateTimestamp.toNumber(),
+      incentivesLastUpdateTimestamp:
+        data.incentivesLastUpdateTimestamp.toNumber(),
       tokenIncentivesIndex: data.tokenIncentivesIndex.toString(),
       emissionEndTimestamp: data.emissionEndTimestamp.toNumber(),
     };

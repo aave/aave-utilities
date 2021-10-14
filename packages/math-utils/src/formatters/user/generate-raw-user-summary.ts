@@ -45,7 +45,7 @@ export function generateRawUserSummary({
     totalCollateralMarketReferenceCurrency,
     currentLtv,
     currentLiquidationThreshold,
-  } = calculateUserReserveTotals({ userReserves: userReserves });
+  } = calculateUserReserveTotals({ userReserves });
 
   return {
     totalLiquidityUSD: convertToUsd(
@@ -63,17 +63,19 @@ export function generateRawUserSummary({
     totalLiquidityMarketReferenceCurrency,
     totalCollateralMarketReferenceCurrency,
     totalBorrowsMarketReferenceCurrency,
-    availableBorrowsMarketReferenceCurrency: calculateAvailableBorrowsMarketReferenceCurrency(
-      {
-        collateralBalanceMarketReferenceCurrency: totalCollateralMarketReferenceCurrency,
-        borrowBalanceMarketReferenceCurrency: totalBorrowsMarketReferenceCurrency,
+    availableBorrowsMarketReferenceCurrency:
+      calculateAvailableBorrowsMarketReferenceCurrency({
+        collateralBalanceMarketReferenceCurrency:
+          totalCollateralMarketReferenceCurrency,
+        borrowBalanceMarketReferenceCurrency:
+          totalBorrowsMarketReferenceCurrency,
         currentLtv,
-      },
-    ),
+      }),
     currentLoanToValue: currentLtv,
     currentLiquidationThreshold,
     healthFactor: calculateHealthFactorFromBalances({
-      collateralBalanceMarketReferenceCurrency: totalCollateralMarketReferenceCurrency,
+      collateralBalanceMarketReferenceCurrency:
+        totalCollateralMarketReferenceCurrency,
       borrowBalanceMarketReferenceCurrency: totalBorrowsMarketReferenceCurrency,
       currentLiquidationThreshold,
     }),
