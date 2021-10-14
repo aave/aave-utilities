@@ -68,24 +68,4 @@ describe('formatUserSummary', () => {
       ),
     ).toEqual(true);
   });
-
-  it('should sort by symbol', () => {
-    const isSorted = (arr: ComputedUserReserve[]) => {
-      if (arr.length <= 1) {
-        return true;
-      }
-
-      for (let i = 1; i < arr.length; i++) {
-        const condition = arr[i].reserve.symbol < arr[i - 1].reserve.symbol;
-        if (condition) {
-          return false;
-        }
-      }
-
-      return true;
-    };
-
-    const result = formatUserSummary(request);
-    expect(isSorted(result.userReservesData)).toEqual(true);
-  });
 });
