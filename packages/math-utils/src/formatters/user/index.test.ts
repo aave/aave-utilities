@@ -1,10 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { formatUserSummaryRequest } from './user.mocks';
-import {
-  ComputedUserReserve,
-  formatUserSummary,
-  FormatUserSummaryRequest,
-} from './index';
+import { formatUserSummary, FormatUserSummaryRequest } from './index';
 
 describe('formatUserSummary', () => {
   const request: FormatUserSummaryRequest = formatUserSummaryRequest;
@@ -67,25 +63,5 @@ describe('formatUserSummary', () => {
         first.totalCollateralMarketReferenceCurrency,
       ),
     ).toEqual(true);
-  });
-
-  it('should sort by symbol', () => {
-    const isSorted = (arr: ComputedUserReserve[]) => {
-      if (arr.length <= 1) {
-        return true;
-      }
-
-      for (let i = 1; i < arr.length; i++) {
-        const condition = arr[i].reserve.symbol < arr[i - 1].reserve.symbol;
-        if (condition) {
-          return false;
-        }
-      }
-
-      return true;
-    };
-
-    const result = formatUserSummary(request);
-    expect(isSorted(result.userReservesData)).toEqual(true);
   });
 });

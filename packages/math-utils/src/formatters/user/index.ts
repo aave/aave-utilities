@@ -81,18 +81,6 @@ export interface FormatUserSummaryResponse {
   healthFactor: string;
 }
 
-/* istanbul ignore next */
-function sortBySymbol(reserves: ComputedUserReserve[]): ComputedUserReserve[] {
-  reserves.sort((a, b) =>
-    a.reserve.symbol > b.reserve.symbol
-      ? 1
-      : a.reserve.symbol < b.reserve.symbol
-      ? -1
-      : 0,
-  );
-  return reserves;
-}
-
 function normalizeUSD(value: BigNumber): string {
   return normalize(value, USD_DECIMALS);
 }
@@ -120,15 +108,13 @@ export function formatUserSummary({
     }),
   );
 
-  const sortedUserReserves = sortBySymbol(formattedUserReserves);
-
   const userData = generateRawUserSummary({
     userReserves: computedUserReserves,
     usdPriceMarketReferenceCurrency,
   });
 
   return {
-    userReservesData: sortedUserReserves,
+    userReservesData: formattedUserReserves,
     totalLiquidityMarketReferenceCurrency: normalize(
       userData.totalLiquidityMarketReferenceCurrency,
       marketReferenceCurrencyDecimals,
