@@ -1,6 +1,6 @@
 # @aave/math-utils
 
-**disclaimer**: this package is highly unstable. One we reached a certain level
+**disclaimer**: this package is highly unstable. Once we reach a certain level
 of stability, we'll bump the version to 1.x and add appropriate documentation.
 
 AAVE aggregates on-chain protocol data into a variety of different subgraphs on
