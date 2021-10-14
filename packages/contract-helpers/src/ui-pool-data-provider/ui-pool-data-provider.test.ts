@@ -124,8 +124,7 @@ describe('UiPoolDataProvider', () => {
       expect(result).toEqual({
         reservesData: [
           {
-            id:
-              '0x3e0437898a5667a4769b1ca5a34aab1ae7e813770x88757f2f99175387ab4c6a4b3067c77a695b0349',
+            id: '0x3e0437898a5667a4769b1ca5a34aab1ae7e813770x88757f2f99175387ab4c6a4b3067c77a695b0349',
             underlyingAsset: '0x3e0437898a5667a4769b1ca5a34aab1ae7e81377',
             name: '',
             symbol: 'AMPL',
