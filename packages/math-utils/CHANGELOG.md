@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.15.2 (2021-10-14)
+
+
+### Bug Fixes
+
+* added missing id ([#98](https://github.com/@aave/aave-utilities/issues/98)) ([abee3f3](https://github.com/@aave/aave-utilities/commit/abee3f39d6f2c9a0c25054ac9033f34daf628523))
+
+
+
+
+
 ## 0.15.1 (2021-10-14)
 
 **Note:** Version bump only for package @aave/math-utils
