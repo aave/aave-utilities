@@ -899,15 +899,8 @@ describe('UiIncentiveDataProvider', () => {
         },
       ]);
     });
-    it('should work with chainlinkregistry address incorrect', async () => {
-      const clInstance = new ChainlinkFeedsRegistry({
-        chainlinkFeedsRegistry: mockValidEthereumAddress,
-        provider: new providers.JsonRpcProvider(),
-      });
+    it('should work with chainlinkRegistry address incorrect', async () => {
       const instance = createValidInstance();
-
-      mocked(clInstance).getPriceFeed.mockReturnValue(Promise.reject());
-
       const result: ReserveIncentiveWithFeedsResponse[] =
         await instance.getIncentivesDataWithPrice({
           lendingPoolAddressProvider: mockValidEthereumAddress,
@@ -1014,15 +1007,8 @@ describe('UiIncentiveDataProvider', () => {
         },
       ]);
     });
-    it('should work with no chainlinkregistry address no quote ', async () => {
-      const clInstance = new ChainlinkFeedsRegistry({
-        chainlinkFeedsRegistry: mockValidEthereumAddress,
-        provider: new providers.JsonRpcProvider(),
-      });
+    it('should work with no chainlinkRegistry address no quote ', async () => {
       const instance = createValidInstance();
-
-      mocked(clInstance).getPriceFeed.mockReturnValue(Promise.reject());
-
       const result: ReserveIncentiveWithFeedsResponse[] =
         await instance.getIncentivesDataWithPrice({
           lendingPoolAddressProvider: mockValidEthereumAddress,
@@ -1128,14 +1114,7 @@ describe('UiIncentiveDataProvider', () => {
       ]);
     });
     it('should work with no chainlinkregistry address and quote ', async () => {
-      const clInstance = new ChainlinkFeedsRegistry({
-        chainlinkFeedsRegistry: mockValidEthereumAddress,
-        provider: new providers.JsonRpcProvider(),
-      });
       const instance = createValidInstance();
-
-      mocked(clInstance).getPriceFeed.mockReturnValue(Promise.reject());
-
       const result: ReserveIncentiveWithFeedsResponse[] =
         await instance.getIncentivesDataWithPrice({
           lendingPoolAddressProvider: mockValidEthereumAddress,
