@@ -9,14 +9,7 @@
   dependencies:
     "@babel/highlight" "^7.10.4"
 
-"@babel/code-frame@^7.0.0", "@babel/code-frame@^7.14.5":
-  version "7.14.5"
-  resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.14.5.tgz#23b08d740e83f49c5e59945fbf1b43e80bbf4edb"
-  integrity sha512-9pzDqyc6OLDaqe+zbACgFkb6fKMNG6CObKpnYXChRsvYGyEdc7CA2BaqeOM+vOtCS5ndmJicPJhKAwYRI6UfFw==
-  dependencies:
-    "@babel/highlight" "^7.14.5"
-
-"@babel/code-frame@^7.12.13", "@babel/code-frame@^7.15.8":
+"@babel/code-frame@^7.0.0", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.14.5", "@babel/code-frame@^7.15.8":
   version "7.15.8"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.15.8.tgz#45990c47adadb00c03677baa89221f7cc23d2503"
   integrity sha512-2IAnmn8zbvC/jKYhq5Ki9I+DwjlrtMPUCH/CpHvqI4dNnlwHwsxoIhlc8WcYY5LSYknXQtAlFYuHfqAFCvQ4Wg==
@@ -708,10 +701,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@eslint/eslintrc@^1.0.1", "@eslint/eslintrc@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-1.0.2.tgz#6044884f7f93c4ecc2d1694c7486cce91ef8f746"
-  integrity sha512-x1ZXdEFsvTcnbTZgqcWUL9w2ybgZCw/qbKTPQnab+XnYA2bMQpJCh+/bBzCRfDJaJdlrrQlOk49jNtru9gL/6Q==
+"@eslint/eslintrc@^1.0.1", "@eslint/eslintrc@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-1.0.3.tgz#41f08c597025605f672251dcc4e8be66b5ed7366"
+  integrity sha512-DHI1wDPoKCBPoLZA3qDR91+3te/wDSc1YhKg3jR8NxKKRJq2hwHwcWv31cSwSYvIBrmbENoYMWcenW8uproQqg==
   dependencies:
     ajv "^6.12.4"
     debug "^4.3.2"
@@ -2641,11 +2634,6 @@ ansi-regex@^4.1.0:
   resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-4.1.0.tgz#8b9f8f08cf1acb843756a839ca8c7e3168c51997"
   integrity sha512-1apePfXM1UOSqw0o9IiFAovVz9M5S1Dg+4TrDwfMewQ6p/rmMueb7tWZjQ1rx4Loy1ArBggoqGpfqqdI4rondg==
 
-ansi-regex@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-5.0.0.tgz#388539f55179bf39339c81af30a654d69f87cb75"
-  integrity sha512-bY6fj56OUQ0hU1KjFNDQuJFezqKdrAyFdIevADiqrWHwSlbmBNMHp5ak2f40Pm8JTFyM2mqxkG6ngkHO11f/lg==
-
 ansi-regex@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-5.0.1.tgz#082cb2c89c9fe8659a311a53bd6a4dc5301db304"
@@ -4573,11 +4561,11 @@ eslint@^7.32.0:
     v8-compile-cache "^2.0.3"
 
 eslint@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.0.0.tgz#2c2d0ac6353755667ac90c9ff4a9c1315e43fcff"
-  integrity sha512-03spzPzMAO4pElm44m60Nj08nYonPGQXmw6Ceai/S4QK82IgwWO1EXx1s9namKzVlbVu3Jf81hb+N+8+v21/HQ==
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.0.1.tgz#3610e7fe4a05c2154669515ca60835a76a19f700"
+  integrity sha512-LsgcwZgQ72vZ+SMp4K6pAnk2yFDWL7Ti4pJaRvsZ0Hsw2h8ZjUIW38a9AFn2cZXdBMlScMFYYgsSp4ttFI/0bA==
   dependencies:
-    "@eslint/eslintrc" "^1.0.2"
+    "@eslint/eslintrc" "^1.0.3"
     "@humanwhocodes/config-array" "^0.6.0"
     ajv "^6.10.0"
     chalk "^4.0.0"
@@ -6028,14 +6016,7 @@ is-glob@^3.1.0:
   dependencies:
     is-extglob "^2.1.0"
 
-is-glob@^4.0.0, is-glob@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/is-glob/-/is-glob-4.0.1.tgz#7567dbe9f2f5e2467bc77ab83c4a29482407a5dc"
-  integrity sha512-5G0tKtBTFImOqDnLB2hG6Bp2qcKEFduo4tZu9MT/H6NQv/ghhy30o55ufafxJ/LdH79LLs2Kfrn85TLKyA7BUg==
-  dependencies:
-    is-extglob "^2.1.1"
-
-is-glob@^4.0.3:
+is-glob@^4.0.0, is-glob@^4.0.1, is-glob@^4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/is-glob/-/is-glob-4.0.3.tgz#64f61e42cbbb2eec2071a9dac0b28ba1e65d5084"
   integrity sha512-xelSayHH36ZgE7ZWhli7pW34hNbNl8Ojv5KVmkJD4hBdD3th8Tfk9vYasLM+mXWOZhFkgZfxhLSnrwRr4elSSg==
@@ -9434,14 +9415,7 @@ strip-ansi@^5.0.0, strip-ansi@^5.1.0, strip-ansi@^5.2.0:
   dependencies:
     ansi-regex "^4.1.0"
 
-strip-ansi@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.0.tgz#0b1571dd7669ccd4f3e06e14ef1eed26225ae532"
-  integrity sha512-AuvKTrTfQNYNIctbR1K/YGTR1756GycPsg7b9bdV9Duqur4gv6aKqHXah67Z8ImS7WEz5QVcOtlfW2rZEugt6w==
-  dependencies:
-    ansi-regex "^5.0.0"
-
-strip-ansi@^6.0.1:
+strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
