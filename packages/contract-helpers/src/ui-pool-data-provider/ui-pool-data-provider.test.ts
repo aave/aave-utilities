@@ -164,10 +164,10 @@ describe('UiPoolDataProvider', () => {
           },
         ],
         baseCurrencyData: {
-          baseCurrencyDecimals: 0,
-          baseCurrencyPriceInUsd: '0',
+          marketReferenceCurrencyDecimals: 0,
+          marketReferenceCurrencyPriceInUsd: '0',
           networkBaseTokenPriceInUsd: '0',
-          networkBaseTokenDecimals: 0,
+          networkBaseTokenPriceDecimals: 0,
         },
       });
     });
