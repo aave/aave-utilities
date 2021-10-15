@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.15.4 (2021-10-15)
+
+
+### Bug Fixes
+
+* uipooldataprovider price aggregators ([#100](https://github.com/@aave/aave-utilities/issues/100)) ([329a50e](https://github.com/@aave/aave-utilities/commit/329a50e971263debba8d9122fc55ce323dc71929))
+
+
+
+
+
 ## 0.15.3 (2021-10-14)
 
 **Note:** Version bump only for package @aave/contract-helpers
