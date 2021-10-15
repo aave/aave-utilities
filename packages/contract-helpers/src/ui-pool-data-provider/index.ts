@@ -152,12 +152,15 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
     );
 
     const baseCurrencyData: PoolBaseCurrencyHumanized = {
-      baseCurrencyDecimals: poolBaseCurrencyRaw.baseCurrencyDecimals.toNumber(),
-      baseCurrencyPriceInUsd:
-        poolBaseCurrencyRaw.baseCurrencyPriceInUsd.toString(),
+      // this is to get the decimals from the unit so 1e18 = string length of 19 - 1 to get the number of 0
+      marketReferenceCurrencyDecimals:
+        poolBaseCurrencyRaw.marketReferenceCurrencyUnit.toString().length - 1,
+      marketReferenceCurrencyPriceInUsd:
+        poolBaseCurrencyRaw.marketReferenceCurrencyPriceInUsd.toString(),
       networkBaseTokenPriceInUsd:
         poolBaseCurrencyRaw.networkBaseTokenPriceInUsd.toString(),
-      networkBaseTokenDecimals: poolBaseCurrencyRaw.networkBaseTokenDecimals,
+      networkBaseTokenPriceDecimals:
+        poolBaseCurrencyRaw.networkBaseTokenPriceDecimals,
     };
 
     return {

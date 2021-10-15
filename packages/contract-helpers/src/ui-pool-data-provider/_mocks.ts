@@ -193,11 +193,11 @@ export const reservesMock: ReservesData = {
     },
   ],
   1: {
-    baseCurrencyDecimals: BigNumber.from({
+    marketReferenceCurrencyUnit: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
     }),
-    baseCurrencyPriceInUsd: BigNumber.from({
+    marketReferenceCurrencyPriceInUsd: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
     }),
@@ -206,7 +206,7 @@ export const reservesMock: ReservesData = {
       _hex: '0x0',
       _isBigNumber: true,
     }),
-    networkBaseTokenDecimals: 0,
+    networkBaseTokenPriceDecimals: 0,
     0: BigNumber.from({ _hex: '0x0', _isBigNumber: true }),
     1: BigNumber.from({ _hex: '0x0', _isBigNumber: true }),
     2: BigNumber.from({ _hex: '0x0', _isBigNumber: true }),
