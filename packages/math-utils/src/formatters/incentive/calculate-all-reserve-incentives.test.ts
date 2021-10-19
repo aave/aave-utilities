@@ -25,7 +25,6 @@ describe('calculateAllReserveIncentives', () => {
       result['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].sIncentives
         .incentiveAPY,
     ).toBe('0');
-
     expect(
       result['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'].aIncentives
         .incentiveAPY,
@@ -38,7 +37,6 @@ describe('calculateAllReserveIncentives', () => {
       result['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'].sIncentives
         .incentiveAPY,
     ).toBe('0');
-
     expect(
       result['0x8798249c2e607446efb7ad49ec89dd1865ff4272'].aIncentives
         .incentiveAPY,
@@ -58,15 +56,14 @@ describe('calculateAllReserveIncentives', () => {
       reserveIncentives,
       reserves: allIncentivesReserves,
     });
-    // Results will be slightly different from above due to 8 vs 18 decimal precision of priceFeed vs priceInMarketReferenceCurrency
     expect(
       result['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].aIncentives
         .incentiveAPY,
-    ).toBe('0.00246430081696612272');
+    ).toBe('0.00246430102947281231');
     expect(
       result['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].vIncentives
         .incentiveAPY,
-    ).toBe('0.0031579428051084906');
+    ).toBe('0.00315794307743075208');
     expect(
       result['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].sIncentives
         .incentiveAPY,
@@ -74,20 +71,19 @@ describe('calculateAllReserveIncentives', () => {
     expect(
       result['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'].aIncentives
         .incentiveAPY,
-    ).toBe('0.04207598298984469896');
+    ).toBe('0.0420759866182279689');
     expect(
       result['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'].vIncentives
         .incentiveAPY,
-    ).toBe('0.04740458379430581596');
+    ).toBe('0.04740458788219602162');
     expect(
       result['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'].sIncentives
         .incentiveAPY,
     ).toBe('0');
-
     expect(
       result['0x8798249c2e607446efb7ad49ec89dd1865ff4272'].aIncentives
         .incentiveAPY,
-    ).toBe('0.00957358908823952015');
+    ).toBe('0.00957358991380907344');
     expect(
       result['0x8798249c2e607446efb7ad49ec89dd1865ff4272'].vIncentives
         .incentiveAPY,

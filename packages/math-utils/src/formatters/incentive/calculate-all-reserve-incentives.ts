@@ -1,5 +1,4 @@
 import { ReserveIncentiveWithFeedsResponse } from '@aave/contract-helpers';
-import BigNumber from 'bignumber.js';
 import {
   calculateReserveIncentives,
   CalculateReserveIncentivesResponse,
@@ -37,13 +36,11 @@ export interface CalculateAllReserveIncentivesRequest {
 }
 
 // Calculate incentive token price from reserves data or priceFeed from UiIncentiveDataProvider
-// eslint-disable-next-line max-params
+
 function calculateRewardTokenPrice(
   reserves: ReserveCalculationData[],
   address: string,
   priceFeed: string,
-  priceFeedDecimals: number,
-  marketReferenceCurrencyDecimals: number,
 ): string {
   address = address.toLowerCase();
   // For stkAave incentives, use Aave reserve data
@@ -66,10 +63,7 @@ function calculateRewardTokenPrice(
     return rewardReserve.priceInMarketReferenceCurrency;
   }
 
-  // Convert priceFeed to have same number of decimals as marketReferenceCurrency
-  return new BigNumber(priceFeed)
-    .shiftedBy(marketReferenceCurrencyDecimals - priceFeedDecimals)
-    .toString();
+  return priceFeed;
 }
 
 export function calculateAllReserveIncentives({
@@ -118,22 +112,16 @@ export function calculateAllReserveIncentives({
             reserves,
             incentiveData.aIncentiveData.rewardTokenAddress.toLowerCase(),
             incentiveData.aIncentiveData.priceFeed,
-            incentiveData.aIncentiveData.priceFeedDecimals,
-            reserve.marketReferenceCurrencyDecimals,
           ),
           vRewardTokenPriceInMarketReferenceCurrency: calculateRewardTokenPrice(
             reserves,
             incentiveData.vIncentiveData.rewardTokenAddress.toLowerCase(),
             incentiveData.vIncentiveData.priceFeed,
-            incentiveData.vIncentiveData.priceFeedDecimals,
-            reserve.marketReferenceCurrencyDecimals,
           ),
           sRewardTokenPriceInMarketReferenceCurrency: calculateRewardTokenPrice(
             reserves,
             incentiveData.sIncentiveData.rewardTokenAddress.toLowerCase(),
             incentiveData.sIncentiveData.priceFeed,
-            incentiveData.sIncentiveData.priceFeedDecimals,
-            reserve.marketReferenceCurrencyDecimals,
           ),
         });
       calculatedReserveIncentives.underlyingAsset = isBaseAsset
