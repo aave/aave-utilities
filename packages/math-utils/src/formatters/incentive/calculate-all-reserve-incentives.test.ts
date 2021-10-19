@@ -5,6 +5,8 @@ import {
   maticReserveIncentives,
   avaxReserveIncentives,
   allIncentivesReserves,
+  aMATICReserveIncentiveData,
+  aAVAXReserveIncentiveData,
 } from './incentive.mocks';
 
 describe('calculateAllReserveIncentives', () => {
@@ -96,11 +98,11 @@ describe('calculateAllReserveIncentives', () => {
 
   it('calculates correct underlyingAsset and rewardTokenAddress for base assets', () => {
     const maticResult = calculateAllReserveIncentives({
-      reserveIncentives,
+      reserveIncentives: aMATICReserveIncentiveData,
       reserves: maticReserveIncentives,
     });
     const avaxResult = calculateAllReserveIncentives({
-      reserveIncentives,
+      reserveIncentives: aAVAXReserveIncentiveData,
       reserves: avaxReserveIncentives,
     });
     expect(

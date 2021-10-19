@@ -138,6 +138,7 @@ export const aXSUSHIReserveIncentiveData = {
   },
 };
 
+// MATIC and AVAX reserve incentive tests are separate because only 1 asset can have '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' reserve address per network
 const maticIncentives = {
   emissionPerSecond: '173611111111111',
   incentivesLastUpdateTimestamp: 1631586256,
@@ -152,12 +153,15 @@ const maticIncentives = {
   priceFeedTimestamp: 1000000000,
   priceFeedDecimals: 8,
 };
-export const aMATICReserveIncentiveData = {
-  underlyingAsset: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
-  aIncentiveData: maticIncentives,
-  vIncentiveData: maticIncentives,
-  sIncentiveData: maticIncentives,
-};
+
+export const aMATICReserveIncentiveData = [
+  {
+    underlyingAsset: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
+    aIncentiveData: maticIncentives,
+    vIncentiveData: maticIncentives,
+    sIncentiveData: maticIncentives,
+  },
+];
 
 const avaxIncentives = {
   emissionPerSecond: '173611111111111',
@@ -173,12 +177,14 @@ const avaxIncentives = {
   priceFeedTimestamp: 1000000000,
   priceFeedDecimals: 8,
 };
-export const aAVAXReserveIncentiveData = {
-  underlyingAsset: '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7',
-  aIncentiveData: avaxIncentives,
-  vIncentiveData: avaxIncentives,
-  sIncentiveData: avaxIncentives,
-};
+export const aAVAXReserveIncentiveData = [
+  {
+    underlyingAsset: '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7',
+    aIncentiveData: avaxIncentives,
+    vIncentiveData: avaxIncentives,
+    sIncentiveData: avaxIncentives,
+  },
+];
 
 // User Incentives
 
@@ -299,8 +305,6 @@ export const reserveIncentives = [
   aETHReserveIncentiveData,
   aUSDCReserveIncentiveData,
   aXSUSHIReserveIncentiveData,
-  aMATICReserveIncentiveData,
-  aAVAXReserveIncentiveData,
 ];
 export const reserveIncentivesMissingUSDC = [
   aETHReserveIncentiveData,
