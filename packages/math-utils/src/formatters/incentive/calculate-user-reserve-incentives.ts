@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import {
-  ReserveIncentiveWithFeedsResponse,
-  UserReserveIncentiveDataHumanizedResponse,
-} from '@aave/contract-helpers';
 import BigNumber from 'bignumber.js';
 import { rayDiv } from '../../ray.math';
 import { calculateAccruedIncentives } from './calculate-accrued-incentives';
-import { UserReserveCalculationData } from './calculate-all-user-incentives';
+import {
+  ReserveIncentiveWithFeedsResponse,
+  UserReserveCalculationData,
+  UserReserveIncentiveDataHumanizedResponse,
+} from './types';
 
 export interface CalculateUserReserveIncentivesRequest {
   reserveIncentives: ReserveIncentiveWithFeedsResponse; // token incentive data, from UiIncentiveDataProvider

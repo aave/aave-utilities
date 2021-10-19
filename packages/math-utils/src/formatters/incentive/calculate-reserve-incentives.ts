@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { ReserveIncentiveWithFeedsResponse } from '@aave/contract-helpers';
 import { BigNumber } from 'bignumber.js';
 import { rayDiv } from '../../ray.math';
 import { calculateIncentiveAPY } from './calculate-incentive-apy';
+import { ReserveIncentiveWithFeedsResponse } from './types';
 
 export interface CalculateReserveIncentivesRequest {
   reserveIncentiveData: ReserveIncentiveWithFeedsResponse;

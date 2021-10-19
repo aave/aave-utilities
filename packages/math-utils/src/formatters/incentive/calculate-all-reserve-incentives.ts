@@ -1,23 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-import { ReserveIncentiveWithFeedsResponse } from '@aave/contract-helpers';
 import { incentiveToReserveAddressMap } from '../../constants';
 import {
   calculateReserveIncentives,
   CalculateReserveIncentivesResponse,
 } from './calculate-reserve-incentives';
-
-export interface ReserveCalculationData {
-  underlyingAsset: string;
-  symbol: string;
-  totalLiquidity: string;
-  liquidityIndex: string;
-  totalScaledVariableDebt: string;
-  totalPrincipalStableDebt: string;
-  priceInMarketReferenceCurrency: string;
-  marketReferenceCurrencyDecimals: number;
-  decimals: number;
-}
+import {
+  ReserveCalculationData,
+  ReserveIncentiveWithFeedsResponse,
+} from './types';
 
 // Indexed by reserve underlyingAsset address
 export type ReserveIncentiveDict = Record<string, ReserveIncentives>;

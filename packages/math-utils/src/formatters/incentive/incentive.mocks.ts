@@ -1,13 +1,11 @@
-// Reserve Incentives
-
 import {
   ReserveIncentiveWithFeedsResponse,
   UserReserveIncentiveDataHumanizedResponse,
-} from '@aave/contract-helpers';
-import {
   ReserveCalculationData,
   UserReserveCalculationData,
-} from 'math-utils/src';
+} from './types';
+
+// Reserve Incentives
 
 export const aETHReserveIncentiveData: ReserveIncentiveWithFeedsResponse = {
   underlyingAsset: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',

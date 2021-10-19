@@ -1,21 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import {
-  ReserveIncentiveWithFeedsResponse,
-  UserReserveIncentiveDataHumanizedResponse,
-} from '@aave/contract-helpers';
 import { BigNumber } from 'bignumber.js';
 import { calculateUserReserveIncentives } from './calculate-user-reserve-incentives';
-
-export interface UserReserveCalculationData {
-  underlyingAsset: string;
-  totalLiquidity: string;
-  liquidityIndex: string;
-  totalScaledVariableDebt: string;
-  totalPrincipalStableDebt: string;
-  scaledATokenBalance: string;
-  scaledVariableDebt: string;
-  principalStableDebt: string;
-}
+import {
+  ReserveIncentiveWithFeedsResponse,
+  UserReserveCalculationData,
+  UserReserveIncentiveDataHumanizedResponse,
+} from './types';
 
 // Indexed by incentives controller address
 export type UserIncentiveDict = Record<string, UserIncentiveData>;
