@@ -32,6 +32,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@aave/contract-helpers": "^0.15.4",
     "bignumber.js": "^9.0.1",
     "tslib": "^2.3.1"
   },
