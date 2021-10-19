@@ -1,40 +1,9 @@
 import { BigNumber } from 'bignumber.js';
+import {
+  ReserveIncentiveWithFeedsResponse,
+  UserReserveIncentiveDataHumanizedResponse,
+} from 'contract-helpers';
 import { calculateUserReserveIncentives } from './calculate-user-reserve-incentives';
-
-export interface ReserveIncentiveData {
-  underlyingAsset: string;
-  aIncentiveData: ReserveTokenIncentives;
-  vIncentiveData: ReserveTokenIncentives;
-  sIncentiveData: ReserveTokenIncentives;
-}
-
-export interface UserReserveIncentiveData {
-  underlyingAsset: string;
-  aTokenIncentivesUserData: UserTokenIncentives;
-  vTokenIncentivesUserData: UserTokenIncentives;
-  sTokenIncentivesUserData: UserTokenIncentives;
-}
-
-interface ReserveTokenIncentives {
-  emissionPerSecond: string;
-  incentivesLastUpdateTimestamp: number;
-  tokenIncentivesIndex: string;
-  emissionEndTimestamp: number;
-  tokenAddress: string;
-  rewardTokenAddress: string;
-  incentiveControllerAddress: string;
-  rewardTokenDecimals: number;
-  precision: number;
-}
-
-interface UserTokenIncentives {
-  tokenIncentivesUserIndex: string;
-  userUnclaimedRewards: string;
-  tokenAddress: string;
-  rewardTokenAddress: string;
-  incentiveControllerAddress: string;
-  rewardTokenDecimals: number;
-}
 
 export interface UserReserveData {
   underlyingAsset: string;
@@ -47,6 +16,7 @@ export interface UserReserveData {
   principalStableDebt: string;
 }
 
+// Indexed by incentives controller address
 export type UserIncentiveDict = Record<string, UserIncentiveData>;
 
 interface UserIncentiveData {
@@ -56,19 +26,19 @@ interface UserIncentiveData {
   assets: string[];
 }
 
-export interface CalculateTotalUserIncentivesRequest {
-  reserveIncentives: ReserveIncentiveData[]; // token incentive data
-  userReserveIncentives: UserReserveIncentiveData[]; // user incentive data
+export interface CalculateAllUserIncentivesRequest {
+  reserveIncentives: ReserveIncentiveWithFeedsResponse[]; // token incentive data, from UiIncentiveDataProvider
+  userReserveIncentives: UserReserveIncentiveDataHumanizedResponse[]; // user incentive data, from UiIncentiveDataProvider
   userReserves: UserReserveData[]; // deposit and borrow data for user assets
   currentTimestamp: number;
 }
 
-export function calculateTotalUserIncentives({
+export function calculateAllUserIncentives({
   reserveIncentives,
   userReserveIncentives,
   userReserves,
   currentTimestamp,
-}: CalculateTotalUserIncentivesRequest): UserIncentiveDict {
+}: CalculateAllUserIncentivesRequest): UserIncentiveDict {
   // calculate incentive per token
   const rewards = userReserveIncentives
     .map(userReserveIncentive => {

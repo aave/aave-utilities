@@ -1,8 +1,8 @@
 import { normalize } from '../../bignumber';
 import {
-  calculateTotalUserIncentives,
-  CalculateTotalUserIncentivesRequest,
-} from './calculate-total-user-incentives';
+  calculateAllUserIncentives,
+  CalculateAllUserIncentivesRequest,
+} from './calculate-all-user-incentives';
 import {
   reserveIncentives,
   userReserveIncentives,
@@ -11,31 +11,30 @@ import {
   userReserves,
 } from './incentive.mocks';
 
-describe('calculateTotalUserIncentives', () => {
-  const totalUserIncentivesRequest: CalculateTotalUserIncentivesRequest = {
+describe('calculateAllUserIncentives', () => {
+  const allUserIncentivesRequest: CalculateAllUserIncentivesRequest = {
     reserveIncentives,
     userReserveIncentives,
     userReserves,
     currentTimestamp: 1631587561,
   };
 
-  it('should calculate the correct total incentives for mock user', () => {
-    const result = calculateTotalUserIncentives(totalUserIncentivesRequest);
+  it('should calculate the correct incentives for all reserves of mock user', () => {
+    const result = calculateAllUserIncentives(allUserIncentivesRequest);
     const claimable =
       result['0x0000000000000000000000000000000000000000'].claimableRewards;
     expect(normalize(claimable, 18)).toBe('0.08915763270718076481');
   });
 
-  const totalUserIncentivesMissingDataRequest: CalculateTotalUserIncentivesRequest =
-    {
-      reserveIncentives: reserveIncentivesMissingUSDC,
-      userReserveIncentives,
-      userReserves,
-      currentTimestamp: 1631587561,
-    };
+  const totalUserIncentivesMissingDataRequest: CalculateAllUserIncentivesRequest = {
+    reserveIncentives: reserveIncentivesMissingUSDC,
+    userReserveIncentives,
+    userReserves,
+    currentTimestamp: 1631587561,
+  };
 
-  it('should calculate the correct total incentives for mock user minus USDC', () => {
-    const result = calculateTotalUserIncentives(
+  it('should calculate the correct incentives for all reserves of mock user minus USDC', () => {
+    const result = calculateAllUserIncentives(
       totalUserIncentivesMissingDataRequest,
     );
     const claimable =
@@ -44,8 +43,8 @@ describe('calculateTotalUserIncentives', () => {
   });
 });
 
-describe('calculateTotalUserIncentives for multiple IncentiveControllers', () => {
-  const totalUserIncentivesRequest: CalculateTotalUserIncentivesRequest = {
+describe('calculateAllUserIncentives for multiple IncentiveControllers', () => {
+  const allUserIncentivesRequest: CalculateAllUserIncentivesRequest = {
     reserveIncentives,
     userReserveIncentives: [aUSDCUserIncentiveDataMultiController],
     userReserves,
@@ -53,7 +52,7 @@ describe('calculateTotalUserIncentives for multiple IncentiveControllers', () =>
   };
 
   it('should calculate incentives for isolated IncentiveControllers', () => {
-    const result = calculateTotalUserIncentives(totalUserIncentivesRequest);
+    const result = calculateAllUserIncentives(allUserIncentivesRequest);
     const claimableController1 =
       result['0x0000000000000000000000000000000000000001'].claimableRewards;
 

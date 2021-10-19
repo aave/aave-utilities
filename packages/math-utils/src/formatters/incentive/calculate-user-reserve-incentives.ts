@@ -1,15 +1,15 @@
 import BigNumber from 'bignumber.js';
+import {
+  ReserveIncentiveWithFeedsResponse,
+  UserReserveIncentiveDataHumanizedResponse,
+} from 'contract-helpers';
 import { rayDiv } from '../../ray.math';
 import { calculateAccruedIncentives } from './calculate-accrued-incentives';
-import {
-  ReserveIncentiveData,
-  UserReserveData,
-  UserReserveIncentiveData,
-} from './calculate-total-user-incentives';
+import { UserReserveData } from './calculate-all-user-incentives';
 
 export interface CalculateUserReserveIncentivesRequest {
-  reserveIncentives: ReserveIncentiveData; // token incentive data, from UiIncentiveDataProvider
-  userReserveIncentives: UserReserveIncentiveData; // user incentive data, from UiIncentiveDataProvider
+  reserveIncentives: ReserveIncentiveWithFeedsResponse; // token incentive data, from UiIncentiveDataProvider
+  userReserveIncentives: UserReserveIncentiveDataHumanizedResponse; // user incentive data, from UiIncentiveDataProvider
   currentTimestamp: number;
   userReserveData: UserReserveData;
 }

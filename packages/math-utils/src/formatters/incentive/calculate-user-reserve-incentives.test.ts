@@ -16,29 +16,26 @@ import {
 } from './incentive.mocks';
 
 describe('calculateUserReserveIncentives', () => {
-  const userETHReserveIncentiveRequest: CalculateUserReserveIncentivesRequest =
-    {
-      reserveIncentives: aETHReserveIncentiveData,
-      userReserveIncentives: aETHUserIncentiveData,
-      userReserveData: aETHReserve,
-      currentTimestamp: 1631587561,
-    };
+  const userETHReserveIncentiveRequest: CalculateUserReserveIncentivesRequest = {
+    reserveIncentives: aETHReserveIncentiveData,
+    userReserveIncentives: aETHUserIncentiveData,
+    userReserveData: aETHReserve,
+    currentTimestamp: 1631587561,
+  };
 
-  const userUSDCReserveIncentiveRequest: CalculateUserReserveIncentivesRequest =
-    {
-      reserveIncentives: aUSDCReserveIncentiveData,
-      userReserveIncentives: aUSDCUserIncentiveData,
-      userReserveData: aUSDCReserve,
-      currentTimestamp: 1631587561,
-    };
+  const userUSDCReserveIncentiveRequest: CalculateUserReserveIncentivesRequest = {
+    reserveIncentives: aUSDCReserveIncentiveData,
+    userReserveIncentives: aUSDCUserIncentiveData,
+    userReserveData: aUSDCReserve,
+    currentTimestamp: 1631587561,
+  };
 
-  const userXSUSHIReserveIncentiveRequest: CalculateUserReserveIncentivesRequest =
-    {
-      reserveIncentives: aXSUSHIReserveIncentiveData,
-      userReserveIncentives: aXSUSHIUserIncentiveData,
-      userReserveData: aXSUSHIReserve,
-      currentTimestamp: 1631587561,
-    };
+  const userXSUSHIReserveIncentiveRequest: CalculateUserReserveIncentivesRequest = {
+    reserveIncentives: aXSUSHIReserveIncentiveData,
+    userReserveIncentives: aXSUSHIUserIncentiveData,
+    userReserveData: aXSUSHIReserve,
+    currentTimestamp: 1631587561,
+  };
 
   it('should calculate the correct aWETH incentives', () => {
     const result = calculateUserReserveIncentives(
