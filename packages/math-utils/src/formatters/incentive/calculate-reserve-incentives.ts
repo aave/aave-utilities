@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { ReserveIncentiveWithFeedsResponse } from '@aave/contract-helpers';
 import { BigNumber } from 'bignumber.js';
 import { rayDiv } from '../../ray.math';

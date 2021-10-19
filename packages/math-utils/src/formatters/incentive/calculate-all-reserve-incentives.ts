@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { ReserveIncentiveWithFeedsResponse } from '@aave/contract-helpers';
 import { incentiveToReserveAddressMap } from '../../constants';
 import {
