@@ -68,15 +68,11 @@ export function calculateAllReserveIncentives({
     // Account for underlyingReserveAddress of network base assets not matching wrapped incentives
     let reserveUnderlyingAddress =
       reserveIncentive.underlyingAsset.toLowerCase();
-    console.log('incentive underlying');
-    console.log(reserveUnderlyingAddress);
     if (incentiveToReserveAddressMap[reserveUnderlyingAddress]) {
       reserveUnderlyingAddress =
         incentiveToReserveAddressMap[reserveUnderlyingAddress];
     }
 
-    console.log('new reserve');
-    console.log(reserveUnderlyingAddress);
     // Find the corresponding reserve data for each reserveIncentive
     const reserve: ReserveCalculationData | undefined = reserves.find(
       (reserve: ReserveCalculationData) =>
