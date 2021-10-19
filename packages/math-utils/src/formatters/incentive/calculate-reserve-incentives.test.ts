@@ -27,6 +27,9 @@ describe('calculateReserveIncentives', () => {
             '0x0000000000000000000000000000000000000000',
           rewardTokenDecimals: 18,
           precision: 18,
+          priceFeed: '',
+          priceFeedDecimals: 18,
+          priceFeedTimestamp: 1,
         },
         vIncentiveData: {
           emissionPerSecond: '22037037037037000',
@@ -39,6 +42,9 @@ describe('calculateReserveIncentives', () => {
             '0x0000000000000000000000000000000000000000',
           rewardTokenDecimals: 18,
           precision: 18,
+          priceFeed: '',
+          priceFeedDecimals: 18,
+          priceFeedTimestamp: 1,
         },
         sIncentiveData: {
           emissionPerSecond: '0',
@@ -51,6 +57,9 @@ describe('calculateReserveIncentives', () => {
             '0x0000000000000000000000000000000000000000',
           rewardTokenDecimals: 18,
           precision: 18,
+          priceFeed: '',
+          priceFeedDecimals: 18,
+          priceFeedTimestamp: 1,
         },
       };
 
@@ -100,6 +109,9 @@ describe('calculateReserveIncentives', () => {
             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
           rewardTokenDecimals: 18,
           precision: 18,
+          priceFeed: '',
+          priceFeedDecimals: 18,
+          priceFeedTimestamp: 1,
         },
         vIncentiveData: {
           emissionPerSecond: '4629629629629629',
@@ -112,6 +124,9 @@ describe('calculateReserveIncentives', () => {
             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
           rewardTokenDecimals: 18,
           precision: 18,
+          priceFeed: '',
+          priceFeedDecimals: 18,
+          priceFeedTimestamp: 1,
         },
         sIncentiveData: {
           emissionPerSecond: '0',
@@ -124,6 +139,9 @@ describe('calculateReserveIncentives', () => {
             '0x0000000000000000000000000000000000000000',
           rewardTokenDecimals: 0,
           precision: 0,
+          priceFeed: '',
+          priceFeedDecimals: 18,
+          priceFeedTimestamp: 1,
         },
       };
 
@@ -164,6 +182,9 @@ describe('calculateReserveIncentives', () => {
             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
           rewardTokenDecimals: 18,
           precision: 18,
+          priceFeed: '',
+          priceFeedDecimals: 18,
+          priceFeedTimestamp: 1,
         },
         vIncentiveData: {
           emissionPerSecond: '2314814814814814',
@@ -176,6 +197,9 @@ describe('calculateReserveIncentives', () => {
             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
           rewardTokenDecimals: 18,
           precision: 18,
+          priceFeed: '',
+          priceFeedDecimals: 18,
+          priceFeedTimestamp: 1,
         },
         sIncentiveData: {
           emissionPerSecond: '0',
@@ -188,6 +212,9 @@ describe('calculateReserveIncentives', () => {
             '0x0000000000000000000000000000000000000000',
           rewardTokenDecimals: 0,
           precision: 0,
+          priceFeed: '',
+          priceFeedDecimals: 18,
+          priceFeedTimestamp: 1,
         },
       };
       const result = calculateReserveIncentives({

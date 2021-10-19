@@ -5,13 +5,13 @@ import {
 import BigNumber from 'bignumber.js';
 import { rayDiv } from '../../ray.math';
 import { calculateAccruedIncentives } from './calculate-accrued-incentives';
-import { UserReserveData } from './calculate-all-user-incentives';
+import { UserReserveCalculationData } from './calculate-all-user-incentives';
 
 export interface CalculateUserReserveIncentivesRequest {
   reserveIncentives: ReserveIncentiveWithFeedsResponse; // token incentive data, from UiIncentiveDataProvider
   userReserveIncentives: UserReserveIncentiveDataHumanizedResponse; // user incentive data, from UiIncentiveDataProvider
   currentTimestamp: number;
-  userReserveData: UserReserveData;
+  userReserveData: UserReserveCalculationData;
 }
 
 export interface CalculateUserReserveIncentivesResponse {
