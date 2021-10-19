@@ -114,4 +114,27 @@ describe('calculateAllReserveIncentives', () => {
         .rewardTokenAddress,
     ).toBe('0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7');
   });
+
+  it('not add reserveIncentivesDict entry if no reserve is found', () => {
+    const result = calculateAllReserveIncentives({
+      reserveIncentives: aMATICReserveIncentiveData,
+      reserves: [],
+    });
+    expect(result['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee']).toBe(
+      undefined,
+    );
+  });
+
+  it('calculate correct incentives for reward asset not in incentive->reserve map', () => {
+    const incentivesModified = aMATICReserveIncentiveData;
+    incentivesModified[0].aIncentiveData.rewardTokenAddress = '0x0';
+    const result = calculateAllReserveIncentives({
+      reserveIncentives: incentivesModified,
+      reserves: maticReserveIncentives,
+    });
+    const aRewardTokenAddress =
+      result['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].aIncentives
+        .rewardTokenAddress;
+    expect(aRewardTokenAddress).toBe('0x0');
+  });
 });
