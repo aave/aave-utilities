@@ -1,11 +1,11 @@
-import { BigNumber } from 'bignumber.js';
 import {
   ReserveIncentiveWithFeedsResponse,
   UserReserveIncentiveDataHumanizedResponse,
-} from 'contract-helpers';
+} from '@aave/contract-helpers';
+import { BigNumber } from 'bignumber.js';
 import { calculateUserReserveIncentives } from './calculate-user-reserve-incentives';
 
-export interface UserReserveData {
+export interface UserReserveCalculationData {
   underlyingAsset: string;
   totalLiquidity: string;
   liquidityIndex: string;
@@ -29,7 +29,7 @@ interface UserIncentiveData {
 export interface CalculateAllUserIncentivesRequest {
   reserveIncentives: ReserveIncentiveWithFeedsResponse[]; // token incentive data, from UiIncentiveDataProvider
   userReserveIncentives: UserReserveIncentiveDataHumanizedResponse[]; // user incentive data, from UiIncentiveDataProvider
-  userReserves: UserReserveData[]; // deposit and borrow data for user assets
+  userReserves: UserReserveCalculationData[]; // deposit and borrow data for user assets
   currentTimestamp: number;
 }
 

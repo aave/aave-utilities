@@ -1,8 +1,8 @@
-import BigNumber from 'bignumber.js';
 import {
   ReserveIncentiveWithFeedsResponse,
   UserReserveIncentiveDataHumanizedResponse,
-} from 'contract-helpers';
+} from '@aave/contract-helpers';
+import BigNumber from 'bignumber.js';
 import { rayDiv } from '../../ray.math';
 import { calculateAccruedIncentives } from './calculate-accrued-incentives';
 import { UserReserveData } from './calculate-all-user-incentives';

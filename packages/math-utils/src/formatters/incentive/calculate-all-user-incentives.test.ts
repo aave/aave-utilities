@@ -26,12 +26,13 @@ describe('calculateAllUserIncentives', () => {
     expect(normalize(claimable, 18)).toBe('0.08915763270718076481');
   });
 
-  const totalUserIncentivesMissingDataRequest: CalculateAllUserIncentivesRequest = {
-    reserveIncentives: reserveIncentivesMissingUSDC,
-    userReserveIncentives,
-    userReserves,
-    currentTimestamp: 1631587561,
-  };
+  const totalUserIncentivesMissingDataRequest: CalculateAllUserIncentivesRequest =
+    {
+      reserveIncentives: reserveIncentivesMissingUSDC,
+      userReserveIncentives,
+      userReserves,
+      currentTimestamp: 1631587561,
+    };
 
   it('should calculate the correct incentives for all reserves of mock user minus USDC', () => {
     const result = calculateAllUserIncentives(

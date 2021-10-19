@@ -1,11 +1,11 @@
+import { ReserveIncentiveWithFeedsResponse } from '@aave/contract-helpers';
 import BigNumber from 'bignumber.js';
-import { ReserveIncentiveWithFeedsResponse } from 'contract-helpers';
 import {
   calculateReserveIncentives,
   CalculateReserveIncentivesResponse,
 } from './calculate-reserve-incentives';
 
-export interface ReserveData {
+export interface ReserveCalculationData {
   underlyingAsset: string;
   symbol: string;
   totalLiquidity: string;
@@ -33,13 +33,13 @@ interface ReserveIncentive {
 
 export interface CalculateAllReserveIncentivesRequest {
   reserveIncentives: ReserveIncentiveWithFeedsResponse[];
-  reserves: ReserveData[];
+  reserves: ReserveCalculationData[];
 }
 
 // Calculate incentive token price from reserves data or priceFeed from UiIncentiveDataProvider
 // eslint-disable-next-line max-params
 function calculateRewardTokenPrice(
-  reserves: ReserveData[],
+  reserves: ReserveCalculationData[],
   address: string,
   priceFeed: string,
   priceFeedDecimals: number,
@@ -103,8 +103,8 @@ export function calculateAllReserveIncentives({
         incentive.underlyingAsset.toLowerCase() === reserveUnderlyingAddress,
     );
     if (incentiveData) {
-      const calculatedReserveIncentives: CalculateReserveIncentivesResponse = calculateReserveIncentives(
-        {
+      const calculatedReserveIncentives: CalculateReserveIncentivesResponse =
+        calculateReserveIncentives({
           reserveIncentiveData: incentiveData,
           totalLiquidity: reserve.totalLiquidity,
           liquidityIndex: reserve.liquidityIndex,
@@ -134,8 +134,7 @@ export function calculateAllReserveIncentives({
             incentiveData.sIncentiveData.priceFeedDecimals,
             reserve.marketReferenceCurrencyDecimals,
           ),
-        },
-      );
+        });
       calculatedReserveIncentives.underlyingAsset = isBaseAsset
         ? '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
         : calculatedReserveIncentives.underlyingAsset; // ETH, MATIC, and AVAX all use reserve address of '0xee...'
