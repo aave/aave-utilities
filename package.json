@@ -7,7 +7,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "postinstall": "lerna bootstrap",
+    "postinstall": "lerna bootstrap && lerna link",
     "clean": "rimraf coverage && lerna run clean",
     "lint": "lerna run lint",
     "lint:fix": "lerna run lint -- --fix",
