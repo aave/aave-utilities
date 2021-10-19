@@ -98,10 +98,11 @@ export function calculateAllReserveIncentives({
     }
 
     // Find the corresponding incentive data for each reserve
-    const incentiveData = reserveIncentives.find(
-      incentive =>
-        incentive.underlyingAsset.toLowerCase() === reserveUnderlyingAddress,
-    );
+    const incentiveData: ReserveIncentiveWithFeedsResponse | undefined =
+      reserveIncentives.find(
+        (incentive: ReserveIncentiveWithFeedsResponse) =>
+          incentive.underlyingAsset.toLowerCase() === reserveUnderlyingAddress,
+      );
     if (incentiveData) {
       const calculatedReserveIncentives: CalculateReserveIncentivesResponse =
         calculateReserveIncentives({

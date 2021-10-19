@@ -1,3 +1,4 @@
+// For some reason eslint doesn't resolve type of reserveIncentiveData
 import { ReserveIncentiveWithFeedsResponse } from '@aave/contract-helpers';
 import { BigNumber } from 'bignumber.js';
 import { rayDiv } from '../../ray.math';

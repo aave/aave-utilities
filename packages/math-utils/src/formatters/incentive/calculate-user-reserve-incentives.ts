@@ -1,3 +1,4 @@
+// For some reason eslint doesn't resolve type of reserveIncentives
 import {
   ReserveIncentiveWithFeedsResponse,
   UserReserveIncentiveDataHumanizedResponse,

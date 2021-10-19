@@ -26,6 +26,15 @@ interface UserIncentiveData {
   assets: string[];
 }
 
+interface RewardCalculation {
+  tokenAddress: string;
+  incentiveController: string;
+  rewardTokenAddress: string;
+  rewardTokenDecimals: number;
+  accruedRewards: BigNumber;
+  unclaimedRewards: BigNumber;
+}
+
 export interface CalculateAllUserIncentivesRequest {
   reserveIncentives: ReserveIncentiveWithFeedsResponse[]; // token incentive data, from UiIncentiveDataProvider
   userReserveIncentives: UserReserveIncentiveDataHumanizedResponse[]; // user incentive data, from UiIncentiveDataProvider
@@ -41,15 +50,17 @@ export function calculateAllUserIncentives({
 }: CalculateAllUserIncentivesRequest): UserIncentiveDict {
   // calculate incentive per token
   const rewards = userReserveIncentives
-    .map(userReserveIncentive => {
-      const reserve = reserveIncentives.find(
-        reserve =>
-          reserve.underlyingAsset === userReserveIncentive.underlyingAsset,
-      );
-      const userReserve = userReserves.find(
-        reserve =>
-          reserve.underlyingAsset === userReserveIncentive.underlyingAsset,
-      );
+    .map((userReserveIncentive: UserReserveIncentiveDataHumanizedResponse) => {
+      const reserve: ReserveIncentiveWithFeedsResponse | undefined =
+        reserveIncentives.find(
+          (reserve: ReserveIncentiveWithFeedsResponse) =>
+            reserve.underlyingAsset === userReserveIncentive.underlyingAsset,
+        );
+      const userReserve: UserReserveCalculationData | undefined =
+        userReserves.find(
+          (reserve: UserReserveCalculationData) =>
+            reserve.underlyingAsset === userReserveIncentive.underlyingAsset,
+        );
       if (reserve && userReserve) {
         const rewards = calculateUserReserveIncentives({
           reserveIncentives: reserve,
@@ -112,23 +123,26 @@ export function calculateAllUserIncentives({
     .flat();
 
   // normalize incentives per controller
-  return rewards.reduce<UserIncentiveDict>((acc, reward) => {
-    if (!acc[reward.incentiveController]) {
-      acc[reward.incentiveController] = {
-        assets: [],
-        claimableRewards: reward.unclaimedRewards,
-        rewardTokenAddress: reward.rewardTokenAddress,
-        rewardTokenDecimals: reward.rewardTokenDecimals,
-      };
-    }
+  return rewards.reduce<UserIncentiveDict>(
+    (acc: UserIncentiveDict, reward: RewardCalculation) => {
+      if (!acc[reward.incentiveController]) {
+        acc[reward.incentiveController] = {
+          assets: [],
+          claimableRewards: reward.unclaimedRewards,
+          rewardTokenAddress: reward.rewardTokenAddress,
+          rewardTokenDecimals: reward.rewardTokenDecimals,
+        };
+      }
 
-    if (reward.accruedRewards.gt(0)) {
-      acc[reward.incentiveController].claimableRewards = acc[
-        reward.incentiveController
-      ].claimableRewards.plus(reward.accruedRewards);
-      acc[reward.incentiveController].assets.push(reward.tokenAddress);
-    }
+      if (reward.accruedRewards.gt(0)) {
+        acc[reward.incentiveController].claimableRewards = acc[
+          reward.incentiveController
+        ].claimableRewards.plus(reward.accruedRewards);
+        acc[reward.incentiveController].assets.push(reward.tokenAddress);
+      }
 
-    return acc;
-  }, {});
+      return acc;
+    },
+    {},
+  );
 }
