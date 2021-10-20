@@ -13,18 +13,13 @@ module.exports = {
   globals: {
     'ts-jest': {
       diagnostics: {
-        '//':
-          'https://github.com/kulshekhar/ts-jest/issues/748#issuecomment-423528659',
+        '//': 'https://github.com/kulshekhar/ts-jest/issues/748#issuecomment-423528659',
         ignoreCodes: [151001],
       },
     },
   },
   coveragePathIgnorePatterns: [
-    'packages/contract-helpers/src/permissions-manager/typechain',
-    'packages/contract-helpers/src/ui-incentive-data-provider/typechain',
-    'packages/contract-helpers/src/wallet-balance-provider/typechain',
-    'packages/contract-helpers/src/ui-pool-data-provider/typechain',
-    'packages/contract-helpers/src/cl-feed-registry/typechain',
+    'packages/contract-helpers/src/*/typechain',
     'packages/contract-helpers/src/index.ts',
   ],
   modulePathIgnorePatterns: ['node_modules'],
