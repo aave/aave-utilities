@@ -14,6 +14,7 @@ import {
   isPositiveOrMinusOneMetadataKey,
   optionalMetadataKey,
   paramsType,
+  isEthAddressArrayMetadataKeyNotEmpty,
 } from './paramValidators';
 
 export function optionalValidator(
@@ -102,8 +103,7 @@ export function isEthAddressArrayValidator(
           // !utils.isAddress(methodArguments[0][storedParams.field])
         ) {
           if (methodArguments[0][storedParams.field].length > 0) {
-            const fieldArray =
-              methodArguments[0][storedParams.field].split(',');
+            const fieldArray = methodArguments[0][storedParams.field];
             fieldArray.forEach((address: string) => {
               if (!utils.isAddress(address)) {
                 throw new Error(
@@ -121,7 +121,7 @@ export function isEthAddressArrayValidator(
           // !utils.isAddress(methodArguments[storedParams.index])
         ) {
           if (methodArguments[storedParams.index].length > 0) {
-            const fieldArray = methodArguments[storedParams.index].split(',');
+            const fieldArray = methodArguments[storedParams.index];
             fieldArray.forEach((address: string) => {
               if (!utils.isAddress(address)) {
                 throw new Error(
@@ -129,6 +129,63 @@ export function isEthAddressArrayValidator(
                 );
               }
             });
+          }
+        }
+      }
+    });
+  }
+}
+
+export function isEthAddressArrayValidatorNotEmpty(
+  target: any,
+  propertyName: string,
+  methodArguments: any,
+  isParamOptional?: boolean[],
+): void {
+  const addressParameters: paramsType[] = Reflect.getOwnMetadata(
+    isEthAddressArrayMetadataKeyNotEmpty,
+    target,
+    propertyName,
+  );
+
+  if (addressParameters) {
+    addressParameters.forEach(storedParams => {
+      if (storedParams.field) {
+        if (
+          methodArguments[0][storedParams.field]
+          // !utils.isAddress(methodArguments[0][storedParams.field])
+        ) {
+          if (methodArguments[0][storedParams.field].length > 0) {
+            const fieldArray = methodArguments[0][storedParams.field];
+            fieldArray.forEach((address: string) => {
+              if (!utils.isAddress(address)) {
+                throw new Error(
+                  `Address: ${address} is not a valid ethereum Address`,
+                );
+              }
+            });
+          } else {
+            throw new Error('Addresses Array should not be empty');
+          }
+        }
+      } else {
+        const isOptional = isParamOptional?.[storedParams.index];
+        if (
+          methodArguments[storedParams.index] &&
+          !isOptional
+          // !utils.isAddress(methodArguments[storedParams.index])
+        ) {
+          if (methodArguments[storedParams.index].length > 0) {
+            const fieldArray = methodArguments[storedParams.index];
+            fieldArray.forEach((address: string) => {
+              if (!utils.isAddress(address)) {
+                throw new Error(
+                  `Address: ${address} is not a valid ethereum Address`,
+                );
+              }
+            });
+          } else {
+            throw new Error('Addresses Array should not be empty');
           }
         }
       }

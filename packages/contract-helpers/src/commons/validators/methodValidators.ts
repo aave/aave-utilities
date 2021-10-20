@@ -8,6 +8,7 @@ import {
   amount0OrPositiveValidator,
   amountGtThan0OrMinus1,
   amountGtThan0Validator,
+  isEthAddressArrayValidatorNotEmpty,
   isEthAddressOrEnsValidator,
   isEthAddressValidator,
   optionalValidator,
@@ -167,7 +168,7 @@ export function IncentivesValidator(
   descriptor.value = function () {
     isEthAddressValidator(target, propertyName, arguments);
 
-    // isEthAddressArrayValidator(target, propertyName, arguments);
+    isEthAddressArrayValidatorNotEmpty(target, propertyName, arguments);
 
     return method?.apply(this, arguments);
   };

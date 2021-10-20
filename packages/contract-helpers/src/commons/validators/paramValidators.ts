@@ -10,6 +10,9 @@ export const isPositiveMetadataKey = Symbol('isPositive');
 export const isPositiveOrMinusOneMetadataKey = Symbol('isPositiveOrMinusOne');
 export const is0OrPositiveMetadataKey = Symbol('is0OrPositiveMetadataKey');
 export const optionalMetadataKey = Symbol('Optional');
+export const isEthAddressArrayMetadataKeyNotEmpty = Symbol(
+  'isEthAddressArrayMetadataKeyNotEmpty',
+);
 
 export type paramsType = {
   index: number;
@@ -47,8 +50,11 @@ export function isEthAddressArray(field?: string) {
     parameterIndex: number,
   ): void {
     const existingPossibleAddresses: paramsType[] =
-      Reflect.getOwnMetadata(isEthAddressMetadataKey, target, propertyKey) ||
-      [];
+      Reflect.getOwnMetadata(
+        isEthAddressArrayMetadataKey,
+        target,
+        propertyKey,
+      ) || [];
 
     existingPossibleAddresses.push({
       index: parameterIndex,
@@ -57,6 +63,33 @@ export function isEthAddressArray(field?: string) {
 
     Reflect.defineMetadata(
       isEthAddressArrayMetadataKey,
+      existingPossibleAddresses,
+      target,
+      propertyKey,
+    );
+  };
+}
+
+export function isNotEmptyEthAddressArray(field?: string) {
+  return function (
+    target: any,
+    propertyKey: string | symbol,
+    parameterIndex: number,
+  ): void {
+    const existingPossibleAddresses: paramsType[] =
+      Reflect.getOwnMetadata(
+        isEthAddressArrayMetadataKeyNotEmpty,
+        target,
+        propertyKey,
+      ) || [];
+
+    existingPossibleAddresses.push({
+      index: parameterIndex,
+      field,
+    });
+
+    Reflect.defineMetadata(
+      isEthAddressArrayMetadataKeyNotEmpty,
       existingPossibleAddresses,
       target,
       propertyKey,
