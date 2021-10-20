@@ -1,8 +1,8 @@
 import { Provider } from '@ethersproject/providers';
 import { BigNumber, Contract, PopulatedTransaction, Signer } from 'ethers';
+import BaseTxBuilder, { Context } from './BaseTxBuilder';
 import { estimateGasByNetwork, getGasPrice } from './gasStation';
 import {
-  Configuration,
   tEthereumAddress,
   TransactionGenerationMethod,
   transactionType,
@@ -17,25 +17,22 @@ export interface ContractsFactory {
   connect: (address: string, signerOrProvider: Signer | Provider) => Contract;
 }
 
-export default class BaseService<T extends Contract> {
+export default class BaseService<T extends Contract> extends BaseTxBuilder {
   readonly contractInstances: Record<string, T>;
 
   readonly contractFactory: ContractsFactory;
 
-  readonly config: Configuration;
-
-  constructor(config: Configuration, contractFactory: ContractsFactory) {
-    this.config = config;
+  constructor(context: Context, contractFactory: ContractsFactory) {
+    super(context);
     this.contractFactory = contractFactory;
     this.contractInstances = {};
   }
 
   public getContractInstance = (address: tEthereumAddress): T => {
     if (!this.contractInstances[address]) {
-      const { provider }: Configuration = this.config;
       this.contractInstances[address] = this.contractFactory.connect(
         address,
-        provider,
+        this.provider,
       ) as T;
     }
 
@@ -59,7 +56,12 @@ export default class BaseService<T extends Contract> {
         value: value ?? DEFAULT_NULL_VALUE_ON_TX,
       };
 
-      tx.gasLimit = await estimateGasByNetwork(tx, this.config, gasSurplus);
+      tx.gasLimit = await estimateGasByNetwork(
+        tx,
+        this.chainId,
+        this.provider,
+        gasSurplus,
+      );
 
       if (
         action &&
@@ -82,7 +84,7 @@ export default class BaseService<T extends Contract> {
     ): GasResponse =>
     async (force = false) => {
       try {
-        const gasPrice = await getGasPrice(this.config);
+        const gasPrice = await getGasPrice(this.provider);
         const hasPendingApprovals = txs.find(
           tx => tx.txType === eEthereumTxType.ERC20_APPROVAL,
         );

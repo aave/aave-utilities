@@ -1,8 +1,13 @@
 import { ethers, providers } from 'ethers';
-import { ChainId, DefaultProviderKeys, Network } from './types';
+import {
+  ChainId,
+  ChainIdToNetwork,
+  DefaultProviderKeys,
+  Network,
+} from './types';
 
 export type Context = {
-  network: Network;
+  chainId: ChainId;
   injectedProvider?: providers.Provider | string | undefined;
   defaultProviderKeys?: DefaultProviderKeys;
 };
@@ -12,14 +17,19 @@ export default class BaseTxBuilder {
 
   readonly provider: providers.Provider;
 
-  constructor({ network, injectedProvider, defaultProviderKeys }: Context) {
-    const chainId = ChainId[network];
+  readonly chainId: ChainId;
+
+  constructor({ chainId, injectedProvider, defaultProviderKeys }: Context) {
+    this.chainId = chainId;
 
     if (!injectedProvider) {
       if (defaultProviderKeys && Object.keys(defaultProviderKeys).length > 1) {
-        this.provider = ethers.getDefaultProvider(network, defaultProviderKeys);
+        this.provider = ethers.getDefaultProvider(
+          ChainIdToNetwork[chainId],
+          defaultProviderKeys,
+        );
       } else {
-        this.provider = ethers.getDefaultProvider(network);
+        this.provider = ethers.getDefaultProvider(ChainIdToNetwork[chainId]);
         console.log(
           `These API keys are a provided as a community resource by the backend services for low-traffic projects and for early prototyping.
           It is highly recommended to use own keys: https://docs.ethers.io/v5/api-keys/`,

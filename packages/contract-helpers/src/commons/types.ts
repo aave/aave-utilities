@@ -1,4 +1,4 @@
-import { providers, BigNumber, BytesLike, PopulatedTransaction } from 'ethers';
+import { BigNumber, BytesLike, PopulatedTransaction } from 'ethers';
 
 export type tEthereumAddress = string;
 export type tStringCurrencyUnits = string; // ex 2.5 eth
@@ -32,6 +32,21 @@ export enum Network {
   arbitrum_rinkeby = 'arbitrum_rinkeby',
 }
 
+export const ChainIdToNetwork: Record<number, string> = {
+  1: 'homestead', // 'mainnet'
+  3: 'ropsten',
+  42: 'kovan',
+  137: 'polygon',
+  1337: 'fork',
+  80001: 'mumbai',
+  1338: 'polygon_fork',
+  43114: 'avalanche',
+  1339: 'avalanche_fork',
+  43113: 'fuji',
+  42161: 'arbitrum_one',
+  421611: 'arbitrum_rinkeby',
+};
+
 export enum ChainId {
   mainnet = 1,
   ropsten = 3,
@@ -46,21 +61,17 @@ export enum ChainId {
   arbitrum_one = 42161,
   arbitrum_rinkeby = 421611,
 }
-export type ConstantAddressesByNetwork = {
-  [network: string]: {
+export type ConstantAddressesByNetwork = Record<
+  string,
+  {
     SYNTHETIX_PROXY_ADDRESS?: tEthereumAddress;
-  };
-};
+  }
+>;
 export type GovernanceConfig = {
   AAVE_GOVERNANCE_V2: tEthereumAddress;
   AAVE_GOVERNANCE_V2_EXECUTOR_SHORT: tEthereumAddress;
   AAVE_GOVERNANCE_V2_EXECUTOR_LONG: tEthereumAddress;
   AAVE_GOVERNANCE_V2_HELPER: tEthereumAddress;
-};
-
-export type IncentivesConfig = {
-  INCENTIVES_CONTROLLER: tEthereumAddress;
-  INCENTIVES_CONTROLLER_REWARD_TOKEN: tEthereumAddress;
 };
 
 export type MigratorConfig = {
@@ -76,11 +87,10 @@ export type LendingPoolMarketConfig = {
   FAUCET?: tEthereumAddress;
 };
 
-export type LendingPoolConfig = {
-  [network: string]: {
-    [market: string]: LendingPoolMarketConfig;
-  };
-};
+export type LendingPoolConfig = Record<
+  string,
+  Record<string, LendingPoolMarketConfig>
+>;
 
 export type StakingNetworkConfig = {
   TOKEN_STAKING: tEthereumAddress;
@@ -88,18 +98,14 @@ export type StakingNetworkConfig = {
   STAKING_HELPER?: tEthereumAddress;
 };
 
-export type StakingConfig = {
-  [network: string]: { [stake: string]: StakingNetworkConfig };
-};
+export type StakingConfig = Record<
+  string,
+  Record<string, StakingNetworkConfig>
+>;
 
 export type TxBuilderConfig = {
-  governance?: {
-    [network: string]: GovernanceConfig;
-  };
-  incentives?: {
-    [network: string]: IncentivesConfig;
-  };
-  migrator?: { [network: string]: MigratorConfig };
+  governance?: Record<string, GovernanceConfig>;
+  migrator?: Record<string, MigratorConfig>;
   lendingPool?: LendingPoolConfig;
   staking?: StakingConfig;
 };
@@ -139,12 +145,13 @@ export enum Stake {
   bpt = 'bpt',
 }
 
-export type GasRecommendationType = {
-  [action: string]: {
+export type GasRecommendationType = Record<
+  string,
+  {
     limit: string;
     recommended: string;
-  };
-};
+  }
+>;
 
 export type GeneratedTx = {
   tx: transactionType;
@@ -226,14 +233,7 @@ export type tdistinctStakingAddressesBetweenTokens = {
   canUsePermit: boolean;
 };
 
-export type ContractAddresses = {
-  [contractName: string]: tEthereumAddress;
-};
-
-export type Configuration = {
-  network: Network;
-  provider: providers.Provider;
-};
+export type ContractAddresses = Record<string, tEthereumAddress>;
 
 export type EthereumTransactionTypeExtended = {
   txType: eEthereumTxType;
@@ -273,32 +273,28 @@ export type DefaultProviderKeys = {
   alchemy?: string;
 };
 
-export type GovernanceConfigType = {
-  [network: string]: tDistinctGovernanceV2Addresses;
-};
-export type StakingConfigType = {
-  [sToken: string]: {
-    [network: string]: tdistinctStakingAddressesBetweenTokens;
-  };
-};
+export type GovernanceConfigType = Record<
+  string,
+  tDistinctGovernanceV2Addresses
+>;
+export type StakingConfigType = Record<
+  string,
+  Record<string, tdistinctStakingAddressesBetweenTokens>
+>;
 
-export type CommonConfigType = {
-  [network: string]: tCommonContractAddressBetweenMarkets;
-};
+export type CommonConfigType = Record<
+  string,
+  tCommonContractAddressBetweenMarkets
+>;
 
-export type LendingPoolConfigType = {
-  [pool: string]: {
-    [network: string]: tDistinctContractAddressBetweenMarketsV2;
-  };
-};
+export type LendingPoolConfigType = Record<
+  string,
+  Record<string, tDistinctContractAddressBetweenMarketsV2>
+>;
 
 export type EnabledNetworksType = {
-  staking: {
-    [sToken: string]: Network[];
-  };
-  lendingPool: {
-    [market: string]: Network[];
-  };
+  staking: Record<string, Network[]>;
+  lendingPool: Record<string, Network[]>;
   governance: Network[];
   wethGateway: Network[];
   faucet: Network[];

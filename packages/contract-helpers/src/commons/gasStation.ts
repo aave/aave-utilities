@@ -1,5 +1,5 @@
-import { BigNumber } from 'ethers';
-import { transactionType, Configuration, Network } from './types';
+import { BigNumber, providers } from 'ethers';
+import { transactionType, Configuration, Network, ChainId } from './types';
 
 const DEFAULT_SURPLUS = 30; // 30%
 // polygon gas estimation is very off for some reason
@@ -7,10 +7,10 @@ const POLYGON_SURPLUS = 60; // 60%
 
 export const estimateGas = async (
   tx: transactionType,
-  config: Configuration,
+  provider: providers.Provider,
   gasSurplus?: number,
 ): Promise<BigNumber> => {
-  const estimatedGas = await config.provider.estimateGas(tx);
+  const estimatedGas = await provider.estimateGas(tx);
   return estimatedGas.add(
     estimatedGas.mul(gasSurplus ?? DEFAULT_SURPLUS).div(100),
   );
@@ -18,13 +18,13 @@ export const estimateGas = async (
 
 export const estimateGasByNetwork = async (
   tx: transactionType,
-  config: Configuration,
+  chainId: ChainId,
+  provider: providers.Provider,
   gasSurplus?: number,
 ): Promise<BigNumber> => {
-  const estimatedGas = await config.provider.estimateGas(tx);
+  const estimatedGas = await provider.estimateGas(tx);
 
-  const { network } = config;
-  if (network === Network.polygon) {
+  if (chainId === ChainId.polygon) {
     return estimatedGas.add(estimatedGas.mul(POLYGON_SURPLUS).div(100));
   }
 
@@ -34,8 +34,8 @@ export const estimateGasByNetwork = async (
 };
 
 export const getGasPrice = async (
-  config: Configuration,
+  provider: providers.Provider,
 ): Promise<BigNumber> => {
-  const gasPrice = await config.provider.getGasPrice();
+  const gasPrice = await provider.getGasPrice();
   return gasPrice;
 };
