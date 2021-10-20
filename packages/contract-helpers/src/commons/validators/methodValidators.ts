@@ -165,18 +165,6 @@ export function IncentivesValidator(
 ): any {
   const method = descriptor.value;
   descriptor.value = function () {
-    const { INCENTIVES_CONTROLLER, INCENTIVES_CONTROLLER_REWARD_TOKEN } =
-      // @ts-expect-error todo: check why this ignore is neededs
-      this.incentivesConfig || {};
-
-    if (
-      !utils.isAddress(INCENTIVES_CONTROLLER_REWARD_TOKEN) ||
-      !utils.isAddress(INCENTIVES_CONTROLLER)
-    ) {
-      console.error(`[IncentivesValidator] You need to pass valid addresses`);
-      return [];
-    }
-
     isEthAddressValidator(target, propertyName, arguments);
 
     // isEthAddressArrayValidator(target, propertyName, arguments);

@@ -14,7 +14,7 @@ import { IAaveIncentivesController__factory } from './typechain/IAaveIncentivesC
 export type ClaimRewardsMethodType = {
   user: string;
   assets: string[];
-  to: string;
+  to?: string;
   incentivesControllerAddress: string;
 };
 
@@ -24,7 +24,7 @@ export interface IncentivesControllerInterface {
   ) => EthereumTransactionTypeExtended[];
 }
 
-export default class IncentivesController
+export class IncentivesController
   extends BaseService<IAaveIncentivesController>
   implements IncentivesControllerInterface
 {
@@ -46,7 +46,7 @@ export default class IncentivesController
         incentivesContract.populateTransaction.claimRewards(
           assets,
           constants.MaxUint256.toString(),
-          to || user,
+          to ?? user,
         ),
       from: user,
     });
