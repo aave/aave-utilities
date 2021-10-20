@@ -1,5 +1,5 @@
 import { BigNumber, providers } from 'ethers';
-import { transactionType, Configuration, Network, ChainId } from './types';
+import { transactionType, ChainId } from './types';
 
 const DEFAULT_SURPLUS = 30; // 30%
 // polygon gas estimation is very off for some reason
@@ -18,7 +18,7 @@ export const estimateGas = async (
 
 export const estimateGasByNetwork = async (
   tx: transactionType,
-  chainId: ChainId,
+  chainId: number,
   provider: providers.Provider,
   gasSurplus?: number,
 ): Promise<BigNumber> => {
