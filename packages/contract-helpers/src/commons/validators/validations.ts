@@ -53,6 +53,7 @@ export function isEthAddressValidator(
   );
 
   if (addressParameters) {
+    console.log('---> ', addressParameters);
     addressParameters.forEach(storedParams => {
       if (storedParams.field) {
         if (
@@ -67,11 +68,7 @@ export function isEthAddressValidator(
         }
       } else {
         const isOptional = isParamOptional?.[storedParams.index];
-        if (
-          methodArguments[storedParams.index] &&
-          !isOptional &&
-          !utils.isAddress(methodArguments[storedParams.index])
-        ) {
+        if (!isOptional) {
           throw new Error(
             `Address: ${
               methodArguments[storedParams.index]
@@ -151,10 +148,7 @@ export function isEthAddressArrayValidatorNotEmpty(
   if (addressParameters) {
     addressParameters.forEach(storedParams => {
       if (storedParams.field) {
-        if (
-          methodArguments[0][storedParams.field]
-          // !utils.isAddress(methodArguments[0][storedParams.field])
-        ) {
+        if (methodArguments[0][storedParams.field]) {
           if (methodArguments[0][storedParams.field].length > 0) {
             const fieldArray = methodArguments[0][storedParams.field];
             fieldArray.forEach((address: string) => {
@@ -170,23 +164,8 @@ export function isEthAddressArrayValidatorNotEmpty(
         }
       } else {
         const isOptional = isParamOptional?.[storedParams.index];
-        if (
-          methodArguments[storedParams.index] &&
-          !isOptional
-          // !utils.isAddress(methodArguments[storedParams.index])
-        ) {
-          if (methodArguments[storedParams.index].length > 0) {
-            const fieldArray = methodArguments[storedParams.index];
-            fieldArray.forEach((address: string) => {
-              if (!utils.isAddress(address)) {
-                throw new Error(
-                  `Address: ${address} is not a valid ethereum Address`,
-                );
-              }
-            });
-          } else {
-            throw new Error('Addresses Array should not be empty');
-          }
+        if (!isOptional) {
+          throw new Error('Addresses Array is not optional');
         }
       }
     });

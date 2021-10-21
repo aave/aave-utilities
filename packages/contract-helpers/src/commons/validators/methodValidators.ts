@@ -170,7 +170,7 @@ export function IncentivesValidator(
 
     isEthAddressArrayValidatorNotEmpty(target, propertyName, arguments);
 
-    return method?.apply(this, arguments);
+    return method.apply(this, arguments);
   };
 }
 
