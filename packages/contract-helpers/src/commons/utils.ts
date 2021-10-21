@@ -9,13 +9,23 @@ import {
 } from './types';
 
 export const parseNumber = (value: string, decimals: number): string => {
-  return new BigNumberJs(value)
-    .multipliedBy(new BigNumberJs(10).pow(decimals))
-    .toFixed(0);
+  return new BigNumberJs(value).shiftedBy(decimals).toFixed(0);
 };
 
 export const canBeEnsAddress = (ensAddress: string): boolean => {
   return ensAddress.toLowerCase().endsWith('.eth');
+};
+
+export const decimalsToCurrencyUnits = (
+  value: string,
+  decimals: number,
+): string => new BigNumberJs(value).shiftedBy(decimals * -1).toFixed();
+// .div(new BigNumberJs(10).pow(decimals)).toFixed();
+
+export const getTxValue = (reserve: string, amount: string): string => {
+  return reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()
+    ? amount
+    : DEFAULT_NULL_VALUE_ON_TX;
 };
 
 export const DEFAULT_NULL_VALUE_ON_TX = BigNumber.from(0).toHexString();
@@ -76,18 +86,6 @@ export const cosntantAddressesByNetwork: ConstantAddressesByNetwork = {
   [Network.mainnet]: {
     SYNTHETIX_PROXY_ADDRESS: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
   },
-};
-
-export const decimalsToCurrencyUnits = (
-  value: string,
-  decimals: number,
-): string =>
-  new BigNumberJs(value).div(new BigNumberJs(10).pow(decimals)).toFixed();
-
-export const getTxValue = (reserve: string, amount: string): string => {
-  return reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()
-    ? amount
-    : DEFAULT_NULL_VALUE_ON_TX;
 };
 
 export const mintAmountsPerToken: Record<string, tStringDecimalUnits> = {
