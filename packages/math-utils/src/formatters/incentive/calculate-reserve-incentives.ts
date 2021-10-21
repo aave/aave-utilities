@@ -1,5 +1,5 @@
-import { ReserveIncentiveWithFeedsResponse } from '@aave/contract-helpers';
 import { calculateIncentiveAPY } from './calculate-incentive-apy';
+import { ReserveIncentiveWithFeedsResponse } from './types';
 
 export interface CalculateReserveIncentivesRequest {
   reserveIncentiveData: ReserveIncentiveWithFeedsResponse;

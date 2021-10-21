@@ -1,4 +1,3 @@
-import { incentiveToReserveAddressMap } from '../../constants';
 import {
   calculateReserveIncentives,
   CalculateReserveIncentivesResponse,
@@ -35,8 +34,9 @@ function calculateRewardTokenPrice(
   priceFeed: string,
 ): string {
   address = address.toLowerCase();
-  if (incentiveToReserveAddressMap[address]) {
-    address = incentiveToReserveAddressMap[address];
+  // For stkAave incentives, use Aave price feed
+  if (address.toLowerCase() === '0x4da27a545c0c5b758a6ba100e3a049001de870f5') {
+    address = '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9';
   }
 
   const rewardReserve = reserves.find(
@@ -56,18 +56,11 @@ export function calculateAllReserveIncentives({
   const reserveDict: ReserveIncentiveDict = {};
   // calculate incentive per reserve token
   reserveIncentives.forEach(reserveIncentive => {
-    // Account for underlyingReserveAddress of network base assets not matching wrapped incentives
-    let reserveUnderlyingAddress =
-      reserveIncentive.underlyingAsset.toLowerCase();
-    if (incentiveToReserveAddressMap[reserveUnderlyingAddress]) {
-      reserveUnderlyingAddress =
-        incentiveToReserveAddressMap[reserveUnderlyingAddress];
-    }
-
     // Find the corresponding reserve data for each reserveIncentive
     const reserve: ReserveCalculationData | undefined = reserves.find(
       (reserve: ReserveCalculationData) =>
-        reserve.underlyingAsset.toLowerCase() === reserveUnderlyingAddress,
+        reserve.underlyingAsset.toLowerCase() ===
+        reserveIncentive.underlyingAsset.toLowerCase(),
     );
     if (reserve) {
       const calculatedReserveIncentives: CalculateReserveIncentivesResponse =
@@ -95,7 +88,6 @@ export function calculateAllReserveIncentives({
             reserveIncentive.sIncentiveData.priceFeed,
           ),
         });
-      calculatedReserveIncentives.underlyingAsset = reserveUnderlyingAddress;
       reserveDict[calculatedReserveIncentives.underlyingAsset] = {
         aIncentives: calculatedReserveIncentives.aIncentivesData,
         vIncentives: calculatedReserveIncentives.vIncentivesData,

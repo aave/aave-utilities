@@ -12,15 +12,15 @@ describe('calculateAllReserveIncentives', () => {
       reserves: allIncentivesReservesWithRewardReserve,
     });
     expect(
-      result['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].aIncentives
+      result['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'].aIncentives
         .incentiveAPY,
     ).toBe('0.00244612257400076464');
     expect(
-      result['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].vIncentives
+      result['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'].vIncentives
         .incentiveAPY,
     ).toBe('0.00315794307743075208');
     expect(
-      result['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].sIncentives
+      result['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'].sIncentives
         .incentiveAPY,
     ).toBe('0');
     expect(
@@ -55,15 +55,15 @@ describe('calculateAllReserveIncentives', () => {
       reserves: allIncentivesReserves,
     });
     expect(
-      result['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].aIncentives
+      result['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'].aIncentives
         .incentiveAPY,
     ).toBe('0.00244612257400076464');
     expect(
-      result['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].vIncentives
+      result['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'].vIncentives
         .incentiveAPY,
     ).toBe('0.00315794307743075208');
     expect(
-      result['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].sIncentives
+      result['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'].sIncentives
         .incentiveAPY,
     ).toBe('0');
     expect(
@@ -97,7 +97,7 @@ describe('calculateAllReserveIncentives', () => {
       reserveIncentives,
       reserves: [],
     });
-    expect(result['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee']).toBe(
+    expect(result['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2']).toBe(
       undefined,
     );
   });

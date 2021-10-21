@@ -1,13 +1,11 @@
 // Reserve Incentives
 
 import {
-  ReserveIncentiveWithFeedsResponse,
-  UserReserveIncentiveDataHumanizedResponse,
-} from '@aave/contract-helpers';
-import {
   ReserveCalculationData,
+  ReserveIncentiveWithFeedsResponse,
   UserReserveCalculationData,
-} from 'math-utils/src';
+  UserReserveIncentiveDataHumanizedResponse,
+} from './types';
 
 export const aETHReserveIncentiveData: ReserveIncentiveWithFeedsResponse = {
   underlyingAsset: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -137,7 +135,7 @@ export const aXSUSHIReserveIncentiveData: ReserveIncentiveWithFeedsResponse = {
     tokenIncentivesIndex: '0',
     emissionEndTimestamp: 1637573428,
     tokenAddress: '0x000000000000000000000000000000000000000s',
-    rewardTokenAddress: '0x4da27a545c0c5b758a6ba100e3a049001de870f5',
+    rewardTokenAddress: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
     incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
     rewardTokenDecimals: 18,
     precision: 18,
@@ -146,54 +144,6 @@ export const aXSUSHIReserveIncentiveData: ReserveIncentiveWithFeedsResponse = {
     priceFeedDecimals: 8,
   },
 };
-
-// MATIC and AVAX reserve incentive tests are separate because only 1 asset can have '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' reserve address per network
-const maticIncentives = {
-  emissionPerSecond: '173611111111111',
-  incentivesLastUpdateTimestamp: 1631586256,
-  tokenIncentivesIndex: '23156815865521',
-  emissionEndTimestamp: 1637573428,
-  tokenAddress: '0x000000000000000000000000000000000000000a',
-  rewardTokenAddress: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
-  incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
-  rewardTokenDecimals: 18,
-  precision: 18,
-  priceFeed: '78530386771994300',
-  priceFeedTimestamp: 1000000000,
-  priceFeedDecimals: 8,
-};
-
-export const aMATICReserveIncentiveData: ReserveIncentiveWithFeedsResponse[] = [
-  {
-    underlyingAsset: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
-    aIncentiveData: maticIncentives,
-    vIncentiveData: maticIncentives,
-    sIncentiveData: maticIncentives,
-  },
-];
-
-const avaxIncentives = {
-  emissionPerSecond: '173611111111111',
-  incentivesLastUpdateTimestamp: 1631586256,
-  tokenIncentivesIndex: '23156815865521',
-  emissionEndTimestamp: 1637573428,
-  tokenAddress: '0x000000000000000000000000000000000000000a',
-  rewardTokenAddress: '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7',
-  incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
-  rewardTokenDecimals: 18,
-  precision: 18,
-  priceFeed: '78530386771994300',
-  priceFeedTimestamp: 1000000000,
-  priceFeedDecimals: 8,
-};
-export const aAVAXReserveIncentiveData: ReserveIncentiveWithFeedsResponse[] = [
-  {
-    underlyingAsset: '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7',
-    aIncentiveData: avaxIncentives,
-    vIncentiveData: avaxIncentives,
-    sIncentiveData: avaxIncentives,
-  },
-];
 
 // User Incentives
 
@@ -367,7 +317,7 @@ export const userReserves: UserReserveCalculationData[] = [
 
 export const allIncentivesReserves: ReserveCalculationData[] = [
   {
-    underlyingAsset: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    underlyingAsset: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
     symbol: 'ETH',
     totalLiquidity: '2003772886310189627431436',
     totalVariableDebt: '81689984341288838884434',
@@ -410,31 +360,5 @@ const aaveReserve: ReserveCalculationData = {
   decimals: 18,
 };
 
-const maticReserve: ReserveCalculationData = {
-  underlyingAsset: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-  symbol: 'MATIC',
-  totalLiquidity: '0',
-  totalVariableDebt: '0',
-  totalStableDebt: '0',
-  priceInMarketReferenceCurrency: '399997866678044',
-  decimals: 18,
-  marketReferenceCurrencyDecimals: 18,
-};
-
-const avaxReserve: ReserveCalculationData = {
-  underlyingAsset: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-  symbol: 'AVAX',
-  totalLiquidity: '0',
-  totalVariableDebt: '0',
-  totalStableDebt: '0',
-  priceInMarketReferenceCurrency: '5522081986',
-  decimals: 18,
-  marketReferenceCurrencyDecimals: 8,
-};
-
 export const allIncentivesReservesWithRewardReserve: ReserveCalculationData[] =
   [...allIncentivesReserves, aaveReserve];
-
-// These must be separate test case because only one reserve can use base asset address (0xeee...) at a time
-export const maticReserveIncentives: ReserveCalculationData[] = [maticReserve];
-export const avaxReserveIncentives: ReserveCalculationData[] = [avaxReserve];
