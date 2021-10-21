@@ -119,56 +119,50 @@ describe('IncentiveController', () => {
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
     });
-    it('Expects to not get claimReward tx with wrong params: user', async () => {
+    it('Expects to not get claimReward tx with wrong params: user', () => {
       const user = 'asdf';
-      try {
+      expect(() =>
         incentivesInstance.claimRewards({
           user,
           assets,
           to,
           incentivesControllerAddress,
-        });
-      } catch (error: unknown) {
-        expect(error).toEqual(
-          new Error(`Address: ${user} is not a valid ethereum Address`),
-        );
-      }
+        }),
+      ).toThrowError(
+        new Error(`Address: ${user} is not a valid ethereum Address`),
+      );
     });
-    it('Expects to not get claimReward tx with wrong params: incentivesControllerAddress', async () => {
+    it('Expects to not get claimReward tx with wrong params: incentivesControllerAddress', () => {
       const incentivesControllerAddress = 'asdf';
-      try {
+      expect(() =>
         incentivesInstance.claimRewards({
           user,
           assets,
           to,
           incentivesControllerAddress,
-        });
-      } catch (error: unknown) {
-        expect(error).toEqual(
-          new Error(
-            `Address: ${incentivesControllerAddress} is not a valid ethereum Address`,
-          ),
-        );
-      }
+        }),
+      ).toThrowError(
+        new Error(
+          `Address: ${incentivesControllerAddress} is not a valid ethereum Address`,
+        ),
+      );
     });
 
-    it('Expects to not get claimReward tx with wrong params: to', async () => {
+    it('Expects to not get claimReward tx with wrong params: to', () => {
       const to = 'asdf';
-      try {
+      expect(() =>
         incentivesInstance.claimRewards({
           user,
           assets,
           to,
           incentivesControllerAddress,
-        });
-      } catch (error: unknown) {
-        expect(error).toEqual(
-          new Error(`Address: ${to} is not a valid ethereum Address`),
-        );
-      }
+        }),
+      ).toThrowError(
+        new Error(`Address: ${to} is not a valid ethereum Address`),
+      );
     });
 
-    it('Expects to not get claimReward tx with wrong params: assets', async () => {
+    it('Expects to not get claimReward tx with wrong params: assets', () => {
       const assets = ['asdfasdf', '0x0000000000000000000000000000000000000003'];
       expect(() =>
         incentivesInstance.claimRewards({
@@ -181,7 +175,7 @@ describe('IncentiveController', () => {
         new Error(`Address: ${assets[0]} is not a valid ethereum Address`),
       );
     });
-    it('Expects to not get claimReward tx with wrong params: empty assets', async () => {
+    it('Expects to not get claimReward tx with wrong params: empty assets', () => {
       const assets: string[] = [];
       expect(() =>
         incentivesInstance.claimRewards({
