@@ -56,9 +56,8 @@ export interface ReserveCalculationData {
   underlyingAsset: string;
   symbol: string;
   totalLiquidity: string;
-  liquidityIndex: string;
-  totalScaledVariableDebt: string;
-  totalPrincipalStableDebt: string;
+  totalVariableDebt: string;
+  totalStableDebt: string;
   priceInMarketReferenceCurrency: string;
   marketReferenceCurrencyDecimals: number;
   decimals: number;

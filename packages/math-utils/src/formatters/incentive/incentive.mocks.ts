@@ -1,11 +1,13 @@
+// Reserve Incentives
+
 import {
   ReserveIncentiveWithFeedsResponse,
   UserReserveIncentiveDataHumanizedResponse,
+} from '@aave/contract-helpers';
+import {
   ReserveCalculationData,
   UserReserveCalculationData,
-} from './types';
-
-// Reserve Incentives
+} from 'math-utils/src';
 
 export const aETHReserveIncentiveData: ReserveIncentiveWithFeedsResponse = {
   underlyingAsset: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -368,9 +370,8 @@ export const allIncentivesReserves: ReserveCalculationData[] = [
     underlyingAsset: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
     symbol: 'ETH',
     totalLiquidity: '2003772886310189627431436',
-    liquidityIndex: '1007431539067282236768346040',
-    totalScaledVariableDebt: '81689984341288838884434',
-    totalPrincipalStableDebt: '681322787738991248642',
+    totalVariableDebt: '81689984341288838884434',
+    totalStableDebt: '681322787738991248642',
     priceInMarketReferenceCurrency: '1000000000000000000',
     marketReferenceCurrencyDecimals: 18,
     decimals: 18,
@@ -379,9 +380,8 @@ export const allIncentivesReserves: ReserveCalculationData[] = [
     underlyingAsset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     symbol: 'USDC',
     totalLiquidity: '1037303607422151',
-    liquidityIndex: '1016944509782990800790457707',
-    totalScaledVariableDebt: '905362631532314',
-    totalPrincipalStableDebt: '0',
+    totalVariableDebt: '905362631532314',
+    totalStableDebt: '0',
     priceInMarketReferenceCurrency: '267145370000000',
     marketReferenceCurrencyDecimals: 18,
     decimals: 6,
@@ -390,9 +390,8 @@ export const allIncentivesReserves: ReserveCalculationData[] = [
     underlyingAsset: '0x8798249c2e607446efb7ad49ec89dd1865ff4272',
     symbol: 'XSUSHI',
     totalLiquidity: '13051166036525999213246575',
-    liquidityIndex: '1000133668402084314111784727',
-    totalScaledVariableDebt: '404110132365797056457861',
-    totalPrincipalStableDebt: '0',
+    totalVariableDebt: '404110132365797056457861',
+    totalStableDebt: '0',
     priceInMarketReferenceCurrency: '3441563382242556',
     marketReferenceCurrencyDecimals: 18,
     decimals: 18,
@@ -404,9 +403,8 @@ const aaveReserve: ReserveCalculationData = {
   underlyingAsset: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
   symbol: 'AAVE',
   totalLiquidity: '0',
-  liquidityIndex: '0',
-  totalScaledVariableDebt: '0',
-  totalPrincipalStableDebt: '0',
+  totalVariableDebt: '0',
+  totalStableDebt: '0',
   priceInMarketReferenceCurrency: '78530386771994300',
   marketReferenceCurrencyDecimals: 18,
   decimals: 18,
@@ -416,9 +414,8 @@ const maticReserve: ReserveCalculationData = {
   underlyingAsset: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
   symbol: 'MATIC',
   totalLiquidity: '0',
-  liquidityIndex: '0',
-  totalScaledVariableDebt: '0',
-  totalPrincipalStableDebt: '0',
+  totalVariableDebt: '0',
+  totalStableDebt: '0',
   priceInMarketReferenceCurrency: '399997866678044',
   decimals: 18,
   marketReferenceCurrencyDecimals: 18,
@@ -428,9 +425,8 @@ const avaxReserve: ReserveCalculationData = {
   underlyingAsset: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
   symbol: 'AVAX',
   totalLiquidity: '0',
-  liquidityIndex: '0',
-  totalScaledVariableDebt: '0',
-  totalPrincipalStableDebt: '0',
+  totalVariableDebt: '0',
+  totalStableDebt: '0',
   priceInMarketReferenceCurrency: '5522081986',
   decimals: 18,
   marketReferenceCurrencyDecimals: 8,

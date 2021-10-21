@@ -2,11 +2,7 @@ import { calculateAllReserveIncentives } from './calculate-all-reserve-incentive
 import {
   reserveIncentives,
   allIncentivesReservesWithRewardReserve,
-  maticReserveIncentives,
-  avaxReserveIncentives,
   allIncentivesReserves,
-  aMATICReserveIncentiveData,
-  aAVAXReserveIncentiveData,
 } from './incentive.mocks';
 
 describe('calculateAllReserveIncentives', () => {
@@ -18,7 +14,7 @@ describe('calculateAllReserveIncentives', () => {
     expect(
       result['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].aIncentives
         .incentiveAPY,
-    ).toBe('0.00246430102947281231');
+    ).toBe('0.00244612257400076464');
     expect(
       result['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].vIncentives
         .incentiveAPY,
@@ -30,7 +26,7 @@ describe('calculateAllReserveIncentives', () => {
     expect(
       result['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'].aIncentives
         .incentiveAPY,
-    ).toBe('0.0420759866182279689');
+    ).toBe('0.04137490906677563954');
     expect(
       result['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'].vIncentives
         .incentiveAPY,
@@ -42,7 +38,7 @@ describe('calculateAllReserveIncentives', () => {
     expect(
       result['0x8798249c2e607446efb7ad49ec89dd1865ff4272'].aIncentives
         .incentiveAPY,
-    ).toBe('0.00957358991380907344');
+    ).toBe('0.00957231039837386774');
     expect(
       result['0x8798249c2e607446efb7ad49ec89dd1865ff4272'].vIncentives
         .incentiveAPY,
@@ -61,7 +57,7 @@ describe('calculateAllReserveIncentives', () => {
     expect(
       result['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].aIncentives
         .incentiveAPY,
-    ).toBe('0.00246430102947281231');
+    ).toBe('0.00244612257400076464');
     expect(
       result['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].vIncentives
         .incentiveAPY,
@@ -73,7 +69,7 @@ describe('calculateAllReserveIncentives', () => {
     expect(
       result['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'].aIncentives
         .incentiveAPY,
-    ).toBe('0.0420759866182279689');
+    ).toBe('0.04137490906677563954');
     expect(
       result['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'].vIncentives
         .incentiveAPY,
@@ -85,7 +81,7 @@ describe('calculateAllReserveIncentives', () => {
     expect(
       result['0x8798249c2e607446efb7ad49ec89dd1865ff4272'].aIncentives
         .incentiveAPY,
-    ).toBe('0.00957358991380907344');
+    ).toBe('0.00957231039837386774');
     expect(
       result['0x8798249c2e607446efb7ad49ec89dd1865ff4272'].vIncentives
         .incentiveAPY,
@@ -96,45 +92,13 @@ describe('calculateAllReserveIncentives', () => {
     ).toBe('0');
   });
 
-  it('calculates correct underlyingAsset and rewardTokenAddress for base assets', () => {
-    const maticResult = calculateAllReserveIncentives({
-      reserveIncentives: aMATICReserveIncentiveData,
-      reserves: maticReserveIncentives,
-    });
-    const avaxResult = calculateAllReserveIncentives({
-      reserveIncentives: aAVAXReserveIncentiveData,
-      reserves: avaxReserveIncentives,
-    });
-    expect(
-      maticResult['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].aIncentives
-        .rewardTokenAddress,
-    ).toBe('0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270');
-    expect(
-      avaxResult['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].aIncentives
-        .rewardTokenAddress,
-    ).toBe('0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7');
-  });
-
   it('not add reserveIncentivesDict entry if no reserve is found', () => {
     const result = calculateAllReserveIncentives({
-      reserveIncentives: aMATICReserveIncentiveData,
+      reserveIncentives,
       reserves: [],
     });
     expect(result['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee']).toBe(
       undefined,
     );
-  });
-
-  it('calculate correct incentives for reward asset not in incentive->reserve map', () => {
-    const incentivesModified = aMATICReserveIncentiveData;
-    incentivesModified[0].aIncentiveData.rewardTokenAddress = '0x0';
-    const result = calculateAllReserveIncentives({
-      reserveIncentives: incentivesModified,
-      reserves: maticReserveIncentives,
-    });
-    const aRewardTokenAddress =
-      result['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].aIncentives
-        .rewardTokenAddress;
-    expect(aRewardTokenAddress).toBe('0x0');
   });
 });
