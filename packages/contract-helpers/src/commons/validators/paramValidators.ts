@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import 'reflect-metadata';
 
@@ -43,32 +43,32 @@ export function isEthAddress(field?: string) {
   };
 }
 
-export function isEthAddressArray(field?: string) {
-  return function (
-    target: any,
-    propertyKey: string | symbol,
-    parameterIndex: number,
-  ): void {
-    const existingPossibleAddresses: paramsType[] =
-      Reflect.getOwnMetadata(
-        isEthAddressArrayMetadataKey,
-        target,
-        propertyKey,
-      ) || [];
+// export function isEthAddressArray(field?: string) {
+//   return function (
+//     target: any,
+//     propertyKey: string | symbol,
+//     parameterIndex: number,
+//   ): void {
+//     const existingPossibleAddresses: paramsType[] =
+//       Reflect.getOwnMetadata(
+//         isEthAddressArrayMetadataKey,
+//         target,
+//         propertyKey,
+//       ) || [];
 
-    existingPossibleAddresses.push({
-      index: parameterIndex,
-      field,
-    });
+//     existingPossibleAddresses.push({
+//       index: parameterIndex,
+//       field,
+//     });
 
-    Reflect.defineMetadata(
-      isEthAddressArrayMetadataKey,
-      existingPossibleAddresses,
-      target,
-      propertyKey,
-    );
-  };
-}
+//     Reflect.defineMetadata(
+//       isEthAddressArrayMetadataKey,
+//       existingPossibleAddresses,
+//       target,
+//       propertyKey,
+//     );
+//   };
+// }
 
 export function isNotEmptyEthAddressArray(field?: string) {
   return function (
@@ -97,105 +97,105 @@ export function isNotEmptyEthAddressArray(field?: string) {
   };
 }
 
-export function isEthAddressOrENS(field?: string) {
-  return function (
-    target: any,
-    propertyKey: string | symbol,
-    parameterIndex: number,
-  ): void {
-    const existingPossibleAddresses: paramsType[] =
-      Reflect.getOwnMetadata(
-        isEthAddressOrENSMetadataKey,
-        target,
-        propertyKey,
-      ) || [];
+// export function isEthAddressOrENS(field?: string) {
+//   return function (
+//     target: any,
+//     propertyKey: string | symbol,
+//     parameterIndex: number,
+//   ): void {
+//     const existingPossibleAddresses: paramsType[] =
+//       Reflect.getOwnMetadata(
+//         isEthAddressOrENSMetadataKey,
+//         target,
+//         propertyKey,
+//       ) || [];
 
-    existingPossibleAddresses.push({
-      index: parameterIndex,
-      field,
-    });
+//     existingPossibleAddresses.push({
+//       index: parameterIndex,
+//       field,
+//     });
 
-    Reflect.defineMetadata(
-      isEthAddressOrENSMetadataKey,
-      existingPossibleAddresses,
-      target,
-      propertyKey,
-    );
-  };
-}
+//     Reflect.defineMetadata(
+//       isEthAddressOrENSMetadataKey,
+//       existingPossibleAddresses,
+//       target,
+//       propertyKey,
+//     );
+//   };
+// }
 
-export function isPositiveAmount(field?: string) {
-  return function (
-    target: any,
-    propertyKey: string | symbol,
-    parameterIndex: number,
-  ): void {
-    const params: paramsType[] =
-      Reflect.getOwnMetadata(isPositiveMetadataKey, target, propertyKey) || [];
+// export function isPositiveAmount(field?: string) {
+//   return function (
+//     target: any,
+//     propertyKey: string | symbol,
+//     parameterIndex: number,
+//   ): void {
+//     const params: paramsType[] =
+//       Reflect.getOwnMetadata(isPositiveMetadataKey, target, propertyKey) || [];
 
-    params.push({ index: parameterIndex, field });
+//     params.push({ index: parameterIndex, field });
 
-    Reflect.defineMetadata(isPositiveMetadataKey, params, target, propertyKey);
-  };
-}
+//     Reflect.defineMetadata(isPositiveMetadataKey, params, target, propertyKey);
+//   };
+// }
 
-export function is0OrPositiveAmount(field?: string) {
-  return function (
-    target: any,
-    propertyKey: string | symbol,
-    parameterIndex: number,
-  ): void {
-    const params: paramsType[] =
-      Reflect.getOwnMetadata(is0OrPositiveMetadataKey, target, propertyKey) ||
-      [];
+// export function is0OrPositiveAmount(field?: string) {
+//   return function (
+//     target: any,
+//     propertyKey: string | symbol,
+//     parameterIndex: number,
+//   ): void {
+//     const params: paramsType[] =
+//       Reflect.getOwnMetadata(is0OrPositiveMetadataKey, target, propertyKey) ||
+//       [];
 
-    params.push({ index: parameterIndex, field });
+//     params.push({ index: parameterIndex, field });
 
-    Reflect.defineMetadata(
-      is0OrPositiveMetadataKey,
-      params,
-      target,
-      propertyKey,
-    );
-  };
-}
+//     Reflect.defineMetadata(
+//       is0OrPositiveMetadataKey,
+//       params,
+//       target,
+//       propertyKey,
+//     );
+//   };
+// }
 
-export function isPositiveOrMinusOneAmount(field?: string) {
-  return function (
-    target: any,
-    propertyKey: string | symbol,
-    parameterIndex: number,
-  ): void {
-    const params: paramsType[] =
-      Reflect.getOwnMetadata(
-        isPositiveOrMinusOneMetadataKey,
-        target,
-        propertyKey,
-      ) || [];
+// export function isPositiveOrMinusOneAmount(field?: string) {
+//   return function (
+//     target: any,
+//     propertyKey: string | symbol,
+//     parameterIndex: number,
+//   ): void {
+//     const params: paramsType[] =
+//       Reflect.getOwnMetadata(
+//         isPositiveOrMinusOneMetadataKey,
+//         target,
+//         propertyKey,
+//       ) || [];
 
-    params.push({ index: parameterIndex, field });
+//     params.push({ index: parameterIndex, field });
 
-    Reflect.defineMetadata(
-      isPositiveOrMinusOneMetadataKey,
-      params,
-      target,
-      propertyKey,
-    );
-  };
-}
+//     Reflect.defineMetadata(
+//       isPositiveOrMinusOneMetadataKey,
+//       params,
+//       target,
+//       propertyKey,
+//     );
+//   };
+// }
 
-export function optional(
-  target: any,
-  propertyKey: string | symbol,
-  parameterIndex: number,
-): void {
-  const existingOptionalParameters =
-    Reflect.getOwnMetadata(optionalMetadataKey, target, propertyKey) || [];
-  existingOptionalParameters.push(parameterIndex);
-  Reflect.defineMetadata(
-    optionalMetadataKey,
-    existingOptionalParameters,
-    target,
-    propertyKey,
-  );
-}
+// export function optional(
+//   target: any,
+//   propertyKey: string | symbol,
+//   parameterIndex: number,
+// ): void {
+//   const existingOptionalParameters =
+//     Reflect.getOwnMetadata(optionalMetadataKey, target, propertyKey) || [];
+//   existingOptionalParameters.push(parameterIndex);
+//   Reflect.defineMetadata(
+//     optionalMetadataKey,
+//     existingOptionalParameters,
+//     target,
+//     propertyKey,
+//   );
+// }

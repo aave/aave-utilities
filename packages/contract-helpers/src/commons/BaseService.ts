@@ -1,7 +1,12 @@
 import { Provider } from '@ethersproject/providers';
-import { BigNumber, Contract, PopulatedTransaction, Signer } from 'ethers';
-import BaseTxBuilder, { Context } from './BaseTxBuilder';
-import { estimateGasByNetwork, getGasPrice } from './gasStation';
+import {
+  BigNumber,
+  Contract,
+  PopulatedTransaction,
+  providers,
+  Signer,
+} from 'ethers';
+import { estimateGasByNetwork } from './gasStation';
 import {
   tEthereumAddress,
   TransactionGenerationMethod,
@@ -17,14 +22,16 @@ export interface ContractsFactory {
   connect: (address: string, signerOrProvider: Signer | Provider) => Contract;
 }
 
-export default class BaseService<T extends Contract> extends BaseTxBuilder {
+export default class BaseService<T extends Contract> {
   readonly contractInstances: Record<string, T>;
 
   readonly contractFactory: ContractsFactory;
 
-  constructor(context: Context, contractFactory: ContractsFactory) {
-    super(context);
+  readonly provider: providers.Provider;
+
+  constructor(provider: providers.Provider, contractFactory: ContractsFactory) {
     this.contractFactory = contractFactory;
+    this.provider = provider;
     this.contractInstances = {};
   }
 
@@ -56,12 +63,7 @@ export default class BaseService<T extends Contract> extends BaseTxBuilder {
         value: value ?? DEFAULT_NULL_VALUE_ON_TX,
       };
 
-      tx.gasLimit = await estimateGasByNetwork(
-        tx,
-        this.chainId,
-        this.provider,
-        gasSurplus,
-      );
+      tx.gasLimit = await estimateGasByNetwork(tx, this.provider, gasSurplus);
 
       if (
         action &&
@@ -84,7 +86,7 @@ export default class BaseService<T extends Contract> extends BaseTxBuilder {
     ): GasResponse =>
     async (force = false) => {
       try {
-        const gasPrice = await getGasPrice(this.provider);
+        const gasPrice = await this.provider.getGasPrice();
         const hasPendingApprovals = txs.find(
           tx => tx.txType === eEthereumTxType.ERC20_APPROVAL,
         );

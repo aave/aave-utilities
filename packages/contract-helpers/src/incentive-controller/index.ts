@@ -1,6 +1,5 @@
-import { constants } from 'ethers';
+import { constants, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
-import { Context } from '../commons/BaseTxBuilder';
 import {
   eEthereumTxType,
   EthereumTransactionTypeExtended,
@@ -31,8 +30,8 @@ export class IncentivesController
   extends BaseService<IAaveIncentivesController>
   implements IncentivesControllerInterface
 {
-  constructor(context: Context) {
-    super(context, IAaveIncentivesController__factory);
+  constructor(provider: providers.Provider) {
+    super(provider, IAaveIncentivesController__factory);
   }
 
   @IncentivesValidator

@@ -15,28 +15,22 @@ jest.mock('../commons/gasStation', () => {
       .fn()
       .mockImplementation(async () => Promise.resolve(BigNumber.from(1))),
     estimateGas: jest.fn(async () => Promise.resolve(BigNumber.from(1))),
-    getGasPrice: jest.fn(async () => Promise.resolve(BigNumber.from(1))),
   };
 });
 
 describe('IncentiveController', () => {
   const correctProvider: providers.Provider = new providers.JsonRpcProvider();
+  jest
+    .spyOn(correctProvider, 'getGasPrice')
+    .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
   describe('Create new IncentvieController', () => {
     it('Expects to be initialized correctly', () => {
-      const context = {
-        chainId: 1,
-        injectedProvider: correctProvider,
-      };
-      const incentivesInstance = new IncentivesController(context);
+      const incentivesInstance = new IncentivesController(correctProvider);
       expect(incentivesInstance instanceof IncentivesController);
     });
   });
   describe('claimRewards', () => {
-    const context = {
-      chainId: 1,
-      injectedProvider: correctProvider,
-    };
-    const incentivesInstance = new IncentivesController(context);
+    const incentivesInstance = new IncentivesController(correctProvider);
     const user = '0x0000000000000000000000000000000000000001';
     const assets = [
       '0x0000000000000000000000000000000000000002',

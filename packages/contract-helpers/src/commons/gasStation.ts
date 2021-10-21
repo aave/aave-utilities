@@ -18,24 +18,17 @@ export const estimateGas = async (
 
 export const estimateGasByNetwork = async (
   tx: transactionType,
-  chainId: number,
   provider: providers.Provider,
   gasSurplus?: number,
 ): Promise<BigNumber> => {
   const estimatedGas = await provider.estimateGas(tx);
+  const providerNework: providers.Network = await provider.getNetwork();
 
-  if (chainId === ChainId.polygon) {
+  if (providerNework.chainId === ChainId.polygon) {
     return estimatedGas.add(estimatedGas.mul(POLYGON_SURPLUS).div(100));
   }
 
   return estimatedGas.add(
     estimatedGas.mul(gasSurplus ?? DEFAULT_SURPLUS).div(100),
   );
-};
-
-export const getGasPrice = async (
-  provider: providers.Provider,
-): Promise<BigNumber> => {
-  const gasPrice = await provider.getGasPrice();
-  return gasPrice;
 };
