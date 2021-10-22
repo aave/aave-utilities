@@ -258,13 +258,6 @@ export type GasType = {
 };
 export type GasResponse = (force?: boolean) => Promise<GasType | null>;
 
-export type TokenMetadataType = {
-  name: string;
-  symbol: string;
-  decimals: number;
-  address: string;
-};
-
 export type DefaultProviderKeys = {
   etherscan?: string;
   infura?: string;

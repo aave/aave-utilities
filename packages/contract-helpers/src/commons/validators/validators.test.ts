@@ -413,4 +413,5 @@ describe('validators', () => {
     //   }).toThrowError(new Error(`Addresses Array is not optional`));
     // });
   });
+  describe('amountGtThan0Validator', () => {});
 });

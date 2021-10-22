@@ -7,6 +7,7 @@ import {
   transactionType,
 } from '../commons/types';
 import { ERC20Service, IERC20ServiceInterface } from '.';
+import { API_ETH_MOCK_ADDRESS } from '../commons/utils';
 
 jest.mock('../commons/BaseService');
 
@@ -265,6 +266,93 @@ describe('ERC20Service', () => {
       ).rejects.toThrowError(
         new Error(`Amount: ${amount} needs to be greater than 0 or -1`),
       );
+    });
+  });
+  describe('decimalsOf', () => {
+    const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
+    const address = '0x0000000000000000000000000000000000000001';
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('Expects 18 if mocked eth address', async () => {
+      const decimals = await erc20Service.decimalsOf(API_ETH_MOCK_ADDRESS);
+      expect(decimals).toEqual(18);
+    });
+    it('Expect to get the decimals from the contract if not eth mock and not called previously with same address', async () => {
+      (BaseService.prototype.getContractInstance = jest.fn()).mockReturnValue({
+        decimals: async () => Promise.resolve(6),
+      });
+      const decimals = await erc20Service.decimalsOf(address);
+      expect(BaseService.prototype.getContractInstance).toHaveBeenCalled();
+      expect(decimals).toEqual(6);
+    });
+    it('Expects to return already saved decimals if not eth mock', async () => {
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
+      (BaseService.prototype.getContractInstance = jest.fn()).mockReturnValue({
+        decimals: async () => Promise.resolve(6),
+      });
+      const decimals = await erc20Service.decimalsOf(address);
+      const decimals2 = await erc20Service.decimalsOf(address);
+      expect(BaseService.prototype.getContractInstance).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(decimals).toEqual(6);
+      expect(decimals2).toEqual(decimals);
+    });
+  });
+  describe('getTokenData', () => {
+    const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
+    const token = '0x0000000000000000000000000000000000000001';
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('Expects to get ethereum data with mock address', async () => {
+      const tokenData = await erc20Service.getTokenData(API_ETH_MOCK_ADDRESS);
+      expect(tokenData.name).toEqual('Ethereum');
+      expect(tokenData.symbol).toEqual('ETH');
+      expect(tokenData.decimals).toEqual(18);
+      expect(tokenData.address).toEqual(API_ETH_MOCK_ADDRESS);
+    });
+    it('Expects to get Maker data with maker address', async () => {
+      const token = '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2';
+      const tokenData = await erc20Service.getTokenData(token);
+      expect(tokenData.name).toEqual('Maker');
+      expect(tokenData.symbol).toEqual('MKR');
+      expect(tokenData.decimals).toEqual(18);
+      expect(tokenData.address).toEqual(token);
+    });
+    it('Expects to get data from contract when using other address', async () => {
+      (BaseService.prototype.getContractInstance = jest.fn()).mockReturnValue({
+        decimals: async () => Promise.resolve(18),
+        symbol: async () => Promise.resolve('AMPL'),
+        name: async () => Promise.resolve('Ampleforth'),
+      });
+      const tokenData = await erc20Service.getTokenData(token);
+      expect(BaseService.prototype.getContractInstance).toHaveBeenCalled();
+      expect(tokenData.name).toEqual('Ampleforth');
+      expect(tokenData.symbol).toEqual('AMPL');
+      expect(tokenData.decimals).toEqual(18);
+      expect(tokenData.address).toEqual(token);
+    });
+    it('Expects to return saved data when using repeated address', async () => {
+      jest
+        .spyOn(erc20Service, 'decimalsOf')
+        .mockImplementation(async () => Promise.resolve(18));
+      (BaseService.prototype.getContractInstance = jest.fn()).mockReturnValue({
+        decimals: async () => Promise.resolve(18),
+        symbol: async () => Promise.resolve('AMPL'),
+        name: async () => Promise.resolve('Ampleforth'),
+      });
+      const tokenData = await erc20Service.getTokenData(token);
+      const tokenData2 = await erc20Service.getTokenData(token);
+      expect(BaseService.prototype.getContractInstance).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(tokenData2).toEqual(tokenData);
+      expect(tokenData2.name).toEqual('Ampleforth');
+      expect(tokenData2.symbol).toEqual('AMPL');
+      expect(tokenData2.decimals).toEqual(18);
+      expect(tokenData2.address).toEqual(token);
     });
   });
 });

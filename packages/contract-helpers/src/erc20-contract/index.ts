@@ -5,7 +5,6 @@ import {
   EthereumTransactionTypeExtended,
   tEthereumAddress,
   transactionType,
-  TokenMetadataType,
 } from '../commons/types';
 import {
   API_ETH_MOCK_ADDRESS,
@@ -35,15 +34,24 @@ export type ApproveType = {
   amount: string;
 };
 
+export type TokenMetadataType = {
+  name: string;
+  symbol: string;
+  decimals: number;
+  address: string;
+};
 export class ERC20Service
   extends BaseService<IERC20Detailed>
   implements IERC20ServiceInterface
 {
   readonly tokenDecimals: Record<string, number>;
 
+  readonly tokenMetadata: Record<string, TokenMetadataType>;
+
   constructor(provider: providers.Provider) {
     super(provider, IERC20Detailed__factory);
     this.tokenDecimals = {};
+    this.tokenMetadata = {};
   }
 
   @ERC20Validator
@@ -127,20 +135,25 @@ export class ERC20Service
       };
     }
 
-    const {
-      name: nameGetter,
-      symbol: symbolGetter,
-      decimals: decimalsGetter,
-    }: IERC20Detailed = this.getContractInstance(token);
+    if (!this.tokenMetadata[token]) {
+      const { name: nameGetter, symbol: symbolGetter }: IERC20Detailed =
+        this.getContractInstance(token);
 
-    const [name, symbol, decimals]: [string, string, number] =
-      await Promise.all([nameGetter(), symbolGetter(), decimalsGetter()]);
+      const [name, symbol, decimals]: [string, string, number] =
+        await Promise.all([
+          nameGetter(),
+          symbolGetter(),
+          this.decimalsOf(token),
+        ]);
 
-    return {
-      name,
-      symbol,
-      decimals,
-      address: token,
-    };
+      this.tokenMetadata[token] = {
+        name,
+        symbol,
+        decimals,
+        address: token,
+      };
+    }
+
+    return this.tokenMetadata[token];
   }
 }

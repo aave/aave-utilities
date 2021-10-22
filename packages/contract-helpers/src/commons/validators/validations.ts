@@ -67,7 +67,11 @@ export function isEthAddressValidator(
         }
       } else {
         const isOptional = isParamOptional?.[storedParams.index];
-        if (!isOptional) {
+        if (
+          methodArguments[storedParams.index] &&
+          !isOptional &&
+          !utils.isAddress(methodArguments[storedParams.index])
+        ) {
           throw new Error(
             `Address: ${
               methodArguments[storedParams.index]
