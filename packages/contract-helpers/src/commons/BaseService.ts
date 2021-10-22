@@ -37,7 +37,6 @@ export default class BaseService<T extends Contract> {
 
   public getContractInstance = (address: tEthereumAddress): T => {
     if (!this.contractInstances[address]) {
-      console.log(this.contractFactory);
       this.contractInstances[address] = this.contractFactory.connect(
         address,
         this.provider,

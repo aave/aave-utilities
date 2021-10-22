@@ -167,8 +167,20 @@ export function isEthAddressArrayValidatorNotEmpty(
         }
       } else {
         const isOptional = isParamOptional?.[storedParams.index];
-        if (!isOptional) {
-          throw new Error('Addresses Array is not optional');
+        console.log(methodArguments[storedParams.index]);
+        if (methodArguments[storedParams.index] && !isOptional) {
+          if (methodArguments[storedParams.index].length > 0) {
+            const fieldArray = methodArguments[storedParams.index];
+            fieldArray.forEach((address: string) => {
+              if (!utils.isAddress(address)) {
+                throw new Error(
+                  `Address: ${address} is not a valid ethereum Address`,
+                );
+              }
+            });
+          } else {
+            throw new Error('Addresses Array should not be empty');
+          }
         }
       }
     });

@@ -1,23 +1,14 @@
 import { BigNumber, constants, providers, utils } from 'ethers';
-import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
   EthereumTransactionTypeExtended,
   GasType,
   transactionType,
 } from '../commons/types';
-import { ERC20Service, IERC20ServiceInterface } from '.';
 import { API_ETH_MOCK_ADDRESS } from '../commons/utils';
-
-jest.mock('../commons/BaseService');
-
-// jest.mock('./typechain/IERC20Detailed__factory', () => {
-//   return {
-//     connect: () => ({
-//       allowance: async () => Promise.resolve(BigNumber.from(1)),
-//     }),
-//   };
-// });
+import { IERC20Detailed } from './typechain/IERC20Detailed';
+import { IERC20Detailed__factory } from './typechain/IERC20Detailed__factory';
+import { ERC20Service, IERC20ServiceInterface } from './index';
 
 jest.mock('../commons/gasStation', () => {
   return {
@@ -28,16 +19,6 @@ jest.mock('../commons/gasStation', () => {
     estimateGas: jest.fn(async () => Promise.resolve(BigNumber.from(1))),
   };
 });
-
-// jest.mock('../commons/BaseService', () => {
-//   return function () {
-//     return {
-//       getContractInstance: () => ({
-//         allowance: async () => Promise.resolve(BigNumber.from(1)),
-//       }),
-//     };
-//   };
-// });
 
 describe('ERC20Service', () => {
   const provider: providers.Provider = new providers.JsonRpcProvider();
@@ -58,6 +39,7 @@ describe('ERC20Service', () => {
     const amount = '1000000000000000000';
 
     it('Expects to get the approval txObj with correct params', async () => {
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
       const txObj: EthereumTransactionTypeExtended = erc20Service.approve({
         user,
         token,
@@ -149,35 +131,57 @@ describe('ERC20Service', () => {
     });
   });
   describe('isApproved', () => {
-    const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
     const user = '0x0000000000000000000000000000000000000001';
     const token = '0x0000000000000000000000000000000000000002';
     const spender = '0x0000000000000000000000000000000000000003';
     const amount = '123.3';
 
     // mock erc20 service decimalsOf method
-    const decimalsSpy = jest
-      .spyOn(erc20Service, 'decimalsOf')
-      .mockImplementation(async () => Promise.resolve(6));
-
-    it('Expects to be approved with correct params', async () => {
-      (BaseService.prototype.getContractInstance = jest.fn()).mockReturnValue({
-        allowance: async () =>
-          Promise.resolve(BigNumber.from('100000000000000000')),
-      });
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('Expects to return true if token is eth mock address', async () => {
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
+      const token = API_ETH_MOCK_ADDRESS;
       const isApproved: boolean = await erc20Service.isApproved({
         user,
         token,
         spender,
         amount,
       });
+      expect(isApproved).toEqual(true);
+    });
+    it('Expects to be approved with correct params', async () => {
+      jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
+        allowance: async () =>
+          Promise.resolve(BigNumber.from('100000000000000000')),
+      } as unknown as IERC20Detailed);
+
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
+      const decimalsSpy = jest
+        .spyOn(erc20Service, 'decimalsOf')
+        .mockImplementation(async () => Promise.resolve(6));
+
+      const isApproved: boolean = await erc20Service.isApproved({
+        user,
+        token,
+        spender,
+        amount,
+      });
+
       expect(decimalsSpy).toHaveBeenCalled();
       expect(isApproved).toEqual(true);
     });
     it('Expects to not be approved with correct params', async () => {
-      (BaseService.prototype.getContractInstance = jest.fn()).mockReturnValue({
+      jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
         allowance: async () => Promise.resolve(BigNumber.from('100000')),
-      });
+      } as unknown as IERC20Detailed);
+
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
+      const decimalsSpy = jest
+        .spyOn(erc20Service, 'decimalsOf')
+        .mockImplementation(async () => Promise.resolve(6));
+
       const isApproved: boolean = await erc20Service.isApproved({
         user,
         token,
@@ -189,9 +193,16 @@ describe('ERC20Service', () => {
     });
 
     it('Expects to get the approval txObj with correct params and -1 amount and max allowance', async () => {
-      (BaseService.prototype.getContractInstance = jest.fn()).mockReturnValue({
-        allowance: async () => Promise.resolve(constants.MaxUint256),
-      });
+      jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
+        allowance: async () =>
+          Promise.resolve(BigNumber.from(constants.MaxUint256)),
+      } as unknown as IERC20Detailed);
+
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
+      const decimalsSpy = jest
+        .spyOn(erc20Service, 'decimalsOf')
+        .mockImplementation(async () => Promise.resolve(6));
+
       const amount = '-1';
       const isApproved: boolean = await erc20Service.isApproved({
         user,
@@ -203,6 +214,7 @@ describe('ERC20Service', () => {
       expect(isApproved).toEqual(true);
     });
     it('Expects to fail when user is not address', async () => {
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
       const user = 'asdf';
       await expect(async () =>
         erc20Service.isApproved({
@@ -216,6 +228,7 @@ describe('ERC20Service', () => {
       );
     });
     it('Expects to fail when token is not address', async () => {
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
       const token = 'asdf';
       await expect(async () =>
         erc20Service.isApproved({
@@ -229,6 +242,7 @@ describe('ERC20Service', () => {
       );
     });
     it('Expects to fail when spender is not address', async () => {
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
       const spender = 'asdf';
       await expect(async () =>
         erc20Service.isApproved({
@@ -242,6 +256,7 @@ describe('ERC20Service', () => {
       );
     });
     it('Expects to fail when amount is not positive > 0 or -1', async () => {
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
       const amount = '0';
       await expect(async () =>
         erc20Service.isApproved({
@@ -255,6 +270,7 @@ describe('ERC20Service', () => {
       );
     });
     it('Expects to fail when amount is not number', async () => {
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
       const amount = 'asdf';
       await expect(async () =>
         erc20Service.isApproved({
@@ -279,23 +295,25 @@ describe('ERC20Service', () => {
       expect(decimals).toEqual(18);
     });
     it('Expect to get the decimals from the contract if not eth mock and not called previously with same address', async () => {
-      (BaseService.prototype.getContractInstance = jest.fn()).mockReturnValue({
+      jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
         decimals: async () => Promise.resolve(6),
-      });
+      } as unknown as IERC20Detailed);
+
       const decimals = await erc20Service.decimalsOf(address);
-      expect(BaseService.prototype.getContractInstance).toHaveBeenCalled();
+
       expect(decimals).toEqual(6);
     });
     it('Expects to return already saved decimals if not eth mock', async () => {
+      const spy = jest
+        .spyOn(IERC20Detailed__factory, 'connect')
+        .mockReturnValue({
+          decimals: async () => Promise.resolve(6),
+        } as unknown as IERC20Detailed);
       const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
-      (BaseService.prototype.getContractInstance = jest.fn()).mockReturnValue({
-        decimals: async () => Promise.resolve(6),
-      });
+
       const decimals = await erc20Service.decimalsOf(address);
       const decimals2 = await erc20Service.decimalsOf(address);
-      expect(BaseService.prototype.getContractInstance).toHaveBeenCalledTimes(
-        1,
-      );
+      expect(spy).toHaveBeenCalledTimes(1);
       expect(decimals).toEqual(6);
       expect(decimals2).toEqual(decimals);
     });
@@ -322,32 +340,38 @@ describe('ERC20Service', () => {
       expect(tokenData.address).toEqual(token);
     });
     it('Expects to get data from contract when using other address', async () => {
-      (BaseService.prototype.getContractInstance = jest.fn()).mockReturnValue({
-        decimals: async () => Promise.resolve(18),
-        symbol: async () => Promise.resolve('AMPL'),
-        name: async () => Promise.resolve('Ampleforth'),
-      });
+      const spy = jest
+        .spyOn(IERC20Detailed__factory, 'connect')
+        .mockReturnValue({
+          decimals: async () => Promise.resolve(18),
+          symbol: async () => Promise.resolve('AMPL'),
+          name: async () => Promise.resolve('Ampleforth'),
+        } as unknown as IERC20Detailed);
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
+
       const tokenData = await erc20Service.getTokenData(token);
-      expect(BaseService.prototype.getContractInstance).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalled();
       expect(tokenData.name).toEqual('Ampleforth');
       expect(tokenData.symbol).toEqual('AMPL');
       expect(tokenData.decimals).toEqual(18);
       expect(tokenData.address).toEqual(token);
     });
     it('Expects to return saved data when using repeated address', async () => {
+      const spy = jest
+        .spyOn(IERC20Detailed__factory, 'connect')
+        .mockReturnValue({
+          decimals: async () => Promise.resolve(18),
+          symbol: async () => Promise.resolve('AMPL'),
+          name: async () => Promise.resolve('Ampleforth'),
+        } as unknown as IERC20Detailed);
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
       jest
         .spyOn(erc20Service, 'decimalsOf')
         .mockImplementation(async () => Promise.resolve(18));
-      (BaseService.prototype.getContractInstance = jest.fn()).mockReturnValue({
-        decimals: async () => Promise.resolve(18),
-        symbol: async () => Promise.resolve('AMPL'),
-        name: async () => Promise.resolve('Ampleforth'),
-      });
+
       const tokenData = await erc20Service.getTokenData(token);
       const tokenData2 = await erc20Service.getTokenData(token);
-      expect(BaseService.prototype.getContractInstance).toHaveBeenCalledTimes(
-        1,
-      );
+      expect(spy).toHaveBeenCalledTimes(1);
       expect(tokenData2).toEqual(tokenData);
       expect(tokenData2.name).toEqual('Ampleforth');
       expect(tokenData2.symbol).toEqual('AMPL');
