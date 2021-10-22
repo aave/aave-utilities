@@ -167,7 +167,6 @@ export function isEthAddressArrayValidatorNotEmpty(
         }
       } else {
         const isOptional = isParamOptional?.[storedParams.index];
-        console.log(methodArguments[storedParams.index]);
         if (methodArguments[storedParams.index] && !isOptional) {
           if (methodArguments[storedParams.index].length > 0) {
             const fieldArray = methodArguments[storedParams.index];
