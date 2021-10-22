@@ -304,7 +304,7 @@ export type EnabledNetworksType = {
 };
 
 export type PermitSignature = {
-  amount: tStringCurrencyUnits;
+  amount: string;
   deadline: string;
   v: number;
   r: BytesLike;

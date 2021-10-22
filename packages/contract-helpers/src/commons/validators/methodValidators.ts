@@ -170,10 +170,6 @@ export function IncentivesValidator(
 
     isEthAddressArrayValidatorNotEmpty(target, propertyName, arguments);
 
-    amountGtThan0Validator(target, propertyName, arguments);
-
-    amountGtThan0OrMinus1(target, propertyName, arguments);
-
     return method.apply(this, arguments);
   };
 }
@@ -186,6 +182,10 @@ export function ERC20Validator(
   const method = descriptor.value;
   descriptor.value = function () {
     isEthAddressValidator(target, propertyName, arguments);
+
+    amountGtThan0Validator(target, propertyName, arguments);
+
+    amountGtThan0OrMinus1(target, propertyName, arguments);
 
     return method.apply(this, arguments);
   };
