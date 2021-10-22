@@ -5,9 +5,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import { utils } from 'ethers';
 import {
+  amountGtThan0OrMinus1,
+  amountGtThan0Validator,
   // amount0OrPositiveValidator,
-  // amountGtThan0OrMinus1,
-  // amountGtThan0Validator,
   isEthAddressArrayValidatorNotEmpty,
   // isEthAddressOrEnsValidator,
   isEthAddressValidator,
@@ -169,6 +169,23 @@ export function IncentivesValidator(
     isEthAddressValidator(target, propertyName, arguments);
 
     isEthAddressArrayValidatorNotEmpty(target, propertyName, arguments);
+
+    amountGtThan0Validator(target, propertyName, arguments);
+
+    amountGtThan0OrMinus1(target, propertyName, arguments);
+
+    return method.apply(this, arguments);
+  };
+}
+
+export function ERC20Validator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    isEthAddressValidator(target, propertyName, arguments);
 
     return method.apply(this, arguments);
   };

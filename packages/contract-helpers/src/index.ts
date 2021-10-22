@@ -10,3 +10,4 @@ export * from './cl-feed-registry';
 
 // services
 export * from './incentive-controller';
+export * from './erc20-contract';
