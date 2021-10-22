@@ -53,7 +53,6 @@ export function isEthAddressValidator(
   );
 
   if (addressParameters) {
-    console.log('---> ', addressParameters);
     addressParameters.forEach(storedParams => {
       if (storedParams.field) {
         if (

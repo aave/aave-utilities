@@ -1,4 +1,5 @@
-import { BigNumber, providers, utils } from 'ethers';
+import { BigNumber, constants, providers, utils } from 'ethers';
+import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
   EthereumTransactionTypeExtended,
@@ -6,6 +7,16 @@ import {
   transactionType,
 } from '../commons/types';
 import { ERC20Service, IERC20ServiceInterface } from '.';
+
+jest.mock('../commons/BaseService');
+
+// jest.mock('./typechain/IERC20Detailed__factory', () => {
+//   return {
+//     connect: () => ({
+//       allowance: async () => Promise.resolve(BigNumber.from(1)),
+//     }),
+//   };
+// });
 
 jest.mock('../commons/gasStation', () => {
   return {
@@ -16,6 +27,16 @@ jest.mock('../commons/gasStation', () => {
     estimateGas: jest.fn(async () => Promise.resolve(BigNumber.from(1))),
   };
 });
+
+// jest.mock('../commons/BaseService', () => {
+//   return function () {
+//     return {
+//       getContractInstance: () => ({
+//         allowance: async () => Promise.resolve(BigNumber.from(1)),
+//       }),
+//     };
+//   };
+// });
 
 describe('ERC20Service', () => {
   const provider: providers.Provider = new providers.JsonRpcProvider();
@@ -43,7 +64,6 @@ describe('ERC20Service', () => {
         amount,
       });
 
-      console.log(txObj);
       expect(txObj.txType).toEqual(eEthereumTxType.ERC20_APPROVAL);
 
       const tx: transactionType = await txObj.tx();
@@ -128,14 +148,123 @@ describe('ERC20Service', () => {
     });
   });
   describe('isApproved', () => {
-    // const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
+    const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
+    const user = '0x0000000000000000000000000000000000000001';
+    const token = '0x0000000000000000000000000000000000000002';
+    const spender = '0x0000000000000000000000000000000000000003';
+    const amount = '123.3';
 
-    it('Expects to get the approval txObj with correct params', () => {});
+    // mock erc20 service decimalsOf method
+    const decimalsSpy = jest
+      .spyOn(erc20Service, 'decimalsOf')
+      .mockImplementation(async () => Promise.resolve(6));
 
-    it('Expects to get the approval txObj with correct params and -1 amount', () => {});
-    it('Expects to fail when user is not address', () => {});
-    it('Expects to fail when token is not address', () => {});
-    it('Expects to fail when spender is not address', () => {});
-    it('Expects to fail when amount is not positive > 0 or -1', () => {});
+    it('Expects to be approved with correct params', async () => {
+      (BaseService.prototype.getContractInstance = jest.fn()).mockReturnValue({
+        allowance: async () =>
+          Promise.resolve(BigNumber.from('100000000000000000')),
+      });
+      const isApproved: boolean = await erc20Service.isApproved({
+        user,
+        token,
+        spender,
+        amount,
+      });
+      expect(decimalsSpy).toHaveBeenCalled();
+      expect(isApproved).toEqual(true);
+    });
+    it('Expects to not be approved with correct params', async () => {
+      (BaseService.prototype.getContractInstance = jest.fn()).mockReturnValue({
+        allowance: async () => Promise.resolve(BigNumber.from('100000')),
+      });
+      const isApproved: boolean = await erc20Service.isApproved({
+        user,
+        token,
+        spender,
+        amount,
+      });
+      expect(decimalsSpy).toHaveBeenCalled();
+      expect(isApproved).toEqual(false);
+    });
+
+    it('Expects to get the approval txObj with correct params and -1 amount and max allowance', async () => {
+      (BaseService.prototype.getContractInstance = jest.fn()).mockReturnValue({
+        allowance: async () => Promise.resolve(constants.MaxUint256),
+      });
+      const amount = '-1';
+      const isApproved: boolean = await erc20Service.isApproved({
+        user,
+        token,
+        spender,
+        amount,
+      });
+      expect(decimalsSpy).toHaveBeenCalled();
+      expect(isApproved).toEqual(true);
+    });
+    it('Expects to fail when user is not address', async () => {
+      const user = 'asdf';
+      await expect(async () =>
+        erc20Service.isApproved({
+          user,
+          token,
+          spender,
+          amount,
+        }),
+      ).rejects.toThrowError(
+        new Error(`Address: ${user} is not a valid ethereum Address`),
+      );
+    });
+    it('Expects to fail when token is not address', async () => {
+      const token = 'asdf';
+      await expect(async () =>
+        erc20Service.isApproved({
+          user,
+          token,
+          spender,
+          amount,
+        }),
+      ).rejects.toThrowError(
+        new Error(`Address: ${token} is not a valid ethereum Address`),
+      );
+    });
+    it('Expects to fail when spender is not address', async () => {
+      const spender = 'asdf';
+      await expect(async () =>
+        erc20Service.isApproved({
+          user,
+          token,
+          spender,
+          amount,
+        }),
+      ).rejects.toThrowError(
+        new Error(`Address: ${spender} is not a valid ethereum Address`),
+      );
+    });
+    it('Expects to fail when amount is not positive > 0 or -1', async () => {
+      const amount = '0';
+      await expect(async () =>
+        erc20Service.isApproved({
+          user,
+          token,
+          spender,
+          amount,
+        }),
+      ).rejects.toThrowError(
+        new Error(`Amount: ${amount} needs to be greater than 0 or -1`),
+      );
+    });
+    it('Expects to fail when amount is not number', async () => {
+      const amount = 'asdf';
+      await expect(async () =>
+        erc20Service.isApproved({
+          user,
+          token,
+          spender,
+          amount,
+        }),
+      ).rejects.toThrowError(
+        new Error(`Amount: ${amount} needs to be greater than 0 or -1`),
+      );
+    });
   });
 });
