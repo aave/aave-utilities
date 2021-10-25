@@ -1,6 +1,11 @@
 import { BigNumber, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
 import { ChainId } from '../commons/types';
+import { SynthetixValidator } from '../commons/validators/methodValidators';
+import {
+  isEthAddress,
+  isPositiveAmount,
+} from '../commons/validators/paramValidators';
 import { ISynthetix } from './typechain/ISynthetix';
 import { ISynthetix__factory } from './typechain/ISynthetix__factory';
 
@@ -8,15 +13,17 @@ export const synthetixProxyByChainId: Record<number, string> = {
   [ChainId.mainnet]: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
 };
 
+export type SynthetixValidationType = {
+  user: string;
+  reserve: string;
+  amount: string; // wei
+};
+
 export interface SynthetixInterface {
-  synthetixValidation: (
-    userAddress: string,
-    reserve: string,
-    amount: string, // wei
-  ) => Promise<boolean>;
+  synthetixValidation: (args: SynthetixValidationType) => Promise<boolean>;
 }
 
-export default class SynthetixService
+export class SynthetixService
   extends BaseService<ISynthetix>
   implements SynthetixInterface
 {
@@ -24,32 +31,31 @@ export default class SynthetixService
     super(provider, ISynthetix__factory);
   }
 
-  public synthetixValidation = async (
-    userAddress: string,
-    reserve: string,
-    amount: string, // wei
-  ): Promise<boolean> => {
+  @SynthetixValidator
+  public async synthetixValidation(
+    @isEthAddress('user')
+    @isEthAddress('reserve')
+    @isPositiveAmount('amount')
+    {
+      user,
+      reserve,
+      amount, // wei
+    }: SynthetixValidationType,
+  ): Promise<boolean> {
     const { chainId } = await this.provider.getNetwork();
     if (
-      reserve.toUpperCase() === synthetixProxyByChainId[chainId].toUpperCase()
+      synthetixProxyByChainId[chainId] &&
+      reserve.toLowerCase() === synthetixProxyByChainId[chainId].toLowerCase()
     ) {
-      return this.isSnxTransferable(userAddress, amount);
+      const synthContract = this.getContractInstance(
+        synthetixProxyByChainId[chainId],
+      );
+
+      const transferableAmount: BigNumber =
+        await synthContract.transferableSynthetix(user);
+      return BigNumber.from(amount).lte(transferableAmount);
     }
 
     return true;
-  };
-
-  readonly isSnxTransferable = async (
-    userAddress: string,
-    amount: string, // wei
-  ): Promise<boolean> => {
-    const { chainId } = await this.provider.getNetwork();
-    const synthContract = this.getContractInstance(
-      synthetixProxyByChainId[chainId],
-    );
-
-    const transferableAmount: BigNumber =
-      await synthContract.transferableSynthetix(userAddress);
-    return BigNumber.from(amount).lte(transferableAmount);
-  };
+  }
 }
