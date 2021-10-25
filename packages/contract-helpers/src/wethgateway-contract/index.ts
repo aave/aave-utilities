@@ -64,9 +64,7 @@ export interface WETHGatewayInterface {
   withdrawETH: (
     args: WETHWithdrawParamsType,
   ) => Promise<EthereumTransactionTypeExtended[]>;
-  repayETH: (
-    args: WETHRepayParamsType,
-  ) => Promise<EthereumTransactionTypeExtended[]>;
+  repayETH: (args: WETHRepayParamsType) => EthereumTransactionTypeExtended[];
   borrowETH: (
     args: WETHBorrowParamsType,
   ) => Promise<EthereumTransactionTypeExtended[]>;
@@ -85,7 +83,7 @@ export class WETHGatewayService
   constructor(
     provider: providers.Provider,
     erc20Service: IERC20ServiceInterface,
-    wethGatewayAddress: string | undefined,
+    wethGatewayAddress?: string | undefined,
   ) {
     super(provider, IWETHGateway__factory);
     this.erc20Service = erc20Service;
@@ -273,7 +271,7 @@ export class WETHGatewayService
   }
 
   @WETHValidator
-  public async repayETH(
+  public repayETH(
     @isEthAddress('lendingPool')
     @isEthAddress('user')
     @isEthAddress('onBehalfOf')
@@ -285,7 +283,7 @@ export class WETHGatewayService
       interestRateMode,
       onBehalfOf,
     }: WETHRepayParamsType,
-  ): Promise<EthereumTransactionTypeExtended[]> {
+  ): EthereumTransactionTypeExtended[] {
     const convertedAmount: string = parseNumber(amount, 18);
     const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
     const wethGatewayContract: IWETHGateway = this.getContractInstance(

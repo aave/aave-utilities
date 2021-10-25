@@ -294,7 +294,7 @@ export function amount0OrPositiveValidator(
           throw new Error(
             `Amount: ${
               methodArguments[0][storedParams.field]
-            } needs to be greater than 0`,
+            } needs to be greater or equal than 0`,
           );
         }
       } else {
@@ -306,7 +306,7 @@ export function amount0OrPositiveValidator(
           throw new Error(
             `Amount: ${
               methodArguments[storedParams.index]
-            } needs to be greater than 0`,
+            } needs to be greater or equal than 0`,
           );
         }
       }

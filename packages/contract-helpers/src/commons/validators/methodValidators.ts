@@ -391,7 +391,7 @@ export function WETHValidator(
 
     amount0OrPositiveValidator(target, propertyName, arguments);
 
-    return method?.apply(this, arguments);
+    return method.apply(this, arguments);
   };
 }
 

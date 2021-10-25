@@ -33,6 +33,11 @@ describe('WethGatewayService', () => {
           new WETHGatewayService(provider, erc20Service, wethGatewayAddress),
       ).not.toThrow();
     });
+    it('Expects to initialize without wethgateway address', () => {
+      expect(
+        () => new WETHGatewayService(provider, erc20Service),
+      ).not.toThrow();
+    });
   });
   describe('depositETH', () => {
     const user = '0x0000000000000000000000000000000000000003';
@@ -153,7 +158,18 @@ describe('WethGatewayService', () => {
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
     });
-    it('Expects to fail when user is not address', async () => {
+    it('Expects to fail when initialized without gateway address', () => {
+      const weth = new WETHGatewayService(provider, erc20Service);
+
+      const txObj = weth.depositETH({
+        lendingPool,
+        user,
+        amount,
+      });
+
+      expect(txObj.length).toEqual(0);
+    });
+    it('Expects to fail when user is not address', () => {
       const weth = new WETHGatewayService(
         provider,
         erc20Service,
@@ -170,7 +186,7 @@ describe('WethGatewayService', () => {
         }),
       ).toThrowError(`Address: ${user} is not a valid ethereum Address`);
     });
-    it('Expects to fail when lendingPool is not address', async () => {
+    it('Expects to fail when lendingPool is not address', () => {
       const weth = new WETHGatewayService(
         provider,
         erc20Service,
@@ -187,7 +203,7 @@ describe('WethGatewayService', () => {
         }),
       ).toThrowError(`Address: ${lendingPool} is not a valid ethereum Address`);
     });
-    it('Expects to fail when amount is not positive', async () => {
+    it('Expects to fail when amount is not positive', () => {
       const weth = new WETHGatewayService(
         provider,
         erc20Service,
@@ -204,7 +220,7 @@ describe('WethGatewayService', () => {
         }),
       ).toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
-    it('Expects to fail when amount is not number', async () => {
+    it('Expects to fail when amount is not number', () => {
       const weth = new WETHGatewayService(
         provider,
         erc20Service,
@@ -221,7 +237,7 @@ describe('WethGatewayService', () => {
         }),
       ).toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
-    it('Expects to fail when onBehalfOf is not address', async () => {
+    it('Expects to fail when onBehalfOf is not address', () => {
       const weth = new WETHGatewayService(
         provider,
         erc20Service,
@@ -238,7 +254,7 @@ describe('WethGatewayService', () => {
         }),
       ).toThrowError(`Address: ${onBehalfOf} is not a valid ethereum Address`);
     });
-    it('Expects to fail when referral is not number', async () => {
+    it('Expects to fail when referral is not number', () => {
       const weth = new WETHGatewayService(
         provider,
         erc20Service,
@@ -253,7 +269,9 @@ describe('WethGatewayService', () => {
           onBehalfOf,
           referralCode,
         }),
-      ).toThrowError(`Amount: ${referralCode} needs to be greater than 0`);
+      ).toThrowError(
+        `Amount: ${referralCode} needs to be greater or equal than 0`,
+      );
     });
   });
   describe('withdrawETH', () => {
@@ -464,6 +482,20 @@ describe('WethGatewayService', () => {
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
     });
+    it('Expects to fail when initialized without gateway address', async () => {
+      const weth = new WETHGatewayService(provider, erc20Service);
+
+      const txObj = await weth.borrowETH({
+        lendingPool,
+        user,
+        amount,
+        debtTokenAddress,
+        interestRateMode,
+        referralCode,
+      });
+
+      expect(txObj.length).toEqual(0);
+    });
     it('Expects to fail when user is not address', async () => {
       const weth = new WETHGatewayService(
         provider,
@@ -577,7 +609,7 @@ describe('WethGatewayService', () => {
           referralCode,
         }),
       ).rejects.toThrowError(
-        `Amount: ${referralCode} needs to be greater than 0`,
+        `Amount: ${referralCode} needs to be greater or equal than 0`,
       );
     });
   });
@@ -733,6 +765,18 @@ describe('WethGatewayService', () => {
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
     });
+    it('Expects to fail when initialized without gateway address', async () => {
+      const weth = new WETHGatewayService(provider, erc20Service);
+
+      const txObj = await weth.withdrawETH({
+        lendingPool,
+        user,
+        amount,
+        aTokenAddress,
+      });
+
+      expect(txObj.length).toEqual(0);
+    });
     it('Expects to fail when user is not address', async () => {
       const weth = new WETHGatewayService(
         provider,
@@ -840,12 +884,266 @@ describe('WethGatewayService', () => {
     });
   });
   describe('borrowETH', () => {
-    it('Expects the repay tx object to be correct with all params', async () => {});
-    it('Expects the repay tx object to be correct without onBehalfOf', async () => {});
-    it('Expects to fail when user is not address', async () => {});
-    it('Expects to fail when lendingPool is not address', async () => {});
-    it('Expects to fail when amount is not positive', async () => {});
-    it('Expects to fail when amount is not number', async () => {});
-    it('Expects to fail when onBehalfOf is not address', async () => {});
+    const user = '0x0000000000000000000000000000000000000003';
+    const onBehalfOf = '0x0000000000000000000000000000000000000004';
+    const interestRateMode = InterestRate.Stable;
+    const amount = '123.456';
+    const provider: providers.Provider = new providers.JsonRpcProvider();
+    jest
+      .spyOn(provider, 'getGasPrice')
+      .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
+    const erc20Service = new ERC20Service(provider);
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('Expects the repay tx object to be correct with all params and stable rate mode', async () => {
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+
+      const txObj = weth.repayETH({
+        lendingPool,
+        user,
+        amount,
+        interestRateMode,
+        onBehalfOf,
+      });
+
+      expect(txObj.length).toEqual(1);
+      expect(txObj[0].txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj[0].tx();
+      expect(tx.to).toEqual(wethGatewayAddress);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256', 'uint256', 'address'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(lendingPool);
+      expect(decoded[1]).toEqual(BigNumber.from(parseNumber(amount, 18)));
+      expect(decoded[2]).toEqual(BigNumber.from(1));
+      expect(decoded[3]).toEqual(onBehalfOf);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj[0].gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the repay tx object to be correct with all params and variable rate mode', async () => {
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+      const interestRateMode = InterestRate.Variable;
+      const txObj = weth.repayETH({
+        lendingPool,
+        user,
+        amount,
+        interestRateMode,
+        onBehalfOf,
+      });
+
+      expect(txObj.length).toEqual(1);
+      expect(txObj[0].txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj[0].tx();
+      expect(tx.to).toEqual(wethGatewayAddress);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256', 'uint256', 'address'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(lendingPool);
+      expect(decoded[1]).toEqual(BigNumber.from(parseNumber(amount, 18)));
+      expect(decoded[2]).toEqual(BigNumber.from(2));
+      expect(decoded[3]).toEqual(onBehalfOf);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj[0].gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the repay tx object to be correct with all params and none rate mode', async () => {
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+      const interestRateMode = InterestRate.None;
+      const txObj = weth.repayETH({
+        lendingPool,
+        user,
+        amount,
+        interestRateMode,
+        onBehalfOf,
+      });
+
+      expect(txObj.length).toEqual(1);
+      expect(txObj[0].txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj[0].tx();
+      expect(tx.to).toEqual(wethGatewayAddress);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256', 'uint256', 'address'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(lendingPool);
+      expect(decoded[1]).toEqual(BigNumber.from(parseNumber(amount, 18)));
+      expect(decoded[2]).toEqual(BigNumber.from(1));
+      expect(decoded[3]).toEqual(onBehalfOf);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj[0].gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the repay tx object to be correct without onBehalfOf', async () => {
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+
+      const txObj = weth.repayETH({
+        lendingPool,
+        user,
+        amount,
+        interestRateMode,
+      });
+
+      expect(txObj.length).toEqual(1);
+      expect(txObj[0].txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj[0].tx();
+      expect(tx.to).toEqual(wethGatewayAddress);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256', 'uint256', 'address'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(lendingPool);
+      expect(decoded[1]).toEqual(BigNumber.from(parseNumber(amount, 18)));
+      expect(decoded[2]).toEqual(BigNumber.from(1));
+      expect(decoded[3]).toEqual(user);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj[0].gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects to fail when initialized without gateway address', () => {
+      const weth = new WETHGatewayService(provider, erc20Service);
+
+      const txObj = weth.repayETH({
+        lendingPool,
+        user,
+        amount,
+        interestRateMode,
+      });
+
+      expect(txObj.length).toEqual(0);
+    });
+    it('Expects to fail when user is not address', () => {
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+      const user = 'asdf';
+      expect(() =>
+        weth.repayETH({
+          lendingPool,
+          user,
+          amount,
+          interestRateMode,
+        }),
+      ).toThrowError(`Address: ${user} is not a valid ethereum Address`);
+    });
+    it('Expects to fail when lendingPool is not address', () => {
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+      const lendingPool = 'asdf';
+      expect(() =>
+        weth.repayETH({
+          lendingPool,
+          user,
+          amount,
+          interestRateMode,
+        }),
+      ).toThrowError(`Address: ${lendingPool} is not a valid ethereum Address`);
+    });
+    it('Expects to fail when amount is not positive', () => {
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+      const amount = '0';
+      expect(() =>
+        weth.repayETH({
+          lendingPool,
+          user,
+          amount,
+          interestRateMode,
+        }),
+      ).toThrowError(`Amount: ${amount} needs to be greater than 0`);
+    });
+    it('Expects to fail when amount is not number', () => {
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+      const amount = 'asdf';
+      expect(() =>
+        weth.repayETH({
+          lendingPool,
+          user,
+          amount,
+          interestRateMode,
+        }),
+      ).toThrowError(`Amount: ${amount} needs to be greater than 0`);
+    });
+    it('Expects to fail when onBehalfOf is not address', () => {
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+      const onBehalfOf = 'asdf';
+      expect(() =>
+        weth.repayETH({
+          lendingPool,
+          user,
+          amount,
+          interestRateMode,
+          onBehalfOf,
+        }),
+      ).toThrowError(`Address: ${onBehalfOf} is not a valid ethereum Address`);
+    });
   });
 });
