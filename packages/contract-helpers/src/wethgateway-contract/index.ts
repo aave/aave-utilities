@@ -1,11 +1,13 @@
 import { constants, providers } from 'ethers';
-import { BaseDebtTokenInterface } from '../baseDebtToken-contract';
+import {
+  BaseDebtToken,
+  BaseDebtTokenInterface,
+} from '../baseDebtToken-contract';
 import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
   EthereumTransactionTypeExtended,
   InterestRate,
-  LendingPoolMarketConfig,
   ProtocolAction,
   tEthereumAddress,
   transactionType,
@@ -13,6 +15,7 @@ import {
 import { parseNumber } from '../commons/utils';
 import { WETHValidator } from '../commons/validators/methodValidators';
 import {
+  is0OrPositiveAmount,
   isEthAddress,
   isPositiveAmount,
   isPositiveOrMinusOneAmount,
@@ -24,7 +27,7 @@ import { IWETHGateway__factory } from './typechain/IWETHGateway__factory';
 export type WETHDepositParamsType = {
   lendingPool: tEthereumAddress;
   user: tEthereumAddress;
-  amount: string;
+  amount: string; // normal
   onBehalfOf?: tEthereumAddress;
   referralCode?: string;
 };
@@ -57,7 +60,7 @@ export type WETHBorrowParamsType = {
 export interface WETHGatewayInterface {
   depositETH: (
     args: WETHDepositParamsType,
-  ) => Promise<EthereumTransactionTypeExtended[]>;
+  ) => EthereumTransactionTypeExtended[];
   withdrawETH: (
     args: WETHWithdrawParamsType,
   ) => Promise<EthereumTransactionTypeExtended[]>;
@@ -69,7 +72,7 @@ export interface WETHGatewayInterface {
   ) => Promise<EthereumTransactionTypeExtended[]>;
 }
 
-export default class WETHGatewayService
+export class WETHGatewayService
   extends BaseService<IWETHGateway>
   implements WETHGatewayInterface
 {
@@ -79,28 +82,29 @@ export default class WETHGatewayService
 
   readonly erc20Service: IERC20ServiceInterface;
 
-  readonly wethGatewayConfig: LendingPoolMarketConfig | undefined;
-
   constructor(
     provider: providers.Provider,
-    baseDebtTokenService: BaseDebtTokenInterface,
     erc20Service: IERC20ServiceInterface,
-    wethGatewayConfig: LendingPoolMarketConfig | undefined,
+    wethGatewayAddress: string | undefined,
   ) {
     super(provider, IWETHGateway__factory);
-    this.wethGatewayConfig = wethGatewayConfig;
-    this.baseDebtTokenService = baseDebtTokenService;
     this.erc20Service = erc20Service;
 
-    this.wethGatewayAddress = this.wethGatewayConfig?.WETH_GATEWAY ?? '';
+    this.baseDebtTokenService = new BaseDebtToken(
+      this.provider,
+      this.erc20Service,
+    );
+
+    this.wethGatewayAddress = wethGatewayAddress ?? '';
   }
 
   @WETHValidator
-  public async depositETH(
+  public depositETH(
     @isEthAddress('lendingPool')
     @isEthAddress('user')
     @isEthAddress('onBehalfOf')
     @isPositiveAmount('amount')
+    @is0OrPositiveAmount('referralCode')
     {
       lendingPool,
       user,
@@ -108,7 +112,7 @@ export default class WETHGatewayService
       onBehalfOf,
       referralCode,
     }: WETHDepositParamsType,
-  ): Promise<EthereumTransactionTypeExtended[]> {
+  ): EthereumTransactionTypeExtended[] {
     const convertedAmount: string = parseNumber(amount, 18);
 
     const wethGatewayContract: IWETHGateway = this.getContractInstance(
@@ -140,6 +144,7 @@ export default class WETHGatewayService
     @isEthAddress('user')
     @isPositiveAmount('amount')
     @isEthAddress('debtTokenAddress')
+    @is0OrPositiveAmount('referralCode')
     {
       lendingPool,
       user,
@@ -154,21 +159,21 @@ export default class WETHGatewayService
     const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
 
     const delegationApproved: boolean =
-      await this.baseDebtTokenService.isDelegationApproved(
+      await this.baseDebtTokenService.isDelegationApproved({
         debtTokenAddress,
-        user,
-        this.wethGatewayAddress,
+        allowanceGiver: user,
+        allowanceReceiver: this.wethGatewayAddress,
         amount,
-      );
+      });
 
     if (!delegationApproved) {
       const approveDelegationTx: EthereumTransactionTypeExtended =
-        this.baseDebtTokenService.approveDelegation(
+        this.baseDebtTokenService.approveDelegation({
           user,
-          this.wethGatewayAddress,
+          delegatee: this.wethGatewayAddress,
           debtTokenAddress,
-          constants.MaxUint256.toString(),
-        );
+          amount: constants.MaxUint256.toString(),
+        });
 
       txs.push(approveDelegationTx);
     }

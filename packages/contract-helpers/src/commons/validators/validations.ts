@@ -6,7 +6,7 @@ import { utils } from 'ethers';
 // import { canBeEnsAddress } from '../../commons/utils';
 // import 'reflect-metadata';
 import {
-  // is0OrPositiveMetadataKey,
+  is0OrPositiveMetadataKey,
   // isEthAddressArrayMetadataKey,
   isEthAddressMetadataKey,
   // isEthAddressOrENSMetadataKey,
@@ -272,47 +272,47 @@ export function amountGtThan0Validator(
   }
 }
 
-// export function amount0OrPositiveValidator(
-//   target: any,
-//   propertyName: string,
-//   methodArguments: any,
-//   isParamOptional?: boolean[],
-// ): void {
-//   const amountParameters: paramsType[] = Reflect.getOwnMetadata(
-//     is0OrPositiveMetadataKey,
-//     target,
-//     propertyName,
-//   );
+export function amount0OrPositiveValidator(
+  target: any,
+  propertyName: string,
+  methodArguments: any,
+  isParamOptional?: boolean[],
+): void {
+  const amountParameters: paramsType[] = Reflect.getOwnMetadata(
+    is0OrPositiveMetadataKey,
+    target,
+    propertyName,
+  );
 
-//   if (amountParameters) {
-//     amountParameters.forEach(storedParams => {
-//       if (storedParams.field) {
-//         if (
-//           methodArguments[0][storedParams.field] &&
-//           !(Number(methodArguments[0][storedParams.field]) >= 0)
-//         ) {
-//           throw new Error(
-//             `Amount: ${
-//               methodArguments[0][storedParams.field]
-//             } needs to be greater than 0`,
-//           );
-//         }
-//       } else {
-//         const isOptional = isParamOptional?.[storedParams.index];
-//         if (
-//           !isOptional &&
-//           !(Number(methodArguments[storedParams.index]) >= 0)
-//         ) {
-//           throw new Error(
-//             `Amount: ${
-//               methodArguments[storedParams.index]
-//             } needs to be greater than 0`,
-//           );
-//         }
-//       }
-//     });
-//   }
-// }
+  if (amountParameters) {
+    amountParameters.forEach(storedParams => {
+      if (storedParams.field) {
+        if (
+          methodArguments[0][storedParams.field] &&
+          !(Number(methodArguments[0][storedParams.field]) >= 0)
+        ) {
+          throw new Error(
+            `Amount: ${
+              methodArguments[0][storedParams.field]
+            } needs to be greater than 0`,
+          );
+        }
+      } else {
+        const isOptional = isParamOptional?.[storedParams.index];
+        if (
+          !isOptional &&
+          !(Number(methodArguments[storedParams.index]) >= 0)
+        ) {
+          throw new Error(
+            `Amount: ${
+              methodArguments[storedParams.index]
+            } needs to be greater than 0`,
+          );
+        }
+      }
+    });
+  }
+}
 
 export function amountGtThan0OrMinus1(
   target: any,

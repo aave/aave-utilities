@@ -6,9 +6,9 @@
 // import { utils } from 'ethers';
 import { utils } from 'ethers';
 import {
+  amount0OrPositiveValidator,
   amountGtThan0OrMinus1,
   amountGtThan0Validator,
-  // amount0OrPositiveValidator,
   isEthAddressArrayValidatorNotEmpty,
   // isEthAddressOrEnsValidator,
   isEthAddressValidator,
@@ -378,9 +378,7 @@ export function WETHValidator(
   const method = descriptor.value;
   descriptor.value = function () {
     // @ts-expect-error todo: check why this ignore is needed
-    const WETH_GATEWAY = this.wethGatewayConfig?.WETH_GATEWAY || '';
-
-    if (!utils.isAddress(WETH_GATEWAY)) {
+    if (!utils.isAddress(this.wethGatewayAddress)) {
       console.error(`[WethGatewayValidator] You need to pass valid addresses`);
       return [];
     }
@@ -390,6 +388,8 @@ export function WETHValidator(
     amountGtThan0Validator(target, propertyName, arguments);
 
     amountGtThan0OrMinus1(target, propertyName, arguments);
+
+    amount0OrPositiveValidator(target, propertyName, arguments);
 
     return method?.apply(this, arguments);
   };
