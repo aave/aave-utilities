@@ -1,8 +1,6 @@
 import { BigNumber, BytesLike, PopulatedTransaction } from 'ethers';
 
 export type tEthereumAddress = string;
-export type tStringCurrencyUnits = string; // ex 2.5 eth
-export type tStringDecimalUnits = string; // ex 2500000000000000000
 export type ENS = string; // something.eth
 
 /** InterestRate options */
@@ -260,13 +258,6 @@ export type GasType = {
 };
 export type GasResponse = (force?: boolean) => Promise<GasType | null>;
 
-export type TokenMetadataType = {
-  name: string;
-  symbol: string;
-  decimals: number;
-  address: string;
-};
-
 export type DefaultProviderKeys = {
   etherscan?: string;
   infura?: string;
@@ -306,7 +297,7 @@ export type EnabledNetworksType = {
 };
 
 export type PermitSignature = {
-  amount: tStringCurrencyUnits;
+  amount: string;
   deadline: string;
   v: number;
   r: BytesLike;

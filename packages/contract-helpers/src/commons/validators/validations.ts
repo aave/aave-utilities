@@ -10,8 +10,8 @@ import {
   // isEthAddressArrayMetadataKey,
   isEthAddressMetadataKey,
   // isEthAddressOrENSMetadataKey,
-  // isPositiveMetadataKey,
-  // isPositiveOrMinusOneMetadataKey,
+  isPositiveMetadataKey,
+  isPositiveOrMinusOneMetadataKey,
   // optionalMetadataKey,
   paramsType,
   isEthAddressArrayMetadataKeyNotEmpty,
@@ -53,7 +53,6 @@ export function isEthAddressValidator(
   );
 
   if (addressParameters) {
-    console.log('---> ', addressParameters);
     addressParameters.forEach(storedParams => {
       if (storedParams.field) {
         if (
@@ -68,7 +67,11 @@ export function isEthAddressValidator(
         }
       } else {
         const isOptional = isParamOptional?.[storedParams.index];
-        if (!isOptional) {
+        if (
+          methodArguments[storedParams.index] &&
+          !isOptional &&
+          !utils.isAddress(methodArguments[storedParams.index])
+        ) {
           throw new Error(
             `Address: ${
               methodArguments[storedParams.index]
@@ -164,8 +167,19 @@ export function isEthAddressArrayValidatorNotEmpty(
         }
       } else {
         const isOptional = isParamOptional?.[storedParams.index];
-        if (!isOptional) {
-          throw new Error('Addresses Array is not optional');
+        if (methodArguments[storedParams.index] && !isOptional) {
+          if (methodArguments[storedParams.index].length > 0) {
+            const fieldArray = methodArguments[storedParams.index];
+            fieldArray.forEach((address: string) => {
+              if (!utils.isAddress(address)) {
+                throw new Error(
+                  `Address: ${address} is not a valid ethereum Address`,
+                );
+              }
+            });
+          } else {
+            throw new Error('Addresses Array should not be empty');
+          }
         }
       }
     });
@@ -219,44 +233,44 @@ export function isEthAddressArrayValidatorNotEmpty(
 //   }
 // }
 
-// export function amountGtThan0Validator(
-//   target: any,
-//   propertyName: string,
-//   methodArguments: any,
-//   isParamOptional?: boolean[],
-// ): void {
-//   const amountParameters: paramsType[] = Reflect.getOwnMetadata(
-//     isPositiveMetadataKey,
-//     target,
-//     propertyName,
-//   );
+export function amountGtThan0Validator(
+  target: any,
+  propertyName: string,
+  methodArguments: any,
+  isParamOptional?: boolean[],
+): void {
+  const amountParameters: paramsType[] = Reflect.getOwnMetadata(
+    isPositiveMetadataKey,
+    target,
+    propertyName,
+  );
 
-//   if (amountParameters) {
-//     amountParameters.forEach(storedParams => {
-//       if (storedParams.field) {
-//         if (
-//           methodArguments[0][storedParams.field] &&
-//           !(Number(methodArguments[0][storedParams.field]) > 0)
-//         ) {
-//           throw new Error(
-//             `Amount: ${
-//               methodArguments[0][storedParams.field]
-//             } needs to be greater than 0`,
-//           );
-//         }
-//       } else {
-//         const isOptional = isParamOptional?.[storedParams.index];
-//         if (!isOptional && !(Number(methodArguments[storedParams.index]) > 0)) {
-//           throw new Error(
-//             `Amount: ${
-//               methodArguments[storedParams.index]
-//             } needs to be greater than 0`,
-//           );
-//         }
-//       }
-//     });
-//   }
-// }
+  if (amountParameters) {
+    amountParameters.forEach(storedParams => {
+      if (storedParams.field) {
+        if (
+          methodArguments[0][storedParams.field] &&
+          !(Number(methodArguments[0][storedParams.field]) > 0)
+        ) {
+          throw new Error(
+            `Amount: ${
+              methodArguments[0][storedParams.field]
+            } needs to be greater than 0`,
+          );
+        }
+      } else {
+        const isOptional = isParamOptional?.[storedParams.index];
+        if (!isOptional && !(Number(methodArguments[storedParams.index]) > 0)) {
+          throw new Error(
+            `Amount: ${
+              methodArguments[storedParams.index]
+            } needs to be greater than 0`,
+          );
+        }
+      }
+    });
+  }
+}
 
 // export function amount0OrPositiveValidator(
 //   target: any,
@@ -300,50 +314,50 @@ export function isEthAddressArrayValidatorNotEmpty(
 //   }
 // }
 
-// export function amountGtThan0OrMinus1(
-//   target: any,
-//   propertyName: string,
-//   methodArguments: any,
-//   isParamOptional?: boolean[],
-// ): void {
-//   const amountMinusOneParameters: paramsType[] = Reflect.getOwnMetadata(
-//     isPositiveOrMinusOneMetadataKey,
-//     target,
-//     propertyName,
-//   );
+export function amountGtThan0OrMinus1(
+  target: any,
+  propertyName: string,
+  methodArguments: any,
+  isParamOptional?: boolean[],
+): void {
+  const amountMinusOneParameters: paramsType[] = Reflect.getOwnMetadata(
+    isPositiveOrMinusOneMetadataKey,
+    target,
+    propertyName,
+  );
 
-//   if (amountMinusOneParameters) {
-//     amountMinusOneParameters.forEach(storedParams => {
-//       if (storedParams.field) {
-//         if (
-//           methodArguments[0][storedParams.field] &&
-//           !(
-//             Number(methodArguments[0][storedParams.field]) > 0 ||
-//             methodArguments[0][storedParams.field] === '-1'
-//           )
-//         ) {
-//           throw new Error(
-//             `Amount: ${
-//               methodArguments[0][storedParams.field]
-//             } needs to be greater than 0 or -1`,
-//           );
-//         }
-//       } else {
-//         const isOptional = isParamOptional?.[storedParams.index];
-//         if (
-//           !isOptional &&
-//           !(
-//             Number(methodArguments[storedParams.index]) > 0 ||
-//             methodArguments[storedParams.index] === '-1'
-//           )
-//         ) {
-//           throw new Error(
-//             `Amount: ${
-//               methodArguments[storedParams.index]
-//             } needs to be greater than 0 or -1`,
-//           );
-//         }
-//       }
-//     });
-//   }
-// }
+  if (amountMinusOneParameters) {
+    amountMinusOneParameters.forEach(storedParams => {
+      if (storedParams.field) {
+        if (
+          methodArguments[0][storedParams.field] &&
+          !(
+            Number(methodArguments[0][storedParams.field]) > 0 ||
+            methodArguments[0][storedParams.field] === '-1'
+          )
+        ) {
+          throw new Error(
+            `Amount: ${
+              methodArguments[0][storedParams.field]
+            } needs to be greater than 0 or -1`,
+          );
+        }
+      } else {
+        const isOptional = isParamOptional?.[storedParams.index];
+        if (
+          !isOptional &&
+          !(
+            Number(methodArguments[storedParams.index]) > 0 ||
+            methodArguments[storedParams.index] === '-1'
+          )
+        ) {
+          throw new Error(
+            `Amount: ${
+              methodArguments[storedParams.index]
+            } needs to be greater than 0 or -1`,
+          );
+        }
+      }
+    });
+  }
+}

@@ -1,7 +1,6 @@
 import { BigNumber as BigNumberJs } from 'bignumber.js';
 import { BigNumber, constants } from 'ethers';
 import {
-  tStringDecimalUnits,
   ConstantAddressesByNetwork,
   GasRecommendationType,
   Network,
@@ -88,7 +87,7 @@ export const cosntantAddressesByNetwork: ConstantAddressesByNetwork = {
   },
 };
 
-export const mintAmountsPerToken: Record<string, tStringDecimalUnits> = {
+export const mintAmountsPerToken: Record<string, string> = {
   AAVE: parseNumber('100', 18),
   BAT: parseNumber('100000', 18),
   BUSD: parseNumber('10000', 18),

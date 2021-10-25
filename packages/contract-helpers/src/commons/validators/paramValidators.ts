@@ -124,20 +124,20 @@ export function isNotEmptyEthAddressArray(field?: string) {
 //   };
 // }
 
-// export function isPositiveAmount(field?: string) {
-//   return function (
-//     target: any,
-//     propertyKey: string | symbol,
-//     parameterIndex: number,
-//   ): void {
-//     const params: paramsType[] =
-//       Reflect.getOwnMetadata(isPositiveMetadataKey, target, propertyKey) || [];
+export function isPositiveAmount(field?: string) {
+  return function (
+    target: any,
+    propertyKey: string | symbol,
+    parameterIndex: number,
+  ): void {
+    const params: paramsType[] =
+      Reflect.getOwnMetadata(isPositiveMetadataKey, target, propertyKey) || [];
 
-//     params.push({ index: parameterIndex, field });
+    params.push({ index: parameterIndex, field });
 
-//     Reflect.defineMetadata(isPositiveMetadataKey, params, target, propertyKey);
-//   };
-// }
+    Reflect.defineMetadata(isPositiveMetadataKey, params, target, propertyKey);
+  };
+}
 
 // export function is0OrPositiveAmount(field?: string) {
 //   return function (
@@ -160,29 +160,29 @@ export function isNotEmptyEthAddressArray(field?: string) {
 //   };
 // }
 
-// export function isPositiveOrMinusOneAmount(field?: string) {
-//   return function (
-//     target: any,
-//     propertyKey: string | symbol,
-//     parameterIndex: number,
-//   ): void {
-//     const params: paramsType[] =
-//       Reflect.getOwnMetadata(
-//         isPositiveOrMinusOneMetadataKey,
-//         target,
-//         propertyKey,
-//       ) || [];
+export function isPositiveOrMinusOneAmount(field?: string) {
+  return function (
+    target: any,
+    propertyKey: string | symbol,
+    parameterIndex: number,
+  ): void {
+    const params: paramsType[] =
+      Reflect.getOwnMetadata(
+        isPositiveOrMinusOneMetadataKey,
+        target,
+        propertyKey,
+      ) || [];
 
-//     params.push({ index: parameterIndex, field });
+    params.push({ index: parameterIndex, field });
 
-//     Reflect.defineMetadata(
-//       isPositiveOrMinusOneMetadataKey,
-//       params,
-//       target,
-//       propertyKey,
-//     );
-//   };
-// }
+    Reflect.defineMetadata(
+      isPositiveOrMinusOneMetadataKey,
+      params,
+      target,
+      propertyKey,
+    );
+  };
+}
 
 // export function optional(
 //   target: any,
