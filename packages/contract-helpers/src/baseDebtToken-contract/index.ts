@@ -7,26 +7,37 @@ import {
   transactionType,
 } from '../commons/types';
 import { parseNumber } from '../commons/utils';
+import { DebtTokenValidator } from '../commons/validators/methodValidators';
+import {
+  isEthAddress,
+  isPositiveAmount,
+} from '../commons/validators/paramValidators';
 import { IERC20ServiceInterface } from '../erc20-contract';
 import { IDebtTokenBase } from './typechain/IDebtTokenBase';
 import { IDebtTokenBase__factory } from './typechain/IDebtTokenBase__factory';
 
 export interface BaseDebtTokenInterface {
   approveDelegation: (
-    user: tEthereumAddress,
-    delegatee: tEthereumAddress,
-    debtTokenAddress: tEthereumAddress,
-    amount: string, // wei
+    args: ApproveDelegationType,
   ) => EthereumTransactionTypeExtended;
-  isDelegationApproved: (
-    debtTokenAddress: tEthereumAddress,
-    allowanceGiver: tEthereumAddress,
-    spender: tEthereumAddress,
-    amount: string, // normal
-  ) => Promise<boolean>;
+  isDelegationApproved: (args: DelegationApprovedType) => Promise<boolean>;
 }
 
-export default class BaseDebtToken
+export type ApproveDelegationType = {
+  user: tEthereumAddress;
+  delegatee: tEthereumAddress;
+  debtTokenAddress: tEthereumAddress;
+  amount: string; // wei
+};
+
+export type DelegationApprovedType = {
+  debtTokenAddress: tEthereumAddress;
+  allowanceGiver: tEthereumAddress;
+  allowanceReceiver: tEthereumAddress;
+  amount: string; // normal
+};
+
+export class BaseDebtToken
   extends BaseService<IDebtTokenBase>
   implements BaseDebtTokenInterface
 {
@@ -40,11 +51,13 @@ export default class BaseDebtToken
     this.erc20Service = erc20Service;
   }
 
+  @DebtTokenValidator
   public approveDelegation(
-    user: tEthereumAddress,
-    delegatee: tEthereumAddress,
-    debtTokenAddress: tEthereumAddress,
-    amount: string,
+    @isEthAddress('user')
+    @isEthAddress('delegatee')
+    @isEthAddress('debtTokenAddress')
+    @isPositiveAmount('amount')
+    { user, delegatee, debtTokenAddress, amount }: ApproveDelegationType,
   ): EthereumTransactionTypeExtended {
     const debtTokenContract: IDebtTokenBase =
       this.getContractInstance(debtTokenAddress);
@@ -64,11 +77,18 @@ export default class BaseDebtToken
     };
   }
 
+  @DebtTokenValidator
   public async isDelegationApproved(
-    debtTokenAddress: tEthereumAddress,
-    allowanceGiver: tEthereumAddress,
-    allowanceReceiver: tEthereumAddress,
-    amount: string,
+    @isEthAddress('debtTokenAddress')
+    @isEthAddress('allowanceGiver')
+    @isEthAddress('allowanceReceiver')
+    @isPositiveAmount('amount')
+    {
+      debtTokenAddress,
+      allowanceGiver,
+      allowanceReceiver,
+      amount,
+    }: DelegationApprovedType,
   ): Promise<boolean> {
     const decimals: number = await this.erc20Service.decimalsOf(
       debtTokenAddress,
