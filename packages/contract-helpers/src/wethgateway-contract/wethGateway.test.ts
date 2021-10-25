@@ -1,4 +1,4 @@
-import { BigNumber, providers, utils } from 'ethers';
+import { BigNumber, constants, providers, utils } from 'ethers';
 import {
   eEthereumTxType,
   GasType,
@@ -582,14 +582,262 @@ describe('WethGatewayService', () => {
     });
   });
   describe('repayETH', () => {
-    it('Expects the withdraw tx object to be correct with all params', async () => {});
-    it('Expects the withdraw tx object to be correct without onBehalfOf', async () => {});
-    it('Expects to fail when user is not address', async () => {});
-    it('Expects to fail when lendingPool is not address', async () => {});
-    it('Expects to fail when amount is not positive', async () => {});
-    it('Expects to fail when amount is not number', async () => {});
-    it('Expects to fail when aTokenAddress is not address', async () => {});
-    it('Expects to fail when onBehalfOf is not address', async () => {});
+    const user = '0x0000000000000000000000000000000000000003';
+    const onBehalfOf = '0x0000000000000000000000000000000000000004';
+    const aTokenAddress = '0x0000000000000000000000000000000000000005';
+    const amount = '123.456';
+    const provider: providers.Provider = new providers.JsonRpcProvider();
+    jest
+      .spyOn(provider, 'getGasPrice')
+      .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
+    const erc20Service = new ERC20Service(provider);
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('Expects the withdraw tx object to be correct with all params and not approved', async () => {
+      const isApprovedSpy = jest
+        .spyOn(erc20Service, 'isApproved')
+        .mockImplementation(async () => Promise.resolve(false));
+      const approveSpy = jest
+        .spyOn(erc20Service, 'approve')
+        .mockImplementation(() => ({
+          txType: eEthereumTxType.ERC20_APPROVAL,
+          tx: async () => ({}),
+          gas: async () => ({
+            gasLimit: '1',
+            gasPrice: '1',
+          }),
+        }));
+
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+      const txObj = await weth.withdrawETH({
+        lendingPool,
+        user,
+        amount,
+        onBehalfOf,
+        aTokenAddress,
+      });
+
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(approveSpy).toHaveBeenCalled();
+      expect(txObj.length).toEqual(2);
+      expect(txObj[1].txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj[1].tx();
+      expect(tx.to).toEqual(wethGatewayAddress);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256', 'address'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(lendingPool);
+      expect(decoded[1]).toEqual(BigNumber.from(parseNumber(amount, 18)));
+      expect(decoded[2]).toEqual(onBehalfOf);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj[1].gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('640000');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the withdraw tx object to be correct with all params and amount -1 and approved', async () => {
+      const isApprovedSpy = jest
+        .spyOn(erc20Service, 'isApproved')
+        .mockImplementation(async () => Promise.resolve(true));
+
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+      const amount = '-1';
+      const txObj = await weth.withdrawETH({
+        lendingPool,
+        user,
+        amount,
+        onBehalfOf,
+        aTokenAddress,
+      });
+
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(txObj.length).toEqual(1);
+      expect(txObj[0].txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj[0].tx();
+      expect(tx.to).toEqual(wethGatewayAddress);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256', 'address'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(lendingPool);
+      expect(decoded[1]).toEqual(constants.MaxUint256);
+      expect(decoded[2]).toEqual(onBehalfOf);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj[0].gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the withdraw tx object to be correct without onBehalfOf', async () => {
+      const isApprovedSpy = jest
+        .spyOn(erc20Service, 'isApproved')
+        .mockImplementation(async () => Promise.resolve(true));
+
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+
+      const txObj = await weth.withdrawETH({
+        lendingPool,
+        user,
+        amount,
+        aTokenAddress,
+      });
+
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(txObj.length).toEqual(1);
+      expect(txObj[0].txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj[0].tx();
+      expect(tx.to).toEqual(wethGatewayAddress);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256', 'address'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(lendingPool);
+      expect(decoded[1]).toEqual(BigNumber.from(parseNumber(amount, 18)));
+      expect(decoded[2]).toEqual(user);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj[0].gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects to fail when user is not address', async () => {
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+      const user = 'asdf';
+      await expect(async () =>
+        weth.withdrawETH({
+          lendingPool,
+          user,
+          amount,
+          aTokenAddress,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${user} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when lendingPool is not address', async () => {
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+      const lendingPool = 'asdf';
+      await expect(async () =>
+        weth.withdrawETH({
+          lendingPool,
+          user,
+          amount,
+          aTokenAddress,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${lendingPool} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when amount is not positive', async () => {
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+      const amount = '0';
+      await expect(async () =>
+        weth.withdrawETH({
+          lendingPool,
+          user,
+          amount,
+          aTokenAddress,
+        }),
+      ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
+    });
+    it('Expects to fail when amount is not number', async () => {
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+      const amount = 'asdf';
+      await expect(async () =>
+        weth.withdrawETH({
+          lendingPool,
+          user,
+          amount,
+          aTokenAddress,
+        }),
+      ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
+    });
+    it('Expects to fail when aTokenAddress is not address', async () => {
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+      const aTokenAddress = 'asdf';
+      await expect(async () =>
+        weth.withdrawETH({
+          lendingPool,
+          user,
+          amount,
+          aTokenAddress,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${aTokenAddress} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when onBehalfOf is not address', async () => {
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+      const onBehalfOf = 'asdf';
+      await expect(async () =>
+        weth.withdrawETH({
+          lendingPool,
+          user,
+          amount,
+          aTokenAddress,
+          onBehalfOf,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${onBehalfOf} is not a valid ethereum Address`,
+      );
+    });
   });
   describe('borrowETH', () => {
     it('Expects the repay tx object to be correct with all params', async () => {});
