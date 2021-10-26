@@ -170,6 +170,13 @@ export type transactionType = {
   chainId?: number;
 };
 
+export type TokenMetadataType = {
+  name: string;
+  symbol: string;
+  decimals: number;
+  address: string;
+};
+
 export type AddressModel = {
   ADDRESS_PROVIDER_ADDRESS: tEthereumAddress;
   LENDINGPOOL_ADDRESS: tEthereumAddress;
