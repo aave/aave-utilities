@@ -7,7 +7,7 @@ import { utils } from 'ethers';
 // import 'reflect-metadata';
 import {
   is0OrPositiveMetadataKey,
-  // isEthAddressArrayMetadataKey,
+  isEthAddressArrayMetadataKey,
   isEthAddressMetadataKey,
   // isEthAddressOrENSMetadataKey,
   isPositiveMetadataKey,
@@ -83,58 +83,51 @@ export function isEthAddressValidator(
   }
 }
 
-// export function isEthAddressArrayValidator(
-//   target: any,
-//   propertyName: string,
-//   methodArguments: any,
-//   isParamOptional?: boolean[],
-// ): void {
-//   const addressParameters: paramsType[] = Reflect.getOwnMetadata(
-//     isEthAddressArrayMetadataKey,
-//     target,
-//     propertyName,
-//   );
+export function isEthAddressArrayValidator(
+  target: any,
+  propertyName: string,
+  methodArguments: any,
+  isParamOptional?: boolean[],
+): void {
+  const addressParameters: paramsType[] = Reflect.getOwnMetadata(
+    isEthAddressArrayMetadataKey,
+    target,
+    propertyName,
+  );
 
-//   if (addressParameters) {
-//     addressParameters.forEach(storedParams => {
-//       if (storedParams.field) {
-//         if (
-//           methodArguments[0][storedParams.field]
-//           // !utils.isAddress(methodArguments[0][storedParams.field])
-//         ) {
-//           if (methodArguments[0][storedParams.field].length > 0) {
-//             const fieldArray = methodArguments[0][storedParams.field];
-//             fieldArray.forEach((address: string) => {
-//               if (!utils.isAddress(address)) {
-//                 throw new Error(
-//                   `Address: ${address} is not a valid ethereum Address`,
-//                 );
-//               }
-//             });
-//           }
-//         }
-//       } else {
-//         const isOptional = isParamOptional?.[storedParams.index];
-//         if (
-//           methodArguments[storedParams.index] &&
-//           !isOptional
-//           // !utils.isAddress(methodArguments[storedParams.index])
-//         ) {
-//           if (methodArguments[storedParams.index].length > 0) {
-//             const fieldArray = methodArguments[storedParams.index];
-//             fieldArray.forEach((address: string) => {
-//               if (!utils.isAddress(address)) {
-//                 throw new Error(
-//                   `Address: ${address} is not a valid ethereum Address`,
-//                 );
-//               }
-//             });
-//           }
-//         }
-//       }
-//     });
-//   }
-// }
+  if (addressParameters) {
+    addressParameters.forEach(storedParams => {
+      if (storedParams.field) {
+        if (methodArguments[0][storedParams.field]) {
+          if (methodArguments[0][storedParams.field].length > 0) {
+            const fieldArray = methodArguments[0][storedParams.field];
+            fieldArray.forEach((address: string) => {
+              if (!utils.isAddress(address)) {
+                throw new Error(
+                  `Address: ${address} is not a valid ethereum Address`,
+                );
+              }
+            });
+          }
+        }
+      } else {
+        const isOptional = isParamOptional?.[storedParams.index];
+        if (methodArguments[storedParams.index] && !isOptional) {
+          if (methodArguments[storedParams.index].length > 0) {
+            const fieldArray = methodArguments[storedParams.index];
+            fieldArray.forEach((address: string) => {
+              if (!utils.isAddress(address)) {
+                throw new Error(
+                  `Address: ${address} is not a valid ethereum Address`,
+                );
+              }
+            });
+          }
+        }
+      }
+    });
+  }
+}
 
 export function isEthAddressArrayValidatorNotEmpty(
   target: any,

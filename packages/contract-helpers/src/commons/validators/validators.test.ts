@@ -1,5 +1,6 @@
 import {
   is0OrPositiveMetadataKey,
+  isEthAddressArrayMetadataKey,
   isEthAddressArrayMetadataKeyNotEmpty,
   isEthAddressMetadataKey,
   isPositiveMetadataKey,
@@ -9,6 +10,7 @@ import {
   amount0OrPositiveValidator,
   amountGtThan0OrMinus1,
   amountGtThan0Validator,
+  isEthAddressArrayValidator,
   isEthAddressArrayValidatorNotEmpty,
   isEthAddressValidator,
 } from './validations';
@@ -436,6 +438,222 @@ describe('validators', () => {
           methodArguments,
         );
       }).toThrowError(new Error(`Addresses Array should not be empty`));
+    });
+  });
+  describe('isEthAddressArrayValidator', () => {
+    it('Expects to run with correct address', () => {
+      const methodArguments = {
+        '0': {
+          to: ['0x0000000000000000000000000000000000000001'],
+        },
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: 'to',
+        },
+      ];
+
+      Reflect.defineMetadata(
+        isEthAddressArrayMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isEthAddressArrayValidator(target, propertyName, methodArguments);
+      }).not.toThrow();
+    });
+    it('Expects to run when empty array', () => {
+      const methodArguments = {
+        '0': {
+          to: [],
+        },
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: 'to',
+        },
+      ];
+      Reflect.defineMetadata(
+        isEthAddressArrayMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isEthAddressArrayValidator(target, propertyName, methodArguments);
+      }).not.toThrow();
+    });
+    it('Expects to run when empty array and no field', () => {
+      const methodArguments = {
+        '0': [],
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: undefined,
+        },
+      ];
+      Reflect.defineMetadata(
+        isEthAddressArrayMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isEthAddressArrayValidator(target, propertyName, methodArguments);
+      }).not.toThrow();
+    });
+    it('Expects to run with correct address when no field passed ()', () => {
+      const methodArguments = {
+        '0': ['0x0000000000000000000000000000000000000001'],
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: undefined,
+        },
+      ];
+
+      Reflect.defineMetadata(
+        isEthAddressArrayMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isEthAddressArrayValidator(target, propertyName, methodArguments);
+      }).not.toThrow();
+    });
+    it('Expects to run with correct address but in other field', () => {
+      const methodArguments = {
+        '0': {
+          from: ['0x0000000000000000000000000000000000000001'],
+        },
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: 'to',
+        },
+      ];
+
+      Reflect.defineMetadata(
+        isEthAddressArrayMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isEthAddressArrayValidator(target, propertyName, methodArguments);
+      }).not.toThrow();
+    });
+    it('Expects to run with no params', () => {
+      const methodArguments = {
+        '0': {
+          to: ['0x0000000000000000000000000000000000000001'],
+        },
+      };
+
+      Reflect.defineMetadata(
+        isEthAddressArrayMetadataKey,
+        undefined,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isEthAddressArrayValidator(target, propertyName, methodArguments);
+      }).not.toThrow();
+    });
+    it('Expects to run with no address if optional', () => {
+      const methodArguments = {
+        '0': [],
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: undefined,
+        },
+      ];
+      const isParamOptional = [true];
+      Reflect.defineMetadata(
+        isEthAddressArrayMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isEthAddressArrayValidator(
+          target,
+          propertyName,
+          methodArguments,
+          isParamOptional,
+        );
+      }).not.toThrow();
+    });
+    it('Expects to not run with incorrect address', () => {
+      const methodArguments = {
+        '0': {
+          to: ['asdfasdf'],
+        },
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: 'to',
+        },
+      ];
+
+      Reflect.defineMetadata(
+        isEthAddressArrayMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isEthAddressArrayValidator(target, propertyName, methodArguments);
+      }).toThrowError(
+        `Address: ${methodArguments[0].to[0]} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to throw when no address and not optional', () => {
+      const methodArguments = {
+        '0': ['asdf'],
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: undefined,
+        },
+      ];
+      const isParamOptional = [false];
+      Reflect.defineMetadata(
+        isEthAddressArrayMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isEthAddressArrayValidator(
+          target,
+          propertyName,
+          methodArguments,
+          isParamOptional,
+        );
+      }).toThrowError(
+        new Error(`Address: asdf is not a valid ethereum Address`),
+      );
     });
   });
   describe('amountGtThan0Validator', () => {
