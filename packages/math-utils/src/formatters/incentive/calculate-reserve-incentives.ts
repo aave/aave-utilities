@@ -1,35 +1,14 @@
-import { BigNumber } from 'bignumber.js';
-import { rayDiv } from '../../ray.math';
 import { calculateIncentiveAPY } from './calculate-incentive-apy';
-
-interface ReserveIncentiveEmission {
-  emissionPerSecond: string;
-  incentivesLastUpdateTimestamp: number;
-  tokenIncentivesIndex: string;
-  emissionEndTimestamp: number;
-  tokenAddress: string;
-  rewardTokenAddress: string;
-  incentiveControllerAddress: string;
-  rewardTokenDecimals: number;
-  precision: number;
-}
-
-interface ReserveIncentiveData {
-  underlyingAsset: string;
-  aIncentiveData: ReserveIncentiveEmission;
-  vIncentiveData: ReserveIncentiveEmission;
-  sIncentiveData: ReserveIncentiveEmission;
-}
+import { ReserveIncentiveWithFeedsResponse } from './types';
 
 export interface CalculateReserveIncentivesRequest {
-  reserveIncentiveData: ReserveIncentiveData;
+  reserveIncentiveData: ReserveIncentiveWithFeedsResponse;
   aRewardTokenPriceInMarketReferenceCurrency: string; // Can be priced in ETH or USD depending on market
   vRewardTokenPriceInMarketReferenceCurrency: string;
   sRewardTokenPriceInMarketReferenceCurrency: string;
   totalLiquidity: string;
-  liquidityIndex: string;
-  totalScaledVariableDebt: string;
-  totalPrincipalStableDebt: string;
+  totalVariableDebt: string;
+  totalStableDebt: string;
   decimals: number;
   priceInMarketReferenceCurrency: string; // Can be priced in ETH or USD depending on market
 }
@@ -52,9 +31,8 @@ export function calculateReserveIncentives({
   vRewardTokenPriceInMarketReferenceCurrency,
   sRewardTokenPriceInMarketReferenceCurrency,
   totalLiquidity,
-  liquidityIndex,
-  totalScaledVariableDebt,
-  totalPrincipalStableDebt,
+  totalVariableDebt,
+  totalStableDebt,
   decimals,
   priceInMarketReferenceCurrency,
 }: CalculateReserveIncentivesRequest): CalculateReserveIncentivesResponse {
@@ -63,10 +41,7 @@ export function calculateReserveIncentives({
     rewardTokenPriceInMarketReferenceCurrency:
       aRewardTokenPriceInMarketReferenceCurrency,
     priceInMarketReferenceCurrency,
-    totalTokenSupply: rayDiv(
-      new BigNumber(totalLiquidity),
-      new BigNumber(liquidityIndex),
-    ).toString(),
+    totalTokenSupply: totalLiquidity,
     decimals,
     rewardTokenDecimals:
       reserveIncentiveData.aIncentiveData.rewardTokenDecimals,
@@ -77,7 +52,7 @@ export function calculateReserveIncentives({
     rewardTokenPriceInMarketReferenceCurrency:
       vRewardTokenPriceInMarketReferenceCurrency,
     priceInMarketReferenceCurrency,
-    totalTokenSupply: totalScaledVariableDebt,
+    totalTokenSupply: totalVariableDebt,
     decimals,
     rewardTokenDecimals:
       reserveIncentiveData.aIncentiveData.rewardTokenDecimals,
@@ -88,7 +63,7 @@ export function calculateReserveIncentives({
     rewardTokenPriceInMarketReferenceCurrency:
       sRewardTokenPriceInMarketReferenceCurrency,
     priceInMarketReferenceCurrency,
-    totalTokenSupply: totalPrincipalStableDebt,
+    totalTokenSupply: totalStableDebt,
     decimals,
     rewardTokenDecimals:
       reserveIncentiveData.aIncentiveData.rewardTokenDecimals,

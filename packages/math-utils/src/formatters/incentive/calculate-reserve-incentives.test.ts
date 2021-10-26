@@ -27,6 +27,9 @@ describe('calculateReserveIncentives', () => {
             '0x0000000000000000000000000000000000000000',
           rewardTokenDecimals: 18,
           precision: 18,
+          priceFeed: '',
+          priceFeedDecimals: 18,
+          priceFeedTimestamp: 1,
         },
         vIncentiveData: {
           emissionPerSecond: '22037037037037000',
@@ -39,6 +42,9 @@ describe('calculateReserveIncentives', () => {
             '0x0000000000000000000000000000000000000000',
           rewardTokenDecimals: 18,
           precision: 18,
+          priceFeed: '',
+          priceFeedDecimals: 18,
+          priceFeedTimestamp: 1,
         },
         sIncentiveData: {
           emissionPerSecond: '0',
@@ -51,6 +57,9 @@ describe('calculateReserveIncentives', () => {
             '0x0000000000000000000000000000000000000000',
           rewardTokenDecimals: 18,
           precision: 18,
+          priceFeed: '',
+          priceFeedDecimals: 18,
+          priceFeedTimestamp: 1,
         },
       };
 
@@ -60,18 +69,15 @@ describe('calculateReserveIncentives', () => {
         vRewardTokenPriceInMarketReferenceCurrency: '500000000000000',
         sRewardTokenPriceInMarketReferenceCurrency: '498035657442060',
         totalLiquidity: totalLiquidity.toString(),
-        liquidityIndex:
-          formatReserveRequestWMATIC.reserve.liquidityIndex.toString(),
-        totalScaledVariableDebt:
+        totalVariableDebt:
           calculateReserveDebtResult.totalVariableDebt.toString(),
-        totalPrincipalStableDebt:
-          calculateReserveDebtResult.totalStableDebt.toString(),
+        totalStableDebt: calculateReserveDebtResult.totalStableDebt.toString(),
         decimals: 18,
         priceInMarketReferenceCurrency: '498035657442060',
       });
 
       expect(result.aIncentivesData.incentiveAPY).toBe(
-        '0.03490948667901282833',
+        '0.03459120784662872218',
       );
       expect(result.vIncentivesData.incentiveAPY).toBe(
         '0.02311312226442694815',
@@ -100,6 +106,9 @@ describe('calculateReserveIncentives', () => {
             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
           rewardTokenDecimals: 18,
           precision: 18,
+          priceFeed: '',
+          priceFeedDecimals: 18,
+          priceFeedTimestamp: 1,
         },
         vIncentiveData: {
           emissionPerSecond: '4629629629629629',
@@ -112,6 +121,9 @@ describe('calculateReserveIncentives', () => {
             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
           rewardTokenDecimals: 18,
           precision: 18,
+          priceFeed: '',
+          priceFeedDecimals: 18,
+          priceFeedTimestamp: 1,
         },
         sIncentiveData: {
           emissionPerSecond: '0',
@@ -124,6 +136,9 @@ describe('calculateReserveIncentives', () => {
             '0x0000000000000000000000000000000000000000',
           rewardTokenDecimals: 0,
           precision: 0,
+          priceFeed: '',
+          priceFeedDecimals: 18,
+          priceFeedTimestamp: 1,
         },
       };
 
@@ -133,15 +148,14 @@ describe('calculateReserveIncentives', () => {
         sRewardTokenPriceInMarketReferenceCurrency: '94170917437245430',
         vRewardTokenPriceInMarketReferenceCurrency: '94170917437245430',
         totalLiquidity: '4689276757732258',
-        liquidityIndex: '1053500517589216842914921776',
-        totalScaledVariableDebt: '3891257648076622',
-        totalPrincipalStableDebt: '41801112749722',
+        totalVariableDebt: '3891257648076622',
+        totalStableDebt: '41801112749722',
         priceInMarketReferenceCurrency: '347780307856538',
         decimals: 6,
       });
 
       expect(result.aIncentivesData.incentiveAPY).toBe(
-        '0.00888164801282262266',
+        '0.00843060621664143574',
       );
       expect(result.vIncentivesData.incentiveAPY).toBe(
         '0.01015955492045879679',
@@ -164,6 +178,9 @@ describe('calculateReserveIncentives', () => {
             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
           rewardTokenDecimals: 18,
           precision: 18,
+          priceFeed: '',
+          priceFeedDecimals: 18,
+          priceFeedTimestamp: 1,
         },
         vIncentiveData: {
           emissionPerSecond: '2314814814814814',
@@ -176,6 +193,9 @@ describe('calculateReserveIncentives', () => {
             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
           rewardTokenDecimals: 18,
           precision: 18,
+          priceFeed: '',
+          priceFeedDecimals: 18,
+          priceFeedTimestamp: 1,
         },
         sIncentiveData: {
           emissionPerSecond: '0',
@@ -188,6 +208,9 @@ describe('calculateReserveIncentives', () => {
             '0x0000000000000000000000000000000000000000',
           rewardTokenDecimals: 0,
           precision: 0,
+          priceFeed: '',
+          priceFeedDecimals: 18,
+          priceFeedTimestamp: 1,
         },
       };
       const result = calculateReserveIncentives({
@@ -196,15 +219,14 @@ describe('calculateReserveIncentives', () => {
         vRewardTokenPriceInMarketReferenceCurrency: '94170917437245430',
         sRewardTokenPriceInMarketReferenceCurrency: '94170917437245430',
         totalLiquidity: '1937317748307449835437672174',
-        liquidityIndex: '1053207642011596990084101590',
-        totalScaledVariableDebt: '1440029626743923505023111127',
-        totalPrincipalStableDebt: '9751179387008545009745124',
+        totalVariableDebt: '1440029626743923505023111127',
+        totalStableDebt: '9751179387008545009745124',
         priceInMarketReferenceCurrency: '350862937422119',
         decimals: 18,
       });
 
       expect(result.aIncentivesData.incentiveAPY).toBe(
-        '0.01065161133338641259',
+        '0.01011349605576554151',
       );
       expect(result.vIncentivesData.incentiveAPY).toBe(
         '0.01360600854482013582',
