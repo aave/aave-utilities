@@ -43,34 +43,7 @@ export function isEthAddress(field?: string) {
   };
 }
 
-// export function isEthAddressArray(field?: string) {
-//   return function (
-//     target: any,
-//     propertyKey: string | symbol,
-//     parameterIndex: number,
-//   ): void {
-//     const existingPossibleAddresses: paramsType[] =
-//       Reflect.getOwnMetadata(
-//         isEthAddressArrayMetadataKey,
-//         target,
-//         propertyKey,
-//       ) || [];
-
-//     existingPossibleAddresses.push({
-//       index: parameterIndex,
-//       field,
-//     });
-
-//     Reflect.defineMetadata(
-//       isEthAddressArrayMetadataKey,
-//       existingPossibleAddresses,
-//       target,
-//       propertyKey,
-//     );
-//   };
-// }
-
-export function isNotEmptyEthAddressArray(field?: string) {
+export function isEthAddressArray(field?: string) {
   return function (
     target: any,
     propertyKey: string | symbol,
@@ -78,7 +51,7 @@ export function isNotEmptyEthAddressArray(field?: string) {
   ): void {
     const existingPossibleAddresses: paramsType[] =
       Reflect.getOwnMetadata(
-        isEthAddressArrayMetadataKeyNotEmpty,
+        isEthAddressArrayMetadataKey,
         target,
         propertyKey,
       ) || [];
@@ -89,13 +62,40 @@ export function isNotEmptyEthAddressArray(field?: string) {
     });
 
     Reflect.defineMetadata(
-      isEthAddressArrayMetadataKeyNotEmpty,
+      isEthAddressArrayMetadataKey,
       existingPossibleAddresses,
       target,
       propertyKey,
     );
   };
 }
+
+// export function isNotEmptyEthAddressArray(field?: string) {
+//   return function (
+//     target: any,
+//     propertyKey: string | symbol,
+//     parameterIndex: number,
+//   ): void {
+//     const existingPossibleAddresses: paramsType[] =
+//       Reflect.getOwnMetadata(
+//         isEthAddressArrayMetadataKeyNotEmpty,
+//         target,
+//         propertyKey,
+//       ) || [];
+
+//     existingPossibleAddresses.push({
+//       index: parameterIndex,
+//       field,
+//     });
+
+//     Reflect.defineMetadata(
+//       isEthAddressArrayMetadataKeyNotEmpty,
+//       existingPossibleAddresses,
+//       target,
+//       propertyKey,
+//     );
+//   };
+// }
 
 // export function isEthAddressOrENS(field?: string) {
 //   return function (

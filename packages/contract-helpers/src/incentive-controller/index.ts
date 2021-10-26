@@ -8,7 +8,7 @@ import {
 import { IncentivesValidator } from '../commons/validators/methodValidators';
 import {
   isEthAddress,
-  isNotEmptyEthAddressArray,
+  isEthAddressArray,
 } from '../commons/validators/paramValidators';
 import { IAaveIncentivesController } from './typechain/IAaveIncentivesController';
 import { IAaveIncentivesController__factory } from './typechain/IAaveIncentivesController__factory';
@@ -39,7 +39,7 @@ export class IncentivesController
     @isEthAddress('user')
     @isEthAddress('incentivesControllerAddress')
     @isEthAddress('to')
-    @isNotEmptyEthAddressArray('assets')
+    @isEthAddressArray('assets')
     { user, assets, to, incentivesControllerAddress }: ClaimRewardsMethodType,
   ): EthereumTransactionTypeExtended[] {
     const incentivesContract: IAaveIncentivesController =
