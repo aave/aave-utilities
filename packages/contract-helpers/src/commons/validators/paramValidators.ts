@@ -139,26 +139,26 @@ export function isPositiveAmount(field?: string) {
   };
 }
 
-// export function is0OrPositiveAmount(field?: string) {
-//   return function (
-//     target: any,
-//     propertyKey: string | symbol,
-//     parameterIndex: number,
-//   ): void {
-//     const params: paramsType[] =
-//       Reflect.getOwnMetadata(is0OrPositiveMetadataKey, target, propertyKey) ||
-//       [];
+export function is0OrPositiveAmount(field?: string) {
+  return function (
+    target: any,
+    propertyKey: string | symbol,
+    parameterIndex: number,
+  ): void {
+    const params: paramsType[] =
+      Reflect.getOwnMetadata(is0OrPositiveMetadataKey, target, propertyKey) ||
+      [];
 
-//     params.push({ index: parameterIndex, field });
+    params.push({ index: parameterIndex, field });
 
-//     Reflect.defineMetadata(
-//       is0OrPositiveMetadataKey,
-//       params,
-//       target,
-//       propertyKey,
-//     );
-//   };
-// }
+    Reflect.defineMetadata(
+      is0OrPositiveMetadataKey,
+      params,
+      target,
+      propertyKey,
+    );
+  };
+}
 
 export function isPositiveOrMinusOneAmount(field?: string) {
   return function (

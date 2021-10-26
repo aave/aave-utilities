@@ -4,10 +4,11 @@
 /* eslint-disable prefer-rest-params */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import { utils } from 'ethers';
+import { utils } from 'ethers';
 import {
+  amount0OrPositiveValidator,
   amountGtThan0OrMinus1,
   amountGtThan0Validator,
-  // amount0OrPositiveValidator,
   isEthAddressArrayValidatorNotEmpty,
   // isEthAddressOrEnsValidator,
   isEthAddressValidator,
@@ -169,6 +170,21 @@ export function IncentivesValidator(
     isEthAddressValidator(target, propertyName, arguments);
 
     isEthAddressArrayValidatorNotEmpty(target, propertyName, arguments);
+
+    return method.apply(this, arguments);
+  };
+}
+
+export function DebtTokenValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    isEthAddressValidator(target, propertyName, arguments);
+
+    amountGtThan0Validator(target, propertyName, arguments);
 
     return method.apply(this, arguments);
   };
@@ -354,30 +370,30 @@ export function ERC20Validator(
 //   };
 // }
 
-// export function WETHValidator(
-//   target: any,
-//   propertyName: string,
-//   descriptor: TypedPropertyDescriptor<any>,
-// ): any {
-//   const method = descriptor.value;
-//   descriptor.value = function () {
-//     // @ts-expect-error todo: check why this ignore is needed
-//     const WETH_GATEWAY = this.wethGatewayConfig?.WETH_GATEWAY || '';
+export function WETHValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    // @ts-expect-error todo: check why this ignore is needed
+    if (!utils.isAddress(this.wethGatewayAddress)) {
+      console.error(`[WethGatewayValidator] You need to pass valid addresses`);
+      return [];
+    }
 
-//     if (!utils.isAddress(WETH_GATEWAY)) {
-//       console.error(`[WethGatewayValidator] You need to pass valid addresses`);
-//       return [];
-//     }
+    isEthAddressValidator(target, propertyName, arguments);
 
-//     isEthAddressValidator(target, propertyName, arguments);
+    amountGtThan0Validator(target, propertyName, arguments);
 
-//     amountGtThan0Validator(target, propertyName, arguments);
+    amountGtThan0OrMinus1(target, propertyName, arguments);
 
-//     amountGtThan0OrMinus1(target, propertyName, arguments);
+    amount0OrPositiveValidator(target, propertyName, arguments);
 
-//     return method?.apply(this, arguments);
-//   };
-// }
+    return method.apply(this, arguments);
+  };
+}
 
 // export function GovValidator(
 //   target: any,

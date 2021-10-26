@@ -1,10 +1,12 @@
 import {
+  is0OrPositiveMetadataKey,
   isEthAddressArrayMetadataKeyNotEmpty,
   isEthAddressMetadataKey,
   isPositiveMetadataKey,
   isPositiveOrMinusOneMetadataKey,
 } from './paramValidators';
 import {
+  amount0OrPositiveValidator,
   amountGtThan0OrMinus1,
   amountGtThan0Validator,
   isEthAddressArrayValidatorNotEmpty,
@@ -867,6 +869,253 @@ describe('validators', () => {
         amountGtThan0OrMinus1(target, propertyName, methodArguments);
       }).toThrowError(
         new Error(`Amount: asdf needs to be greater than 0 or -1`),
+      );
+    });
+  });
+  describe('amount0OrPositiveValidator', () => {
+    it('Expects to run with all params correct', () => {
+      const methodArguments = {
+        '0': {
+          amount: '1000000000000000000',
+        },
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: 'amount',
+        },
+      ];
+
+      Reflect.defineMetadata(
+        is0OrPositiveMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        amount0OrPositiveValidator(target, propertyName, methodArguments);
+      }).not.toThrow();
+    });
+    it('Expects to run with all params correct and no field', () => {
+      const methodArguments = {
+        '0': '1000000000000000000',
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: undefined,
+        },
+      ];
+
+      Reflect.defineMetadata(
+        is0OrPositiveMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        amount0OrPositiveValidator(target, propertyName, methodArguments);
+      }).not.toThrow();
+    });
+
+    it('Expects to run if 0', () => {
+      const methodArguments = {
+        '0': {
+          amount: '0',
+        },
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: 'amount',
+        },
+      ];
+
+      Reflect.defineMetadata(
+        is0OrPositiveMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        amount0OrPositiveValidator(target, propertyName, methodArguments);
+      }).not.toThrow();
+    });
+    it('Expects to run if 0 and no field', () => {
+      const methodArguments = {
+        '0': '0',
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: undefined,
+        },
+      ];
+
+      Reflect.defineMetadata(
+        is0OrPositiveMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        amount0OrPositiveValidator(target, propertyName, methodArguments);
+      }).not.toThrow();
+    });
+    it('Expects to run if no params but optional', () => {
+      const methodArguments = {
+        '0': {},
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: 'amount',
+        },
+      ];
+
+      Reflect.defineMetadata(
+        is0OrPositiveMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+      const isOptional = [true];
+      expect(() => {
+        amount0OrPositiveValidator(
+          target,
+          propertyName,
+          methodArguments,
+          isOptional,
+        );
+      }).not.toThrow();
+    });
+    it('Expects to run if no params and no field but optional', () => {
+      const methodArguments = {};
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: undefined,
+        },
+      ];
+
+      Reflect.defineMetadata(
+        is0OrPositiveMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+      const isOptional = [true];
+      expect(() => {
+        amount0OrPositiveValidator(
+          target,
+          propertyName,
+          methodArguments,
+          isOptional,
+        );
+      }).not.toThrow();
+    });
+    it('Expects to fail when negative amount', () => {
+      const methodArguments = {
+        '0': {
+          amount: '-1',
+        },
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: 'amount',
+        },
+      ];
+
+      Reflect.defineMetadata(
+        is0OrPositiveMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        amount0OrPositiveValidator(target, propertyName, methodArguments);
+      }).toThrowError(
+        new Error(`Amount: -1 needs to be greater or equal than 0`),
+      );
+    });
+    it('Expects to fail when amount not a number', () => {
+      const methodArguments = {
+        '0': {
+          amount: 'asdf',
+        },
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: 'amount',
+        },
+      ];
+
+      Reflect.defineMetadata(
+        is0OrPositiveMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        amount0OrPositiveValidator(target, propertyName, methodArguments);
+      }).toThrowError(
+        new Error(`Amount: asdf needs to be greater or equal than 0`),
+      );
+    });
+    it('Expects to fail when negative amount and no field', () => {
+      const methodArguments = {
+        '0': '-1',
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: undefined,
+        },
+      ];
+
+      Reflect.defineMetadata(
+        is0OrPositiveMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        amount0OrPositiveValidator(target, propertyName, methodArguments);
+      }).toThrowError(
+        new Error(`Amount: -1 needs to be greater or equal than 0`),
+      );
+    });
+    it('Expects to fail when amount not a number and no field', () => {
+      const methodArguments = {
+        '0': 'asdf',
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: undefined,
+        },
+      ];
+
+      Reflect.defineMetadata(
+        is0OrPositiveMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        amount0OrPositiveValidator(target, propertyName, methodArguments);
+      }).toThrowError(
+        new Error(`Amount: asdf needs to be greater or equal than 0`),
       );
     });
   });

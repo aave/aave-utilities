@@ -27,6 +27,8 @@ module.exports = {
     'packages/contract-helpers/src/incentive-controller/typechain',
     'packages/contract-helpers/src/erc20-contract/typechain',
     'packages/contract-helpers/src/synthetix-contract/typechain',
+    'packages/contract-helpers/src/baseDebtToken-contract/typechain',
+    'packages/contract-helpers/src/wethgateway-contract/typechain',
     'packages/contract-helpers/src/index.ts',
   ],
   modulePathIgnorePatterns: ['node_modules'],
