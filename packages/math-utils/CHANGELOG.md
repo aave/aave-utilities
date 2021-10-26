@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.19.0 (2021-10-26)
+
+
+### Features
+
+* ported repay with collateral logic and updated ([#127](https://github.com/@aave/aave-utilities/issues/127)) ([eff8beb](https://github.com/@aave/aave-utilities/commit/eff8beb85b74111ad67a702fab77fdfa0ad652ab))
+
+
+
+
+
 # 0.18.0 (2021-10-26)
 
 
