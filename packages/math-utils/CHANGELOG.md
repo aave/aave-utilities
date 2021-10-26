@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.20.1 (2021-10-26)
+
+
+### Bug Fixes
+
+* accept empty assets array ([#128](https://github.com/@aave/aave-utilities/issues/128)) ([7f34ace](https://github.com/@aave/aave-utilities/commit/7f34aced708608b8f3e3ea7411dbedf8a37107ac))
+
+
+
+
+
 # 0.20.0 (2021-10-26)
 
 
