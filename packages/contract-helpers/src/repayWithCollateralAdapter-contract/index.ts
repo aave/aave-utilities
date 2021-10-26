@@ -3,6 +3,7 @@ import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
   EthereumTransactionTypeExtended,
+  InterestRate,
   PermitSignature,
   ProtocolAction,
   tEthereumAddress,
@@ -22,7 +23,7 @@ export type RepayWithCollateralType = {
   debtAsset: tEthereumAddress;
   collateralAmount: string;
   debtRepayAmount: string;
-  debtRateMode: number;
+  debtRateMode: InterestRate;
   permit: PermitSignature;
   useEthPath?: boolean;
 };
@@ -68,6 +69,8 @@ export class RepayWithCollateralAdapterService
     }: RepayWithCollateralType,
     txs?: EthereumTransactionTypeExtended[],
   ): EthereumTransactionTypeExtended {
+    const numericInterestRate = debtRateMode === InterestRate.Stable ? 1 : 2;
+
     const repayWithCollateralContract: IRepayWithCollateral =
       this.getContractInstance(this.repayWithCollateralAddress);
 
@@ -78,7 +81,7 @@ export class RepayWithCollateralAdapterService
           debtAsset,
           collateralAmount,
           debtRepayAmount,
-          debtRateMode,
+          numericInterestRate,
           permit,
           useEthPath ?? false,
         ),
