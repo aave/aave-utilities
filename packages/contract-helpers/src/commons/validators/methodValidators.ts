@@ -222,33 +222,30 @@ export function ERC20Validator(
   };
 }
 
-// export function LiquiditySwapValidator(
-//   target: any,
-//   propertyName: string,
-//   descriptor: TypedPropertyDescriptor<any>,
-// ): any {
-//   const method = descriptor.value;
-//   descriptor.value = function () {
-//     const SWAP_COLLATERAL_ADAPTER =
-//       // @ts-expect-error todo: check why this ignore is needed
-//       this.swapCollateralConfig.SWAP_COLLATERAL_ADAPTER || '';
+export function LiquiditySwapValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    // @ts-expect-error todo: check why this ignore is needed
+    if (!utils.isAddress(this.liquiditySwapAdapterAddress)) {
+      console.error(
+        `[LiquiditySwapValidator] You need to pass valid addresses`,
+      );
+      return [];
+    }
 
-//     if (!utils.isAddress(SWAP_COLLATERAL_ADAPTER)) {
-//       console.error(
-//         `[LiquiditySwapValidator] You need to pass valid addresses`,
-//       );
-//       return [];
-//     }
+    isEthAddressValidator(target, propertyName, arguments);
 
-//     isEthAddressValidator(target, propertyName, arguments);
+    amountGtThan0Validator(target, propertyName, arguments);
 
-//     amountGtThan0Validator(target, propertyName, arguments);
+    amountGtThan0OrMinus1(target, propertyName, arguments);
 
-//     amountGtThan0OrMinus1(target, propertyName, arguments);
-
-//     return method?.apply(this, arguments);
-//   };
-// }
+    return method.apply(this, arguments);
+  };
+}
 
 // export function RepayWithCollateralValidator(
 //   target: any,
