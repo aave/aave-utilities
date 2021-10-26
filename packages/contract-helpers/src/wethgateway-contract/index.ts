@@ -83,7 +83,7 @@ export class WETHGatewayService
   constructor(
     provider: providers.Provider,
     erc20Service: IERC20ServiceInterface,
-    wethGatewayAddress?: string | undefined,
+    wethGatewayAddress?: string,
   ) {
     super(provider, IWETHGateway__factory);
     this.erc20Service = erc20Service;
