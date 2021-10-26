@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.17.2 (2021-10-26)
+
+
+### Bug Fixes
+
+* port apy calculation fix from aave-js ([#125](https://github.com/@aave/aave-utilities/issues/125)) ([7ff9307](https://github.com/@aave/aave-utilities/commit/7ff93077b6bb97ec2c608f4e19e973d0368f4ef7))
+
+
+
+
+
 ## 0.17.1 (2021-10-26)
 
 **Note:** Version bump only for package @aave/math-utils
