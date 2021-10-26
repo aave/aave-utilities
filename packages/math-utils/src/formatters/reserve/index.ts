@@ -1,7 +1,12 @@
 import BigNumber from 'bignumber.js';
-import { BigNumberValue, normalize, valueToBigNumber } from '../../bignumber';
-import { RAY_DECIMALS } from '../../constants';
-import { LTV_PRECISION } from '../../index';
+import {
+  BigNumberValue,
+  normalize,
+  valueToBigNumber,
+  valueToZDBigNumber,
+} from '../../bignumber';
+import { RAY_DECIMALS, SECONDS_PER_YEAR } from '../../constants';
+import { LTV_PRECISION, RAY, rayPow } from '../../index';
 import { nativeToUSD } from '../usd/native-to-usd';
 import { calculateReserveDebt } from './calculate-reserve-debt';
 
@@ -99,6 +104,27 @@ function formatEnhancedReserve({ reserve }: FormatEnhancedReserveRequest) {
   const normalizeWithReserve = (n: BigNumberValue) =>
     normalize(n, reserve.decimals);
 
+  const exactLiquidityRate = rayPow(
+    valueToZDBigNumber(reserve.liquidityRate)
+      .dividedBy(SECONDS_PER_YEAR)
+      .plus(RAY),
+    SECONDS_PER_YEAR,
+  ).minus(RAY);
+
+  const exactVariableBorrowRate = rayPow(
+    valueToZDBigNumber(reserve.variableBorrowRate)
+      .dividedBy(SECONDS_PER_YEAR)
+      .plus(RAY),
+    SECONDS_PER_YEAR,
+  ).minus(RAY);
+
+  const exactStableBorrowRate = rayPow(
+    valueToZDBigNumber(reserve.stableBorrowRate)
+      .dividedBy(SECONDS_PER_YEAR)
+      .plus(RAY),
+    SECONDS_PER_YEAR,
+  ).minus(RAY);
+
   return {
     totalVariableDebt: normalizeWithReserve(reserve.totalVariableDebt),
     totalStableDebt: normalizeWithReserve(reserve.totalStableDebt),
@@ -108,9 +134,9 @@ function formatEnhancedReserve({ reserve }: FormatEnhancedReserveRequest) {
     totalDebt: normalizeWithReserve(reserve.totalDebt),
     baseLTVasCollateral: normalize(reserve.baseLTVasCollateral, LTV_PRECISION),
     reserveFactor: normalize(reserve.reserveFactor, LTV_PRECISION),
-    variableBorrowRate: normalize(reserve.variableBorrowRate, RAY_DECIMALS),
-    stableBorrowRate: normalize(reserve.stableBorrowRate, RAY_DECIMALS),
-    liquidityRate: normalize(reserve.liquidityRate, RAY_DECIMALS),
+    variableBorrowRate: normalize(exactVariableBorrowRate, RAY_DECIMALS),
+    stableBorrowRate: normalize(exactStableBorrowRate, RAY_DECIMALS),
+    liquidityRate: normalize(exactLiquidityRate, RAY_DECIMALS),
     liquidityIndex: normalize(reserve.liquidityIndex, RAY_DECIMALS),
     reserveLiquidationThreshold: normalize(
       reserve.reserveLiquidationThreshold,
