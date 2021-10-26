@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.18.0 (2021-10-26)
+
+
+### Features
+
+* swap liquidity ported. missing tests ([#126](https://github.com/@aave/aave-utilities/issues/126)) ([bf09981](https://github.com/@aave/aave-utilities/commit/bf099819d5d4d43aadd3b557567470a276ef3885))
+
+
+
+
+
 ## 0.17.2 (2021-10-26)
 
 
