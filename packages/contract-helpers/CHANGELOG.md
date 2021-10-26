@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.17.0 (2021-10-25)
+
+
+### Features
+
+* ported synthetix service ([#123](https://github.com/@aave/aave-utilities/issues/123)) ([8f87c14](https://github.com/@aave/aave-utilities/commit/8f87c14a2e93def7622fe3e94816b8657c68bcc1))
+
+
+
+
+
+## 0.16.1 (2021-10-25)
+
+**Note:** Version bump only for package @aave/contract-helpers
+
+
+
+
+
+# 0.16.0 (2021-10-22)
+
+
+### Features
+
+* wip: added initial class flow for tx services ([#108](https://github.com/@aave/aave-utilities/issues/108)) ([dd6a53b](https://github.com/@aave/aave-utilities/commit/dd6a53b1e10f005b64151a55a3bd5cc4119ab62a))
+
+
+
+
+
 ## 0.15.4 (2021-10-15)
 
 
