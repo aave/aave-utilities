@@ -76,13 +76,13 @@ describe('calculateReserveIncentives', () => {
         priceInMarketReferenceCurrency: '498035657442060',
       });
 
-      expect(result.aIncentivesData.incentiveAPY).toBe(
+      expect(result.aIncentivesData.incentiveAPR).toBe(
         '0.03459120784662872218',
       );
-      expect(result.vIncentivesData.incentiveAPY).toBe(
+      expect(result.vIncentivesData.incentiveAPR).toBe(
         '0.02311312226442694815',
       );
-      expect(result.sIncentivesData.incentiveAPY).toBe('0');
+      expect(result.sIncentivesData.incentiveAPR).toBe('0');
       expect(result.aIncentivesData.rewardTokenAddress).toBe(
         '0x0000000000000000000000000000000000000001',
       );
@@ -154,13 +154,13 @@ describe('calculateReserveIncentives', () => {
         decimals: 6,
       });
 
-      expect(result.aIncentivesData.incentiveAPY).toBe(
+      expect(result.aIncentivesData.incentiveAPR).toBe(
         '0.00843060621664143574',
       );
-      expect(result.vIncentivesData.incentiveAPY).toBe(
+      expect(result.vIncentivesData.incentiveAPR).toBe(
         '0.01015955492045879679',
       );
-      expect(result.sIncentivesData.incentiveAPY).toBe('0');
+      expect(result.sIncentivesData.incentiveAPR).toBe('0');
     });
   });
   describe('DAI reserve data from client', () => {
@@ -225,13 +225,13 @@ describe('calculateReserveIncentives', () => {
         decimals: 18,
       });
 
-      expect(result.aIncentivesData.incentiveAPY).toBe(
+      expect(result.aIncentivesData.incentiveAPR).toBe(
         '0.01011349605576554151',
       );
-      expect(result.vIncentivesData.incentiveAPY).toBe(
+      expect(result.vIncentivesData.incentiveAPR).toBe(
         '0.01360600854482013582',
       );
-      expect(result.sIncentivesData.incentiveAPY).toBe('0');
+      expect(result.sIncentivesData.incentiveAPR).toBe('0');
     });
   });
 });

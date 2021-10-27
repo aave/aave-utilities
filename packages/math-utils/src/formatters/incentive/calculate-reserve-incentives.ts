@@ -1,4 +1,4 @@
-import { calculateIncentiveAPY } from './calculate-incentive-apy';
+import { calculateIncentiveAPR } from './calculate-incentive-apr';
 import { ReserveIncentiveWithFeedsResponse } from './types';
 
 export interface CalculateReserveIncentivesRequest {
@@ -14,7 +14,7 @@ export interface CalculateReserveIncentivesRequest {
 }
 
 interface ReserveIncentiveResponse {
-  incentiveAPY: string;
+  incentiveAPR: string;
   rewardTokenAddress: string;
 }
 export interface CalculateReserveIncentivesResponse {
@@ -24,7 +24,7 @@ export interface CalculateReserveIncentivesResponse {
   sIncentivesData: ReserveIncentiveResponse;
 }
 
-// Calculate deposit, variableBorrow, and stableBorrow incentives APY for a reserve asset
+// Calculate deposit, variableBorrow, and stableBorrow incentives APR for a reserve asset
 export function calculateReserveIncentives({
   reserveIncentiveData,
   aRewardTokenPriceInMarketReferenceCurrency,
@@ -36,7 +36,7 @@ export function calculateReserveIncentives({
   decimals,
   priceInMarketReferenceCurrency,
 }: CalculateReserveIncentivesRequest): CalculateReserveIncentivesResponse {
-  const aIncentivesAPY = calculateIncentiveAPY({
+  const aIncentivesAPR = calculateIncentiveAPR({
     emissionPerSecond: reserveIncentiveData.aIncentiveData.emissionPerSecond,
     rewardTokenPriceInMarketReferenceCurrency:
       aRewardTokenPriceInMarketReferenceCurrency,
@@ -47,7 +47,7 @@ export function calculateReserveIncentives({
       reserveIncentiveData.aIncentiveData.rewardTokenDecimals,
   });
 
-  const vIncentivesAPY = calculateIncentiveAPY({
+  const vIncentivesAPR = calculateIncentiveAPR({
     emissionPerSecond: reserveIncentiveData.vIncentiveData.emissionPerSecond,
     rewardTokenPriceInMarketReferenceCurrency:
       vRewardTokenPriceInMarketReferenceCurrency,
@@ -58,7 +58,7 @@ export function calculateReserveIncentives({
       reserveIncentiveData.aIncentiveData.rewardTokenDecimals,
   });
 
-  const sIncentivesAPY = calculateIncentiveAPY({
+  const sIncentivesAPR = calculateIncentiveAPR({
     emissionPerSecond: reserveIncentiveData.sIncentiveData.emissionPerSecond,
     rewardTokenPriceInMarketReferenceCurrency:
       sRewardTokenPriceInMarketReferenceCurrency,
@@ -72,17 +72,17 @@ export function calculateReserveIncentives({
   return {
     underlyingAsset: reserveIncentiveData.underlyingAsset,
     aIncentivesData: {
-      incentiveAPY: aIncentivesAPY,
+      incentiveAPR: aIncentivesAPR,
       rewardTokenAddress:
         reserveIncentiveData.aIncentiveData.rewardTokenAddress,
     },
     vIncentivesData: {
-      incentiveAPY: vIncentivesAPY,
+      incentiveAPR: vIncentivesAPR,
       rewardTokenAddress:
         reserveIncentiveData.vIncentiveData.rewardTokenAddress,
     },
     sIncentivesData: {
-      incentiveAPY: sIncentivesAPY,
+      incentiveAPR: sIncentivesAPR,
       rewardTokenAddress:
         reserveIncentiveData.sIncentiveData.rewardTokenAddress,
     },

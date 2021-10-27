@@ -1,7 +1,7 @@
 import { normalize, normalizeBN, valueToBigNumber } from '../../bignumber';
-import { SECONDS_PER_YEAR, ETH_DECIMALS } from '../../constants';
+import { SECONDS_PER_YEAR, WEI_DECIMALS } from '../../constants';
 
-export interface CalculateIncentiveAPYRequest {
+export interface CalculateIncentiveAPRRequest {
   emissionPerSecond: string;
   rewardTokenPriceInMarketReferenceCurrency: string; // Can be priced in ETH or USD depending on market
   totalTokenSupply: string;
@@ -10,17 +10,17 @@ export interface CalculateIncentiveAPYRequest {
   rewardTokenDecimals: number;
 }
 
-// Calculate the APY for an incentive emission
-export function calculateIncentiveAPY({
+// Calculate the APR for an incentive emission
+export function calculateIncentiveAPR({
   emissionPerSecond,
   rewardTokenPriceInMarketReferenceCurrency,
   priceInMarketReferenceCurrency,
   totalTokenSupply,
   decimals,
-}: CalculateIncentiveAPYRequest): string {
+}: CalculateIncentiveAPRRequest): string {
   const emissionPerSecondNormalized = normalizeBN(
     emissionPerSecond,
-    ETH_DECIMALS,
+    WEI_DECIMALS,
   ).multipliedBy(rewardTokenPriceInMarketReferenceCurrency);
 
   if (emissionPerSecondNormalized.eq(0)) {
