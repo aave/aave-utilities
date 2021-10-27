@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.20.3 (2021-10-27)
+
+
+### Bug Fixes
+
+* handle user incentives calculation with empty userReserves ([#133](https://github.com/@aave/aave-utilities/issues/133)) ([49371fa](https://github.com/@aave/aave-utilities/commit/49371fa8fa05bcc9002a9a1cdd151aeeadc3047b))
+
+
+
+
+
 ## 0.20.2 (2021-10-27)
 
 **Note:** Version bump only for package @aave/contract-helpers
