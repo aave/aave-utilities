@@ -1,5 +1,5 @@
 import { normalize, normalizeBN, valueToBigNumber } from '../../bignumber';
-import { SECONDS_PER_YEAR, ETH_DECIMALS } from '../../constants';
+import { SECONDS_PER_YEAR, WEI_DECIMALS } from '../../constants';
 
 export interface CalculateIncentiveAPRRequest {
   emissionPerSecond: string;
@@ -20,7 +20,7 @@ export function calculateIncentiveAPR({
 }: CalculateIncentiveAPRRequest): string {
   const emissionPerSecondNormalized = normalizeBN(
     emissionPerSecond,
-    ETH_DECIMALS,
+    WEI_DECIMALS,
   ).multipliedBy(rewardTokenPriceInMarketReferenceCurrency);
 
   if (emissionPerSecondNormalized.eq(0)) {
