@@ -51,7 +51,7 @@ describe('calculateAllUserIncentives', () => {
       currentTimestamp: 1631587561,
     };
 
-  it('should resturn userUnclaimedRewards even if userReserves is empty', () => {
+  it('should return userUnclaimedRewards even if userReserves is empty', () => {
     const result = calculateAllUserIncentives(
       totalUserIncentivesWithoutUserReserves,
     );
