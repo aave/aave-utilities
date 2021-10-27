@@ -4,12 +4,12 @@ import {
   formatReserveRequestDAI,
   formatReserveRequestWMATIC,
 } from '../reserve/reserve.mocks';
-import { calculateIncentiveAPY } from './calculate-incentive-apy';
+import { calculateIncentiveAPR } from './calculate-incentive-apr';
 
-describe('calculateIncentiveAPY', () => {
+describe('calculateIncentiveAPR', () => {
   describe('inhouse test values', () => {
-    it('calculates incentives APY', () => {
-      const result = calculateIncentiveAPY({
+    it('calculates incentives APR', () => {
+      const result = calculateIncentiveAPR({
         emissionPerSecond: '198333333333333000',
         rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply: '1000000003465380422',
@@ -21,8 +21,8 @@ describe('calculateIncentiveAPY', () => {
       expect(result).toEqual('1214271.25215758975164163271');
     });
 
-    it('calculates incentives APY', () => {
-      const result = calculateIncentiveAPY({
+    it('calculates incentives APR', () => {
+      const result = calculateIncentiveAPR({
         emissionPerSecond: '22037037037037000',
         rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply: '145530711359639107416907',
@@ -34,8 +34,8 @@ describe('calculateIncentiveAPY', () => {
       expect(result).toEqual('0.92708286261063121887');
     });
 
-    it('calculates incentives APY', () => {
-      const result = calculateIncentiveAPY({
+    it('calculates incentives APR', () => {
+      const result = calculateIncentiveAPR({
         emissionPerSecond: '0',
         rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply: '43135641118664782764100',
@@ -47,8 +47,8 @@ describe('calculateIncentiveAPY', () => {
       expect(result).toEqual('0');
     });
 
-    it('calculates incentives APY', () => {
-      const result = calculateIncentiveAPY({
+    it('calculates incentives APR', () => {
+      const result = calculateIncentiveAPR({
         emissionPerSecond: '136893333333333000',
         rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply: '150629528254290021063240208',
@@ -71,8 +71,8 @@ describe('calculateIncentiveAPY', () => {
       formatReserveRequestWMATIC.reserve.availableLiquidity,
     );
 
-    it('calculates deposit incentives APY', () => {
-      const result = calculateIncentiveAPY({
+    it('calculates deposit incentives APR', () => {
+      const result = calculateIncentiveAPR({
         emissionPerSecond: '198333333333333000',
         rewardTokenPriceInMarketReferenceCurrency: '498035657442060',
         totalTokenSupply: rayDiv(
@@ -87,8 +87,8 @@ describe('calculateIncentiveAPY', () => {
       expect(result).toEqual('0.03490948667901282833');
     });
 
-    it('calculates variable debt incentives APY', () => {
-      const result = calculateIncentiveAPY({
+    it('calculates variable debt incentives APR', () => {
+      const result = calculateIncentiveAPR({
         emissionPerSecond: '22037037037037000',
         rewardTokenPriceInMarketReferenceCurrency: '498035657442060',
         totalTokenSupply:
@@ -101,8 +101,8 @@ describe('calculateIncentiveAPY', () => {
       expect(result).toEqual('0.02302231808500517936');
     });
 
-    it('calculates stable debt incentives APY', () => {
-      const result = calculateIncentiveAPY({
+    it('calculates stable debt incentives APR', () => {
+      const result = calculateIncentiveAPR({
         emissionPerSecond: '0',
         rewardTokenPriceInMarketReferenceCurrency: '498035657442060',
         totalTokenSupply: calculateReserveDebtResult.totalStableDebt.toFixed(),
@@ -125,8 +125,8 @@ describe('calculateIncentiveAPY', () => {
       formatReserveRequestDAI.reserve.availableLiquidity,
     );
 
-    it('calculates deposit incentives APY', () => {
-      const result = calculateIncentiveAPY({
+    it('calculates deposit incentives APR', () => {
+      const result = calculateIncentiveAPR({
         emissionPerSecond: '0',
         rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply: totalLiquidity.toFixed(),
@@ -138,8 +138,8 @@ describe('calculateIncentiveAPY', () => {
       expect(result).toEqual('0');
     });
 
-    it('calculates variable debt incentives APY', () => {
-      const result = calculateIncentiveAPY({
+    it('calculates variable debt incentives APR', () => {
+      const result = calculateIncentiveAPR({
         emissionPerSecond: '0',
         rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply:
@@ -152,8 +152,8 @@ describe('calculateIncentiveAPY', () => {
       expect(result).toEqual('0');
     });
 
-    it('calculates stable debt incentives APY', () => {
-      const result = calculateIncentiveAPY({
+    it('calculates stable debt incentives APR', () => {
+      const result = calculateIncentiveAPR({
         emissionPerSecond: '0',
         rewardTokenPriceInMarketReferenceCurrency: '317233277449070',
         totalTokenSupply: calculateReserveDebtResult.totalStableDebt.toFixed(),

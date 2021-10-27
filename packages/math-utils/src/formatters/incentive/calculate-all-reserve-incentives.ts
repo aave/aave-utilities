@@ -17,7 +17,7 @@ interface ReserveIncentives {
 }
 
 interface ReserveIncentive {
-  incentiveAPY: string;
+  incentiveAPR: string;
   rewardTokenAddress: string;
 }
 
