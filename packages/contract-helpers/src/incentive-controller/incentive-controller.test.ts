@@ -7,6 +7,8 @@ import {
 } from '../commons/types';
 import { DEFAULT_NULL_VALUE_ON_TX } from '../commons/utils';
 import { IncentivesController } from '../index';
+import { IAaveIncentivesController } from './typechain/IAaveIncentivesController';
+import { IAaveIncentivesController__factory } from './typechain/IAaveIncentivesController__factory';
 
 jest.mock('../commons/gasStation', () => {
   return {
@@ -48,7 +50,6 @@ describe('IncentiveController', () => {
           to,
           incentivesControllerAddress,
         });
-
       expect(claimRewardsTxObject.length).toEqual(1);
       expect(claimRewardsTxObject[0].txType).toEqual(
         eEthereumTxType.REWARD_ACTION,
@@ -204,6 +205,89 @@ describe('IncentiveController', () => {
         }),
       ).toThrowError(
         new Error(`Address: ${assets[0]} is not a valid ethereum Address`),
+      );
+    });
+  });
+  describe('getAssetData', () => {
+    const tokenAddress = '0x0000000000000000000000000000000000000001';
+    const incentivesControllerAddress =
+      '0x0000000000000000000000000000000000000002';
+
+    const incentivesInstance = new IncentivesController(correctProvider);
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('Expects to return asset data with correct params', async () => {
+      jest
+        .spyOn(IAaveIncentivesController__factory, 'connect')
+        .mockReturnValue({
+          getAssetData: async () => ({
+            0: BigNumber.from('1'),
+            1: BigNumber.from('2'),
+            2: BigNumber.from('3'),
+          }),
+        } as unknown as IAaveIncentivesController);
+      const incentivesInstance = new IncentivesController(correctProvider);
+      const assetData = await incentivesInstance.getAssetData(
+        tokenAddress,
+        incentivesControllerAddress,
+      );
+
+      expect(assetData[0]).toEqual(BigNumber.from('1'));
+      expect(assetData[1]).toEqual(BigNumber.from('2'));
+      expect(assetData[2]).toEqual(BigNumber.from('3'));
+    });
+    it('Expects to fail with tokeAddress not correct address', async () => {
+      const tokenAddress = 'asdf';
+      await expect(async () =>
+        incentivesInstance.getAssetData(
+          tokenAddress,
+          incentivesControllerAddress,
+        ),
+      ).rejects.toThrowError(
+        `Address: ${tokenAddress} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail with incentivesControllerAddress not correct address', async () => {
+      const incentivesControllerAddress = 'asdf';
+      await expect(async () =>
+        incentivesInstance.getAssetData(
+          tokenAddress,
+          incentivesControllerAddress,
+        ),
+      ).rejects.toThrowError(
+        `Address: ${incentivesControllerAddress} is not a valid ethereum Address`,
+      );
+    });
+  });
+  describe('getDistributionEnd', () => {
+    const incentivesControllerAddress =
+      '0x0000000000000000000000000000000000000002';
+
+    const incentivesInstance = new IncentivesController(correctProvider);
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('Expects to return DistributionEnd with correct params', async () => {
+      jest
+        .spyOn(IAaveIncentivesController__factory, 'connect')
+        .mockReturnValue({
+          DISTRIBUTION_END: async () => BigNumber.from('1'),
+        } as unknown as IAaveIncentivesController);
+
+      const incentivesInstance = new IncentivesController(correctProvider);
+      const distributionEnd = await incentivesInstance.getDistributionEnd(
+        incentivesControllerAddress,
+      );
+
+      expect(distributionEnd).toEqual(BigNumber.from('1'));
+    });
+    it('Expects to fail with incentivesControllerAddress not correct address', async () => {
+      const incentivesControllerAddress = 'asdf';
+      await expect(async () =>
+        incentivesInstance.getDistributionEnd(incentivesControllerAddress),
+      ).rejects.toThrowError(
+        `Address: ${incentivesControllerAddress} is not a valid ethereum Address`,
       );
     });
   });

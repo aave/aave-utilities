@@ -1,5 +1,6 @@
-import { providers } from 'ethers';
+import { BigNumber, providers } from 'ethers';
 import { mocked } from 'ts-jest/utils';
+import { IncentivesController } from '..';
 import { ChainlinkFeedsRegistry } from '../cl-feed-registry/index';
 import { Denominations } from '../cl-feed-registry/types/ChainlinkFeedsRegistryTypes';
 import {
@@ -13,6 +14,19 @@ jest.mock('../cl-feed-registry/index', () => {
   const clInstance = { getPriceFeed: jest.fn() };
   const cl = jest.fn(() => clInstance);
   return { ChainlinkFeedsRegistry: cl };
+});
+
+jest.mock('../incentive-controller', () => {
+  const icInstance = {
+    getAssetData: jest.fn().mockReturnValue({
+      0: BigNumber.from('1'),
+      1: BigNumber.from('2'),
+      2: BigNumber.from('3'),
+    }),
+    getDistributionEnd: jest.fn().mockReturnValue(BigNumber.from('1')),
+  };
+  const ic = jest.fn(() => icInstance);
+  return { IncentivesController: ic };
 });
 
 describe('UiIncentiveDataProvider', () => {
@@ -44,6 +58,9 @@ describe('UiIncentiveDataProvider', () => {
     return instance;
   };
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
   describe('creating', () => {
     it('should throw an error if the contractAddress is not valid', () => {
       expect(
@@ -306,6 +323,54 @@ describe('UiIncentiveDataProvider', () => {
             priceFeedDecimals: 1,
           },
         },
+        {
+          underlyingAsset: '0x956f47f50a910163d8bf957cf5846d573e7f87ca',
+          aIncentiveData: {
+            tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
+            precision: 18,
+            rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
+            incentiveControllerAddress:
+              '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '1880787037037037',
+            incentivesLastUpdateTimestamp: 1633175478,
+            tokenIncentivesIndex: '43565143328112327495233486',
+            emissionEndTimestamp: 1637573428,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+          vIncentiveData: {
+            tokenAddress: '0xC2e10006AccAb7B45D9184FcF5b7EC7763f5BaAe',
+            precision: 18,
+            rewardTokenAddress: '0xc7283b66eb1eb5fb86327f08e1b5816b0720212b',
+            incentiveControllerAddress:
+              '0xDee5c1662bBfF8f80f7c572D8091BF251b3B0dAB',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '2',
+            incentivesLastUpdateTimestamp: 3,
+            tokenIncentivesIndex: '1',
+            emissionEndTimestamp: 1,
+            priceFeed: '2',
+            priceFeedTimestamp: 4,
+            priceFeedDecimals: 1,
+          },
+          sIncentiveData: {
+            tokenAddress: '0x0000000000000000000000000000000000000000',
+            precision: 0,
+            rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+            incentiveControllerAddress:
+              '0x0000000000000000000000000000000000000000',
+            rewardTokenDecimals: 0,
+            emissionPerSecond: '0',
+            incentivesLastUpdateTimestamp: 0,
+            tokenIncentivesIndex: '0',
+            emissionEndTimestamp: 0,
+            priceFeed: '2',
+            priceFeedTimestamp: 4,
+            priceFeedDecimals: 1,
+          },
+        },
       ]);
     });
     it('should work with all feeds', async () => {
@@ -411,6 +476,54 @@ describe('UiIncentiveDataProvider', () => {
             incentivesLastUpdateTimestamp: 1633175478,
             tokenIncentivesIndex: '57970476598005880594044681',
             emissionEndTimestamp: 1637573428,
+            priceFeed: '2',
+            priceFeedTimestamp: 4,
+            priceFeedDecimals: 1,
+          },
+          sIncentiveData: {
+            tokenAddress: '0x0000000000000000000000000000000000000000',
+            precision: 0,
+            rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+            incentiveControllerAddress:
+              '0x0000000000000000000000000000000000000000',
+            rewardTokenDecimals: 0,
+            emissionPerSecond: '0',
+            incentivesLastUpdateTimestamp: 0,
+            tokenIncentivesIndex: '0',
+            emissionEndTimestamp: 0,
+            priceFeed: '2',
+            priceFeedTimestamp: 4,
+            priceFeedDecimals: 1,
+          },
+        },
+        {
+          underlyingAsset: '0x956f47f50a910163d8bf957cf5846d573e7f87ca',
+          aIncentiveData: {
+            tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
+            precision: 18,
+            rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
+            incentiveControllerAddress:
+              '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '1880787037037037',
+            incentivesLastUpdateTimestamp: 1633175478,
+            tokenIncentivesIndex: '43565143328112327495233486',
+            emissionEndTimestamp: 1637573428,
+            priceFeed: '2',
+            priceFeedTimestamp: 4,
+            priceFeedDecimals: 1,
+          },
+          vIncentiveData: {
+            tokenAddress: '0xC2e10006AccAb7B45D9184FcF5b7EC7763f5BaAe',
+            precision: 18,
+            rewardTokenAddress: '0xc7283b66eb1eb5fb86327f08e1b5816b0720212b',
+            incentiveControllerAddress:
+              '0xDee5c1662bBfF8f80f7c572D8091BF251b3B0dAB',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '2',
+            incentivesLastUpdateTimestamp: 3,
+            tokenIncentivesIndex: '1',
+            emissionEndTimestamp: 1,
             priceFeed: '2',
             priceFeedTimestamp: 4,
             priceFeedDecimals: 1,
@@ -555,6 +668,54 @@ describe('UiIncentiveDataProvider', () => {
             priceFeedDecimals: 1,
           },
         },
+        {
+          underlyingAsset: '0x956f47f50a910163d8bf957cf5846d573e7f87ca',
+          aIncentiveData: {
+            tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
+            precision: 18,
+            rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
+            incentiveControllerAddress:
+              '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '1880787037037037',
+            incentivesLastUpdateTimestamp: 1633175478,
+            tokenIncentivesIndex: '43565143328112327495233486',
+            emissionEndTimestamp: 1637573428,
+            priceFeed: '2',
+            priceFeedTimestamp: 4,
+            priceFeedDecimals: 1,
+          },
+          vIncentiveData: {
+            tokenAddress: '0xC2e10006AccAb7B45D9184FcF5b7EC7763f5BaAe',
+            precision: 18,
+            rewardTokenAddress: '0xc7283b66eb1eb5fb86327f08e1b5816b0720212b',
+            incentiveControllerAddress:
+              '0xDee5c1662bBfF8f80f7c572D8091BF251b3B0dAB',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '2',
+            incentivesLastUpdateTimestamp: 3,
+            tokenIncentivesIndex: '1',
+            emissionEndTimestamp: 1,
+            priceFeed: '2',
+            priceFeedTimestamp: 4,
+            priceFeedDecimals: 1,
+          },
+          sIncentiveData: {
+            tokenAddress: '0x0000000000000000000000000000000000000000',
+            precision: 0,
+            rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+            incentiveControllerAddress:
+              '0x0000000000000000000000000000000000000000',
+            rewardTokenDecimals: 0,
+            emissionPerSecond: '0',
+            incentivesLastUpdateTimestamp: 0,
+            tokenIncentivesIndex: '0',
+            emissionEndTimestamp: 0,
+            priceFeed: '2',
+            priceFeedTimestamp: 4,
+            priceFeedDecimals: 1,
+          },
+        },
       ]);
     });
     it('should work with no feed', async () => {
@@ -654,6 +815,54 @@ describe('UiIncentiveDataProvider', () => {
             incentivesLastUpdateTimestamp: 1633175478,
             tokenIncentivesIndex: '57970476598005880594044681',
             emissionEndTimestamp: 1637573428,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+          sIncentiveData: {
+            tokenAddress: '0x0000000000000000000000000000000000000000',
+            precision: 0,
+            rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+            incentiveControllerAddress:
+              '0x0000000000000000000000000000000000000000',
+            rewardTokenDecimals: 0,
+            emissionPerSecond: '0',
+            incentivesLastUpdateTimestamp: 0,
+            tokenIncentivesIndex: '0',
+            emissionEndTimestamp: 0,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+        },
+        {
+          underlyingAsset: '0x956f47f50a910163d8bf957cf5846d573e7f87ca',
+          aIncentiveData: {
+            tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
+            precision: 18,
+            rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
+            incentiveControllerAddress:
+              '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '1880787037037037',
+            incentivesLastUpdateTimestamp: 1633175478,
+            tokenIncentivesIndex: '43565143328112327495233486',
+            emissionEndTimestamp: 1637573428,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+          vIncentiveData: {
+            tokenAddress: '0xC2e10006AccAb7B45D9184FcF5b7EC7763f5BaAe',
+            precision: 18,
+            rewardTokenAddress: '0xc7283b66eb1eb5fb86327f08e1b5816b0720212b',
+            incentiveControllerAddress:
+              '0xDee5c1662bBfF8f80f7c572D8091BF251b3B0dAB',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '2',
+            incentivesLastUpdateTimestamp: 3,
+            tokenIncentivesIndex: '1',
+            emissionEndTimestamp: 1,
             priceFeed: '0',
             priceFeedTimestamp: 0,
             priceFeedDecimals: 0,
@@ -799,6 +1008,54 @@ describe('UiIncentiveDataProvider', () => {
             priceFeedDecimals: 0,
           },
         },
+        {
+          underlyingAsset: '0x956f47f50a910163d8bf957cf5846d573e7f87ca',
+          aIncentiveData: {
+            tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
+            precision: 18,
+            rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
+            incentiveControllerAddress:
+              '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '1880787037037037',
+            incentivesLastUpdateTimestamp: 1633175478,
+            tokenIncentivesIndex: '43565143328112327495233486',
+            emissionEndTimestamp: 1637573428,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+          vIncentiveData: {
+            tokenAddress: '0xC2e10006AccAb7B45D9184FcF5b7EC7763f5BaAe',
+            precision: 18,
+            rewardTokenAddress: '0xc7283b66eb1eb5fb86327f08e1b5816b0720212b',
+            incentiveControllerAddress:
+              '0xDee5c1662bBfF8f80f7c572D8091BF251b3B0dAB',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '2',
+            incentivesLastUpdateTimestamp: 3,
+            tokenIncentivesIndex: '1',
+            emissionEndTimestamp: 1,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+          sIncentiveData: {
+            tokenAddress: '0x0000000000000000000000000000000000000000',
+            precision: 0,
+            rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+            incentiveControllerAddress:
+              '0x0000000000000000000000000000000000000000',
+            rewardTokenDecimals: 0,
+            emissionPerSecond: '0',
+            incentivesLastUpdateTimestamp: 0,
+            tokenIncentivesIndex: '0',
+            emissionEndTimestamp: 0,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+        },
       ]);
       expect(result2).toEqual([
         {
@@ -877,6 +1134,54 @@ describe('UiIncentiveDataProvider', () => {
             incentivesLastUpdateTimestamp: 1633175478,
             tokenIncentivesIndex: '57970476598005880594044681',
             emissionEndTimestamp: 1637573428,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+          sIncentiveData: {
+            tokenAddress: '0x0000000000000000000000000000000000000000',
+            precision: 0,
+            rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+            incentiveControllerAddress:
+              '0x0000000000000000000000000000000000000000',
+            rewardTokenDecimals: 0,
+            emissionPerSecond: '0',
+            incentivesLastUpdateTimestamp: 0,
+            tokenIncentivesIndex: '0',
+            emissionEndTimestamp: 0,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+        },
+        {
+          underlyingAsset: '0x956f47f50a910163d8bf957cf5846d573e7f87ca',
+          aIncentiveData: {
+            tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
+            precision: 18,
+            rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
+            incentiveControllerAddress:
+              '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '1880787037037037',
+            incentivesLastUpdateTimestamp: 1633175478,
+            tokenIncentivesIndex: '43565143328112327495233486',
+            emissionEndTimestamp: 1637573428,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+          vIncentiveData: {
+            tokenAddress: '0xC2e10006AccAb7B45D9184FcF5b7EC7763f5BaAe',
+            precision: 18,
+            rewardTokenAddress: '0xc7283b66eb1eb5fb86327f08e1b5816b0720212b',
+            incentiveControllerAddress:
+              '0xDee5c1662bBfF8f80f7c572D8091BF251b3B0dAB',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '2',
+            incentivesLastUpdateTimestamp: 3,
+            tokenIncentivesIndex: '1',
+            emissionEndTimestamp: 1,
             priceFeed: '0',
             priceFeedTimestamp: 0,
             priceFeedDecimals: 0,
@@ -1005,6 +1310,54 @@ describe('UiIncentiveDataProvider', () => {
             priceFeedDecimals: 0,
           },
         },
+        {
+          underlyingAsset: '0x956f47f50a910163d8bf957cf5846d573e7f87ca',
+          aIncentiveData: {
+            tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
+            precision: 18,
+            rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
+            incentiveControllerAddress:
+              '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '1880787037037037',
+            incentivesLastUpdateTimestamp: 1633175478,
+            tokenIncentivesIndex: '43565143328112327495233486',
+            emissionEndTimestamp: 1637573428,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+          vIncentiveData: {
+            tokenAddress: '0xC2e10006AccAb7B45D9184FcF5b7EC7763f5BaAe',
+            precision: 18,
+            rewardTokenAddress: '0xc7283b66eb1eb5fb86327f08e1b5816b0720212b',
+            incentiveControllerAddress:
+              '0xDee5c1662bBfF8f80f7c572D8091BF251b3B0dAB',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '2',
+            incentivesLastUpdateTimestamp: 3,
+            tokenIncentivesIndex: '1',
+            emissionEndTimestamp: 1,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+          sIncentiveData: {
+            tokenAddress: '0x0000000000000000000000000000000000000000',
+            precision: 0,
+            rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+            incentiveControllerAddress:
+              '0x0000000000000000000000000000000000000000',
+            rewardTokenDecimals: 0,
+            emissionPerSecond: '0',
+            incentivesLastUpdateTimestamp: 0,
+            tokenIncentivesIndex: '0',
+            emissionEndTimestamp: 0,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+        },
       ]);
     });
     it('should work with no chainlinkRegistry address no quote ', async () => {
@@ -1111,9 +1464,240 @@ describe('UiIncentiveDataProvider', () => {
             priceFeedDecimals: 0,
           },
         },
+        {
+          underlyingAsset: '0x956f47f50a910163d8bf957cf5846d573e7f87ca',
+          aIncentiveData: {
+            tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
+            precision: 18,
+            rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
+            incentiveControllerAddress:
+              '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '1880787037037037',
+            incentivesLastUpdateTimestamp: 1633175478,
+            tokenIncentivesIndex: '43565143328112327495233486',
+            emissionEndTimestamp: 1637573428,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+          vIncentiveData: {
+            tokenAddress: '0xC2e10006AccAb7B45D9184FcF5b7EC7763f5BaAe',
+            precision: 18,
+            rewardTokenAddress: '0xc7283b66eb1eb5fb86327f08e1b5816b0720212b',
+            incentiveControllerAddress:
+              '0xDee5c1662bBfF8f80f7c572D8091BF251b3B0dAB',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '2',
+            incentivesLastUpdateTimestamp: 3,
+            tokenIncentivesIndex: '1',
+            emissionEndTimestamp: 1,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+          sIncentiveData: {
+            tokenAddress: '0x0000000000000000000000000000000000000000',
+            precision: 0,
+            rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+            incentiveControllerAddress:
+              '0x0000000000000000000000000000000000000000',
+            rewardTokenDecimals: 0,
+            emissionPerSecond: '0',
+            incentivesLastUpdateTimestamp: 0,
+            tokenIncentivesIndex: '0',
+            emissionEndTimestamp: 0,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+        },
       ]);
     });
     it('should work with no chainlinkregistry address and quote ', async () => {
+      const clInstance = new ChainlinkFeedsRegistry({
+        chainlinkFeedsRegistry: mockValidEthereumAddress,
+        provider: new providers.JsonRpcProvider(),
+      });
+      const icInstance = new IncentivesController(
+        new providers.JsonRpcProvider(),
+      );
+      const instance = createValidInstance();
+
+      mocked(icInstance).getAssetData.mockReturnValueOnce(Promise.reject());
+
+      mocked(clInstance).getPriceFeed.mockReturnValueOnce(Promise.reject());
+
+      mocked(clInstance).getPriceFeed.mockReturnValue(
+        Promise.resolve({
+          answer: '2',
+          updatedAt: 4,
+          decimals: 1,
+        }),
+      );
+
+      const result: ReserveIncentiveWithFeedsResponse[] =
+        await instance.getIncentivesDataWithPrice({
+          lendingPoolAddressProvider: mockValidEthereumAddress,
+          chainlinkFeedsRegistry: mockValidEthereumAddress,
+          quote: Denominations.eth,
+        });
+
+      expect(clInstance.getPriceFeed).toBeCalled();
+      expect(typeof result[0].aIncentiveData.emissionEndTimestamp).toEqual(
+        typeof 1,
+      );
+      expect(result).toEqual([
+        {
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+          aIncentiveData: {
+            tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
+            precision: 18,
+            rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
+            incentiveControllerAddress:
+              '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '1880787037037037',
+            incentivesLastUpdateTimestamp: 1633175478,
+            tokenIncentivesIndex: '43565143328112327495233486',
+            emissionEndTimestamp: 1637573428,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+          vIncentiveData: {
+            tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
+            precision: 18,
+            rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
+            incentiveControllerAddress:
+              '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '1880787037037037',
+            incentivesLastUpdateTimestamp: 1633175478,
+            tokenIncentivesIndex: '57970476598005880594044681',
+            emissionEndTimestamp: 1637573428,
+            priceFeed: '2',
+            priceFeedTimestamp: 4,
+            priceFeedDecimals: 1,
+          },
+          sIncentiveData: {
+            tokenAddress: '0x0000000000000000000000000000000000000000',
+            precision: 0,
+            rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+            incentiveControllerAddress:
+              '0x0000000000000000000000000000000000000000',
+            rewardTokenDecimals: 0,
+            emissionPerSecond: '0',
+            incentivesLastUpdateTimestamp: 0,
+            tokenIncentivesIndex: '0',
+            emissionEndTimestamp: 0,
+            priceFeed: '2',
+            priceFeedTimestamp: 4,
+            priceFeedDecimals: 1,
+          },
+        },
+        {
+          underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+          aIncentiveData: {
+            tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
+            precision: 18,
+            rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
+            incentiveControllerAddress:
+              '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '1880787037037037',
+            incentivesLastUpdateTimestamp: 1633175478,
+            tokenIncentivesIndex: '43565143328112327495233486',
+            emissionEndTimestamp: 1637573428,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+          vIncentiveData: {
+            tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
+            precision: 18,
+            rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
+            incentiveControllerAddress:
+              '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '1880787037037037',
+            incentivesLastUpdateTimestamp: 1633175478,
+            tokenIncentivesIndex: '57970476598005880594044681',
+            emissionEndTimestamp: 1637573428,
+            priceFeed: '2',
+            priceFeedTimestamp: 4,
+            priceFeedDecimals: 1,
+          },
+          sIncentiveData: {
+            tokenAddress: '0x0000000000000000000000000000000000000000',
+            precision: 0,
+            rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+            incentiveControllerAddress:
+              '0x0000000000000000000000000000000000000000',
+            rewardTokenDecimals: 0,
+            emissionPerSecond: '0',
+            incentivesLastUpdateTimestamp: 0,
+            tokenIncentivesIndex: '0',
+            emissionEndTimestamp: 0,
+            priceFeed: '2',
+            priceFeedTimestamp: 4,
+            priceFeedDecimals: 1,
+          },
+        },
+        {
+          underlyingAsset: '0x956f47f50a910163d8bf957cf5846d573e7f87ca',
+          aIncentiveData: {
+            tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
+            precision: 18,
+            rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
+            incentiveControllerAddress:
+              '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '1880787037037037',
+            incentivesLastUpdateTimestamp: 1633175478,
+            tokenIncentivesIndex: '43565143328112327495233486',
+            emissionEndTimestamp: 1637573428,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+          vIncentiveData: {
+            precision: 18,
+            rewardTokenDecimals: 18,
+            priceFeed: '2',
+            priceFeedTimestamp: 4,
+            priceFeedDecimals: 1,
+
+            emissionEndTimestamp: 1,
+            emissionPerSecond: '2',
+            incentiveControllerAddress:
+              '0xDee5c1662bBfF8f80f7c572D8091BF251b3B0dAB',
+            incentivesLastUpdateTimestamp: 3,
+
+            rewardTokenAddress: '0xc7283b66eb1eb5fb86327f08e1b5816b0720212b',
+
+            tokenAddress: '0xC2e10006AccAb7B45D9184FcF5b7EC7763f5BaAe',
+            tokenIncentivesIndex: '1',
+          },
+          sIncentiveData: {
+            tokenAddress: '0x0000000000000000000000000000000000000000',
+            precision: 0,
+            rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+            incentiveControllerAddress:
+              '0x0000000000000000000000000000000000000000',
+            rewardTokenDecimals: 0,
+            emissionPerSecond: '0',
+            incentivesLastUpdateTimestamp: 0,
+            tokenIncentivesIndex: '0',
+            emissionEndTimestamp: 0,
+            priceFeed: '2',
+            priceFeedTimestamp: 4,
+            priceFeedDecimals: 1,
+          },
+        },
+      ]);
+    });
+    it('should work even if fei calls fail', async () => {
       const instance = createValidInstance();
       const result: ReserveIncentiveWithFeedsResponse[] =
         await instance.getIncentivesDataWithPrice({
@@ -1198,6 +1782,54 @@ describe('UiIncentiveDataProvider', () => {
             incentivesLastUpdateTimestamp: 1633175478,
             tokenIncentivesIndex: '57970476598005880594044681',
             emissionEndTimestamp: 1637573428,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+          sIncentiveData: {
+            tokenAddress: '0x0000000000000000000000000000000000000000',
+            precision: 0,
+            rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+            incentiveControllerAddress:
+              '0x0000000000000000000000000000000000000000',
+            rewardTokenDecimals: 0,
+            emissionPerSecond: '0',
+            incentivesLastUpdateTimestamp: 0,
+            tokenIncentivesIndex: '0',
+            emissionEndTimestamp: 0,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+        },
+        {
+          underlyingAsset: '0x956f47f50a910163d8bf957cf5846d573e7f87ca',
+          aIncentiveData: {
+            tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
+            precision: 18,
+            rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
+            incentiveControllerAddress:
+              '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '1880787037037037',
+            incentivesLastUpdateTimestamp: 1633175478,
+            tokenIncentivesIndex: '43565143328112327495233486',
+            emissionEndTimestamp: 1637573428,
+            priceFeed: '0',
+            priceFeedTimestamp: 0,
+            priceFeedDecimals: 0,
+          },
+          vIncentiveData: {
+            tokenAddress: '0xC2e10006AccAb7B45D9184FcF5b7EC7763f5BaAe',
+            precision: 18,
+            rewardTokenAddress: '0xc7283b66eb1eb5fb86327f08e1b5816b0720212b',
+            incentiveControllerAddress:
+              '0xDee5c1662bBfF8f80f7c572D8091BF251b3B0dAB',
+            rewardTokenDecimals: 18,
+            emissionPerSecond: '2',
+            incentivesLastUpdateTimestamp: 3,
+            tokenIncentivesIndex: '1',
+            emissionEndTimestamp: 1,
             priceFeed: '0',
             priceFeedTimestamp: 0,
             priceFeedDecimals: 0,

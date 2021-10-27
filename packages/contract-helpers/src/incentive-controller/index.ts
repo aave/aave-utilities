@@ -1,4 +1,4 @@
-import { constants, providers } from 'ethers';
+import { BigNumber, constants, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
@@ -26,6 +26,11 @@ export interface IncentivesControllerInterface {
   ) => EthereumTransactionTypeExtended[];
 }
 
+export type AssetDataType = {
+  0: BigNumber;
+  1: BigNumber;
+  2: BigNumber;
+};
 export class IncentivesController
   extends BaseService<IAaveIncentivesController>
   implements IncentivesControllerInterface
@@ -61,5 +66,25 @@ export class IncentivesController
         gas: this.generateTxPriceEstimation([], txCallback),
       },
     ];
+  }
+
+  @IncentivesValidator
+  public async getAssetData(
+    @isEthAddress() tokenAddress: string,
+    @isEthAddress() incentivesControllerAddress: string,
+  ): Promise<AssetDataType> {
+    const incentivesContract: IAaveIncentivesController =
+      this.getContractInstance(incentivesControllerAddress);
+    return incentivesContract.getAssetData(tokenAddress);
+  }
+
+  @IncentivesValidator
+  public async getDistributionEnd(
+    @isEthAddress() incentivesControllerAddress: string,
+  ): Promise<BigNumber> {
+    const incentivesContract: IAaveIncentivesController =
+      this.getContractInstance(incentivesControllerAddress);
+    // eslint-disable-next-line new-cap
+    return incentivesContract.DISTRIBUTION_END();
   }
 }

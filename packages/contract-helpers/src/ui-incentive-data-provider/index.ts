@@ -6,6 +6,7 @@ import {
   PriceFeed,
 } from '../cl-feed-registry/index';
 import { Denominations } from '../cl-feed-registry/types/ChainlinkFeedsRegistryTypes';
+import { IncentivesController } from '../incentive-controller';
 import { UiIncentiveDataProvider as UiIncentiveDataProviderContract } from './typechain/UiIncentiveDataProvider';
 import { UiIncentiveDataProviderFactory } from './typechain/UiIncentiveDataProviderFactory';
 import {
@@ -127,7 +128,76 @@ export class UiIncentiveDataProvider
       throw new Error('Lending pool address provider is not valid');
     }
 
-    return this._contract.getReservesIncentivesData(lendingPoolAddressProvider);
+    const incentives: ReserveIncentiveDataResponse[] =
+      await this._contract.getReservesIncentivesData(
+        lendingPoolAddressProvider,
+      );
+
+    // TODO: remove when FEI new aip is deployed
+    // hardcoded fei incentives here
+    try {
+      const feiUnderlyingToken = '0x956f47f50a910163d8bf957cf5846d573e7f87ca';
+      const feiVDebtTokenAddress = '0xC2e10006AccAb7B45D9184FcF5b7EC7763f5BaAe';
+      const feiVDebtRewardToken = '0xc7283b66eb1eb5fb86327f08e1b5816b0720212b';
+      const feiVDebtTokenIncentivesController =
+        '0xDee5c1662bBfF8f80f7c572D8091BF251b3B0dAB';
+      const incentiveController = new IncentivesController(
+        this._context.provider,
+      );
+      const [
+        {
+          0: vTokenIncentivesIndex,
+          1: vEmissionPerSecond,
+          2: vIncentivesLastUpdateTimestamp,
+        },
+        distributionEnd,
+      ] = await Promise.all([
+        incentiveController.getAssetData(
+          feiVDebtTokenAddress,
+          feiVDebtTokenIncentivesController,
+        ),
+        incentiveController.getDistributionEnd(
+          feiVDebtTokenIncentivesController,
+        ),
+      ]);
+
+      const incentivesWithFei = incentives.map(
+        (incentive: ReserveIncentiveDataResponse) => {
+          if (
+            incentive.underlyingAsset.toLowerCase() ===
+            feiUnderlyingToken.toLowerCase()
+          ) {
+            incentive.vIncentiveData.tokenIncentivesIndex =
+              vTokenIncentivesIndex;
+            incentive.vIncentiveData.emissionPerSecond = vEmissionPerSecond;
+            incentive.vIncentiveData.incentivesLastUpdateTimestamp =
+              vIncentivesLastUpdateTimestamp;
+            incentive.vIncentiveData.emissionEndTimestamp = distributionEnd;
+            incentive.vIncentiveData.tokenAddress = feiVDebtTokenAddress;
+            incentive.vIncentiveData.rewardTokenAddress = feiVDebtRewardToken;
+            incentive.vIncentiveData.incentiveControllerAddress =
+              feiVDebtTokenIncentivesController;
+            incentive.vIncentiveData.rewardTokenDecimals = 18;
+            incentive.vIncentiveData.precision = 18;
+
+            incentive.vIncentiveData[0] = vEmissionPerSecond;
+            incentive.vIncentiveData[1] = vIncentivesLastUpdateTimestamp;
+            incentive.vIncentiveData[2] = vTokenIncentivesIndex;
+            incentive.vIncentiveData[3] = distributionEnd;
+            incentive.vIncentiveData[4] = feiVDebtTokenAddress;
+            incentive.vIncentiveData[5] = feiVDebtRewardToken;
+            incentive.vIncentiveData[6] = feiVDebtTokenIncentivesController;
+            incentive.vIncentiveData[7] = 18;
+            incentive.vIncentiveData[8] = 18;
+          }
+
+          return incentive;
+        },
+      );
+      return incentivesWithFei;
+    } catch (_: unknown) {
+      return incentives;
+    }
   }
 
   public async getReservesIncentivesDataHumanized(
