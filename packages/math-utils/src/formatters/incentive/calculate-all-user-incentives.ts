@@ -1,5 +1,9 @@
 import { BigNumber } from 'bignumber.js';
-import { calculateUserReserveIncentives } from './calculate-user-reserve-incentives';
+import { valueToZDBigNumber } from '../../bignumber';
+import {
+  calculateUserReserveIncentives,
+  CalculateUserReserveIncentivesResponse,
+} from './calculate-user-reserve-incentives';
 import {
   ReserveIncentiveWithFeedsResponse,
   UserReserveCalculationData,
@@ -51,13 +55,20 @@ export function calculateAllUserIncentives({
           (reserve: UserReserveCalculationData) =>
             reserve.underlyingAsset === userReserveIncentive.underlyingAsset,
         );
-      if (reserve && userReserve) {
-        const rewards = calculateUserReserveIncentives({
-          reserveIncentives: reserve,
-          userReserveIncentives: userReserveIncentive,
-          userReserveData: userReserve,
-          currentTimestamp,
-        });
+      if (reserve) {
+        let rewards: CalculateUserReserveIncentivesResponse = {
+          aIncentives: valueToZDBigNumber('0'),
+          vIncentives: valueToZDBigNumber('0'),
+          sIncentives: valueToZDBigNumber('0'),
+        };
+        if (userReserve) {
+          rewards = calculateUserReserveIncentives({
+            reserveIncentives: reserve,
+            userReserveIncentives: userReserveIncentive,
+            userReserveData: userReserve,
+            currentTimestamp,
+          });
+        }
 
         return [
           {

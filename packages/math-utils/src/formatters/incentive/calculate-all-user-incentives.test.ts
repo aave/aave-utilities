@@ -42,6 +42,23 @@ describe('calculateAllUserIncentives', () => {
       result['0x0000000000000000000000000000000000000000'].claimableRewards;
     expect(normalize(claimable, 18)).toBe('0.07029534828528322115');
   });
+
+  const totalUserIncentivesWithoutUserReserves: CalculateAllUserIncentivesRequest =
+    {
+      reserveIncentives,
+      userReserveIncentives,
+      userReserves: [],
+      currentTimestamp: 1631587561,
+    };
+
+  it('should return userUnclaimedRewards even if userReserves is empty', () => {
+    const result = calculateAllUserIncentives(
+      totalUserIncentivesWithoutUserReserves,
+    );
+    const claimable =
+      result['0x0000000000000000000000000000000000000000'].claimableRewards;
+    expect(normalize(claimable, 18)).toBe('0.04392181913764487');
+  });
 });
 
 describe('calculateAllUserIncentives for multiple IncentiveControllers', () => {
