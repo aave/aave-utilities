@@ -106,10 +106,10 @@ export interface LendingPoolInterface {
   ) => Promise<EthereumTransactionTypeExtended[]>;
   swapBorrowRateMode: (
     args: LPSwapBorrowRateMode,
-  ) => Promise<EthereumTransactionTypeExtended[]>;
+  ) => EthereumTransactionTypeExtended[];
   setUsageAsCollateral: (
     args: LPSetUsageAsCollateral,
-  ) => Promise<EthereumTransactionTypeExtended[]>;
+  ) => EthereumTransactionTypeExtended[];
   liquidationCall: (
     args: LPLiquidationCall,
   ) => Promise<EthereumTransactionTypeExtended[]>;
@@ -482,11 +482,11 @@ export default class LendingPool
   }
 
   @LPValidator
-  public async swapBorrowRateMode(
+  public swapBorrowRateMode(
     @isEthAddress('user')
     @isEthAddress('reserve')
     { user, reserve, interestRateMode }: LPSwapBorrowRateMode,
-  ): Promise<EthereumTransactionTypeExtended[]> {
+  ): EthereumTransactionTypeExtended[] {
     const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
 
     const lendingPoolContract = this.getContractInstance(
@@ -511,11 +511,11 @@ export default class LendingPool
   }
 
   @LPValidator
-  public async setUsageAsCollateral(
+  public setUsageAsCollateral(
     @isEthAddress('user')
     @isEthAddress('reserve')
     { user, reserve, usageAsCollateral }: LPSetUsageAsCollateral,
-  ): Promise<EthereumTransactionTypeExtended[]> {
+  ): EthereumTransactionTypeExtended[] {
     const lendingPoolContract = this.getContractInstance(
       this.lendingPoolAddress,
     );
