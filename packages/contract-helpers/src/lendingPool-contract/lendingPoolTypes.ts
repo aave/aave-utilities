@@ -105,5 +105,5 @@ export type LPFlashLiquidation = {
   debtTokenCover: string;
   liquidateAll: boolean;
   initiator: tEthereumAddress;
-  useEthPath: boolean;
+  useEthPath?: boolean;
 };

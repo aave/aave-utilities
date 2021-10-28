@@ -44,7 +44,7 @@ export function LPFlashLiquidationValidator(
 
     amountGtThan0OrMinus1(target, propertyName, arguments);
 
-    return method?.apply(this, arguments);
+    return method.apply(this, arguments);
   };
 }
 
@@ -76,7 +76,7 @@ export function LPRepayWithCollateralValidator(
 
     amountGtThan0OrMinus1(target, propertyName, arguments);
 
-    return method?.apply(this, arguments);
+    return method.apply(this, arguments);
   };
 }
 
@@ -108,7 +108,7 @@ export function LPSwapCollateralValidator(
 
     amountGtThan0OrMinus1(target, propertyName, arguments);
 
-    return method?.apply(this, arguments);
+    return method.apply(this, arguments);
   };
 }
 
@@ -133,7 +133,7 @@ export function LPValidator(
 
     amountGtThan0OrMinus1(target, propertyName, arguments);
 
-    return method?.apply(this, arguments);
+    return method.apply(this, arguments);
   };
 }
 

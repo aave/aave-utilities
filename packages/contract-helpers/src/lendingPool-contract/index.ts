@@ -965,7 +965,7 @@ export default class LendingPool
         borrowedAsset,
         user,
         convertedDebtTokenCover,
-        useEthPath || false,
+        useEthPath ?? false,
       ],
     );
 
