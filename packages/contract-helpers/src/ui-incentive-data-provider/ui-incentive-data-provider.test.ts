@@ -1668,16 +1668,21 @@ describe('UiIncentiveDataProvider', () => {
             priceFeedTimestamp: 4,
             priceFeedDecimals: 1,
 
-            emissionEndTimestamp: 1,
-            emissionPerSecond: '2',
+            // emissionEndTimestamp: 1,
+            // emissionPerSecond: '2',
+            // incentiveControllerAddress:
+            //   '0xDee5c1662bBfF8f80f7c572D8091BF251b3B0dAB',
+            // incentivesLastUpdateTimestamp: 3,
+
+            rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
+
+            tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
+            tokenIncentivesIndex: '57970476598005880594044681',
+            emissionEndTimestamp: 1637573428,
+            emissionPerSecond: '1880787037037037',
             incentiveControllerAddress:
-              '0xDee5c1662bBfF8f80f7c572D8091BF251b3B0dAB',
-            incentivesLastUpdateTimestamp: 3,
-
-            rewardTokenAddress: '0xc7283b66eb1eb5fb86327f08e1b5816b0720212b',
-
-            tokenAddress: '0xC2e10006AccAb7B45D9184FcF5b7EC7763f5BaAe',
-            tokenIncentivesIndex: '1',
+              '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
+            incentivesLastUpdateTimestamp: 1633175478,
           },
           sIncentiveData: {
             tokenAddress: '0x0000000000000000000000000000000000000000',
