@@ -1,8 +1,14 @@
-import { BigNumber, providers, utils } from 'ethers';
-import { eEthereumTxType, GasType, transactionType } from '../commons/types';
+import { BigNumber, constants, providers, utils } from 'ethers';
+import {
+  eEthereumTxType,
+  GasType,
+  ProtocolAction,
+  transactionType,
+} from '../commons/types';
 import {
   API_ETH_MOCK_ADDRESS,
   DEFAULT_NULL_VALUE_ON_TX,
+  gasLimitRecommendations,
   valueToWei,
 } from '../commons/utils';
 import { LendingPool } from './index';
@@ -390,18 +396,237 @@ describe('LendingPool', () => {
     });
   });
   describe('withdraw', () => {
-    it('Expects the tx object passing all parameters but not onBehalfOf', async () => {});
-    it('Expects the tx object passing all parameters for eth withdraw', async () => {});
-    it('Expects the tx object passing all params and -1 amount', async () => {});
-    it('Expects the tx object passing all params and specific', async () => {});
-    it('Expects to fail for eth withdraw if not aTokenAddress is passed', async () => {});
-    it('Expects to fail when lendingPoolAddress not provided', () => {});
-    it('Expects to fail when user not and eth address', async () => {});
-    it('Expects to fail when reserve not and eth address', async () => {});
-    it('Expects to fail when onBehalfOf not and eth address', async () => {});
-    it('Expects to fail when aTokenAddress not and eth address', async () => {});
-    it('Expects to fail when amount not positive', async () => {});
-    it('Expects to fail when amount not number', async () => {});
+    const user = '0x0000000000000000000000000000000000000006';
+    const reserve = '0x0000000000000000000000000000000000000007';
+    const onBehalfOf = '0x0000000000000000000000000000000000000008';
+    const aTokenAddress = '0x0000000000000000000000000000000000000009';
+    const amount = '123.456';
+    const decimals = 18;
+
+    const config = { LENDING_POOL };
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('Expects the tx object passing all parameters for eth withdraw', async () => {
+      const reserve = API_ETH_MOCK_ADDRESS;
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const withdrawEthSpy = jest
+        .spyOn(lendingPoolInstance.wethGatewayService, 'withdrawETH')
+        .mockReturnValue(Promise.resolve([]));
+      await lendingPoolInstance.withdraw({
+        user,
+        reserve,
+        amount,
+        onBehalfOf,
+        aTokenAddress,
+      });
+      expect(withdrawEthSpy).toHaveBeenCalled();
+    });
+    it('Expects the tx object passing all parameters but not onBehalfOf', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+
+      const depositTxObj = await lendingPoolInstance.withdraw({
+        user,
+        reserve,
+        amount,
+        aTokenAddress,
+      });
+
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(depositTxObj.length).toEqual(1);
+      const txObj = depositTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.withdraw].recommended,
+        ),
+      );
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256', 'address'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
+      expect(decoded[2]).toEqual(user);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.withdraw].recommended,
+      );
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params and -1 amount', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const amount = '-1';
+      const depositTxObj = await lendingPoolInstance.withdraw({
+        user,
+        reserve,
+        amount,
+        onBehalfOf,
+        aTokenAddress,
+      });
+
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(depositTxObj.length).toEqual(1);
+      const txObj = depositTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.withdraw].recommended,
+        ),
+      );
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256', 'address'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(constants.MaxUint256);
+      expect(decoded[2]).toEqual(onBehalfOf);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.withdraw].recommended,
+      );
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects to fail for eth withdraw if not aTokenAddress is passed', async () => {
+      const reserve = API_ETH_MOCK_ADDRESS;
+      const lendingPoolInstance = new LendingPool(provider, config);
+
+      await expect(async () =>
+        lendingPoolInstance.withdraw({
+          user,
+          reserve,
+          amount,
+          onBehalfOf,
+        }),
+      ).rejects.toThrowError(
+        'To withdraw ETH you need to pass the aWETH token address',
+      );
+    });
+    it('Expects to fail when lendingPoolAddress not provided', async () => {
+      const lendingPoolInstance = new LendingPool(provider);
+      const txObj = await lendingPoolInstance.withdraw({
+        user,
+        reserve,
+        amount,
+        onBehalfOf,
+        aTokenAddress,
+      });
+      expect(txObj).toEqual([]);
+    });
+    it('Expects to fail when user not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const user = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.withdraw({
+          user,
+          reserve,
+          amount,
+          onBehalfOf,
+          aTokenAddress,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${user} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when reserve not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const reserve = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.withdraw({
+          user,
+          reserve,
+          amount,
+          onBehalfOf,
+          aTokenAddress,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${reserve} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when onBehalfOf not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const onBehalfOf = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.withdraw({
+          user,
+          reserve,
+          amount,
+          onBehalfOf,
+          aTokenAddress,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${onBehalfOf} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when aTokenAddress not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const aTokenAddress = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.withdraw({
+          user,
+          reserve,
+          amount,
+          onBehalfOf,
+          aTokenAddress,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${aTokenAddress} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when amount not positive', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const amount = '0';
+      await expect(async () =>
+        lendingPoolInstance.withdraw({
+          user,
+          reserve,
+          amount,
+          onBehalfOf,
+          aTokenAddress,
+        }),
+      ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
+    });
+    it('Expects to fail when amount not number', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const amount = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.withdraw({
+          user,
+          reserve,
+          amount,
+          onBehalfOf,
+          aTokenAddress,
+        }),
+      ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
+    });
   });
   describe('borrow', () => {
     it('Expects the tx object passing all parameters with borrow eth', async () => {});
