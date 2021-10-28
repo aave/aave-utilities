@@ -325,9 +325,10 @@ export class UiIncentiveDataProvider
       const rewardFeedPromises = incentiveRewardTokens.map(rewardToken =>
         this._getFeed(rewardToken, chainlinkFeedsRegistry, quote),
       );
-
+      console.log('reward tokens:: ', incentiveRewardTokens);
       const feedResults = await Promise.allSettled(rewardFeedPromises);
 
+      console.log('feeds:: ', feedResults);
       feedResults.forEach(feedResult => {
         if (feedResult.status === 'fulfilled') feeds.push(feedResult.value);
       });
