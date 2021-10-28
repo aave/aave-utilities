@@ -67,7 +67,10 @@ export class ChainlinkFeedsRegistry implements ChainlinkFeedsRegistryInterface {
       throw new Error('tokenAddress is not valid');
     }
 
-    return this._registryContract.decimals(tokenAddress, quote);
+    return this._registryContract.decimals(
+      tokenAddress,
+      DenominationAddresses[quote],
+    );
   };
 
   public getPriceFeed = async (
