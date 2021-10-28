@@ -1,8 +1,27 @@
-import { providers } from 'ethers';
+import { BigNumber, providers, utils } from 'ethers';
+import { eEthereumTxType, GasType, transactionType } from '../commons/types';
+import {
+  API_ETH_MOCK_ADDRESS,
+  DEFAULT_NULL_VALUE_ON_TX,
+  valueToWei,
+} from '../commons/utils';
 import { LendingPool } from './index';
+
+jest.mock('../commons/gasStation', () => {
+  return {
+    __esModule: true,
+    estimateGasByNetwork: jest
+      .fn()
+      .mockImplementation(async () => Promise.resolve(BigNumber.from(1))),
+    estimateGas: jest.fn(async () => Promise.resolve(BigNumber.from(1))),
+  };
+});
 
 describe('LendingPool', () => {
   const provider = new providers.JsonRpcProvider();
+  jest
+    .spyOn(provider, 'getGasPrice')
+    .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
   const LENDING_POOL = '0x0000000000000000000000000000000000000001';
   const WETH_GATEWAY = '0x0000000000000000000000000000000000000002';
   const FLASH_LIQUIDATION_ADAPTER =
@@ -29,19 +48,346 @@ describe('LendingPool', () => {
     });
   });
   describe('deposit', () => {
-    it('Expects the tx object passing all parameters with eth deposit', () => {});
-    it('Expects the tx object passing all parameters without approval need', async () => {});
-    it('Expects the tx object passing all parameters but not onBehalfOf', async () => {});
-    it('Expects the tx object passing all parameters but not referral', async () => {});
-    it('Expects the tx object passing all parameters and needing approval', async () => {});
-    it('Expects the tx object passing all parameters and depositing Synthetix with valid amount', async () => {});
-    it('Expects to fail when passing all params and depositing Synthetix but amount not valid', async () => {});
-    it('Expects to fail when lendingPoolAddress not provided', () => {});
-    it('Expects to fail when user not and eth address', async () => {});
-    it('Expects to fail when reserve not and eth address', async () => {});
-    it('Expects to fail when onBehalfOf not and eth address', async () => {});
-    it('Expects to fail when amount not positive', async () => {});
-    it('Expects to fail when amount not number', async () => {});
+    const user = '0x0000000000000000000000000000000000000006';
+    const reserve = '0x0000000000000000000000000000000000000007';
+    const onBehalfOf = '0x0000000000000000000000000000000000000008';
+    const amount = '123.456';
+    const decimals = 18;
+    const referralCode = '1';
+
+    const config = { LENDING_POOL };
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('Expects the tx object passing all parameters with eth deposit', async () => {
+      const reserve = API_ETH_MOCK_ADDRESS;
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const depositEthSpy = jest
+        .spyOn(lendingPoolInstance.wethGatewayService, 'depositETH')
+        .mockReturnValue([]);
+      await lendingPoolInstance.deposit({
+        user,
+        reserve,
+        amount,
+        onBehalfOf,
+        referralCode,
+      });
+      expect(depositEthSpy).toHaveBeenCalled();
+    });
+    it('Expects the tx object passing all parameters without approval need', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+      const decimalsSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const synthetixSpy = jest
+        .spyOn(lendingPoolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(true));
+
+      const depositTxObj = await lendingPoolInstance.deposit({
+        user,
+        reserve,
+        amount,
+        onBehalfOf,
+        referralCode,
+      });
+
+      expect(synthetixSpy).toHaveBeenCalled();
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(depositTxObj.length).toEqual(1);
+      const txObj = depositTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256', 'address', 'uint16'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
+      expect(decoded[2]).toEqual(onBehalfOf);
+      expect(decoded[3]).toEqual(Number(referralCode));
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all parameters but not onBehalfOf', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => true);
+      const decimalsSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const synthetixSpy = jest
+        .spyOn(lendingPoolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(true));
+
+      const depositTxObj = await lendingPoolInstance.deposit({
+        user,
+        reserve,
+        amount,
+        referralCode,
+      });
+
+      expect(synthetixSpy).toHaveBeenCalled();
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(depositTxObj.length).toEqual(1);
+      const txObj = depositTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256', 'address', 'uint16'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
+      expect(decoded[2]).toEqual(user);
+      expect(decoded[3]).toEqual(Number(referralCode));
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all parameters but not referral', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => true);
+      const decimalsSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const synthetixSpy = jest
+        .spyOn(lendingPoolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(true));
+
+      const depositTxObj = await lendingPoolInstance.deposit({
+        user,
+        reserve,
+        amount,
+        onBehalfOf,
+      });
+
+      expect(synthetixSpy).toHaveBeenCalled();
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(depositTxObj.length).toEqual(1);
+      const txObj = depositTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256', 'address', 'uint16'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
+      expect(decoded[2]).toEqual(onBehalfOf);
+      expect(decoded[3]).toEqual(0);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all parameters and needing approval', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(false));
+      const decimalsSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const approveSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'approve')
+        .mockReturnValueOnce({
+          txType: eEthereumTxType.ERC20_APPROVAL,
+          tx: async () => ({}),
+          gas: async () => ({
+            gasLimit: '1',
+            gasPrice: '1',
+          }),
+        });
+      const synthetixSpy = jest
+        .spyOn(lendingPoolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(true));
+
+      const depositTxObj = await lendingPoolInstance.deposit({
+        user,
+        reserve,
+        amount,
+        onBehalfOf,
+        referralCode,
+      });
+
+      expect(approveSpy).toHaveBeenCalled();
+      expect(synthetixSpy).toHaveBeenCalled();
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(depositTxObj.length).toEqual(2);
+      const txObj = depositTxObj[1];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256', 'address', 'uint16'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
+      expect(decoded[2]).toEqual(onBehalfOf);
+      expect(decoded[3]).toEqual(Number(referralCode));
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('300000');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects to fail when passing all params and depositing Synthetix but amount not valid', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const synthetixSpy = jest
+        .spyOn(lendingPoolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(false));
+
+      await expect(async () =>
+        lendingPoolInstance.deposit({
+          user,
+          reserve,
+          amount,
+          onBehalfOf,
+          referralCode,
+        }),
+      ).rejects.toThrowError('Not enough funds to execute operation');
+
+      expect(synthetixSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+    });
+    it('Expects to fail when lendingPoolAddress not provided', async () => {
+      const lendingPoolInstance = new LendingPool(provider);
+      const txObj = await lendingPoolInstance.deposit({
+        user,
+        reserve,
+        amount,
+        onBehalfOf,
+        referralCode,
+      });
+      expect(txObj).toEqual([]);
+    });
+    it('Expects to fail when user not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const user = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.deposit({
+          user,
+          reserve,
+          amount,
+          onBehalfOf,
+          referralCode,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${user} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when reserve not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const reserve = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.deposit({
+          user,
+          reserve,
+          amount,
+          onBehalfOf,
+          referralCode,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${reserve} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when onBehalfOf not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const onBehalfOf = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.deposit({
+          user,
+          reserve,
+          amount,
+          onBehalfOf,
+          referralCode,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${onBehalfOf} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when amount not positive', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const amount = '0';
+      await expect(async () =>
+        lendingPoolInstance.deposit({
+          user,
+          reserve,
+          amount,
+          onBehalfOf,
+          referralCode,
+        }),
+      ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
+    });
+    it('Expects to fail when amount not number', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const amount = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.deposit({
+          user,
+          reserve,
+          amount,
+          onBehalfOf,
+          referralCode,
+        }),
+      ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
+    });
   });
   describe('withdraw', () => {
     it('Expects the tx object passing all parameters but not onBehalfOf', async () => {});

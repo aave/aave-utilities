@@ -120,9 +120,7 @@ export function LPValidator(
   const method = descriptor.value;
   descriptor.value = function () {
     // @ts-expect-error todo: check why this ignore is needed
-    const { LENDING_POOL } = this.lendingPoolConfig || {};
-
-    if (!utils.isAddress(LENDING_POOL)) {
+    if (!utils.isAddress(this.lendingPoolAddress)) {
       console.error(`[LendingPoolValidator] You need to pass valid addresses`);
       return [];
     }

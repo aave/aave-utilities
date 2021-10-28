@@ -8,7 +8,7 @@ import {
 } from '../commons/types';
 import {
   API_ETH_MOCK_ADDRESS,
-  parseNumber,
+  valueToWei,
   SUPER_BIG_ALLOWANCE_NUMBER,
 } from '../commons/utils';
 import { ERC20Validator } from '../commons/validators/methodValidators';
@@ -92,7 +92,7 @@ export class ERC20Service
     const amountBNWithDecimals: BigNumber =
       amount === '-1'
         ? BigNumber.from(SUPER_BIG_ALLOWANCE_NUMBER)
-        : BigNumber.from(parseNumber(amount, decimals));
+        : BigNumber.from(valueToWei(amount, decimals));
     return allowance.gte(amountBNWithDecimals);
   }
 

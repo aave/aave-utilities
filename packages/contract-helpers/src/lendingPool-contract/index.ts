@@ -12,7 +12,7 @@ import {
 } from '../commons/types';
 import {
   getTxValue,
-  parseNumber,
+  valueToWei,
   API_ETH_MOCK_ADDRESS,
   DEFAULT_APPROVE_AMOUNT,
   MAX_UINT_AMOUNT,
@@ -206,7 +206,7 @@ export class LendingPool
       this.erc20Service;
     const txs: EthereumTransactionTypeExtended[] = [];
     const reserveDecimals: number = await decimalsOf(reserve);
-    const convertedAmount: string = parseNumber(amount, reserveDecimals);
+    const convertedAmount: string = valueToWei(amount, reserveDecimals);
 
     const fundsAvailable: boolean =
       await this.synthetixService.synthetixValidation({
@@ -224,6 +224,7 @@ export class LendingPool
       spender: this.lendingPoolAddress,
       amount,
     });
+
     if (!approved) {
       const approveTx: EthereumTransactionTypeExtended = approve({
         user,
@@ -294,7 +295,7 @@ export class LendingPool
     const convertedAmount: string =
       amount === '-1'
         ? constants.MaxUint256.toString()
-        : parseNumber(amount, decimals);
+        : valueToWei(amount, decimals);
 
     const lendingPoolContract: ILendingPool = this.getContractInstance(
       this.lendingPoolAddress,
@@ -360,7 +361,7 @@ export class LendingPool
 
     const { decimalsOf }: IERC20ServiceInterface = this.erc20Service;
     const reserveDecimals = await decimalsOf(reserve);
-    const formatAmount: string = parseNumber(amount, reserveDecimals);
+    const formatAmount: string = valueToWei(amount, reserveDecimals);
 
     const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
 
@@ -421,7 +422,7 @@ export class LendingPool
     const convertedAmount: string =
       amount === '-1'
         ? constants.MaxUint256.toString()
-        : parseNumber(amount, decimals);
+        : valueToWei(amount, decimals);
 
     if (amount !== '-1') {
       const fundsAvailable: boolean =
@@ -581,7 +582,7 @@ export class LendingPool
 
     const convertedAmount: string = liquidateAll
       ? MAX_UINT_AMOUNT
-      : parseNumber(purchaseAmount, reserveDecimals);
+      : valueToWei(purchaseAmount, reserveDecimals);
 
     const lendingPoolContract = this.getContractInstance(
       this.lendingPoolAddress,
@@ -670,11 +671,11 @@ export class LendingPool
 
     const tokenDecimals: number = await this.erc20Service.decimalsOf(fromAsset);
 
-    const convertedAmount: string = parseNumber(fromAmount, tokenDecimals);
+    const convertedAmount: string = valueToWei(fromAmount, tokenDecimals);
 
     const tokenToDecimals: number = await this.erc20Service.decimalsOf(toAsset);
 
-    const amountSlippageConverted: string = parseNumber(
+    const amountSlippageConverted: string = valueToWei(
       minToAmount,
       tokenToDecimals,
     );
@@ -704,7 +705,7 @@ export class LendingPool
         (Number(fromAmount) * Number(SURPLUS)) / 100
       ).toString();
 
-      const convertedAmountWithSurplus: string = parseNumber(
+      const convertedAmountWithSurplus: string = valueToWei(
         amountWithSurplus,
         tokenDecimals,
       );
@@ -812,7 +813,7 @@ export class LendingPool
     }
 
     const fromDecimals: number = await this.erc20Service.decimalsOf(fromAsset);
-    const convertedRepayWithAmount: string = parseNumber(
+    const convertedRepayWithAmount: string = valueToWei(
       repayWithAmount,
       fromDecimals,
     );
@@ -824,8 +825,8 @@ export class LendingPool
 
     const decimals: number = await this.erc20Service.decimalsOf(assetToRepay);
     const convertedRepayAmount: string = repayAllDebt
-      ? parseNumber(repayAmountWithSurplus, decimals)
-      : parseNumber(repayAmount, decimals);
+      ? valueToWei(repayAmountWithSurplus, decimals)
+      : valueToWei(repayAmount, decimals);
 
     let numericInterestRate = 0;
     if (rateMode) {
@@ -944,14 +945,14 @@ export class LendingPool
       borrowedAsset,
     );
 
-    const convertedDebt = parseNumber(debtTokenCover, tokenDecimals);
+    const convertedDebt = valueToWei(debtTokenCover, tokenDecimals);
 
     const convertedDebtTokenCover: string = liquidateAll
       ? constants.MaxUint256.toString()
       : convertedDebt;
 
     const flashBorrowAmount = liquidateAll
-      ? parseNumber(addSurplus(debtTokenCover), tokenDecimals)
+      ? valueToWei(addSurplus(debtTokenCover), tokenDecimals)
       : convertedDebt;
 
     const params: string = utils.defaultAbiCoder.encode(

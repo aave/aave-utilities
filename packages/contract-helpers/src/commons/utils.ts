@@ -7,7 +7,7 @@ import {
   ProtocolAction,
 } from './types';
 
-export const parseNumber = (value: string, decimals: number): string => {
+export const valueToWei = (value: string, decimals: number): string => {
   return new BigNumberJs(value).shiftedBy(decimals).toFixed(0);
 };
 
@@ -88,35 +88,35 @@ export const cosntantAddressesByNetwork: ConstantAddressesByNetwork = {
 };
 
 export const mintAmountsPerToken: Record<string, string> = {
-  AAVE: parseNumber('100', 18),
-  BAT: parseNumber('100000', 18),
-  BUSD: parseNumber('10000', 18),
-  DAI: parseNumber('10000', 18),
-  ENJ: parseNumber('100000', 18),
-  KNC: parseNumber('10000', 18),
-  LEND: parseNumber('1000', 18), // Not available on v2, but to support v1 faucet
-  LINK: parseNumber('1000', 18),
-  MANA: parseNumber('100000', 18),
-  MKR: parseNumber('10', 18),
-  WETH: parseNumber('10', 18),
-  REN: parseNumber('10000', 18),
-  REP: parseNumber('1000', 18),
-  SNX: parseNumber('100', 18),
-  SUSD: parseNumber('10000', 18),
+  AAVE: valueToWei('100', 18),
+  BAT: valueToWei('100000', 18),
+  BUSD: valueToWei('10000', 18),
+  DAI: valueToWei('10000', 18),
+  ENJ: valueToWei('100000', 18),
+  KNC: valueToWei('10000', 18),
+  LEND: valueToWei('1000', 18), // Not available on v2, but to support v1 faucet
+  LINK: valueToWei('1000', 18),
+  MANA: valueToWei('100000', 18),
+  MKR: valueToWei('10', 18),
+  WETH: valueToWei('10', 18),
+  REN: valueToWei('10000', 18),
+  REP: valueToWei('1000', 18),
+  SNX: valueToWei('100', 18),
+  SUSD: valueToWei('10000', 18),
   TUSD: '0', // The TusdMinter contract already mints the maximum
-  UNI: parseNumber('1000', 18),
-  USDC: parseNumber('10000', 6),
-  USDT: parseNumber('10000', 6),
-  WBTC: parseNumber('1', 8),
-  YFI: parseNumber('1', 18),
-  ZRX: parseNumber('100000', 18),
-  UNIUSDC: parseNumber(uniswapEthAmount, 6),
-  UNIDAI: parseNumber(uniswapEthAmount, 18),
-  UNIUSDT: parseNumber(uniswapEthAmount, 6),
-  UNIDAIETH: parseNumber(uniswapEthAmount, 18),
-  UNIUSDCETH: parseNumber(uniswapEthAmount, 18),
-  UNISETHETH: parseNumber(uniswapEthAmount, 18),
-  UNILENDETH: parseNumber(uniswapEthAmount, 18),
-  UNILINKETH: parseNumber(uniswapEthAmount, 18),
-  UNIMKRETH: parseNumber(uniswapEthAmount, 18),
+  UNI: valueToWei('1000', 18),
+  USDC: valueToWei('10000', 6),
+  USDT: valueToWei('10000', 6),
+  WBTC: valueToWei('1', 8),
+  YFI: valueToWei('1', 18),
+  ZRX: valueToWei('100000', 18),
+  UNIUSDC: valueToWei(uniswapEthAmount, 6),
+  UNIDAI: valueToWei(uniswapEthAmount, 18),
+  UNIUSDT: valueToWei(uniswapEthAmount, 6),
+  UNIDAIETH: valueToWei(uniswapEthAmount, 18),
+  UNIUSDCETH: valueToWei(uniswapEthAmount, 18),
+  UNISETHETH: valueToWei(uniswapEthAmount, 18),
+  UNILENDETH: valueToWei(uniswapEthAmount, 18),
+  UNILINKETH: valueToWei(uniswapEthAmount, 18),
+  UNIMKRETH: valueToWei(uniswapEthAmount, 18),
 };
