@@ -217,7 +217,8 @@ export class UiIncentiveDataProvider
         },
       );
       return incentivesWithFei;
-    } catch (_: unknown) {
+    } catch (error: unknown) {
+      console.error('FEI incentives fetch error', error);
       return incentives;
     }
   }
