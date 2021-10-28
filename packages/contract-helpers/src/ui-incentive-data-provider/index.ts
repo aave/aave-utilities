@@ -6,7 +6,7 @@ import {
   PriceFeed,
 } from '../cl-feed-registry/index';
 import { Denominations } from '../cl-feed-registry/types/ChainlinkFeedsRegistryTypes';
-import { IncentivesController } from '../incentive-controller';
+import { AssetDataType, IncentivesController } from '../incentive-controller';
 import { UiIncentiveDataProvider as UiIncentiveDataProviderContract } from './typechain/UiIncentiveDataProvider';
 import { UiIncentiveDataProviderFactory } from './typechain/UiIncentiveDataProviderFactory';
 import {
@@ -144,14 +144,7 @@ export class UiIncentiveDataProvider
       const incentiveController = new IncentivesController(
         this._context.provider,
       );
-      const [
-        {
-          0: vTokenIncentivesIndex,
-          1: vEmissionPerSecond,
-          2: vIncentivesLastUpdateTimestamp,
-        },
-        distributionEnd,
-      ] = await Promise.all([
+      const [assetData, distributionEnd] = await Promise.all([
         incentiveController.getAssetData(
           feiVDebtTokenAddress,
           feiVDebtTokenIncentivesController,
@@ -161,34 +154,63 @@ export class UiIncentiveDataProvider
         ),
       ]);
 
+      const {
+        0: vTokenIncentivesIndex,
+        1: vEmissionPerSecond,
+        2: vIncentivesLastUpdateTimestamp,
+      }: AssetDataType = assetData;
+
       const incentivesWithFei = incentives.map(
         (incentive: ReserveIncentiveDataResponse) => {
           if (
             incentive.underlyingAsset.toLowerCase() ===
             feiUnderlyingToken.toLowerCase()
           ) {
-            incentive.vIncentiveData.tokenIncentivesIndex =
-              vTokenIncentivesIndex;
-            incentive.vIncentiveData.emissionPerSecond = vEmissionPerSecond;
-            incentive.vIncentiveData.incentivesLastUpdateTimestamp =
-              vIncentivesLastUpdateTimestamp;
-            incentive.vIncentiveData.emissionEndTimestamp = distributionEnd;
-            incentive.vIncentiveData.tokenAddress = feiVDebtTokenAddress;
-            incentive.vIncentiveData.rewardTokenAddress = feiVDebtRewardToken;
-            incentive.vIncentiveData.incentiveControllerAddress =
-              feiVDebtTokenIncentivesController;
-            incentive.vIncentiveData.rewardTokenDecimals = 18;
-            incentive.vIncentiveData.precision = 18;
+            return {
+              ...incentive,
+              vIncentiveData: {
+                emissionPerSecond: vEmissionPerSecond,
+                incentivesLastUpdateTimestamp: vIncentivesLastUpdateTimestamp,
+                tokenIncentivesIndex: vTokenIncentivesIndex,
+                emissionEndTimestamp: distributionEnd,
+                tokenAddress: feiVDebtTokenAddress,
+                rewardTokenAddress: feiVDebtRewardToken,
+                incentiveControllerAddress: feiVDebtTokenIncentivesController,
+                rewardTokenDecimals: 18,
+                precision: 18,
+                0: vEmissionPerSecond,
+                1: vIncentivesLastUpdateTimestamp,
+                2: vTokenIncentivesIndex,
+                3: distributionEnd,
+                4: feiVDebtTokenAddress,
+                5: feiVDebtRewardToken,
+                6: feiVDebtTokenIncentivesController,
+                7: 18,
+                8: 18,
+              },
+            };
+            // incentive.vIncentiveData.tokenIncentivesIndex =
+            //   vTokenIncentivesIndex;
+            // incentive.vIncentiveData.emissionPerSecond = vEmissionPerSecond;
+            // incentive.vIncentiveData.incentivesLastUpdateTimestamp =
+            //   vIncentivesLastUpdateTimestamp;
+            // incentive.vIncentiveData.emissionEndTimestamp = distributionEnd;
+            // incentive.vIncentiveData.tokenAddress = feiVDebtTokenAddress;
+            // incentive.vIncentiveData.rewardTokenAddress = feiVDebtRewardToken;
+            // incentive.vIncentiveData.incentiveControllerAddress =
+            //   feiVDebtTokenIncentivesController;
+            // incentive.vIncentiveData.rewardTokenDecimals = 18;
+            // incentive.vIncentiveData.precision = 18;
 
-            incentive.vIncentiveData[0] = vEmissionPerSecond;
-            incentive.vIncentiveData[1] = vIncentivesLastUpdateTimestamp;
-            incentive.vIncentiveData[2] = vTokenIncentivesIndex;
-            incentive.vIncentiveData[3] = distributionEnd;
-            incentive.vIncentiveData[4] = feiVDebtTokenAddress;
-            incentive.vIncentiveData[5] = feiVDebtRewardToken;
-            incentive.vIncentiveData[6] = feiVDebtTokenIncentivesController;
-            incentive.vIncentiveData[7] = 18;
-            incentive.vIncentiveData[8] = 18;
+            // incentive.vIncentiveData[0] = vEmissionPerSecond;
+            // incentive.vIncentiveData[1] = vIncentivesLastUpdateTimestamp;
+            // incentive.vIncentiveData[2] = vTokenIncentivesIndex;
+            // incentive.vIncentiveData[3] = distributionEnd;
+            // incentive.vIncentiveData[4] = feiVDebtTokenAddress;
+            // incentive.vIncentiveData[5] = feiVDebtRewardToken;
+            // incentive.vIncentiveData[6] = feiVDebtTokenIncentivesController;
+            // incentive.vIncentiveData[7] = 18;
+            // incentive.vIncentiveData[8] = 18;
           }
 
           return incentive;
