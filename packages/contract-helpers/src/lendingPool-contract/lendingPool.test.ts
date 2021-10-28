@@ -1,7 +1,32 @@
+import { providers } from 'ethers';
+import { LendingPool } from './index';
+
 describe('LendingPool', () => {
+  const provider = new providers.JsonRpcProvider();
+  const LENDING_POOL = '0x0000000000000000000000000000000000000001';
+  const WETH_GATEWAY = '0x0000000000000000000000000000000000000002';
+  const FLASH_LIQUIDATION_ADAPTER =
+    '0x0000000000000000000000000000000000000003';
+  const REPAY_WITH_COLLATERAL_ADAPTER =
+    '0x0000000000000000000000000000000000000004';
+  const SWAP_COLLATERAL_ADAPTER = '0x0000000000000000000000000000000000000005';
+
   describe('Initialization', () => {
-    it('Expects to initialize correctly with all params', () => {});
-    it('Expects ot initialize correctly without passing configuration', () => {});
+    const config = {
+      LENDING_POOL,
+      FLASH_LIQUIDATION_ADAPTER,
+      REPAY_WITH_COLLATERAL_ADAPTER,
+      SWAP_COLLATERAL_ADAPTER,
+      WETH_GATEWAY,
+    };
+    it('Expects to initialize correctly with all params', () => {
+      const instance = new LendingPool(provider, config);
+      expect(instance instanceof LendingPool).toEqual(true);
+    });
+    it('Expects ot initialize correctly without passing configuration', () => {
+      const instance = new LendingPool(provider);
+      expect(instance instanceof LendingPool).toEqual(true);
+    });
   });
   describe('deposit', () => {
     it('Expects the tx object passing all parameters with eth deposit', () => {});

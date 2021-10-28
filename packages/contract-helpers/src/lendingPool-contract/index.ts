@@ -124,7 +124,7 @@ export interface LendingPoolInterface {
   ): Promise<EthereumTransactionTypeExtended[]>;
 }
 
-export default class LendingPool
+export class LendingPool
   extends BaseService<ILendingPool>
   implements LendingPoolInterface
 {
@@ -140,8 +140,6 @@ export default class LendingPool
 
   readonly repayWithCollateralAdapterService: RepayWithCollateralAdapterInterface;
 
-  readonly lendingPoolConfig: LendingPoolMarketConfig | undefined;
-
   readonly flashLiquidationAddress: string;
 
   readonly swapCollateralAddress: string;
@@ -150,11 +148,9 @@ export default class LendingPool
 
   constructor(
     provider: providers.Provider,
-    lendingPoolConfig: LendingPoolMarketConfig | undefined,
+    lendingPoolConfig?: LendingPoolMarketConfig,
   ) {
     super(provider, ILendingPool__factory);
-
-    this.lendingPoolConfig = lendingPoolConfig;
 
     const {
       LENDING_POOL,
@@ -162,7 +158,7 @@ export default class LendingPool
       REPAY_WITH_COLLATERAL_ADAPTER,
       SWAP_COLLATERAL_ADAPTER,
       WETH_GATEWAY,
-    } = this.lendingPoolConfig ?? {};
+    } = lendingPoolConfig ?? {};
 
     this.lendingPoolAddress = LENDING_POOL ?? '';
     this.flashLiquidationAddress = FLASH_LIQUIDATION_ADAPTER ?? '';
