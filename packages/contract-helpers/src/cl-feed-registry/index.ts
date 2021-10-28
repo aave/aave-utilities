@@ -74,8 +74,12 @@ export class ChainlinkFeedsRegistry implements ChainlinkFeedsRegistryInterface {
     tokenAddress: string,
     quote: Denominations,
   ): Promise<PriceFeed> => {
+    console.log('tokenaddress: ', tokenAddress);
+    console.log('quote: ', quote);
     const rawFeed = await this.latestRoundData(tokenAddress, quote);
+    console.log('raw feed: ', rawFeed);
     const feedDecimals = await this.decimals(tokenAddress, quote);
+    console.log('decimals: ', feedDecimals);
 
     return {
       answer: rawFeed[1].toString(),
