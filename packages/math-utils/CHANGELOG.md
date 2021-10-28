@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.20.4 (2021-10-28)
+
+
+### Bug Fixes
+
+* fixed get decimals quote param ([#134](https://github.com/@aave/aave-utilities/issues/134)) ([7c133e5](https://github.com/@aave/aave-utilities/commit/7c133e5ac8f85ad053184c6c663701221ea3109f))
+
+
+
+
+
 ## 0.20.3 (2021-10-27)
 
 
