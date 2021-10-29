@@ -13,3 +13,6 @@ export * from './faucet-contract';
 // services
 export * from './incentive-controller';
 export * from './erc20-contract';
+
+// commons
+export * from './commons/types';
