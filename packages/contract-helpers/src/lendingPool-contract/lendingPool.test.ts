@@ -3473,16 +3473,359 @@ describe('LendingPool', () => {
     });
   });
   describe('flashLiquidation', () => {
-    it('Expects the tx object passing all params', async () => {});
-    it('Expects the tx object passing all params without useEthPath', async () => {});
-    it('Expects the tx object passing all params and liquidateAll to false', async () => {});
-    it('Expects to fail when lendingPoolAddress not provided', async () => {});
-    it('Expects to fail when FLASH_LIQUIDATION_ADAPTER not provided', async () => {});
-    it('Expects to fail when user not and eth address', async () => {});
-    it('Expects to fail when collateralAsset not and eth address', async () => {});
-    it('Expects to fail when borrowedAsset not and eth address', async () => {});
-    it('Expects to fail when initiator not and eth address', async () => {});
-    it('Expects to fail when debtTokenCover not positive', async () => {});
-    it('Expects to fail when debtTokenCover not number', async () => {});
+    const user = '0x0000000000000000000000000000000000000006';
+    const collateralAsset = '0x0000000000000000000000000000000000000007';
+    const borrowedAsset = '0x0000000000000000000000000000000000000008';
+    const initiator = '0x0000000000000000000000000000000000000009';
+    const debtTokenCover = '12.34';
+    const useEthPath = true;
+    const liquidateAll = true;
+
+    const decimals = 18;
+
+    const config = { LENDING_POOL, FLASH_LIQUIDATION_ADAPTER };
+
+    const amountSurplus = (
+      Number(debtTokenCover) +
+      (Number(debtTokenCover) * Number(debtTokenCover)) / 100
+    ).toString();
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('Expects the tx object passing all params', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValue(Promise.resolve(decimals));
+
+      const flashLiquidationTxObj = await lendingPoolInstance.flashLiquidation({
+        user,
+        collateralAsset,
+        borrowedAsset,
+        debtTokenCover,
+        liquidateAll,
+        initiator,
+        useEthPath,
+      });
+
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(flashLiquidationTxObj.length).toEqual(1);
+      const txObj = flashLiquidationTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(initiator);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        [
+          'address',
+          'address[]',
+          'uint256[]',
+          'uint256[]',
+          'address',
+          'bytes',
+          'uint16',
+        ],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      const params = utils.defaultAbiCoder.encode(
+        ['address', 'address', 'address', 'uint256', 'bool'],
+        [
+          collateralAsset,
+          borrowedAsset,
+          user,
+          constants.MaxUint256.toString(),
+          useEthPath,
+        ],
+      );
+
+      expect(decoded[0]).toEqual(FLASH_LIQUIDATION_ADAPTER);
+      expect(decoded[1]).toEqual([borrowedAsset]);
+      expect(decoded[2]).toEqual([
+        BigNumber.from(valueToWei(amountSurplus, decimals)),
+      ]);
+      expect(decoded[3]).toEqual([BigNumber.from(0)]);
+      expect(decoded[4]).toEqual(initiator);
+      expect(decoded[5]).toEqual(params);
+      expect(decoded[6]).toEqual(0);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params without useEthPath', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValue(Promise.resolve(decimals));
+
+      const flashLiquidationTxObj = await lendingPoolInstance.flashLiquidation({
+        user,
+        collateralAsset,
+        borrowedAsset,
+        debtTokenCover,
+        liquidateAll,
+        initiator,
+        // useEthPath,
+      });
+
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(flashLiquidationTxObj.length).toEqual(1);
+      const txObj = flashLiquidationTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(initiator);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        [
+          'address',
+          'address[]',
+          'uint256[]',
+          'uint256[]',
+          'address',
+          'bytes',
+          'uint16',
+        ],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      const params = utils.defaultAbiCoder.encode(
+        ['address', 'address', 'address', 'uint256', 'bool'],
+        [
+          collateralAsset,
+          borrowedAsset,
+          user,
+          constants.MaxUint256.toString(),
+          false,
+        ],
+      );
+
+      expect(decoded[0]).toEqual(FLASH_LIQUIDATION_ADAPTER);
+      expect(decoded[1]).toEqual([borrowedAsset]);
+      expect(decoded[2]).toEqual([
+        BigNumber.from(valueToWei(amountSurplus, decimals)),
+      ]);
+      expect(decoded[3]).toEqual([BigNumber.from(0)]);
+      expect(decoded[4]).toEqual(initiator);
+      expect(decoded[5]).toEqual(params);
+      expect(decoded[6]).toEqual(0);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params and liquidateAll to false', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValue(Promise.resolve(decimals));
+
+      const liquidateAll = false;
+      const flashLiquidationTxObj = await lendingPoolInstance.flashLiquidation({
+        user,
+        collateralAsset,
+        borrowedAsset,
+        debtTokenCover,
+        liquidateAll,
+        initiator,
+        useEthPath,
+      });
+
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(flashLiquidationTxObj.length).toEqual(1);
+      const txObj = flashLiquidationTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(initiator);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        [
+          'address',
+          'address[]',
+          'uint256[]',
+          'uint256[]',
+          'address',
+          'bytes',
+          'uint16',
+        ],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      const params = utils.defaultAbiCoder.encode(
+        ['address', 'address', 'address', 'uint256', 'bool'],
+        [
+          collateralAsset,
+          borrowedAsset,
+          user,
+          valueToWei(debtTokenCover, decimals),
+          useEthPath,
+        ],
+      );
+
+      expect(decoded[0]).toEqual(FLASH_LIQUIDATION_ADAPTER);
+      expect(decoded[1]).toEqual([borrowedAsset]);
+      expect(decoded[2]).toEqual([
+        BigNumber.from(valueToWei(debtTokenCover, decimals)),
+      ]);
+      expect(decoded[3]).toEqual([BigNumber.from(0)]);
+      expect(decoded[4]).toEqual(initiator);
+      expect(decoded[5]).toEqual(params);
+      expect(decoded[6]).toEqual(0);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects to fail when lendingPoolAddress not provided', async () => {
+      const lendingPoolInstance = new LendingPool(provider);
+      const txObj = await lendingPoolInstance.flashLiquidation({
+        user,
+        collateralAsset,
+        borrowedAsset,
+        debtTokenCover,
+        liquidateAll,
+        initiator,
+        useEthPath,
+      });
+      expect(txObj).toEqual([]);
+    });
+    it('Expects to fail when FLASH_LIQUIDATION_ADAPTER not provided', async () => {
+      const lendingPoolInstance = new LendingPool(provider, { LENDING_POOL });
+      const txObj = await lendingPoolInstance.flashLiquidation({
+        user,
+        collateralAsset,
+        borrowedAsset,
+        debtTokenCover,
+        liquidateAll,
+        initiator,
+        useEthPath,
+      });
+      expect(txObj).toEqual([]);
+    });
+    it('Expects to fail when user not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const user = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.flashLiquidation({
+          user,
+          collateralAsset,
+          borrowedAsset,
+          debtTokenCover,
+          liquidateAll,
+          initiator,
+          useEthPath,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${user} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when collateralAsset not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const collateralAsset = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.flashLiquidation({
+          user,
+          collateralAsset,
+          borrowedAsset,
+          debtTokenCover,
+          liquidateAll,
+          initiator,
+          useEthPath,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${collateralAsset} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when borrowedAsset not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const borrowedAsset = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.flashLiquidation({
+          user,
+          collateralAsset,
+          borrowedAsset,
+          debtTokenCover,
+          liquidateAll,
+          initiator,
+          useEthPath,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${borrowedAsset} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when initiator not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const initiator = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.flashLiquidation({
+          user,
+          collateralAsset,
+          borrowedAsset,
+          debtTokenCover,
+          liquidateAll,
+          initiator,
+          useEthPath,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${initiator} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when debtTokenCover not positive', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const debtTokenCover = '0';
+      await expect(async () =>
+        lendingPoolInstance.flashLiquidation({
+          user,
+          collateralAsset,
+          borrowedAsset,
+          debtTokenCover,
+          liquidateAll,
+          initiator,
+          useEthPath,
+        }),
+      ).rejects.toThrowError(
+        `Amount: ${debtTokenCover} needs to be greater than 0`,
+      );
+    });
+    it('Expects to fail when debtTokenCover not number', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const debtTokenCover = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.flashLiquidation({
+          user,
+          collateralAsset,
+          borrowedAsset,
+          debtTokenCover,
+          liquidateAll,
+          initiator,
+          useEthPath,
+        }),
+      ).rejects.toThrowError(
+        `Amount: ${debtTokenCover} needs to be greater than 0`,
+      );
+    });
   });
 });

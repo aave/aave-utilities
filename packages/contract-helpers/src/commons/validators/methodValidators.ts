@@ -23,14 +23,11 @@ export function LPFlashLiquidationValidator(
 ): any {
   const method = descriptor.value;
   descriptor.value = function () {
-    const { LENDING_POOL, FLASH_LIQUIDATION_ADAPTER } =
-      // @ts-expect-error todo: check why this ignore is needed
-      this.lendingPoolConfig || {};
-
     if (
-      !utils.isAddress(LENDING_POOL) ||
-      !FLASH_LIQUIDATION_ADAPTER ||
-      !utils.isAddress(FLASH_LIQUIDATION_ADAPTER)
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.lendingPoolAddress) ||
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.flashLiquidationAddress)
     ) {
       console.error(
         `[LPFlahsLiquidationValidator] You need to pass valid addresses`,
