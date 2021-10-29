@@ -1,11 +1,6 @@
 import { BigNumber as BigNumberJs } from 'bignumber.js';
 import { BigNumber, constants } from 'ethers';
-import {
-  ConstantAddressesByNetwork,
-  GasRecommendationType,
-  Network,
-  ProtocolAction,
-} from './types';
+import { GasRecommendationType, ProtocolAction } from './types';
 
 export const valueToWei = (value: string, decimals: number): string => {
   return new BigNumberJs(value).shiftedBy(decimals).toFixed(0);
@@ -78,12 +73,6 @@ export const gasLimitRecommendations: GasRecommendationType = {
   [ProtocolAction.repayCollateral]: {
     limit: '700000',
     recommended: '700000',
-  },
-};
-
-export const cosntantAddressesByNetwork: ConstantAddressesByNetwork = {
-  [Network.mainnet]: {
-    SYNTHETIX_PROXY_ADDRESS: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
   },
 };
 
