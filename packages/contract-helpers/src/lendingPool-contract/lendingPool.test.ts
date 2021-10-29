@@ -1,6 +1,7 @@
 import { BigNumber, constants, providers, utils } from 'ethers';
 import {
   eEthereumTxType,
+  EthereumTransactionTypeExtended,
   GasType,
   InterestRate,
   ProtocolAction,
@@ -10,6 +11,7 @@ import {
   API_ETH_MOCK_ADDRESS,
   DEFAULT_NULL_VALUE_ON_TX,
   gasLimitRecommendations,
+  SURPLUS,
   valueToWei,
 } from '../commons/utils';
 import { LendingPool } from './index';
@@ -1489,8 +1491,8 @@ describe('LendingPool', () => {
   describe('liquidationCall', () => {
     const liquidator = '0x0000000000000000000000000000000000000006';
     const liquidatedUser = '0x0000000000000000000000000000000000000007';
-    const debtReserve = '0x0000000000000000000000000000000000000007';
-    const collateralReserve = '0x0000000000000000000000000000000000000007';
+    const debtReserve = '0x0000000000000000000000000000000000000008';
+    const collateralReserve = '0x0000000000000000000000000000000000000009';
     const purchaseAmount = '123.456';
     const getAToken = true;
     const liquidateAll = true;
@@ -1770,26 +1772,758 @@ describe('LendingPool', () => {
     });
   });
   describe('swapCollateral', () => {
-    it('Expects the tx object passing all params and no approval needed for flash', async () => {});
-    it('Expects the tx object passing all params without onBehalf and no approval needed for flash', async () => {});
-    it('Expects the tx object passing all params without referralCode and no approval needed for flash', async () => {});
-    it('Expects the tx object passing all params and no approval needed with flash and swapAll', async () => {});
-    it('Expects the tx object passing all params and no approval needed with flash and not swapAll', async () => {});
-    it('Expects the tx object passing all params without permitSignature and no approval needed without flash', async () => {});
-    it('Expects to fail when lendingPoolAddress not provided', async () => {});
-    it('Expects to fail when SWAP_COLLATERAL_ADAPTER not provided', async () => {});
-    it('Expects to fail when user not and eth address', async () => {});
-    it('Expects to fail when fromAsset not and eth address', async () => {});
-    it('Expects to fail when fromAToken not and eth address', async () => {});
-    it('Expects to fail when toAsset not and eth address', async () => {});
-    it('Expects to fail when onBehalfOf not and eth address', async () => {});
-    it('Expects to fail when augustus not and eth address', async () => {});
-    it('Expects to fail when fromAmount not positive', async () => {});
-    it('Expects to fail when fromAmount not number', async () => {});
-    it('Expects to fail when minToAmount not positive', async () => {});
-    it('Expects to fail when minToAmount not number', async () => {});
+    const user = '0x0000000000000000000000000000000000000006';
+    const fromAsset = '0x0000000000000000000000000000000000000007';
+    const fromAToken = '0x0000000000000000000000000000000000000008';
+    const toAsset = '0x0000000000000000000000000000000000000009';
+    const onBehalfOf = '0x0000000000000000000000000000000000000010';
+    const augustus = '0x0000000000000000000000000000000000000011';
+    const fromAmount = '12.34';
+    const minToAmount = '13.56';
+    const permitSignature = {
+      amount: '1',
+      deadline: '1',
+      v: 1,
+      r: '0x0000000000000000000000000000000000000000000000000000000000000001',
+      s: '0x0000000000000000000000000000000000000000000000000000000000000001',
+    };
+    const swapAll = true;
+    const referralCode = '1';
+    const swapCallData =
+      '0xda8567c80000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c5990000000000000000000000007fc66500c84a76ad7e9c93437bfc5ac33e2ddae900000000000000000000000000000000000000000000000000000000119027b700000000000000000000000000000000000000000000001e483c86fa843f6c2000000000000000000000000000000000000000000000000000000000000000440000000000000000000000000000000000000000000000000000000000000180000000000000000000000000def171fe48cf0115b1d80b88dc8eab59176fee5700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000116446c67b6d00000000000000000000000000000000000000000000000000000000000000200000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c59900000000000000000000000000000000000000000000000000000000119027b700000000000000000000000000000000000000000000001dfec636122d1008df00000000000000000000000000000000000000000000001e4c566f818d31d01300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000160000000000000000000000000000000000000000000000000000000006161766500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001120000000000000000000000000000000000000000000000000000000006177abb9ae2ba6c0362c11ec8f12233bf85851b3000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000004a000000000000000000000000000000000000000000000000000000000000015180000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000007fc66500c84a76ad7e9c93437bfc5ac33e2ddae900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000003a0430bf7cd2633af111ce3204db4b0990857a6f000000000000000000000000000000000000000000000000000000000000271000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000def1c0ded9bec7f1a1670819833240f027b25eff000000000000000000000000000000000000000000000000000000000000271000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000007fc66500c84a76ad7e9c93437bfc5ac33e2ddae90000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c5990000000000000000000000000000000000000000000000108e47a6846afd000000000000000000000000000000000000000000000000000000000000099433f80000000000000000000000000000006daea1723962647b7e189d311d757fb793000000000000000000000000def171fe48cf0115b1d80b88dc8eab59176fee57000000000000000000000000100cec21fa2a0bdc21f770ec06e885e7c52a18680000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006177abb93d1d355dba3f70000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000001c558d406f7449cc936da0231093b069fcb8a42e3a2f0f78f0497515f8d795a29c3a57485920bb65c42c9f5884af63388d493b5cd0bcd2a6eed4fff7173982f4f800000000000000000000000000000000000000000000000000000000000011f80000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000420000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000003a0430bf7cd2633af111ce3204db4b0990857a6f000000000000000000000000000000000000000000000000000000000000271000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000def1c0ded9bec7f1a1670819833240f027b25eff000000000000000000000000000000000000000000000000000000000000271000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c5990000000000000000000000000000000000000000000000011abcf02276ffa00000000000000000000000000000000000000000000000000000000000082b007c000000000000000000000000b3c839dbde6b96d37c56ee4f9dad3390d49310aa000000000000000000000000def171fe48cf0115b1d80b88dc8eab59176fee57000000000000000000000000100cec21fa2a0bdc21f770ec06e885e7c52a18680000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006177abd60000000000000000000000000000000000000000000000000000017cbb773bf00000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000001bc072f450f48f66263bd53e801840fbf545c7aa5aac969d568f87eb830b66f36907cba9fd12582a9a96f23d1396da6c94d46fa4bc0ab851972246cd117659949f0000000000000000000000007fc66500c84a76ad7e9c93437bfc5ac33e2ddae900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000003a0430bf7cd2633af111ce3204db4b0990857a6f0000000000000000000000000000000000000000000000000000000000002710000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002c00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000def1c0ded9bec7f1a1670819833240f027b25eff00000000000000000000000000000000000000000000000000000000000009c400000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000007fc66500c84a76ad7e9c93437bfc5ac33e2ddae9000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000386598f16ac87200000000000000000000000000000000000000000000000000046a1698a248c022a0000000000000000000000000000006daea1723962647b7e189d311d757fb793000000000000000000000000def171fe48cf0115b1d80b88dc8eab59176fee57000000000000000000000000100cec21fa2a0bdc21f770ec06e885e7c52a18680000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006177abb902d4eee4d7c128000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000001c41623d640c08c3543660e464261260aed59bfba57c22b00326533525bd011953350326cee2a506e6daf1d0d8780eca139ec48cab2280c6e0bf1a1efe72b0ad880000000000000000000000000000000000000000000000000000000000000001000000000000000000000000def1c0ded9bec7f1a1670819833240f027b25eff0000000000000000000000000000000000000000000000000000000000001d4c00000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000007fc66500c84a76ad7e9c93437bfc5ac33e2ddae9000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000a91c3e5350e240000000000000000000000000000000000000000000000000000d41a7b6e826d0000000000000000000000000000b3c839dbde6b96d37c56ee4f9dad3390d49310aa000000000000000000000000def171fe48cf0115b1d80b88dc8eab59176fee57000000000000000000000000100cec21fa2a0bdc21f770ec06e885e7c52a18680000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006177abd60000000000000000000000000000000000000000000000000000017cbb773bf00000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000001b842ca8317744091cfd12b2d2e9de4c17618cf2e19d5f0eecb68e3691b078542307aae0aeff4ae756ca20d0ec1dff2ec0a6cfdc595dd3a43d6b8a76f630c4b2f9000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
+    const flash = true;
+    const decimals = 18;
+
+    const amountWithSurplus: string = (
+      Number(fromAmount) +
+      (Number(fromAmount) * Number(SURPLUS)) / 100
+    ).toString();
+
+    const config = { LENDING_POOL, SWAP_COLLATERAL_ADAPTER };
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('Expects the tx object passing all params and approval needed for flash', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(false));
+      const decimalsSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValue(Promise.resolve(decimals));
+      const approveSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'approve')
+        .mockReturnValueOnce({
+          txType: eEthereumTxType.ERC20_APPROVAL,
+          tx: async () => ({}),
+          gas: async () => ({
+            gasLimit: '1',
+            gasPrice: '1',
+          }),
+        });
+      const swapCollateralTxObj = await lendingPoolInstance.swapCollateral({
+        user,
+        flash,
+        fromAsset,
+        fromAToken,
+        toAsset,
+        fromAmount,
+        minToAmount,
+        permitSignature,
+        swapAll,
+        onBehalfOf,
+        referralCode,
+        augustus,
+        swapCallData,
+      });
+
+      expect(approveSpy).toHaveBeenCalled();
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(swapCollateralTxObj.length).toEqual(2);
+      const txObj = swapCollateralTxObj[1];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        [
+          'address',
+          'address[]',
+          'uint256[]',
+          'uint256[]',
+          'address',
+          'bytes',
+          'uint16',
+        ],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      const params = utils.defaultAbiCoder.encode(
+        [
+          'address',
+          'uint256',
+          'uint256',
+          'bytes',
+          'address',
+          'tuple(uint256,uint256,uint8,bytes32,bytes32)',
+        ],
+        [
+          toAsset,
+          valueToWei(minToAmount, decimals),
+          100,
+          swapCallData,
+          augustus,
+          [
+            permitSignature.amount,
+            permitSignature.deadline,
+            permitSignature.v,
+            permitSignature.r,
+            permitSignature.s,
+          ],
+        ],
+      );
+
+      expect(decoded[0]).toEqual(SWAP_COLLATERAL_ADAPTER);
+      expect(decoded[1]).toEqual([fromAsset]);
+      expect(decoded[2]).toEqual([
+        BigNumber.from(valueToWei(amountWithSurplus, decimals)),
+      ]);
+      expect(decoded[3]).toEqual([BigNumber.from(0)]);
+      expect(decoded[4]).toEqual(onBehalfOf);
+      expect(decoded[5]).toEqual(params);
+      expect(decoded[6]).toEqual(Number(referralCode));
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.swapCollateral].limit,
+      );
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params without onBehalf and no approval needed for flash', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+      const decimalsSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValue(Promise.resolve(decimals));
+
+      const swapCollateralTxObj = await lendingPoolInstance.swapCollateral({
+        user,
+        flash,
+        fromAsset,
+        fromAToken,
+        toAsset,
+        fromAmount,
+        minToAmount,
+        permitSignature,
+        swapAll,
+        // onBehalfOf,
+        referralCode,
+        augustus,
+        swapCallData,
+      });
+
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(swapCollateralTxObj.length).toEqual(1);
+      const txObj = swapCollateralTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        [
+          'address',
+          'address[]',
+          'uint256[]',
+          'uint256[]',
+          'address',
+          'bytes',
+          'uint16',
+        ],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      const params = utils.defaultAbiCoder.encode(
+        [
+          'address',
+          'uint256',
+          'uint256',
+          'bytes',
+          'address',
+          'tuple(uint256,uint256,uint8,bytes32,bytes32)',
+        ],
+        [
+          toAsset,
+          valueToWei(minToAmount, decimals),
+          100,
+          swapCallData,
+          augustus,
+          [
+            permitSignature.amount,
+            permitSignature.deadline,
+            permitSignature.v,
+            permitSignature.r,
+            permitSignature.s,
+          ],
+        ],
+      );
+
+      expect(decoded[0]).toEqual(SWAP_COLLATERAL_ADAPTER);
+      expect(decoded[1]).toEqual([fromAsset]);
+      expect(decoded[2]).toEqual([
+        BigNumber.from(valueToWei(amountWithSurplus, decimals)),
+      ]);
+      expect(decoded[3]).toEqual([BigNumber.from(0)]);
+      expect(decoded[4]).toEqual(user);
+      expect(decoded[5]).toEqual(params);
+      expect(decoded[6]).toEqual(Number(referralCode));
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params without referralCode and no approval needed for flash', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+      const decimalsSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValue(Promise.resolve(decimals));
+
+      const swapCollateralTxObj = await lendingPoolInstance.swapCollateral({
+        user,
+        flash,
+        fromAsset,
+        fromAToken,
+        toAsset,
+        fromAmount,
+        minToAmount,
+        permitSignature,
+        swapAll,
+        onBehalfOf,
+        // referralCode,
+        augustus,
+        swapCallData,
+      });
+
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(swapCollateralTxObj.length).toEqual(1);
+      const txObj = swapCollateralTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        [
+          'address',
+          'address[]',
+          'uint256[]',
+          'uint256[]',
+          'address',
+          'bytes',
+          'uint16',
+        ],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      const params = utils.defaultAbiCoder.encode(
+        [
+          'address',
+          'uint256',
+          'uint256',
+          'bytes',
+          'address',
+          'tuple(uint256,uint256,uint8,bytes32,bytes32)',
+        ],
+        [
+          toAsset,
+          valueToWei(minToAmount, decimals),
+          100,
+          swapCallData,
+          augustus,
+          [
+            permitSignature.amount,
+            permitSignature.deadline,
+            permitSignature.v,
+            permitSignature.r,
+            permitSignature.s,
+          ],
+        ],
+      );
+
+      expect(decoded[0]).toEqual(SWAP_COLLATERAL_ADAPTER);
+      expect(decoded[1]).toEqual([fromAsset]);
+      expect(decoded[2]).toEqual([
+        BigNumber.from(valueToWei(amountWithSurplus, decimals)),
+      ]);
+      expect(decoded[3]).toEqual([BigNumber.from(0)]);
+      expect(decoded[4]).toEqual(onBehalfOf);
+      expect(decoded[5]).toEqual(params);
+      expect(decoded[6]).toEqual(0);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params and no approval needed with flash and no swapAll', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+      const decimalsSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValue(Promise.resolve(decimals));
+
+      const swapAll = false;
+      const swapCollateralTxObj = await lendingPoolInstance.swapCollateral({
+        user,
+        flash,
+        fromAsset,
+        fromAToken,
+        toAsset,
+        fromAmount,
+        minToAmount,
+        permitSignature,
+        swapAll,
+        onBehalfOf,
+        referralCode,
+        augustus,
+        swapCallData,
+      });
+
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(swapCollateralTxObj.length).toEqual(1);
+      const txObj = swapCollateralTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        [
+          'address',
+          'address[]',
+          'uint256[]',
+          'uint256[]',
+          'address',
+          'bytes',
+          'uint16',
+        ],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      const params = utils.defaultAbiCoder.encode(
+        [
+          'address',
+          'uint256',
+          'uint256',
+          'bytes',
+          'address',
+          'tuple(uint256,uint256,uint8,bytes32,bytes32)',
+        ],
+        [
+          toAsset,
+          valueToWei(minToAmount, decimals),
+          0,
+          swapCallData,
+          augustus,
+          [
+            permitSignature.amount,
+            permitSignature.deadline,
+            permitSignature.v,
+            permitSignature.r,
+            permitSignature.s,
+          ],
+        ],
+      );
+
+      expect(decoded[0]).toEqual(SWAP_COLLATERAL_ADAPTER);
+      expect(decoded[1]).toEqual([fromAsset]);
+      expect(decoded[2]).toEqual([
+        BigNumber.from(valueToWei(fromAmount, decimals)),
+      ]);
+      expect(decoded[3]).toEqual([BigNumber.from(0)]);
+      expect(decoded[4]).toEqual(onBehalfOf);
+      expect(decoded[5]).toEqual(params);
+      expect(decoded[6]).toEqual(Number(referralCode));
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params without permitSignature and no approval needed without flash', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+      const decimalsSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValue(Promise.resolve(decimals));
+
+      const swapAndDepositSpy = jest
+        .spyOn(
+          lendingPoolInstance.liquiditySwapAdapterService,
+          'swapAndDeposit',
+        )
+        .mockReturnValue({} as EthereumTransactionTypeExtended);
+
+      await lendingPoolInstance.swapCollateral({
+        user,
+        // flash,
+        fromAsset,
+        fromAToken,
+        toAsset,
+        fromAmount,
+        minToAmount,
+        permitSignature,
+        swapAll,
+        onBehalfOf,
+        referralCode,
+        augustus,
+        swapCallData,
+      });
+
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(swapAndDepositSpy).toHaveBeenCalled();
+    });
+    it('Expects to fail when lendingPoolAddress not provided', async () => {
+      const lendingPoolInstance = new LendingPool(provider);
+      const txObj = await lendingPoolInstance.swapCollateral({
+        user,
+        flash,
+        fromAsset,
+        fromAToken,
+        toAsset,
+        fromAmount,
+        minToAmount,
+        permitSignature,
+        swapAll,
+        onBehalfOf,
+        referralCode,
+        augustus,
+        swapCallData,
+      });
+      expect(txObj).toEqual([]);
+    });
+    it('Expects to fail when SWAP_COLLATERAL_ADAPTER not provided', async () => {
+      const lendingPoolInstance = new LendingPool(provider, { LENDING_POOL });
+      const txObj = await lendingPoolInstance.swapCollateral({
+        user,
+        flash,
+        fromAsset,
+        fromAToken,
+        toAsset,
+        fromAmount,
+        minToAmount,
+        permitSignature,
+        swapAll,
+        onBehalfOf,
+        referralCode,
+        augustus,
+        swapCallData,
+      });
+      expect(txObj).toEqual([]);
+    });
+    it('Expects to fail when user not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const user = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.swapCollateral({
+          user,
+          flash,
+          fromAsset,
+          fromAToken,
+          toAsset,
+          fromAmount,
+          minToAmount,
+          permitSignature,
+          swapAll,
+          onBehalfOf,
+          referralCode,
+          augustus,
+          swapCallData,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${user} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when fromAsset not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const fromAsset = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.swapCollateral({
+          user,
+          flash,
+          fromAsset,
+          fromAToken,
+          toAsset,
+          fromAmount,
+          minToAmount,
+          permitSignature,
+          swapAll,
+          onBehalfOf,
+          referralCode,
+          augustus,
+          swapCallData,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${fromAsset} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when fromAToken not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const fromAToken = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.swapCollateral({
+          user,
+          flash,
+          fromAsset,
+          fromAToken,
+          toAsset,
+          fromAmount,
+          minToAmount,
+          permitSignature,
+          swapAll,
+          onBehalfOf,
+          referralCode,
+          augustus,
+          swapCallData,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${fromAToken} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when toAsset not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const toAsset = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.swapCollateral({
+          user,
+          flash,
+          fromAsset,
+          fromAToken,
+          toAsset,
+          fromAmount,
+          minToAmount,
+          permitSignature,
+          swapAll,
+          onBehalfOf,
+          referralCode,
+          augustus,
+          swapCallData,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${toAsset} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when onBehalfOf not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const onBehalfOf = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.swapCollateral({
+          user,
+          flash,
+          fromAsset,
+          fromAToken,
+          toAsset,
+          fromAmount,
+          minToAmount,
+          permitSignature,
+          swapAll,
+          onBehalfOf,
+          referralCode,
+          augustus,
+          swapCallData,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${onBehalfOf} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when augustus not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const augustus = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.swapCollateral({
+          user,
+          flash,
+          fromAsset,
+          fromAToken,
+          toAsset,
+          fromAmount,
+          minToAmount,
+          permitSignature,
+          swapAll,
+          onBehalfOf,
+          referralCode,
+          augustus,
+          swapCallData,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${augustus} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when fromAmount not positive', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const fromAmount = '0';
+      await expect(async () =>
+        lendingPoolInstance.swapCollateral({
+          user,
+          flash,
+          fromAsset,
+          fromAToken,
+          toAsset,
+          fromAmount,
+          minToAmount,
+          permitSignature,
+          swapAll,
+          onBehalfOf,
+          referralCode,
+          augustus,
+          swapCallData,
+        }),
+      ).rejects.toThrowError(
+        `Amount: ${fromAmount} needs to be greater than 0`,
+      );
+    });
+    it('Expects to fail when fromAmount not number', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const fromAmount = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.swapCollateral({
+          user,
+          flash,
+          fromAsset,
+          fromAToken,
+          toAsset,
+          fromAmount,
+          minToAmount,
+          permitSignature,
+          swapAll,
+          onBehalfOf,
+          referralCode,
+          augustus,
+          swapCallData,
+        }),
+      ).rejects.toThrowError(
+        `Amount: ${fromAmount} needs to be greater than 0`,
+      );
+    });
+    it('Expects to fail when minToAmount not positive', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const minToAmount = '0';
+      await expect(async () =>
+        lendingPoolInstance.swapCollateral({
+          user,
+          flash,
+          fromAsset,
+          fromAToken,
+          toAsset,
+          fromAmount,
+          minToAmount,
+          permitSignature,
+          swapAll,
+          onBehalfOf,
+          referralCode,
+          augustus,
+          swapCallData,
+        }),
+      ).rejects.toThrowError(
+        `Amount: ${minToAmount} needs to be greater than 0`,
+      );
+    });
+    it('Expects to fail when minToAmount not number', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const minToAmount = 'asfd';
+      await expect(async () =>
+        lendingPoolInstance.swapCollateral({
+          user,
+          flash,
+          fromAsset,
+          fromAToken,
+          toAsset,
+          fromAmount,
+          minToAmount,
+          permitSignature,
+          swapAll,
+          onBehalfOf,
+          referralCode,
+          augustus,
+          swapCallData,
+        }),
+      ).rejects.toThrowError(
+        `Amount: ${minToAmount} needs to be greater than 0`,
+      );
+    });
   });
   describe('repayWithCollateral', () => {
+    const user = '0x0000000000000000000000000000000000000006';
+    const fromAsset = '0x0000000000000000000000000000000000000007';
+    const fromAToken = '0x0000000000000000000000000000000000000008';
+    const toAsset = '0x0000000000000000000000000000000000000009';
+    const onBehalfOf = '0x0000000000000000000000000000000000000010';
+    const augustus = '0x0000000000000000000000000000000000000011';
+    const fromAmount = '12.34';
+    const minToAmount = '13.56';
+    const permitSignature = {
+      amount: '1',
+      deadline: '1',
+      v: 1,
+      r: '0x0000000000000000000000000000000000000000000000000000000000000001',
+      s: '0x0000000000000000000000000000000000000000000000000000000000000001',
+    };
+    const swapAll = true;
+    const referralCode = '1';
+    const swapCallData =
+      '0xda8567c80000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c5990000000000000000000000007fc66500c84a76ad7e9c93437bfc5ac33e2ddae900000000000000000000000000000000000000000000000000000000119027b700000000000000000000000000000000000000000000001e483c86fa843f6c2000000000000000000000000000000000000000000000000000000000000000440000000000000000000000000000000000000000000000000000000000000180000000000000000000000000def171fe48cf0115b1d80b88dc8eab59176fee5700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000116446c67b6d00000000000000000000000000000000000000000000000000000000000000200000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c59900000000000000000000000000000000000000000000000000000000119027b700000000000000000000000000000000000000000000001dfec636122d1008df00000000000000000000000000000000000000000000001e4c566f818d31d01300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000160000000000000000000000000000000000000000000000000000000006161766500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001120000000000000000000000000000000000000000000000000000000006177abb9ae2ba6c0362c11ec8f12233bf85851b3000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000004a000000000000000000000000000000000000000000000000000000000000015180000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000007fc66500c84a76ad7e9c93437bfc5ac33e2ddae900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000003a0430bf7cd2633af111ce3204db4b0990857a6f000000000000000000000000000000000000000000000000000000000000271000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000def1c0ded9bec7f1a1670819833240f027b25eff000000000000000000000000000000000000000000000000000000000000271000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000007fc66500c84a76ad7e9c93437bfc5ac33e2ddae90000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c5990000000000000000000000000000000000000000000000108e47a6846afd000000000000000000000000000000000000000000000000000000000000099433f80000000000000000000000000000006daea1723962647b7e189d311d757fb793000000000000000000000000def171fe48cf0115b1d80b88dc8eab59176fee57000000000000000000000000100cec21fa2a0bdc21f770ec06e885e7c52a18680000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006177abb93d1d355dba3f70000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000001c558d406f7449cc936da0231093b069fcb8a42e3a2f0f78f0497515f8d795a29c3a57485920bb65c42c9f5884af63388d493b5cd0bcd2a6eed4fff7173982f4f800000000000000000000000000000000000000000000000000000000000011f80000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000420000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000003a0430bf7cd2633af111ce3204db4b0990857a6f000000000000000000000000000000000000000000000000000000000000271000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000def1c0ded9bec7f1a1670819833240f027b25eff000000000000000000000000000000000000000000000000000000000000271000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c5990000000000000000000000000000000000000000000000011abcf02276ffa00000000000000000000000000000000000000000000000000000000000082b007c000000000000000000000000b3c839dbde6b96d37c56ee4f9dad3390d49310aa000000000000000000000000def171fe48cf0115b1d80b88dc8eab59176fee57000000000000000000000000100cec21fa2a0bdc21f770ec06e885e7c52a18680000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006177abd60000000000000000000000000000000000000000000000000000017cbb773bf00000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000001bc072f450f48f66263bd53e801840fbf545c7aa5aac969d568f87eb830b66f36907cba9fd12582a9a96f23d1396da6c94d46fa4bc0ab851972246cd117659949f0000000000000000000000007fc66500c84a76ad7e9c93437bfc5ac33e2ddae900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000003a0430bf7cd2633af111ce3204db4b0990857a6f0000000000000000000000000000000000000000000000000000000000002710000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002c00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000def1c0ded9bec7f1a1670819833240f027b25eff00000000000000000000000000000000000000000000000000000000000009c400000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000007fc66500c84a76ad7e9c93437bfc5ac33e2ddae9000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000386598f16ac87200000000000000000000000000000000000000000000000000046a1698a248c022a0000000000000000000000000000006daea1723962647b7e189d311d757fb793000000000000000000000000def171fe48cf0115b1d80b88dc8eab59176fee57000000000000000000000000100cec21fa2a0bdc21f770ec06e885e7c52a18680000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006177abb902d4eee4d7c128000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000001c41623d640c08c3543660e464261260aed59bfba57c22b00326533525bd011953350326cee2a506e6daf1d0d8780eca139ec48cab2280c6e0bf1a1efe72b0ad880000000000000000000000000000000000000000000000000000000000000001000000000000000000000000def1c0ded9bec7f1a1670819833240f027b25eff0000000000000000000000000000000000000000000000000000000000001d4c00000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000007fc66500c84a76ad7e9c93437bfc5ac33e2ddae9000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000a91c3e5350e240000000000000000000000000000000000000000000000000000d41a7b6e826d0000000000000000000000000000b3c839dbde6b96d37c56ee4f9dad3390d49310aa000000000000000000000000def171fe48cf0115b1d80b88dc8eab59176fee57000000000000000000000000100cec21fa2a0bdc21f770ec06e885e7c52a18680000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006177abd60000000000000000000000000000000000000000000000000000017cbb773bf00000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000001b842ca8317744091cfd12b2d2e9de4c17618cf2e19d5f0eecb68e3691b078542307aae0aeff4ae756ca20d0ec1dff2ec0a6cfdc595dd3a43d6b8a76f630c4b2f9000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
+    const flash = true;
+    const decimals = 18;
+
+    const amountWithSurplus: string = (
+      Number(fromAmount) +
+      (Number(fromAmount) * Number(SURPLUS)) / 100
+    ).toString();
+
+    const config = { LENDING_POOL, SWAP_COLLATERAL_ADAPTER };
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
     it('Expects the tx object passing all params and no approval needed for flash with rate mode None', async () => {});
     it('Expects the tx object passing all params and no approval needed for flash with rate mode Stable', async () => {});
     it('Expects the tx object passing all params and approval needed for flash with rate mode Variable', async () => {});

@@ -678,22 +678,22 @@ export class LendingPool
       this.lendingPoolAddress,
     );
 
-    const params = buildParaSwapLiquiditySwapParams(
-      toAsset,
-      amountSlippageConverted,
-      swapAll
-        ? augustusFromAmountOffsetFromCalldata(swapCallData as string)
-        : 0,
-      swapCallData,
-      augustus,
-      permitParams.amount,
-      permitParams.deadline,
-      permitParams.v,
-      permitParams.r,
-      permitParams.s,
-    );
-
     if (flash) {
+      const params = buildParaSwapLiquiditySwapParams(
+        toAsset,
+        amountSlippageConverted,
+        swapAll
+          ? augustusFromAmountOffsetFromCalldata(swapCallData as string)
+          : 0,
+        swapCallData,
+        augustus,
+        permitParams.amount,
+        permitParams.deadline,
+        permitParams.v,
+        permitParams.r,
+        permitParams.s,
+      );
+
       const amountWithSurplus: string = (
         Number(fromAmount) +
         (Number(fromAmount) * Number(SURPLUS)) / 100

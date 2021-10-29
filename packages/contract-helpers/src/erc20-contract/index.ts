@@ -103,7 +103,6 @@ export class ERC20Service
     if (token.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) return 18;
     if (!this.tokenDecimals[token]) {
       const erc20Contract = this.getContractInstance(token);
-      console.log(erc20Contract);
       this.tokenDecimals[token] = await erc20Contract.decimals();
     }
 
