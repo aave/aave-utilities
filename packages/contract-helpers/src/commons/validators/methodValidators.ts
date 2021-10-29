@@ -55,14 +55,11 @@ export function LPRepayWithCollateralValidator(
 ): any {
   const method = descriptor.value;
   descriptor.value = function () {
-    const { LENDING_POOL, REPAY_WITH_COLLATERAL_ADAPTER } =
-      // @ts-expect-error todo: check why this ignore is needed
-      this.lendingPoolConfig || {};
-
     if (
-      !utils.isAddress(LENDING_POOL) ||
-      !REPAY_WITH_COLLATERAL_ADAPTER ||
-      !utils.isAddress(REPAY_WITH_COLLATERAL_ADAPTER)
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.lendingPoolAddress) ||
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.repayWithCollateralAddress)
     ) {
       console.error(
         `[LPRepayWithCollateralValidator] You need to pass valid addresses`,
@@ -73,8 +70,6 @@ export function LPRepayWithCollateralValidator(
     isEthAddressValidator(target, propertyName, arguments);
 
     amountGtThan0Validator(target, propertyName, arguments);
-
-    amountGtThan0OrMinus1(target, propertyName, arguments);
 
     return method.apply(this, arguments);
   };
