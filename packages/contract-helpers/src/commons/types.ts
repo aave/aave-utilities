@@ -16,7 +16,7 @@ export enum Market {
 }
 
 export const ChainIdToNetwork: Record<number, string> = {
-  1: 'homestead', // 'mainnet'
+  1: 'mainnet', // 'homestead', //
   3: 'ropsten',
   42: 'kovan',
   100: 'xDAI',
