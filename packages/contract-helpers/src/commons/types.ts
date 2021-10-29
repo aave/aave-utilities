@@ -15,25 +15,11 @@ export enum Market {
   AMM = 'amm',
 }
 
-export enum Network {
-  mainnet = 'mainnet',
-  ropsten = 'ropsten',
-  kovan = 'kovan',
-  polygon = 'polygon',
-  fork = 'fork',
-  mumbai = 'mumbai',
-  polygon_fork = 'polygon_fork',
-  avalanche = 'avalanche',
-  avalanche_fork = 'avalanche_fork',
-  fuji = 'fuji', // avalanche test network
-  arbitrum_one = 'arbitrum_one',
-  arbitrum_rinkeby = 'arbitrum_rinkeby',
-}
-
 export const ChainIdToNetwork: Record<number, string> = {
   1: 'homestead', // 'mainnet'
   3: 'ropsten',
   42: 'kovan',
+  100: 'xDAI',
   137: 'polygon',
   1337: 'fork',
   80001: 'mumbai',
@@ -58,7 +44,9 @@ export enum ChainId {
   fuji = 43113, // avalanche test network
   arbitrum_one = 42161,
   arbitrum_rinkeby = 421611,
+  xDAI = 100,
 }
+
 export type ConstantAddressesByNetwork = Record<
   string,
   {
@@ -288,19 +276,6 @@ export type LendingPoolConfigType = Record<
   string,
   Record<string, tDistinctContractAddressBetweenMarketsV2>
 >;
-
-export type EnabledNetworksType = {
-  staking: Record<string, Network[]>;
-  lendingPool: Record<string, Network[]>;
-  governance: Network[];
-  wethGateway: Network[];
-  faucet: Network[];
-  liquiditySwapAdapter: Network[];
-  repayWithCollateralAdapter: Network[];
-  aaveGovernanceV2: Network[];
-  ltaMigrator: Network[];
-  incentivesController: Network[];
-};
 
 export type PermitSignature = {
   amount: string;
