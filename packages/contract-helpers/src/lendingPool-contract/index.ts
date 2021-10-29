@@ -822,10 +822,7 @@ export class LendingPool
       ? valueToWei(repayAmountWithSurplus, decimals)
       : valueToWei(repayAmount, decimals);
 
-    let numericInterestRate = 0;
-    if (rateMode) {
-      numericInterestRate = rateMode === InterestRate.Stable ? 1 : 2;
-    }
+    const numericInterestRate = rateMode === InterestRate.Stable ? 1 : 2;
 
     if (flash) {
       const params: string = utils.defaultAbiCoder.encode(
