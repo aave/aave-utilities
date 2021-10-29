@@ -1487,16 +1487,287 @@ describe('LendingPool', () => {
     });
   });
   describe('liquidationCall', () => {
-    it('Expects the tx object passing all params and no approval needed', async () => {});
-    it('Expects the tx object passing all params but not passing getAToken and no approval needed', async () => {});
-    it('Expects the tx object passing all params but not passing liquidateAll with approval needed', async () => {});
-    it('Expects to fail when lendingPoolAddress not provided', () => {});
-    it('Expects to fail when liquidator not and eth address', async () => {});
-    it('Expects to fail when liquidatedUser not and eth address', async () => {});
-    it('Expects to fail when debtReserve not and eth address', async () => {});
-    it('Expects to fail when collateralReserve not and eth address', async () => {});
-    it('Expects to fail when purchaseAmount not positive', async () => {});
-    it('Expects to fail when purchaseAmount not number', async () => {});
+    const liquidator = '0x0000000000000000000000000000000000000006';
+    const liquidatedUser = '0x0000000000000000000000000000000000000007';
+    const debtReserve = '0x0000000000000000000000000000000000000007';
+    const collateralReserve = '0x0000000000000000000000000000000000000007';
+    const purchaseAmount = '123.456';
+    const getAToken = true;
+    const liquidateAll = true;
+    const decimals = 18;
+
+    const config = { LENDING_POOL };
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('Expects the tx object passing all params and no approval needed', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+
+      const liquidationCallTxObj = await lendingPoolInstance.liquidationCall({
+        liquidator,
+        liquidatedUser,
+        debtReserve,
+        collateralReserve,
+        purchaseAmount,
+        getAToken,
+        liquidateAll,
+      });
+
+      expect(isApprovedSpy).toHaveBeenCalled();
+
+      expect(liquidationCallTxObj.length).toEqual(1);
+      const txObj = liquidationCallTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(liquidator);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'address', 'address', 'uint256', 'bool'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(collateralReserve);
+      expect(decoded[1]).toEqual(debtReserve);
+      expect(decoded[2]).toEqual(liquidatedUser);
+      expect(decoded[3]).toEqual(constants.MaxUint256);
+      expect(decoded[4]).toEqual(getAToken);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params but not passing getAToken and no approval needed', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+
+      const liquidationCallTxObj = await lendingPoolInstance.liquidationCall({
+        liquidator,
+        liquidatedUser,
+        debtReserve,
+        collateralReserve,
+        purchaseAmount,
+        liquidateAll,
+      });
+
+      expect(isApprovedSpy).toHaveBeenCalled();
+
+      expect(liquidationCallTxObj.length).toEqual(1);
+      const txObj = liquidationCallTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(liquidator);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'address', 'address', 'uint256', 'bool'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(collateralReserve);
+      expect(decoded[1]).toEqual(debtReserve);
+      expect(decoded[2]).toEqual(liquidatedUser);
+      expect(decoded[3]).toEqual(constants.MaxUint256);
+      expect(decoded[4]).toEqual(false);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params but not passing liquidateAll with approval needed', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(false));
+      const decimalsSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const approveSpy = jest
+        .spyOn(lendingPoolInstance.erc20Service, 'approve')
+        .mockReturnValueOnce({
+          txType: eEthereumTxType.ERC20_APPROVAL,
+          tx: async () => ({}),
+          gas: async () => ({
+            gasLimit: '1',
+            gasPrice: '1',
+          }),
+        });
+
+      const liquidationCallTxObj = await lendingPoolInstance.liquidationCall({
+        liquidator,
+        liquidatedUser,
+        debtReserve,
+        collateralReserve,
+        purchaseAmount,
+        getAToken,
+      });
+
+      expect(approveSpy).toHaveBeenCalled();
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(liquidationCallTxObj.length).toEqual(2);
+      const txObj = liquidationCallTxObj[1];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(liquidator);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'address', 'address', 'uint256', 'bool'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(collateralReserve);
+      expect(decoded[1]).toEqual(debtReserve);
+      expect(decoded[2]).toEqual(liquidatedUser);
+      expect(decoded[3]).toEqual(
+        BigNumber.from(valueToWei(purchaseAmount, decimals)),
+      );
+      expect(decoded[4]).toEqual(getAToken);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.liquidationCall].limit,
+      );
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects to fail when lendingPoolAddress not provided', async () => {
+      const lendingPoolInstance = new LendingPool(provider);
+      const txObj = await lendingPoolInstance.liquidationCall({
+        liquidator,
+        liquidatedUser,
+        debtReserve,
+        collateralReserve,
+        purchaseAmount,
+        getAToken,
+        liquidateAll,
+      });
+      expect(txObj).toEqual([]);
+    });
+    it('Expects to fail when liquidator not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const liquidator = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.liquidationCall({
+          liquidator,
+          liquidatedUser,
+          debtReserve,
+          collateralReserve,
+          purchaseAmount,
+          getAToken,
+          liquidateAll,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${liquidator} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when liquidatedUser not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const liquidatedUser = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.liquidationCall({
+          liquidator,
+          liquidatedUser,
+          debtReserve,
+          collateralReserve,
+          purchaseAmount,
+          getAToken,
+          liquidateAll,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${liquidatedUser} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when debtReserve not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const debtReserve = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.liquidationCall({
+          liquidator,
+          liquidatedUser,
+          debtReserve,
+          collateralReserve,
+          purchaseAmount,
+          getAToken,
+          liquidateAll,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${debtReserve} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when collateralReserve not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const collateralReserve = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.liquidationCall({
+          liquidator,
+          liquidatedUser,
+          debtReserve,
+          collateralReserve,
+          purchaseAmount,
+          getAToken,
+          liquidateAll,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${collateralReserve} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when purchaseAmount not positive', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const purchaseAmount = '0';
+      await expect(async () =>
+        lendingPoolInstance.liquidationCall({
+          liquidator,
+          liquidatedUser,
+          debtReserve,
+          collateralReserve,
+          purchaseAmount,
+          getAToken,
+          liquidateAll,
+        }),
+      ).rejects.toThrowError(
+        `Amount: ${purchaseAmount} needs to be greater than 0`,
+      );
+    });
+    it('Expects to fail when purchaseAmount not number', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const purchaseAmount = 'asdf';
+      await expect(async () =>
+        lendingPoolInstance.liquidationCall({
+          liquidator,
+          liquidatedUser,
+          debtReserve,
+          collateralReserve,
+          purchaseAmount,
+          getAToken,
+          liquidateAll,
+        }),
+      ).rejects.toThrowError(
+        `Amount: ${purchaseAmount} needs to be greater than 0`,
+      );
+    });
   });
   describe('swapCollateral', () => {
     it('Expects the tx object passing all params and no approval needed for flash', async () => {});

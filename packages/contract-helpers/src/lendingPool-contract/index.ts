@@ -5,7 +5,6 @@ import {
   EthereumTransactionTypeExtended,
   InterestRate,
   ProtocolAction,
-  TokenMetadataType,
   transactionType,
   tEthereumAddress,
   LendingPoolMarketConfig,
@@ -15,7 +14,6 @@ import {
   valueToWei,
   API_ETH_MOCK_ADDRESS,
   DEFAULT_APPROVE_AMOUNT,
-  MAX_UINT_AMOUNT,
   SURPLUS,
 } from '../commons/utils';
 import {
@@ -553,7 +551,7 @@ export class LendingPool
     }: LPLiquidationCall,
   ): Promise<EthereumTransactionTypeExtended[]> {
     const txs: EthereumTransactionTypeExtended[] = [];
-    const { isApproved, approve, getTokenData }: IERC20ServiceInterface =
+    const { isApproved, approve, decimalsOf }: IERC20ServiceInterface =
       this.erc20Service;
 
     const approved = await isApproved({
@@ -574,15 +572,11 @@ export class LendingPool
       txs.push(approveTx);
     }
 
-    const [debtReserveInfo]: TokenMetadataType[] = await Promise.all([
-      getTokenData(debtReserve),
-    ]);
-
-    const reserveDecimals: number = debtReserveInfo.decimals;
-
-    const convertedAmount: string = liquidateAll
-      ? MAX_UINT_AMOUNT
-      : valueToWei(purchaseAmount, reserveDecimals);
+    let convertedAmount = constants.MaxUint256.toString();
+    if (!liquidateAll) {
+      const reserveDecimals = await decimalsOf(debtReserve);
+      convertedAmount = valueToWei(purchaseAmount, reserveDecimals);
+    }
 
     const lendingPoolContract = this.getContractInstance(
       this.lendingPoolAddress,
