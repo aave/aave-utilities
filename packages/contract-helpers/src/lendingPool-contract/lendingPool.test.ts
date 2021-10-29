@@ -1235,19 +1235,256 @@ describe('LendingPool', () => {
     });
   });
   describe('swapBorrowRateMode', () => {
-    it('Expects the tx object passing all params with Inerest rate None', () => {});
-    it('Expects the tx object passing all params with Inerest rate Stable', () => {});
-    it('Expects the tx object passing all params with Inerest rate Variable', () => {});
-    it('Expects to fail when lendingPoolAddress not provided', () => {});
-    it('Expects to fail when user not and eth address', async () => {});
-    it('Expects to fail when reserve not and eth address', async () => {});
+    const user = '0x0000000000000000000000000000000000000006';
+    const reserve = '0x0000000000000000000000000000000000000007';
+    const interestRateMode = InterestRate.None;
+
+    const config = { LENDING_POOL };
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('Expects the tx object passing all params with Inerest rate None', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+
+      const swapBorrowRateModeTxObj = lendingPoolInstance.swapBorrowRateMode({
+        user,
+        reserve,
+        interestRateMode,
+      });
+
+      expect(swapBorrowRateModeTxObj.length).toEqual(1);
+      const txObj = swapBorrowRateModeTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(BigNumber.from(1));
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params with Inerest rate Stable', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const interestRateMode = InterestRate.Stable;
+      const swapBorrowRateModeTxObj = lendingPoolInstance.swapBorrowRateMode({
+        user,
+        reserve,
+        interestRateMode,
+      });
+
+      expect(swapBorrowRateModeTxObj.length).toEqual(1);
+      const txObj = swapBorrowRateModeTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(BigNumber.from(1));
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params with Inerest rate Variable', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const interestRateMode = InterestRate.Variable;
+      const swapBorrowRateModeTxObj = lendingPoolInstance.swapBorrowRateMode({
+        user,
+        reserve,
+        interestRateMode,
+      });
+
+      expect(swapBorrowRateModeTxObj.length).toEqual(1);
+      const txObj = swapBorrowRateModeTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(BigNumber.from(2));
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects to fail when lendingPoolAddress not provided', () => {
+      const lendingPoolInstance = new LendingPool(provider);
+      const txObj = lendingPoolInstance.swapBorrowRateMode({
+        user,
+        reserve,
+        interestRateMode,
+      });
+      expect(txObj).toEqual([]);
+    });
+    it('Expects to fail when user not and eth address', () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const user = 'asdf';
+      expect(() =>
+        lendingPoolInstance.swapBorrowRateMode({
+          user,
+          reserve,
+          interestRateMode,
+        }),
+      ).toThrowError(`Address: ${user} is not a valid ethereum Address`);
+    });
+    it('Expects to fail when reserve not and eth address', () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const reserve = 'asdf';
+      expect(() =>
+        lendingPoolInstance.swapBorrowRateMode({
+          user,
+          reserve,
+          interestRateMode,
+        }),
+      ).toThrowError(`Address: ${reserve} is not a valid ethereum Address`);
+    });
   });
   describe('setUsageAsCollateral', () => {
-    it('Expects the tx object passing all params with usage as collateral true', () => {});
-    it('Expects the tx object passing all params with usage as collateral false', () => {});
-    it('Expects to fail when lendingPoolAddress not provided', () => {});
-    it('Expects to fail when user not and eth address', async () => {});
-    it('Expects to fail when reserve not and eth address', async () => {});
+    const user = '0x0000000000000000000000000000000000000006';
+    const reserve = '0x0000000000000000000000000000000000000007';
+    const usageAsCollateral = true;
+
+    const config = { LENDING_POOL };
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('Expects the tx object passing all params with usage as collateral true', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+
+      const setUsageAsCollateralTxObj =
+        lendingPoolInstance.setUsageAsCollateral({
+          user,
+          reserve,
+          usageAsCollateral,
+        });
+
+      expect(setUsageAsCollateralTxObj.length).toEqual(1);
+      const txObj = setUsageAsCollateralTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'bool'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(usageAsCollateral);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params with usage as collateral false', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+
+      const usageAsCollateral = false;
+      const setUsageAsCollateralTxObj =
+        lendingPoolInstance.setUsageAsCollateral({
+          user,
+          reserve,
+          usageAsCollateral,
+        });
+
+      expect(setUsageAsCollateralTxObj.length).toEqual(1);
+      const txObj = setUsageAsCollateralTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(LENDING_POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'bool'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(usageAsCollateral);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects to fail when lendingPoolAddress not provided', () => {
+      const lendingPoolInstance = new LendingPool(provider);
+      const txObj = lendingPoolInstance.setUsageAsCollateral({
+        user,
+        reserve,
+        usageAsCollateral,
+      });
+      expect(txObj).toEqual([]);
+    });
+    it('Expects to fail when user not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const user = 'asdf';
+      expect(() =>
+        lendingPoolInstance.setUsageAsCollateral({
+          user,
+          reserve,
+          usageAsCollateral,
+        }),
+      ).toThrowError(`Address: ${user} is not a valid ethereum Address`);
+    });
+    it('Expects to fail when reserve not and eth address', async () => {
+      const lendingPoolInstance = new LendingPool(provider, config);
+      const reserve = 'asdf';
+      expect(() =>
+        lendingPoolInstance.setUsageAsCollateral({
+          user,
+          reserve,
+          usageAsCollateral,
+        }),
+      ).toThrowError(`Address: ${reserve} is not a valid ethereum Address`);
+    });
   });
   describe('liquidationCall', () => {
     it('Expects the tx object passing all params and no approval needed', async () => {});
