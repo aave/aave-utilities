@@ -29,6 +29,7 @@ interface RawReserveData {
   id: string;
   symbol: string;
   usageAsCollateralEnabled: boolean;
+  underlyingAsset: string;
 }
 
 export interface RawUserReserveData {
