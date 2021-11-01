@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.21.1 (2021-11-01)
+
+
+### Bug Fixes
+
+* add missing export ([#141](https://github.com/@aave/aave-utilities/issues/141)) ([72a2aa0](https://github.com/@aave/aave-utilities/commit/72a2aa07f2478bd877fcbc4850f36bf789bfad2a))
+
+
+
+
+
 # 0.21.0 (2021-11-01)
 
 
