@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.21.0 (2021-11-01)
+
+
+### Features
+
+* add lending pool txbuilder logic ([#129](https://github.com/@aave/aave-utilities/issues/129)) ([1121de4](https://github.com/@aave/aave-utilities/commit/1121de49ca2c3508cc377edfd72927c4e36dc445))
+
+
+
+
+
 ## 0.20.4 (2021-10-28)
 
 
