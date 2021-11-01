@@ -10,6 +10,7 @@ export const usdcUserReserve: RawUserReserveData = {
   reserve: {
     id: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb480xb53c1a33016b2dc2ff3653530bff1848a515c8c5',
     symbol: 'USDC',
+    name: 'USDC Coin',
     decimals: 6,
     underlyingAsset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     liquidityRate: '46062683922433651545591283',
@@ -42,6 +43,7 @@ export const xSushiUserReserve: RawUserReserveData = {
   reserve: {
     id: '0x8798249c2e607446efb7ad49ec89dd1865ff42720xb53c1a33016b2dc2ff3653530bff1848a515c8c5',
     symbol: 'XSUSHI',
+    name: 'XSUSHI',
     decimals: 18,
     underlyingAsset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     liquidityRate: '60907795848090763073598',
@@ -74,6 +76,7 @@ export const ethUserReserve: RawUserReserveData = {
   reserve: {
     id: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc20xb53c1a33016b2dc2ff3653530bff1848a515c8c5',
     symbol: 'ETH',
+    name: 'ETH',
     decimals: 18,
     underlyingAsset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     liquidityRate: '254255556752591383202873',

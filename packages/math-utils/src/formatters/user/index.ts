@@ -8,7 +8,7 @@ import {
   UserReserveSummaryResponse,
 } from './generate-user-reserve-summary';
 
-interface RawReserveData {
+export interface RawReserveData {
   decimals: number;
   reserveFactor: string;
   baseLTVasCollateral: string;
@@ -30,6 +30,7 @@ interface RawReserveData {
   symbol: string;
   usageAsCollateralEnabled: boolean;
   underlyingAsset: string;
+  name: string;
 }
 
 export interface RawUserReserveData {
