@@ -42,7 +42,6 @@ describe('formatUserReserve', () => {
     expect(formattedReserve.totalStableDebt).toEqual('47382349.631778');
     expect(formattedReserve.totalVariableDebt).toEqual('5129957324.438749');
     expect(formattedReserve.usageAsCollateralEnabledOnUser).toEqual(true);
-    expect(formattedReserve.variableBorrowIndex).toEqual('0');
     expect(formattedReserve.variableBorrows).toEqual('52.314205');
     expect(formattedReserve.variableBorrowsMarketReferenceCurrency).toEqual(
       '0.01622894658656106985',

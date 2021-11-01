@@ -62,10 +62,6 @@ export function formatUserReserve({
     },
     scaledATokenBalance: normalizeWithReserve(userReserve.scaledATokenBalance),
     stableBorrowRate: normalize(exactStableBorrowRate, RAY_DECIMALS),
-    variableBorrowIndex: normalize(
-      userReserve.variableBorrowIndex,
-      RAY_DECIMALS,
-    ),
     underlyingBalance: normalize(_reserve.underlyingBalance, reserveDecimals),
     underlyingBalanceMarketReferenceCurrency: normalize(
       _reserve.underlyingBalanceMarketReferenceCurrency,
