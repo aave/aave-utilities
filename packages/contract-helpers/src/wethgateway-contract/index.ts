@@ -12,7 +12,7 @@ import {
   tEthereumAddress,
   transactionType,
 } from '../commons/types';
-import { parseNumber } from '../commons/utils';
+import { valueToWei } from '../commons/utils';
 import { WETHValidator } from '../commons/validators/methodValidators';
 import {
   is0OrPositiveAmount,
@@ -111,7 +111,7 @@ export class WETHGatewayService
       referralCode,
     }: WETHDepositParamsType,
   ): EthereumTransactionTypeExtended[] {
-    const convertedAmount: string = parseNumber(amount, 18);
+    const convertedAmount: string = valueToWei(amount, 18);
 
     const wethGatewayContract: IWETHGateway = this.getContractInstance(
       this.wethGatewayAddress,
@@ -153,7 +153,7 @@ export class WETHGatewayService
     }: WETHBorrowParamsType,
   ): Promise<EthereumTransactionTypeExtended[]> {
     const txs: EthereumTransactionTypeExtended[] = [];
-    const convertedAmount: string = parseNumber(amount, 18);
+    const convertedAmount: string = valueToWei(amount, 18);
     const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
 
     const delegationApproved: boolean =
@@ -224,7 +224,7 @@ export class WETHGatewayService
     const convertedAmount: string =
       amount === '-1'
         ? constants.MaxUint256.toString()
-        : parseNumber(amount, 18);
+        : valueToWei(amount, 18);
 
     const approved: boolean = await isApproved({
       token: aTokenAddress,
@@ -284,7 +284,7 @@ export class WETHGatewayService
       onBehalfOf,
     }: WETHRepayParamsType,
   ): EthereumTransactionTypeExtended[] {
-    const convertedAmount: string = parseNumber(amount, 18);
+    const convertedAmount: string = valueToWei(amount, 18);
     const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
     const wethGatewayContract: IWETHGateway = this.getContractInstance(
       this.wethGatewayAddress,

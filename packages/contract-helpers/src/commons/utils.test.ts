@@ -3,7 +3,7 @@ import {
   canBeEnsAddress,
   decimalsToCurrencyUnits,
   DEFAULT_NULL_VALUE_ON_TX,
-  parseNumber,
+  valueToWei,
   getTxValue,
 } from './utils';
 
@@ -42,13 +42,13 @@ describe('Utils', () => {
     });
   });
 
-  describe('parseNumber', () => {
+  describe('valueToWei', () => {
     it('Expects the value to be in wei decimals', () => {
-      const value = parseNumber('1', 6);
+      const value = valueToWei('1', 6);
       expect(value).toEqual('1000000');
     });
     it('Expects the value to be in wei decimals and fixed 0', () => {
-      const value = parseNumber('123.123541241123', 6);
+      const value = valueToWei('123.123541241123', 6);
       expect(value).toEqual('123123541');
     });
   });

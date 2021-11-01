@@ -5,7 +5,7 @@ import {
   InterestRate,
   transactionType,
 } from '../commons/types';
-import { parseNumber } from '../commons/utils';
+import { valueToWei } from '../commons/utils';
 import { ERC20Service } from '../erc20-contract';
 import { WETHGatewayService } from './index';
 // import { IWETHGateway } from './typechain/IWETHGateway';
@@ -336,7 +336,7 @@ describe('WethGatewayService', () => {
       );
 
       expect(decoded[0]).toEqual(lendingPool);
-      expect(decoded[1]).toEqual(BigNumber.from(parseNumber(amount, 18)));
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
       expect(decoded[2]).toEqual(BigNumber.from(2));
       expect(decoded[3]).toEqual(Number(referralCode));
 
@@ -381,7 +381,7 @@ describe('WethGatewayService', () => {
       );
 
       expect(decoded[0]).toEqual(lendingPool);
-      expect(decoded[1]).toEqual(BigNumber.from(parseNumber(amount, 18)));
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
       expect(decoded[2]).toEqual(BigNumber.from(1));
       expect(decoded[3]).toEqual(Number(referralCode));
 
@@ -427,7 +427,7 @@ describe('WethGatewayService', () => {
       );
 
       expect(decoded[0]).toEqual(lendingPool);
-      expect(decoded[1]).toEqual(BigNumber.from(parseNumber(amount, 18)));
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
       expect(decoded[2]).toEqual(BigNumber.from(1));
       expect(decoded[3]).toEqual(Number(referralCode));
 
@@ -472,7 +472,7 @@ describe('WethGatewayService', () => {
       );
 
       expect(decoded[0]).toEqual(lendingPool);
-      expect(decoded[1]).toEqual(BigNumber.from(parseNumber(amount, 18)));
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
       expect(decoded[2]).toEqual(BigNumber.from(1));
       expect(decoded[3]).toEqual(0);
 
@@ -671,7 +671,7 @@ describe('WethGatewayService', () => {
       );
 
       expect(decoded[0]).toEqual(lendingPool);
-      expect(decoded[1]).toEqual(BigNumber.from(parseNumber(amount, 18)));
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
       expect(decoded[2]).toEqual(onBehalfOf);
 
       // gas price
@@ -756,7 +756,7 @@ describe('WethGatewayService', () => {
       );
 
       expect(decoded[0]).toEqual(lendingPool);
-      expect(decoded[1]).toEqual(BigNumber.from(parseNumber(amount, 18)));
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
       expect(decoded[2]).toEqual(user);
 
       // gas price
@@ -926,7 +926,7 @@ describe('WethGatewayService', () => {
       );
 
       expect(decoded[0]).toEqual(lendingPool);
-      expect(decoded[1]).toEqual(BigNumber.from(parseNumber(amount, 18)));
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
       expect(decoded[2]).toEqual(BigNumber.from(1));
       expect(decoded[3]).toEqual(onBehalfOf);
 
@@ -965,7 +965,7 @@ describe('WethGatewayService', () => {
       );
 
       expect(decoded[0]).toEqual(lendingPool);
-      expect(decoded[1]).toEqual(BigNumber.from(parseNumber(amount, 18)));
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
       expect(decoded[2]).toEqual(BigNumber.from(2));
       expect(decoded[3]).toEqual(onBehalfOf);
 
@@ -1004,7 +1004,7 @@ describe('WethGatewayService', () => {
       );
 
       expect(decoded[0]).toEqual(lendingPool);
-      expect(decoded[1]).toEqual(BigNumber.from(parseNumber(amount, 18)));
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
       expect(decoded[2]).toEqual(BigNumber.from(1));
       expect(decoded[3]).toEqual(onBehalfOf);
 
@@ -1042,7 +1042,7 @@ describe('WethGatewayService', () => {
       );
 
       expect(decoded[0]).toEqual(lendingPool);
-      expect(decoded[1]).toEqual(BigNumber.from(parseNumber(amount, 18)));
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
       expect(decoded[2]).toEqual(BigNumber.from(1));
       expect(decoded[3]).toEqual(user);
 

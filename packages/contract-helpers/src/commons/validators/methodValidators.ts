@@ -16,126 +16,111 @@ import {
   // optionalValidator,
 } from './validations';
 
-// export function LPFlashLiquidationValidator(
-//   target: any,
-//   propertyName: string,
-//   descriptor: TypedPropertyDescriptor<any>,
-// ): any {
-//   const method = descriptor.value;
-//   descriptor.value = function () {
-//     const { LENDING_POOL, FLASH_LIQUIDATION_ADAPTER } =
-//       // @ts-expect-error todo: check why this ignore is needed
-//       this.lendingPoolConfig || {};
+export function LPFlashLiquidationValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    if (
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.lendingPoolAddress) ||
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.flashLiquidationAddress)
+    ) {
+      console.error(
+        `[LPFlahsLiquidationValidator] You need to pass valid addresses`,
+      );
+      return [];
+    }
 
-//     if (
-//       !utils.isAddress(LENDING_POOL) ||
-//       !FLASH_LIQUIDATION_ADAPTER ||
-//       !utils.isAddress(FLASH_LIQUIDATION_ADAPTER)
-//     ) {
-//       console.error(
-//         `[LPFlahsLiquidationValidator] You need to pass valid addresses`,
-//       );
-//       return [];
-//     }
+    isEthAddressValidator(target, propertyName, arguments);
 
-//     isEthAddressValidator(target, propertyName, arguments);
+    amountGtThan0Validator(target, propertyName, arguments);
 
-//     amountGtThan0Validator(target, propertyName, arguments);
+    amountGtThan0OrMinus1(target, propertyName, arguments);
 
-//     amountGtThan0OrMinus1(target, propertyName, arguments);
+    return method.apply(this, arguments);
+  };
+}
 
-//     return method?.apply(this, arguments);
-//   };
-// }
+export function LPRepayWithCollateralValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    if (
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.lendingPoolAddress) ||
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.repayWithCollateralAddress)
+    ) {
+      console.error(
+        `[LPRepayWithCollateralValidator] You need to pass valid addresses`,
+      );
+      return [];
+    }
 
-// export function LPRepayWithCollateralValidator(
-//   target: any,
-//   propertyName: string,
-//   descriptor: TypedPropertyDescriptor<any>,
-// ): any {
-//   const method = descriptor.value;
-//   descriptor.value = function () {
-//     const { LENDING_POOL, REPAY_WITH_COLLATERAL_ADAPTER } =
-//       // @ts-expect-error todo: check why this ignore is needed
-//       this.lendingPoolConfig || {};
+    isEthAddressValidator(target, propertyName, arguments);
 
-//     if (
-//       !utils.isAddress(LENDING_POOL) ||
-//       !REPAY_WITH_COLLATERAL_ADAPTER ||
-//       !utils.isAddress(REPAY_WITH_COLLATERAL_ADAPTER)
-//     ) {
-//       console.error(
-//         `[LPRepayWithCollateralValidator] You need to pass valid addresses`,
-//       );
-//       return [];
-//     }
+    amountGtThan0Validator(target, propertyName, arguments);
 
-//     isEthAddressValidator(target, propertyName, arguments);
+    return method.apply(this, arguments);
+  };
+}
 
-//     amountGtThan0Validator(target, propertyName, arguments);
+export function LPSwapCollateralValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    if (
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.lendingPoolAddress) ||
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.swapCollateralAddress)
+    ) {
+      console.error(
+        `[LPSwapCollateralValidator] You need to pass valid addresses`,
+      );
+      return [];
+    }
 
-//     amountGtThan0OrMinus1(target, propertyName, arguments);
+    isEthAddressValidator(target, propertyName, arguments);
 
-//     return method?.apply(this, arguments);
-//   };
-// }
+    amountGtThan0Validator(target, propertyName, arguments);
 
-// export function LPSwapCollateralValidator(
-//   target: any,
-//   propertyName: string,
-//   descriptor: TypedPropertyDescriptor<any>,
-// ): any {
-//   const method = descriptor.value;
-//   descriptor.value = function () {
-//     const { LENDING_POOL, SWAP_COLLATERAL_ADAPTER } =
-//       // @ts-expect-error todo: check why this ignore is needed
-//       this.lendingPoolConfig || {};
+    return method.apply(this, arguments);
+  };
+}
 
-//     if (
-//       !utils.isAddress(LENDING_POOL) ||
-//       !SWAP_COLLATERAL_ADAPTER ||
-//       !utils.isAddress(SWAP_COLLATERAL_ADAPTER)
-//     ) {
-//       console.error(
-//         `[LPSwapCollateralValidator] You need to pass valid addresses`,
-//       );
-//       return [];
-//     }
+export function LPValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    // @ts-expect-error todo: check why this ignore is needed
+    if (!utils.isAddress(this.lendingPoolAddress)) {
+      console.error(`[LendingPoolValidator] You need to pass valid addresses`);
+      return [];
+    }
 
-//     isEthAddressValidator(target, propertyName, arguments);
+    isEthAddressValidator(target, propertyName, arguments);
 
-//     amountGtThan0Validator(target, propertyName, arguments);
+    amountGtThan0Validator(target, propertyName, arguments);
 
-//     amountGtThan0OrMinus1(target, propertyName, arguments);
+    amountGtThan0OrMinus1(target, propertyName, arguments);
 
-//     return method?.apply(this, arguments);
-//   };
-// }
-
-// export function LPValidator(
-//   target: any,
-//   propertyName: string,
-//   descriptor: TypedPropertyDescriptor<any>,
-// ): any {
-//   const method = descriptor.value;
-//   descriptor.value = function () {
-//     // @ts-expect-error todo: check why this ignore is needed
-//     const { LENDING_POOL } = this.lendingPoolConfig || {};
-
-//     if (!utils.isAddress(LENDING_POOL)) {
-//       console.error(`[LendingPoolValidator] You need to pass valid addresses`);
-//       return [];
-//     }
-
-//     isEthAddressValidator(target, propertyName, arguments);
-
-//     amountGtThan0Validator(target, propertyName, arguments);
-
-//     amountGtThan0OrMinus1(target, propertyName, arguments);
-
-//     return method?.apply(this, arguments);
-//   };
-// }
+    return method.apply(this, arguments);
+  };
+}
 
 // export function LTAMigratorValidator(
 //   target: any,
