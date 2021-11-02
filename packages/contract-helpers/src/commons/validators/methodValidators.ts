@@ -325,30 +325,26 @@ export function RepayWithCollateralValidator(
 //   };
 // }
 
-// export function FaucetValidator(
-//   target: any,
-//   propertyName: string,
-//   descriptor: TypedPropertyDescriptor<any>,
-// ): any {
-//   const method = descriptor.value;
-//   descriptor.value = function () {
-//     // @ts-expect-error todo: check why this ignore is needed
-//     const FAUCET = this.faucetConfig?.FAUCET;
+export function FaucetValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    // @ts-expect-error todo: check why this ignore is needed
+    if (!utils.isAddress(this.faucetAddress)) {
+      console.error(`[FaucetValidator] You need to pass valid addresses`);
+      return [];
+    }
 
-//     if (!FAUCET || (FAUCET && !utils.isAddress(FAUCET))) {
-//       console.error(`[FaucetValidator] You need to pass valid addresses`);
-//       return [];
-//     }
+    isEthAddressValidator(target, propertyName, arguments);
 
-//     const isParamOptional = optionalValidator(target, propertyName, arguments);
+    amountGtThan0Validator(target, propertyName, arguments);
 
-//     isEthAddressValidator(target, propertyName, arguments, isParamOptional);
-
-//     amountGtThan0Validator(target, propertyName, arguments, isParamOptional);
-
-//     return method?.apply(this, arguments);
-//   };
-// }
+    return method.apply(this, arguments);
+  };
+}
 
 export function WETHValidator(
   target: any,
