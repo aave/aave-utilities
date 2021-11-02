@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.21.2 (2021-11-02)
+
+
+### Bug Fixes
+
+* remove faucet param ([#147](https://github.com/@aave/aave-utilities/issues/147)) ([28a6cee](https://github.com/@aave/aave-utilities/commit/28a6ceead1dd0767fce3109e4e962ad6e5585f8a))
+
+
+
+
+
 ## 0.21.1 (2021-11-01)
 
 
