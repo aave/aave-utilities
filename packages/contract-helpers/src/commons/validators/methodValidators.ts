@@ -258,72 +258,57 @@ export function RepayWithCollateralValidator(
   };
 }
 
-// export function StakingValidator(
-//   target: any,
-//   propertyName: string,
-//   descriptor: TypedPropertyDescriptor<any>,
-// ): any {
-//   const method = descriptor.value;
-//   descriptor.value = function () {
-//     // No need to check if addresses exist for network
-//     // because this is checked at initialization and type checking of config
+export function StakingValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    if (
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.stakingContractAddress) ||
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.stakingRewardTokenContractAddress)
+    ) {
+      console.error(`[StakingValidator] You need to pass valid addresses`);
+      return [];
+    }
 
-//     // @ts-expect-error todo: check why this ignore is needed
-//     const { TOKEN_STAKING, STAKING_REWARD_TOKEN } = this.stakingConfig || {};
+    isEthAddressValidator(target, propertyName, arguments);
 
-//     // Check if addresses are valid.
-//     if (
-//       !utils.isAddress(TOKEN_STAKING) ||
-//       !utils.isAddress(STAKING_REWARD_TOKEN)
-//     ) {
-//       console.error(`[StakingValidator] You need to pass valid addresses`);
-//       return [];
-//     }
+    amountGtThan0Validator(target, propertyName, arguments);
 
-//     const isParamOptional = optionalValidator(target, propertyName, arguments);
+    return method.apply(this, arguments);
+  };
+}
 
-//     isEthAddressValidator(target, propertyName, arguments, isParamOptional);
+export function SignStakingValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    if (
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.stakingContractAddress) ||
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.stakingRewardTokenContractAddress) ||
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.stakingHelperContractAddress)
+    ) {
+      console.error(`[StakingValidator] You need to pass valid addresses`);
+      return [];
+    }
 
-//     amountGtThan0Validator(target, propertyName, arguments, isParamOptional);
+    isEthAddressValidator(target, propertyName, arguments);
 
-//     return method?.apply(this, arguments);
-//   };
-// }
+    amountGtThan0Validator(target, propertyName, arguments);
 
-// export function SignStakingValidator(
-//   target: any,
-//   propertyName: string,
-//   descriptor: TypedPropertyDescriptor<any>,
-// ): any {
-//   const method = descriptor.value;
-//   descriptor.value = function () {
-//     // No need to check if addresses exist for network
-//     // because this is checked at initialization and type checking of config
-
-//     const { TOKEN_STAKING, STAKING_REWARD_TOKEN, STAKING_HELPER } =
-//       // @ts-expect-error todo: check why this ignore is needed
-//       this.stakingConfig || {};
-
-//     // Check if addresses are valid.
-//     if (
-//       !utils.isAddress(TOKEN_STAKING) ||
-//       !utils.isAddress(STAKING_REWARD_TOKEN) ||
-//       !STAKING_HELPER ||
-//       !utils.isAddress(TOKEN_STAKING)
-//     ) {
-//       console.error(`[StakingValidator] You need to pass valid addresses`);
-//       return [];
-//     }
-
-//     const isParamOptional = optionalValidator(target, propertyName, arguments);
-
-//     isEthAddressValidator(target, propertyName, arguments, isParamOptional);
-
-//     amountGtThan0Validator(target, propertyName, arguments, isParamOptional);
-
-//     return method?.apply(this, arguments);
-//   };
-// }
+    return method.apply(this, arguments);
+  };
+}
 
 export function FaucetValidator(
   target: any,
