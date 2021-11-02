@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.22.0 (2021-11-02)
+
+
+### Features
+
+* separate apy and apr ([#144](https://github.com/@aave/aave-utilities/issues/144)) ([965338d](https://github.com/@aave/aave-utilities/commit/965338d36074ae109bd14ef6d6839bf5905a8123))
+
+
+
+
+
 ## 0.21.1 (2021-11-01)
 
 
