@@ -37,7 +37,6 @@ export interface RawUserReserveData {
   usageAsCollateralEnabledOnUser: boolean;
   scaledVariableDebt: string;
   variableBorrowIndex: string;
-  stableBorrowRate: string;
   principalStableDebt: string;
   stableBorrowLastUpdateTimestamp: number;
 }

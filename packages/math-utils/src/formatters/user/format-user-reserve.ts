@@ -1,16 +1,5 @@
-import {
-  BigNumberValue,
-  normalize,
-  valueToBigNumber,
-  valueToZDBigNumber,
-} from '../../bignumber';
-import {
-  LTV_PRECISION,
-  USD_DECIMALS,
-  RAY_DECIMALS,
-  SECONDS_PER_YEAR,
-} from '../../constants';
-import { RAY, rayPow } from '../../index';
+import { BigNumberValue, normalize, valueToBigNumber } from '../../bignumber';
+import { LTV_PRECISION, USD_DECIMALS, RAY_DECIMALS } from '../../constants';
 import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
 import { ComputedUserReserve } from './index';
 
@@ -34,20 +23,6 @@ export function formatUserReserve({
   const normalizeWithReserve = (n: BigNumberValue) =>
     normalize(n, reserve.decimals);
 
-  const exactLiquidityRate = rayPow(
-    valueToZDBigNumber(reserve.liquidityRate)
-      .dividedBy(SECONDS_PER_YEAR)
-      .plus(RAY),
-    SECONDS_PER_YEAR,
-  ).minus(RAY);
-
-  const exactStableBorrowRate = rayPow(
-    valueToZDBigNumber(userReserve.stableBorrowRate)
-      .dividedBy(SECONDS_PER_YEAR)
-      .plus(RAY),
-    SECONDS_PER_YEAR,
-  ).minus(RAY);
-
   return {
     ...userReserve,
     reserve: {
@@ -58,10 +33,8 @@ export function formatUserReserve({
         ),
         LTV_PRECISION,
       ),
-      liquidityRate: normalize(exactLiquidityRate, RAY_DECIMALS),
     },
     scaledATokenBalance: normalizeWithReserve(userReserve.scaledATokenBalance),
-    stableBorrowRate: normalize(exactStableBorrowRate, RAY_DECIMALS),
     variableBorrowIndex: normalize(
       userReserve.variableBorrowIndex,
       RAY_DECIMALS,
