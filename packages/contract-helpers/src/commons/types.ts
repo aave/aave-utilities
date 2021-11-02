@@ -82,7 +82,6 @@ export type LendingPoolMarketConfig = {
   FLASH_LIQUIDATION_ADAPTER?: tEthereumAddress;
   REPAY_WITH_COLLATERAL_ADAPTER?: tEthereumAddress;
   SWAP_COLLATERAL_ADAPTER?: tEthereumAddress;
-  FAUCET?: tEthereumAddress;
 };
 
 export type LendingPoolConfig = Record<
