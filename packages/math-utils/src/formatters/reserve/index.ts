@@ -17,10 +17,13 @@ export interface FormatReserveResponse {
   reserveLiquidationThreshold: string;
   reserveLiquidationBonus: string;
   variableBorrowIndex: string;
-  variableBorrowRate: string;
   availableLiquidity: string;
-  stableBorrowRate: string;
-  liquidityRate: string;
+  supplyAPY: string;
+  supplyAPR: string;
+  variableBorrowAPY: string;
+  variableBorrowAPR: string;
+  stableBorrowAPY: string;
+  stableBorrowAPR: string;
   totalPrincipalStableDebt: string;
   totalScaledVariableDebt: string;
   utilizationRate: string;
@@ -61,6 +64,9 @@ interface GetComputedReserveFieldsResponse {
   totalLiquidity: BigNumber;
   utilizationRate: string;
   reserveLiquidationBonus: string;
+  supplyAPY: BigNumber;
+  variableBorrowAPY: BigNumber;
+  stableBorrowAPY: BigNumber;
 }
 
 /**
@@ -84,6 +90,27 @@ function getComputedReserveFields({
     LTV_PRECISION,
   );
 
+  const supplyAPY = rayPow(
+    valueToZDBigNumber(reserve.liquidityRate)
+      .dividedBy(SECONDS_PER_YEAR)
+      .plus(RAY),
+    SECONDS_PER_YEAR,
+  ).minus(RAY);
+
+  const variableBorrowAPY = rayPow(
+    valueToZDBigNumber(reserve.variableBorrowRate)
+      .dividedBy(SECONDS_PER_YEAR)
+      .plus(RAY),
+    SECONDS_PER_YEAR,
+  ).minus(RAY);
+
+  const stableBorrowAPY = rayPow(
+    valueToZDBigNumber(reserve.stableBorrowRate)
+      .dividedBy(SECONDS_PER_YEAR)
+      .plus(RAY),
+    SECONDS_PER_YEAR,
+  ).minus(RAY);
+
   return {
     totalDebt,
     totalStableDebt,
@@ -91,6 +118,9 @@ function getComputedReserveFields({
     totalLiquidity,
     utilizationRate,
     reserveLiquidationBonus,
+    supplyAPY,
+    variableBorrowAPY,
+    stableBorrowAPY,
   };
 }
 
@@ -100,30 +130,11 @@ interface FormatEnhancedReserveRequest {
 /**
  * @description normalizes reserve values & computed fields
  */
-function formatEnhancedReserve({ reserve }: FormatEnhancedReserveRequest) {
+function formatEnhancedReserve({
+  reserve,
+}: FormatEnhancedReserveRequest): FormatReserveResponse {
   const normalizeWithReserve = (n: BigNumberValue) =>
     normalize(n, reserve.decimals);
-
-  const exactLiquidityRate = rayPow(
-    valueToZDBigNumber(reserve.liquidityRate)
-      .dividedBy(SECONDS_PER_YEAR)
-      .plus(RAY),
-    SECONDS_PER_YEAR,
-  ).minus(RAY);
-
-  const exactVariableBorrowRate = rayPow(
-    valueToZDBigNumber(reserve.variableBorrowRate)
-      .dividedBy(SECONDS_PER_YEAR)
-      .plus(RAY),
-    SECONDS_PER_YEAR,
-  ).minus(RAY);
-
-  const exactStableBorrowRate = rayPow(
-    valueToZDBigNumber(reserve.stableBorrowRate)
-      .dividedBy(SECONDS_PER_YEAR)
-      .plus(RAY),
-    SECONDS_PER_YEAR,
-  ).minus(RAY);
 
   return {
     totalVariableDebt: normalizeWithReserve(reserve.totalVariableDebt),
@@ -134,9 +145,12 @@ function formatEnhancedReserve({ reserve }: FormatEnhancedReserveRequest) {
     totalDebt: normalizeWithReserve(reserve.totalDebt),
     baseLTVasCollateral: normalize(reserve.baseLTVasCollateral, LTV_PRECISION),
     reserveFactor: normalize(reserve.reserveFactor, LTV_PRECISION),
-    variableBorrowRate: normalize(exactVariableBorrowRate, RAY_DECIMALS),
-    stableBorrowRate: normalize(exactStableBorrowRate, RAY_DECIMALS),
-    liquidityRate: normalize(exactLiquidityRate, RAY_DECIMALS),
+    supplyAPY: normalize(reserve.supplyAPY, RAY_DECIMALS),
+    supplyAPR: normalize(reserve.liquidityRate, RAY_DECIMALS),
+    variableBorrowAPY: normalize(reserve.variableBorrowAPY, RAY_DECIMALS),
+    variableBorrowAPR: normalize(reserve.variableBorrowRate, RAY_DECIMALS),
+    stableBorrowAPY: normalize(reserve.stableBorrowAPY, RAY_DECIMALS),
+    stableBorrowAPR: normalize(reserve.stableBorrowRate, RAY_DECIMALS),
     liquidityIndex: normalize(reserve.liquidityIndex, RAY_DECIMALS),
     reserveLiquidationThreshold: normalize(
       reserve.reserveLiquidationThreshold,

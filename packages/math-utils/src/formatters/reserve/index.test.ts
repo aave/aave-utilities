@@ -16,11 +16,13 @@ describe('formatReserve', () => {
         availableLiquidity: '150629528.254290021063240208',
         baseLTVasCollateral: '0.5',
         liquidityIndex: '1.00920114827430421106',
-        liquidityRate: '0.00575828130257027055',
+        supplyAPY: '0.00575828130257027055',
+        supplyAPR: '0.00574176577170011131',
         reserveFactor: '0.2',
         reserveLiquidationBonus: '0.1',
         reserveLiquidationThreshold: '0.65',
-        stableBorrowRate: '0.10266878586756504545',
+        stableBorrowAPY: '0.10266878586756504545',
+        stableBorrowAPR: '0.09773341053008235974',
         totalDebt: '30186360.792775159242526245',
         totalLiquidity: '180815889.047065180305766453',
         totalPrincipalStableDebt: '0',
@@ -29,7 +31,8 @@ describe('formatReserve', () => {
         totalVariableDebt: '30186360.792775159242526245',
         utilizationRate: '0.16694528866828649738',
         variableBorrowIndex: '1.02739968325035004938',
-        variableBorrowRate: '0.03397788428671542517',
+        variableBorrowAPY: '0.03397788428671542517',
+        variableBorrowAPR: '0.03341338737105765182',
       });
     });
 
@@ -57,11 +60,13 @@ describe('formatReserve', () => {
         availableLiquidity: '43133.641118657852003256',
         baseLTVasCollateral: '0.75',
         liquidityIndex: '1.00016444737961059057',
-        liquidityRate: '0.02713790431950061223',
+        supplyAPY: '0.02713790431950061223',
+        supplyAPR: '0.02677620073531209306',
         reserveFactor: '0.1',
         reserveLiquidationBonus: '0.05',
         reserveLiquidationThreshold: '0.8',
-        stableBorrowRate: '0.11547951583122878182',
+        stableBorrowAPY: '0.11547951583122878182',
+        stableBorrowAPR: '0.10928437169401419784',
         totalDebt: '104546.724902523987620455',
         totalLiquidity: '147680.366021181839623711',
         totalPrincipalStableDebt: '1',
@@ -70,7 +75,8 @@ describe('formatReserve', () => {
         totalVariableDebt: '104546.224138225704941867',
         utilizationRate: '0.7079256892383976026',
         variableBorrowIndex: '1.00023285443371120965',
-        variableBorrowRate: '0.03932217240517564451',
+        variableBorrowAPY: '0.03932217240517564451',
+        variableBorrowAPR: '0.03856874338802839568',
       });
     });
 
