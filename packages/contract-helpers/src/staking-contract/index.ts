@@ -73,23 +73,16 @@ export class StakingService
 
   readonly erc20Service: IERC20ServiceInterface;
 
-  readonly tokenStake: string;
-
-  readonly stakingConfig: StakingNetworkConfig | undefined;
-
   constructor(
     provider: providers.Provider,
-    tokenStake: string,
-    stakingConfig: StakingNetworkConfig | undefined,
+    stakingConfig?: StakingNetworkConfig,
   ) {
     super(provider, IStakedToken__factory);
-    this.stakingConfig = stakingConfig;
-    this.tokenStake = tokenStake;
 
     this.erc20Service = new ERC20Service(provider);
 
     const { TOKEN_STAKING, STAKING_REWARD_TOKEN, STAKING_HELPER } =
-      this.stakingConfig ?? {};
+      stakingConfig ?? {};
 
     this.stakingContractAddress = TOKEN_STAKING ?? '';
     this.stakingRewardTokenContractAddress = STAKING_REWARD_TOKEN ?? '';
