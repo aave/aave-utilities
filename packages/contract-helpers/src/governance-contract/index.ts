@@ -9,10 +9,15 @@ import {
   tEthereumAddress,
   transactionType,
 } from '../commons/types';
-import { GovValidator } from '../commons/validators/methodValidators';
+import {
+  GovExecutorValidator,
+  GovHelperValidator,
+  GovValidator,
+} from '../commons/validators/methodValidators';
 import {
   is0OrPositiveAmount,
   isEthAddress,
+  isEthAddressArray,
 } from '../commons/validators/paramValidators';
 import { IAaveGovernanceV2 } from './typechain/IAaveGovernanceV2';
 import { IAaveGovernanceV2__factory } from './typechain/IAaveGovernanceV2__factory';
@@ -103,16 +108,14 @@ const parseProposal = async (rawProposal: ProposalRPC): Promise<Proposal> => {
 };
 
 export interface AaveGovernanceV2Interface {
-  create: (args: GovCreateType) => Promise<EthereumTransactionTypeExtended[]>;
-  cancel: (args: GovCancelType) => Promise<EthereumTransactionTypeExtended[]>;
-  queue: (args: GovQueueType) => Promise<EthereumTransactionTypeExtended[]>;
-  execute: (args: GovExecuteType) => Promise<EthereumTransactionTypeExtended[]>;
-  submitVote: (
-    args: GovSubmitVoteType,
-  ) => Promise<EthereumTransactionTypeExtended[]>;
+  create: (args: GovCreateType) => EthereumTransactionTypeExtended[];
+  cancel: (args: GovCancelType) => EthereumTransactionTypeExtended[];
+  queue: (args: GovQueueType) => EthereumTransactionTypeExtended[];
+  execute: (args: GovExecuteType) => EthereumTransactionTypeExtended[];
+  submitVote: (args: GovSubmitVoteType) => EthereumTransactionTypeExtended[];
   submitVoteBySignature: (
     args: GovSubmitVoteSignType,
-  ) => Promise<EthereumTransactionTypeExtended[]>;
+  ) => EthereumTransactionTypeExtended[];
   signVoting: (args: GovSignVotingType) => Promise<string>;
   getProposals: (args: GovGetProposalsType) => Promise<Proposal[]>;
   getProposal: (args: GovGetProposalType) => Promise<Proposal>;
@@ -159,9 +162,10 @@ export default class AaveGovernanceV2Service
     this.executors[ExecutorType.Long] = AAVE_GOVERNANCE_V2_EXECUTOR_LONG ?? '';
   }
 
-  @GovValidator
-  public async create(
+  @GovExecutorValidator
+  public create(
     @isEthAddress('user')
+    @isEthAddressArray('targets')
     {
       user,
       targets,
@@ -172,7 +176,7 @@ export default class AaveGovernanceV2Service
       ipfsHash,
       executor,
     }: GovCreateType,
-  ): Promise<EthereumTransactionTypeExtended[]> {
+  ): EthereumTransactionTypeExtended[] {
     const txs: EthereumTransactionTypeExtended[] = [];
 
     const govContract: IAaveGovernanceV2 = this.getContractInstance(
@@ -202,11 +206,11 @@ export default class AaveGovernanceV2Service
   }
 
   @GovValidator
-  public async cancel(
+  public cancel(
     @isEthAddress('user')
     @is0OrPositiveAmount('proposalId')
     { user, proposalId }: GovCancelType,
-  ): Promise<EthereumTransactionTypeExtended[]> {
+  ): EthereumTransactionTypeExtended[] {
     const txs: EthereumTransactionTypeExtended[] = [];
     const govContract: IAaveGovernanceV2 = this.getContractInstance(
       this.aaveGovernanceV2Address,
@@ -227,11 +231,11 @@ export default class AaveGovernanceV2Service
   }
 
   @GovValidator
-  public async queue(
+  public queue(
     @isEthAddress('user')
     @is0OrPositiveAmount('proposalId')
     { user, proposalId }: GovQueueType,
-  ): Promise<EthereumTransactionTypeExtended[]> {
+  ): EthereumTransactionTypeExtended[] {
     const txs: EthereumTransactionTypeExtended[] = [];
     const govContract: IAaveGovernanceV2 = this.getContractInstance(
       this.aaveGovernanceV2Address,
@@ -252,11 +256,11 @@ export default class AaveGovernanceV2Service
   }
 
   @GovValidator
-  public async execute(
+  public execute(
     @isEthAddress('user')
     @is0OrPositiveAmount('proposalId')
     { user, proposalId }: GovExecuteType,
-  ): Promise<EthereumTransactionTypeExtended[]> {
+  ): EthereumTransactionTypeExtended[] {
     const txs: EthereumTransactionTypeExtended[] = [];
     const govContract: IAaveGovernanceV2 = this.getContractInstance(
       this.aaveGovernanceV2Address,
@@ -277,11 +281,11 @@ export default class AaveGovernanceV2Service
   }
 
   @GovValidator
-  public async submitVote(
+  public submitVote(
     @isEthAddress('user')
     @is0OrPositiveAmount('proposalId')
     { user, proposalId, support }: GovSubmitVoteType,
-  ): Promise<EthereumTransactionTypeExtended[]> {
+  ): EthereumTransactionTypeExtended[] {
     const txs: EthereumTransactionTypeExtended[] = [];
     const govContract: IAaveGovernanceV2 = this.getContractInstance(
       this.aaveGovernanceV2Address,
@@ -335,11 +339,11 @@ export default class AaveGovernanceV2Service
   }
 
   @GovValidator
-  public async submitVoteBySignature(
+  public submitVoteBySignature(
     @isEthAddress('user')
     @is0OrPositiveAmount('proposalId')
     { user, proposalId, support, signature }: GovSubmitVoteSignType,
-  ): Promise<EthereumTransactionTypeExtended[]> {
+  ): EthereumTransactionTypeExtended[] {
     const txs: EthereumTransactionTypeExtended[] = [];
     const govContract: IAaveGovernanceV2 = this.getContractInstance(
       this.aaveGovernanceV2Address,
@@ -367,7 +371,7 @@ export default class AaveGovernanceV2Service
     return txs;
   }
 
-  @GovValidator
+  @GovHelperValidator
   public async getProposals({
     skip,
     limit,
@@ -393,7 +397,7 @@ export default class AaveGovernanceV2Service
     return proposals;
   }
 
-  @GovValidator
+  @GovHelperValidator
   public async getProposal({
     proposalId,
   }: GovGetProposalType): Promise<Proposal> {
@@ -470,14 +474,13 @@ export default class AaveGovernanceV2Service
     return formatEther(total);
   }
 
-  @GovValidator
+  @GovHelperValidator
   public async getTokensPower({ user, tokens }: GovGetPower): Promise<Power[]> {
     const helper: IGovernanceV2Helper = IGovernanceV2Helper__factory.connect(
       this.aaveGovernanceV2HelperAddress,
       this.provider,
     );
-    const power = helper.getTokensPower(user, tokens);
-    return power as Promise<Power[]>;
+    return helper.getTokensPower(user, tokens);
   }
 
   @GovValidator
