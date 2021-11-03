@@ -19,7 +19,7 @@ describe('ipfs', () => {
     });
     const ipfsHash = base58.encode(Buffer.from(`1220${hash.slice(2)}`, 'hex'));
     it('Expects to return metadata when hash complete', async () => {
-      const getSpy = jest.spyOn(axios, 'get').mockReturnValue(
+      const getSpy = jest.spyOn(axios, 'get').mockReturnValueOnce(
         Promise.resolve({
           data: {
             title: 'mockTitle',
@@ -40,7 +40,12 @@ describe('ipfs', () => {
       });
     });
     it('Expects to return metadata when hash complete and when repeating hash', async () => {
-      const getSpy = jest.spyOn(axios, 'get').mockReturnValue(
+      const hash =
+        '0x04d1fd83d352a7caa14408cee133be97b5919c3a5cf79a47ded3c9b658447d78';
+      const ipfsHash = base58.encode(
+        Buffer.from(`1220${hash.slice(2)}`, 'hex'),
+      );
+      const getSpy = jest.spyOn(axios, 'get').mockReturnValueOnce(
         Promise.resolve({
           data: {
             title: 'mockTitle',
@@ -68,7 +73,12 @@ describe('ipfs', () => {
       });
     });
     it('Expects to fail if there is no title', async () => {
-      const getSpy = jest.spyOn(axios, 'get').mockReturnValue(
+      const hash =
+        '0x04d1fd83d352a7caa14408cee133be97b5919c3a5cf79a47ded3c9b658447d77';
+      const ipfsHash = base58.encode(
+        Buffer.from(`1220${hash.slice(2)}`, 'hex'),
+      );
+      const getSpy = jest.spyOn(axios, 'get').mockReturnValueOnce(
         Promise.resolve({
           data: {
             description: 'mockDescription',
@@ -88,7 +98,12 @@ describe('ipfs', () => {
       });
     });
     it('Expects to fail if there is no description', async () => {
-      const getSpy = jest.spyOn(axios, 'get').mockReturnValue(
+      const hash =
+        '0x04d1fd83d352a7caa14408cee133be97b5919c3a5cf79a47ded3c9b658447d76';
+      const ipfsHash = base58.encode(
+        Buffer.from(`1220${hash.slice(2)}`, 'hex'),
+      );
+      const getSpy = jest.spyOn(axios, 'get').mockReturnValueOnce(
         Promise.resolve({
           data: {
             title: 'mockTitle',
@@ -108,7 +123,12 @@ describe('ipfs', () => {
       });
     });
     it('Expects to fail if there is no shortDescription', async () => {
-      const getSpy = jest.spyOn(axios, 'get').mockReturnValue(
+      const hash =
+        '0x04d1fd83d352a7caa14408cee133be97b5919c3a5cf79a47ded3c9b658447d75';
+      const ipfsHash = base58.encode(
+        Buffer.from(`1220${hash.slice(2)}`, 'hex'),
+      );
+      const getSpy = jest.spyOn(axios, 'get').mockReturnValueOnce(
         Promise.resolve({
           data: {
             title: 'mockTitle',
