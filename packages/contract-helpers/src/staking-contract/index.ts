@@ -94,8 +94,6 @@ export class StakingService
     @isPositiveAmount() amount: string,
     @is0OrPositiveAmount() nonce: string,
   ): Promise<string> {
-    if (!this.stakingHelperContractAddress) return '';
-
     const { getTokenData } = this.erc20Service;
     const stakingContract: IStakedToken = this.getContractInstance(
       this.stakingContractAddress,
