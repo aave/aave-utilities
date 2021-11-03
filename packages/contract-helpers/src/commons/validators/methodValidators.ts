@@ -357,33 +357,6 @@ export function WETHValidator(
   };
 }
 
-export function GovExecutorValidator(
-  target: any,
-  propertyName: string,
-  descriptor: TypedPropertyDescriptor<any>,
-): any {
-  const method = descriptor.value;
-  descriptor.value = function () {
-    if (
-      // @ts-expect-error todo: check why this ignore is needed
-      !utils.isAddress(this.aaveGovernanceV2Address) ||
-      // @ts-expect-error todo: check why this ignore is needed
-      !utils.isAddress(this.executors[ExecutorType.Short]) ||
-      // @ts-expect-error todo: check why this ignore is needed
-      !utils.isAddress(this.executors[ExecutorType.Long])
-    ) {
-      console.error(`[GovernanceValidator] You need to pass valid addresses`);
-      return [];
-    }
-
-    isEthAddressValidator(target, propertyName, arguments);
-
-    amount0OrPositiveValidator(target, propertyName, arguments);
-
-    return method.apply(this, arguments);
-  };
-}
-
 export function GovHelperValidator(
   target: any,
   propertyName: string,
