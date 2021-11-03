@@ -147,5 +147,25 @@ describe('ipfs', () => {
         ipfsHash,
       });
     });
+    it('Expects to fail if there is no data', async () => {
+      const hash =
+        '0x04d1fd83d352a7caa14408cee133be97b5919c3a5cf79a47ded3c9b658447d77';
+      const ipfsHash = base58.encode(
+        Buffer.from(`1220${hash.slice(2)}`, 'hex'),
+      );
+      const getSpy = jest
+        .spyOn(axios, 'get')
+        .mockReturnValueOnce(Promise.resolve({}));
+
+      const metadata = await getProposalMetadata(hash);
+
+      expect(getSpy).toHaveBeenCalled();
+      expect(metadata).toEqual({
+        title: `Proposal - ${ipfsHash}`,
+        description: `Proposal with invalid metadata format or IPFS gateway is down`,
+        shortDescription: `Proposal with invalid metadata format or IPFS gateway is down`,
+        ipfsHash,
+      });
+    });
   });
 });
