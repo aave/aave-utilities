@@ -26,16 +26,19 @@ export async function getProposalMetadata(
   try {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { data } = await axios.get(getLink(ipfsHash), { timeout: 2000 });
+    if (!data) {
+      throw Error('No data returned');
+    }
 
-    if (!data?.title) {
+    if (!data.title) {
       throw Error('Missing title field at proposal metadata.');
     }
 
-    if (data?.description) {
+    if (!data.description) {
       throw Error('Missing description field at proposal metadata.');
     }
 
-    if (data?.shortDescription) {
+    if (!data.shortDescription) {
       throw Error('Missing shortDescription field at proposal metadata.');
     }
 
