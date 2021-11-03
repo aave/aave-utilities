@@ -4,15 +4,10 @@ import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
   EthereumTransactionTypeExtended,
-  StakingNetworkConfig,
   tEthereumAddress,
   transactionType,
 } from '../commons/types';
-import {
-  DEFAULT_APPROVE_AMOUNT,
-  MAX_UINT_AMOUNT,
-  valueToWei,
-} from '../commons/utils';
+import { DEFAULT_APPROVE_AMOUNT, valueToWei } from '../commons/utils';
 import {
   SignStakingValidator,
   StakingValidator,
@@ -69,24 +64,21 @@ export class StakingService
 
   public readonly stakingRewardTokenContractAddress: tEthereumAddress;
 
-  readonly stakingHelperContractAddress: tEthereumAddress | undefined;
+  readonly stakingHelperContractAddress: tEthereumAddress;
 
   readonly erc20Service: IERC20ServiceInterface;
 
   constructor(
     provider: providers.Provider,
-    stakingConfig?: StakingNetworkConfig,
+    tokenStakingAddress: string,
+    stakingHelperAddress?: string,
   ) {
     super(provider, IStakedToken__factory);
 
     this.erc20Service = new ERC20Service(provider);
 
-    const { TOKEN_STAKING, STAKING_REWARD_TOKEN, STAKING_HELPER } =
-      stakingConfig ?? {};
-
-    this.stakingContractAddress = TOKEN_STAKING ?? '';
-    this.stakingRewardTokenContractAddress = STAKING_REWARD_TOKEN ?? '';
-    this.stakingHelperContractAddress = STAKING_HELPER ?? '';
+    this.stakingContractAddress = tokenStakingAddress;
+    this.stakingHelperContractAddress = stakingHelperAddress ?? '';
 
     if (this.stakingHelperContractAddress !== '') {
       this.stakingHelperContract = IAaveStakingHelper__factory.connect(
@@ -130,7 +122,7 @@ export class StakingService
           { name: 'deadline', type: 'uint256' },
         ],
       },
-      primaryType: 'Permit' as const,
+      primaryType: 'Permit',
       domain: {
         name,
         version: '1',
@@ -218,6 +210,7 @@ export class StakingService
       txs.push(approveTx);
     }
 
+    console.log(stakingContract);
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>
         stakingContract.populateTransaction.stake(
@@ -246,7 +239,7 @@ export class StakingService
       this.stakingContractAddress,
     );
     if (amount === '-1') {
-      convertedAmount = MAX_UINT_AMOUNT;
+      convertedAmount = constants.MaxUint256.toString();
     } else {
       const { decimalsOf } = this.erc20Service;
 
@@ -304,7 +297,7 @@ export class StakingService
       this.stakingContractAddress,
     );
     if (amount === '-1') {
-      convertedAmount = MAX_UINT_AMOUNT;
+      convertedAmount = constants.MaxUint256.toString();
     } else {
       const { decimalsOf } = this.erc20Service;
       // eslint-disable-next-line new-cap

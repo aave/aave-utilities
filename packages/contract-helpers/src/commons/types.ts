@@ -89,24 +89,6 @@ export type LendingPoolConfig = Record<
   Record<string, LendingPoolMarketConfig>
 >;
 
-export type StakingNetworkConfig = {
-  TOKEN_STAKING: tEthereumAddress;
-  STAKING_REWARD_TOKEN: tEthereumAddress;
-  STAKING_HELPER?: tEthereumAddress;
-};
-
-export type StakingConfig = Record<
-  string,
-  Record<string, StakingNetworkConfig>
->;
-
-export type TxBuilderConfig = {
-  governance?: Record<string, GovernanceConfig>;
-  migrator?: Record<string, MigratorConfig>;
-  lendingPool?: LendingPoolConfig;
-  staking?: StakingConfig;
-};
-
 export enum eEthereumTxType {
   ERC20_APPROVAL = 'ERC20_APPROVAL',
   DLP_ACTION = 'DLP_ACTION',

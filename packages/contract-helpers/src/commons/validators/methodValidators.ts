@@ -267,9 +267,7 @@ export function StakingValidator(
   descriptor.value = function () {
     if (
       // @ts-expect-error todo: check why this ignore is needed
-      !utils.isAddress(this.stakingContractAddress) ||
-      // @ts-expect-error todo: check why this ignore is needed
-      !utils.isAddress(this.stakingRewardTokenContractAddress)
+      !utils.isAddress(this.stakingContractAddress)
     ) {
       console.error(`[StakingValidator] You need to pass valid addresses`);
       return [];
@@ -278,6 +276,8 @@ export function StakingValidator(
     isEthAddressValidator(target, propertyName, arguments);
 
     amountGtThan0Validator(target, propertyName, arguments);
+
+    amountGtThan0OrMinus1(target, propertyName, arguments);
 
     return method.apply(this, arguments);
   };
@@ -294,8 +294,6 @@ export function SignStakingValidator(
       // @ts-expect-error todo: check why this ignore is needed
       !utils.isAddress(this.stakingContractAddress) ||
       // @ts-expect-error todo: check why this ignore is needed
-      !utils.isAddress(this.stakingRewardTokenContractAddress) ||
-      // @ts-expect-error todo: check why this ignore is needed
       !utils.isAddress(this.stakingHelperContractAddress)
     ) {
       console.error(`[StakingValidator] You need to pass valid addresses`);
@@ -305,6 +303,8 @@ export function SignStakingValidator(
     isEthAddressValidator(target, propertyName, arguments);
 
     amountGtThan0Validator(target, propertyName, arguments);
+
+    amount0OrPositiveValidator(target, propertyName, arguments);
 
     return method.apply(this, arguments);
   };
