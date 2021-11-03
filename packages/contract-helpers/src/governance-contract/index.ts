@@ -103,7 +103,7 @@ export interface AaveGovernanceInterface {
   getVoteOnProposal: (args: GovGetVoteOnProposal) => Promise<Vote>;
 }
 
-export default class AaveGovernanceService
+export class AaveGovernanceService
   extends BaseService<IAaveGovernanceV2>
   implements AaveGovernanceInterface
 {
@@ -156,7 +156,7 @@ export default class AaveGovernanceService
       this.aaveGovernanceV2HelperAddress,
       this.provider,
     );
-
+    console.log(helper);
     const result = await helper.getProposals(
       skip.toString(),
       limit.toString(),
@@ -197,6 +197,7 @@ export default class AaveGovernanceService
       this.aaveGovernanceV2HelperAddress,
       this.provider,
     );
+
     return helper.getTokensPower(user, tokens);
   }
 
@@ -209,6 +210,6 @@ export default class AaveGovernanceService
     const govContract: IAaveGovernanceV2 = this.getContractInstance(
       this.aaveGovernanceV2Address,
     );
-    return govContract.getVoteOnProposal(proposalId, user) as Promise<Vote>;
+    return govContract.getVoteOnProposal(proposalId, user);
   }
 }

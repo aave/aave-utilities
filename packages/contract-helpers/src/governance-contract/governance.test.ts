@@ -1,5 +1,14 @@
-import { BigNumber, providers } from 'ethers';
-import { GovernanceService } from './index';
+import { BigNumber, providers, utils } from 'ethers';
+import * as ipfs from '../commons/ipfs';
+import { eEthereumTxType, GasType, transactionType } from '../commons/types';
+import { IGovernanceV2Helper } from './typechain/IGovernanceV2Helper';
+import { IGovernanceV2Helper__factory } from './typechain/IGovernanceV2Helper__factory';
+import { ProposalState } from './types';
+import { AaveGovernanceService } from './index';
+import { IGovernanceStrategy__factory } from './typechain/IGovernanceStrategy__factory';
+import { IGovernanceStrategy } from './typechain/IGovernanceStrategy';
+import { IAaveGovernanceV2__factory } from './typechain/IAaveGovernanceV2__factory';
+import { IAaveGovernanceV2 } from './typechain/IAaveGovernanceV2';
 
 jest.mock('../commons/gasStation', () => {
   return {
@@ -11,60 +20,417 @@ jest.mock('../commons/gasStation', () => {
   };
 });
 
+const proposalMock = {
+  totalVotingSupply: BigNumber.from('16000000000000000000000000'),
+  minimumQuorum: BigNumber.from('200'),
+  minimumDiff: BigNumber.from('50'),
+  executionTimeWithGracePeriod: BigNumber.from('1609537448'),
+  proposalCreated: BigNumber.from('11512328'),
+  id: BigNumber.from('0'),
+  creator: '0xA7499Aa6464c078EeB940da2fc95C6aCd010c3Cc',
+  executor: '0xEE56e2B3D491590B5b31738cC34d5232F378a8D5',
+  targets: ['0x603696E8740b0Fa0b8aEFC202052ae757a59CF1b'],
+  values: [BigNumber.from('0')],
+  signatures: [''],
+  calldatas: ['0x61461954'],
+  withDelegatecalls: [true],
+  startBlock: BigNumber.from('11512328'),
+  endBlock: BigNumber.from('11531528'),
+  executionTime: BigNumber.from('1609105448'),
+  forVotes: BigNumber.from('414202518611435288338854'),
+  againstVotes: BigNumber.from('100200001402134398906'),
+  executed: true,
+  canceled: false,
+  strategy: '0xb7e383ef9B1E9189Fc0F71fb30af8aa14377429e',
+  ipfsHash:
+    '0x04d1fd83d352a7caa14408cee133be97b5919c3a5cf79a47ded3c9b658447d79',
+  proposalState: 7,
+  0: BigNumber.from('16000000000000000000000000'),
+  1: BigNumber.from('200'),
+  2: BigNumber.from('50'),
+  3: BigNumber.from('1609537448'),
+  4: BigNumber.from('11512328'),
+  5: BigNumber.from('0'),
+  6: '0xA7499Aa6464c078EeB940da2fc95C6aCd010c3Cc',
+  7: '0xEE56e2B3D491590B5b31738cC34d5232F378a8D5',
+  8: ['0x603696E8740b0Fa0b8aEFC202052ae757a59CF1b'],
+  9: [BigNumber.from('0')],
+  10: [''],
+  11: ['0x61461954'],
+  12: [true],
+  13: BigNumber.from('11512328'),
+  14: BigNumber.from('11531528'),
+  15: BigNumber.from('1609105448'),
+  16: BigNumber.from('414202518611435288338854'),
+  17: BigNumber.from('100200001402134398906'),
+  18: true,
+  19: false,
+  20: '0xb7e383ef9B1E9189Fc0F71fb30af8aa14377429e',
+  21: '0x04d1fd83d352a7caa14408cee133be97b5919c3a5cf79a47ded3c9b658447d79',
+  22: 7,
+};
+
+const userPowerMock = {
+  votingPower: BigNumber.from('10000000000000000'),
+  delegatedAddressVotingPower: '0x0000000000000000000000000000000000000003',
+  propositionPower: BigNumber.from('10000000000000000'),
+  delegatedAddressPropositionPower:
+    '0x0000000000000000000000000000000000000003',
+  0: BigNumber.from('10000000000000000'),
+  1: '0x0000000000000000000000000000000000000003',
+  2: BigNumber.from('10000000000000000'),
+  3: '0x0000000000000000000000000000000000000003',
+};
+
+const voteMock = {
+  support: true,
+  votingPower: BigNumber.from('10000000000000000'),
+  0: true,
+  1: BigNumber.from('10000000000000000'),
+};
+
 describe('GovernanceService', () => {
   const provider = new providers.JsonRpcProvider();
+  jest
+    .spyOn(provider, 'getGasPrice')
+    .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
   const governanceAddress = '0x0000000000000000000000000000000000000001';
   const governanceHelperAddress = '0x0000000000000000000000000000000000000002';
+  const user = '0x0000000000000000000000000000000000000003';
+  const proposalId = 1;
 
   describe('Initialization', () => {
     afterEach(() => {
       jest.clearAllMocks();
     });
-    it('Expects to initialize with all params', () => {});
-    it('Expects to initialize without helper address', () => {});
+    it('Expects to initialize with all params', () => {
+      const instance = new AaveGovernanceService(
+        provider,
+        governanceAddress,
+        governanceHelperAddress,
+      );
+      expect(instance instanceof AaveGovernanceService).toEqual(true);
+    });
+    it('Expects to initialize without helper address', () => {
+      const instance = new AaveGovernanceService(provider, governanceAddress);
+      expect(instance instanceof AaveGovernanceService).toEqual(true);
+    });
   });
   describe('submitVote', () => {
     afterEach(() => {
       jest.clearAllMocks();
     });
-    it('Expects the tx object when passing all params', () => {});
-    it('Expects to fail when gov address not eth address', () => {});
-    it('Expects to fail when user not eht address', () => {});
-    it('Expects to fail when proposalId not positive or 0', () => {});
+    const support = true;
+    it('Expects the tx object when passing all params', async () => {
+      const instance = new AaveGovernanceService(provider, governanceAddress);
+
+      const voteTxObj = instance.submitVote({ user, proposalId, support });
+
+      expect(voteTxObj.length).toEqual(1);
+      expect(voteTxObj[0].txType).toEqual(eEthereumTxType.GOVERNANCE_ACTION);
+
+      const tx: transactionType = await voteTxObj[0].tx();
+      expect(tx.to).toEqual(governanceAddress);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['uint256', 'bool'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(BigNumber.from(proposalId));
+      expect(decoded[1]).toEqual(true);
+
+      // gas price
+      const gasPrice: GasType | null = await voteTxObj[0].gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects to fail when gov address not eth address', () => {
+      const instance = new AaveGovernanceService(provider, 'asdf');
+      const voteTxObj = instance.submitVote({ user, proposalId, support });
+      expect(voteTxObj).toEqual([]);
+    });
+    it('Expects to fail when user not eht address', () => {
+      const instance = new AaveGovernanceService(provider, governanceAddress);
+      const user = 'asdf';
+      expect(() =>
+        instance.submitVote({ user, proposalId, support }),
+      ).toThrowError(`Address: ${user} is not a valid ethereum Address`);
+    });
+    it('Expects to fail when proposalId not positive or 0', () => {
+      const instance = new AaveGovernanceService(provider, governanceAddress);
+      const proposalId = -1;
+      expect(() =>
+        instance.submitVote({ user, proposalId, support }),
+      ).toThrowError(
+        `Amount: ${proposalId} needs to be greater or equal than 0`,
+      );
+    });
   });
   describe('getProposals', () => {
     afterEach(() => {
       jest.clearAllMocks();
     });
-    it('Expects a proposal parsed if all params passed correctly', async () => {});
-    it('Expects to fail if gov address not eth address', async () => {});
-    it('Expects to fail if gov helper not eth address', async () => {});
+    const skip = 1;
+    const limit = 2;
+    it('Expects a proposal parsed if all params passed correctly', async () => {
+      const instance = new AaveGovernanceService(
+        provider,
+        governanceAddress,
+        governanceHelperAddress,
+      );
+      const ipfsSpy = jest.spyOn(ipfs, 'getProposalMetadata').mockReturnValue(
+        Promise.resolve({
+          title: 'mockTitle',
+          description: 'mockDescription',
+          shortDescription: 'mockShortDescription',
+          ipfsHash:
+            '0x04d1fd83d352a7caa14408cee133be97b5919c3a5cf79a47ded3c9b658447d79',
+        }),
+      );
+      const spy = jest
+        .spyOn(IGovernanceV2Helper__factory, 'connect')
+        .mockReturnValue({
+          getProposals: async () => Promise.resolve([proposalMock]),
+        } as unknown as IGovernanceV2Helper);
+
+      const proposals = await instance.getProposals({ skip, limit });
+
+      expect(spy).toHaveBeenCalled();
+      expect(ipfsSpy).toHaveBeenCalled();
+      expect(proposals[0]).toEqual({
+        id: Number(proposalMock.id.toString()),
+        creator: proposalMock.creator,
+        executor: proposalMock.executor,
+        targets: proposalMock.targets,
+        values: proposalMock.values,
+        signatures: proposalMock.signatures,
+        calldatas: proposalMock.calldatas,
+        withDelegatecalls: proposalMock.withDelegatecalls,
+        startBlock: Number(proposalMock.startBlock.toString()),
+        endBlock: Number(proposalMock.endBlock.toString()),
+        executionTime: proposalMock.executionTime.toString(),
+        forVotes: proposalMock.forVotes.toString(),
+        againstVotes: proposalMock.againstVotes.toString(),
+        executed: proposalMock.executed,
+        canceled: proposalMock.canceled,
+        strategy: proposalMock.strategy,
+        ipfsHash: proposalMock.ipfsHash,
+        state: Object.values(ProposalState)[proposalMock.proposalState],
+        minimumQuorum: proposalMock.minimumQuorum.toString(),
+        minimumDiff: proposalMock.minimumDiff.toString(),
+        executionTimeWithGracePeriod:
+          proposalMock.executionTimeWithGracePeriod.toString(),
+        title: 'mockTitle',
+        description: 'mockDescription',
+        shortDescription: 'mockShortDescription',
+        proposalCreated: Number(proposalMock.proposalCreated.toString()),
+        totalVotingSupply: proposalMock.totalVotingSupply.toString(),
+      });
+    });
+    it('Expects to fail if gov address not eth address', async () => {
+      const instance = new AaveGovernanceService(provider, 'asdf');
+      const getProposals = instance.getProposals({ skip, limit });
+      expect(getProposals).toEqual([]);
+    });
+    it('Expects to fail if gov helper not eth address', async () => {
+      const instance = new AaveGovernanceService(
+        provider,
+        governanceAddress,
+        'asdf',
+      );
+      const getProposals = instance.getProposals({ skip, limit });
+      expect(getProposals).toEqual([]);
+    });
   });
   describe('getVotingPowerAt', () => {
     afterEach(() => {
       jest.clearAllMocks();
     });
-    it('Expects to get voting power at block', async () => {});
-    it('Expects to fail if gov address not eth address', async () => {});
-    it('Expects to fail when user not eth address', async () => {});
+    const block = 1234;
+    const strategy = '0xb7e383ef9b1e9189fc0f71fb30af8aa14377429e';
+    it('Expects to get voting power at block', async () => {
+      const instance = new AaveGovernanceService(provider, governanceAddress);
+
+      const spy = jest
+        .spyOn(IGovernanceStrategy__factory, 'connect')
+        .mockReturnValue({
+          getVotingPowerAt: async () =>
+            Promise.resolve(BigNumber.from('10000000000000000')),
+        } as unknown as IGovernanceStrategy);
+
+      const power = await instance.getVotingPowerAt({
+        user,
+        block,
+        strategy,
+      });
+
+      expect(spy).toHaveBeenCalled();
+      expect(power).toEqual('0.01');
+    });
+    it('Expects to fail if gov address not eth address', async () => {
+      const instance = new AaveGovernanceService(provider, 'asdf');
+      const power = await instance.getVotingPowerAt({
+        user,
+        block,
+        strategy,
+      });
+      expect(power).toEqual([]);
+    });
+    it('Expects to fail when user not eth address', async () => {
+      const instance = new AaveGovernanceService(provider, governanceAddress);
+      const user = 'asdf';
+      await expect(async () =>
+        instance.getVotingPowerAt({
+          user,
+          block,
+          strategy,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${user} is not a valid ethereum Address`,
+      );
+    });
   });
   describe('getTokensPower', () => {
     afterEach(() => {
       jest.clearAllMocks();
     });
-    it('Expects token power obj for each token asked', async () => {});
-    it('Expects to fail if gov address not eth address', async () => {});
-    it('Expects to fail if gov helper not eth address', async () => {});
-    it('Expects to fail when user not eth address', async () => {});
-    it('Expects to fail when tokens are not eth address', async () => {});
+    const tokens = ['0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9'];
+    it('Expects token power obj for each token asked', async () => {
+      const instance = new AaveGovernanceService(
+        provider,
+        governanceAddress,
+        governanceHelperAddress,
+      );
+
+      const spy = jest
+        .spyOn(IGovernanceV2Helper__factory, 'connect')
+        .mockReturnValue({
+          getTokensPower: async () => Promise.resolve([userPowerMock]),
+        } as unknown as IGovernanceV2Helper);
+
+      const power = await instance.getTokensPower({
+        user,
+        tokens,
+      });
+
+      expect(spy).toHaveBeenCalled();
+      expect(power[0]).toEqual(userPowerMock);
+    });
+    it('Expects to fail if gov address not eth address', async () => {
+      const instance = new AaveGovernanceService(provider, 'asdf');
+      const power = await instance.getTokensPower({
+        user,
+        tokens,
+      });
+      expect(power).toEqual([]);
+    });
+    it('Expects to fail if gov helper not eth address', async () => {
+      const instance = new AaveGovernanceService(
+        provider,
+        governanceAddress,
+        'asfd',
+      );
+      const power = await instance.getTokensPower({
+        user,
+        tokens,
+      });
+      expect(power).toEqual([]);
+    });
+    it('Expects to fail when user not eth address', async () => {
+      const instance = new AaveGovernanceService(
+        provider,
+        governanceAddress,
+        governanceHelperAddress,
+      );
+      const user = 'asdf';
+      await expect(async () =>
+        instance.getTokensPower({
+          user,
+          tokens,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${user} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when tokens are not eth address', async () => {
+      const instance = new AaveGovernanceService(
+        provider,
+        governanceAddress,
+        governanceHelperAddress,
+      );
+      const tokens = ['asdf'];
+      await expect(async () =>
+        instance.getTokensPower({
+          user,
+          tokens,
+        }),
+      ).rejects.toThrowError(`Address: asdf is not a valid ethereum Address`);
+    });
   });
   describe('getVoteOnProposal', () => {
     afterEach(() => {
       jest.clearAllMocks();
     });
-    it('Expects to get vote info for proposalId', async () => {});
-    it('Expects to fail if gov address not eth address', async () => {});
-    it('Expects to fail when user not eth address', async () => {});
-    it('Expects to fail when proposalId not positive or 0', async () => {});
+    it('Expects to get vote info for proposalId', async () => {
+      const instance = new AaveGovernanceService(
+        provider,
+        governanceAddress,
+        governanceHelperAddress,
+      );
+
+      const spy = jest
+        .spyOn(IAaveGovernanceV2__factory, 'connect')
+        .mockReturnValue({
+          getVoteOnProposal: async () => Promise.resolve(voteMock),
+        } as unknown as IAaveGovernanceV2);
+
+      const vote = await instance.getVoteOnProposal({
+        user,
+        proposalId,
+      });
+
+      expect(spy).toHaveBeenCalled();
+      expect(vote).toEqual(voteMock);
+    });
+    it('Expects to fail if gov address not eth address', async () => {
+      const instance = new AaveGovernanceService(provider, 'asdf');
+      const power = await instance.getVoteOnProposal({
+        user,
+        proposalId,
+      });
+      expect(power).toEqual([]);
+    });
+    it('Expects to fail when user not eth address', async () => {
+      const instance = new AaveGovernanceService(
+        provider,
+        governanceAddress,
+        governanceHelperAddress,
+      );
+      const user = 'asdf';
+      await expect(async () =>
+        instance.getVoteOnProposal({
+          user,
+          proposalId,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${user} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when proposalId not positive or 0', async () => {
+      const instance = new AaveGovernanceService(provider, governanceAddress);
+      const proposalId = -1;
+      await expect(async () =>
+        instance.getVoteOnProposal({
+          user,
+          proposalId,
+        }),
+      ).rejects.toThrowError(
+        `Amount: ${proposalId} needs to be greater or equal than 0`,
+      );
+    });
   });
 });

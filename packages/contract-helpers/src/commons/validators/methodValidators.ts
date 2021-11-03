@@ -3,8 +3,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable prefer-rest-params */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// import { utils } from 'ethers';
-import { ExecutorType } from 'contract-helpers/src/governance-contract/types';
 import { utils } from 'ethers';
 import {
   amount0OrPositiveValidator,
@@ -377,6 +375,8 @@ export function GovHelperValidator(
     isEthAddressValidator(target, propertyName, arguments);
 
     amount0OrPositiveValidator(target, propertyName, arguments);
+
+    isEthAddressArrayValidator(target, propertyName, arguments);
 
     return method.apply(this, arguments);
   };

@@ -73,7 +73,7 @@ export type GovGetTokensVotingPower = {
 };
 
 export type GovGetVoteOnProposal = {
-  proposalId: string;
+  proposalId: number;
   user: tEthereumAddress;
 };
 
@@ -155,6 +155,15 @@ export type Power = {
   delegatedAddressVotingPower: string;
   propositionPower: BigNumber;
   delegatedAddressPropositionPower: string;
+  0: BigNumber;
+  1: string;
+  2: BigNumber;
+  3: string;
 };
 
-export type Vote = { support: boolean; votingPower: BigNumber };
+export type Vote = {
+  support: boolean;
+  votingPower: BigNumber;
+  0: boolean;
+  1: BigNumber;
+};
