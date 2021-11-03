@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import axios from 'axios';
 import { base58 } from 'ethers/lib/utils';
 
@@ -32,11 +31,11 @@ export async function getProposalMetadata(
       throw Error('Missing title field at proposal metadata.');
     }
 
-    if (!data?.description) {
+    if (data?.description) {
       throw Error('Missing description field at proposal metadata.');
     }
 
-    if (!data?.shortDescription) {
+    if (data?.shortDescription) {
       throw Error('Missing shortDescription field at proposal metadata.');
     }
 
