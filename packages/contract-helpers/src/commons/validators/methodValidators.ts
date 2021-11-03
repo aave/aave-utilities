@@ -356,38 +356,38 @@ export function WETHValidator(
   };
 }
 
-// export function GovValidator(
-//   target: any,
-//   propertyName: string,
-//   descriptor: TypedPropertyDescriptor<any>,
-// ): any {
-//   const method = descriptor.value;
-//   descriptor.value = function () {
-//     const {
-//       AAVE_GOVERNANCE_V2,
-//       AAVE_GOVERNANCE_V2_HELPER,
-//       AAVE_GOVERNANCE_V2_EXECUTOR_SHORT,
-//       AAVE_GOVERNANCE_V2_EXECUTOR_LONG,
-//       // @ts-expect-error todo: check why this ignore is needed
-//     } = this.governanceConfig || {};
+export function GovValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    const {
+      AAVE_GOVERNANCE_V2,
+      AAVE_GOVERNANCE_V2_HELPER,
+      AAVE_GOVERNANCE_V2_EXECUTOR_SHORT,
+      AAVE_GOVERNANCE_V2_EXECUTOR_LONG,
+      // @ts-expect-error todo: check why this ignore is needed
+    } = this.governanceConfig || {};
 
-//     if (
-//       !utils.isAddress(AAVE_GOVERNANCE_V2) ||
-//       !utils.isAddress(AAVE_GOVERNANCE_V2_HELPER) ||
-//       !utils.isAddress(AAVE_GOVERNANCE_V2_EXECUTOR_SHORT) ||
-//       !utils.isAddress(AAVE_GOVERNANCE_V2_EXECUTOR_LONG)
-//     ) {
-//       console.error(`[GovernanceValidator] You need to pass valid addresses`);
-//       return [];
-//     }
+    if (
+      !utils.isAddress(AAVE_GOVERNANCE_V2) ||
+      !utils.isAddress(AAVE_GOVERNANCE_V2_HELPER) ||
+      !utils.isAddress(AAVE_GOVERNANCE_V2_EXECUTOR_SHORT) ||
+      !utils.isAddress(AAVE_GOVERNANCE_V2_EXECUTOR_LONG)
+    ) {
+      console.error(`[GovernanceValidator] You need to pass valid addresses`);
+      return [];
+    }
 
-//     isEthAddressValidator(target, propertyName, arguments);
+    isEthAddressValidator(target, propertyName, arguments);
 
-//     amount0OrPositiveValidator(target, propertyName, arguments);
+    amount0OrPositiveValidator(target, propertyName, arguments);
 
-//     return method?.apply(this, arguments);
-//   };
-// }
+    return method.apply(this, arguments);
+  };
+}
 
 // export function GovDelegationValidator(
 //   target: any,
