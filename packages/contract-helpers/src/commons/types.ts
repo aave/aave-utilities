@@ -82,7 +82,6 @@ export type LendingPoolMarketConfig = {
   FLASH_LIQUIDATION_ADAPTER?: tEthereumAddress;
   REPAY_WITH_COLLATERAL_ADAPTER?: tEthereumAddress;
   SWAP_COLLATERAL_ADAPTER?: tEthereumAddress;
-  FAUCET?: tEthereumAddress;
 };
 
 export type LendingPoolConfig = Record<
@@ -168,6 +167,13 @@ export type transactionType = {
   gasPrice?: BigNumber;
   data?: string;
   chainId?: number;
+};
+
+export type TokenMetadataType = {
+  name: string;
+  symbol: string;
+  decimals: number;
+  address: string;
 };
 
 export type AddressModel = {

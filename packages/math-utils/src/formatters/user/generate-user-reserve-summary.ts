@@ -82,7 +82,7 @@ export function generateUserReserveSummary({
 
   const stableBorrows = getCompoundedStableBalance({
     principalBalance: userReserve.principalStableDebt,
-    userStableRate: userReserve.stableBorrowRate,
+    userStableRate: poolReserve.stableBorrowRate,
     lastUpdateTimestamp: userReserve.stableBorrowLastUpdateTimestamp,
     currentTimestamp,
   });

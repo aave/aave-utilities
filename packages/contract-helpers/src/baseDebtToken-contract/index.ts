@@ -6,7 +6,7 @@ import {
   tEthereumAddress,
   transactionType,
 } from '../commons/types';
-import { parseNumber } from '../commons/utils';
+import { valueToWei } from '../commons/utils';
 import { DebtTokenValidator } from '../commons/validators/methodValidators';
 import {
   isEthAddress,
@@ -101,7 +101,7 @@ export class BaseDebtToken
         allowanceReceiver,
       );
     const amountBNWithDecimals: BigNumber = BigNumber.from(
-      parseNumber(amount, decimals),
+      valueToWei(amount, decimals),
     );
 
     return delegatedAllowance.gt(amountBNWithDecimals);
