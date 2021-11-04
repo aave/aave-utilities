@@ -8,7 +8,7 @@ import {
   UserReserveSummaryResponse,
 } from './generate-user-reserve-summary';
 
-interface RawReserveData {
+export interface RawReserveData {
   decimals: number;
   reserveFactor: string;
   baseLTVasCollateral: string;
@@ -29,14 +29,16 @@ interface RawReserveData {
   id: string;
   symbol: string;
   usageAsCollateralEnabled: boolean;
+  underlyingAsset: string;
+  name: string;
 }
 
 export interface RawUserReserveData {
   reserve: RawReserveData;
   scaledATokenBalance: string;
   usageAsCollateralEnabledOnUser: boolean;
+  stableBorrowRate: string;
   scaledVariableDebt: string;
-  variableBorrowIndex: string;
   principalStableDebt: string;
   stableBorrowLastUpdateTimestamp: number;
 }
@@ -57,6 +59,8 @@ export interface ComputedUserReserve extends RawUserReserveData {
   totalLiquidity: string;
   totalStableDebt: string;
   totalVariableDebt: string;
+  stableBorrowAPY: string;
+  stableBorrowAPR: string;
 }
 
 export interface FormatUserSummaryRequest {
