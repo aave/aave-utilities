@@ -65,8 +65,8 @@ export interface ComputedUserReserve extends RawUserReserveData {
 
 export interface FormatUserSummaryRequest {
   rawUserReserves: RawUserReserveData[];
-  usdPriceMarketReferenceCurrency: BigNumberValue;
-  marketReferenceCurrencyDecimals: number;
+  marketRefPriceInUsd: BigNumberValue;
+  marketRefCurrencyDecimals: number;
   currentTimestamp: number;
 }
 
@@ -90,16 +90,19 @@ function normalizeUSD(value: BigNumber): string {
 
 export function formatUserSummary({
   currentTimestamp,
-  usdPriceMarketReferenceCurrency,
-  marketReferenceCurrencyDecimals,
+  marketRefPriceInUsd,
+  marketRefCurrencyDecimals,
   rawUserReserves,
 }: FormatUserSummaryRequest): FormatUserSummaryResponse {
+  const formattedMarketRefPriceInUsd = new BigNumber(marketRefPriceInUsd)
+    .shiftedBy(marketRefCurrencyDecimals)
+    .toString();
   const computedUserReserves: UserReserveSummaryResponse[] =
     rawUserReserves.map(userReserve =>
       generateUserReserveSummary({
         userReserve,
-        usdPriceMarketReferenceCurrency,
-        marketReferenceCurrencyDecimals,
+        marketRefPriceInUsd: formattedMarketRefPriceInUsd,
+        marketRefCurrencyDecimals,
         currentTimestamp,
       }),
     );
@@ -107,35 +110,36 @@ export function formatUserSummary({
   const formattedUserReserves = computedUserReserves.map(computedUserReserve =>
     formatUserReserve({
       reserve: computedUserReserve,
-      marketReferenceCurrencyDecimals,
+      marketRefCurrencyDecimals,
     }),
   );
 
   const userData = generateRawUserSummary({
     userReserves: computedUserReserves,
-    usdPriceMarketReferenceCurrency,
+    marketRefPriceInUsd: formattedMarketRefPriceInUsd,
+    marketRefCurrencyDecimals,
   });
 
   return {
     userReservesData: formattedUserReserves,
     totalLiquidityMarketReferenceCurrency: normalize(
       userData.totalLiquidityMarketReferenceCurrency,
-      marketReferenceCurrencyDecimals,
+      marketRefCurrencyDecimals,
     ),
     totalLiquidityUSD: normalizeUSD(userData.totalLiquidityUSD),
     totalCollateralMarketReferenceCurrency: normalize(
       userData.totalCollateralMarketReferenceCurrency,
-      marketReferenceCurrencyDecimals,
+      marketRefCurrencyDecimals,
     ),
     totalCollateralUSD: normalizeUSD(userData.totalCollateralUSD),
     totalBorrowsMarketReferenceCurrency: normalize(
       userData.totalBorrowsMarketReferenceCurrency,
-      marketReferenceCurrencyDecimals,
+      marketRefCurrencyDecimals,
     ),
     totalBorrowsUSD: normalizeUSD(userData.totalBorrowsUSD),
     availableBorrowsMarketReferenceCurrency: normalize(
       userData.availableBorrowsMarketReferenceCurrency,
-      marketReferenceCurrencyDecimals,
+      marketRefCurrencyDecimals,
     ),
     currentLoanToValue: normalize(userData.currentLoanToValue, LTV_PRECISION),
     currentLiquidationThreshold: normalize(

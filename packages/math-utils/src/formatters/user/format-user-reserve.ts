@@ -4,19 +4,14 @@ import {
   valueToBigNumber,
   valueToZDBigNumber,
 } from '../../bignumber';
-import {
-  LTV_PRECISION,
-  RAY_DECIMALS,
-  SECONDS_PER_YEAR,
-  USD_DECIMALS,
-} from '../../constants';
+import { LTV_PRECISION, RAY_DECIMALS, SECONDS_PER_YEAR } from '../../constants';
 import { RAY, rayPow } from '../../ray.math';
 import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
 import { ComputedUserReserve } from './index';
 
 export interface FormatUserReserveRequest {
   reserve: UserReserveSummaryResponse;
-  marketReferenceCurrencyDecimals: number;
+  marketRefCurrencyDecimals: number;
 }
 
 export interface FormatUserReserveResponse {
@@ -25,7 +20,7 @@ export interface FormatUserReserveResponse {
 
 export function formatUserReserve({
   reserve: _reserve,
-  marketReferenceCurrencyDecimals,
+  marketRefCurrencyDecimals,
 }: FormatUserReserveRequest): ComputedUserReserve {
   const { userReserve } = _reserve;
   const { reserve } = userReserve;
@@ -56,30 +51,39 @@ export function formatUserReserve({
     underlyingBalance: normalize(_reserve.underlyingBalance, reserveDecimals),
     underlyingBalanceMarketReferenceCurrency: normalize(
       _reserve.underlyingBalanceMarketReferenceCurrency,
-      marketReferenceCurrencyDecimals,
+      marketRefCurrencyDecimals,
     ),
     underlyingBalanceUSD: normalize(
       _reserve.underlyingBalanceUSD,
-      USD_DECIMALS,
+      marketRefCurrencyDecimals,
     ),
     stableBorrows: normalizeWithReserve(_reserve.stableBorrows),
     stableBorrowsMarketReferenceCurrency: normalize(
       _reserve.stableBorrowsMarketReferenceCurrency,
-      marketReferenceCurrencyDecimals,
+      marketRefCurrencyDecimals,
     ),
-    stableBorrowsUSD: normalize(_reserve.stableBorrowsUSD, USD_DECIMALS),
+    stableBorrowsUSD: normalize(
+      _reserve.stableBorrowsUSD,
+      marketRefCurrencyDecimals,
+    ),
     variableBorrows: normalizeWithReserve(_reserve.variableBorrows),
     variableBorrowsMarketReferenceCurrency: normalize(
       _reserve.variableBorrowsMarketReferenceCurrency,
-      marketReferenceCurrencyDecimals,
+      marketRefCurrencyDecimals,
     ),
-    variableBorrowsUSD: normalize(_reserve.variableBorrowsUSD, USD_DECIMALS),
+    variableBorrowsUSD: normalize(
+      _reserve.variableBorrowsUSD,
+      marketRefCurrencyDecimals,
+    ),
     totalBorrows: normalizeWithReserve(_reserve.totalBorrows),
     totalBorrowsMarketReferenceCurrency: normalize(
       _reserve.totalBorrowsMarketReferenceCurrency,
-      marketReferenceCurrencyDecimals,
+      marketRefCurrencyDecimals,
     ),
-    totalBorrowsUSD: normalize(_reserve.totalBorrowsUSD, USD_DECIMALS),
+    totalBorrowsUSD: normalize(
+      _reserve.totalBorrowsUSD,
+      marketRefCurrencyDecimals,
+    ),
     totalLiquidity: normalizeWithReserve(_reserve.totalLiquidity),
     totalStableDebt: normalizeWithReserve(_reserve.totalStableDebt),
     totalVariableDebt: normalizeWithReserve(_reserve.totalVariableDebt),
