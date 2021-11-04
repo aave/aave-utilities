@@ -37,6 +37,7 @@ export interface RawUserReserveData {
   reserve: RawReserveData;
   scaledATokenBalance: string;
   usageAsCollateralEnabledOnUser: boolean;
+  stableBorrowRate: string;
   scaledVariableDebt: string;
   principalStableDebt: string;
   stableBorrowLastUpdateTimestamp: number;
@@ -58,6 +59,8 @@ export interface ComputedUserReserve extends RawUserReserveData {
   totalLiquidity: string;
   totalStableDebt: string;
   totalVariableDebt: string;
+  stableBorrowAPY: string;
+  stableBorrowAPR: string;
 }
 
 export interface FormatUserSummaryRequest {

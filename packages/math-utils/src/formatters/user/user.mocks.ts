@@ -5,6 +5,7 @@ export const usdcUserReserve: RawUserReserveData = {
   usageAsCollateralEnabledOnUser: true,
   scaledVariableDebt: '48856783',
   principalStableDebt: '0',
+  stableBorrowRate: '0',
   stableBorrowLastUpdateTimestamp: 0,
   reserve: {
     id: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb480xb53c1a33016b2dc2ff3653530bff1848a515c8c5',
@@ -37,6 +38,7 @@ export const xSushiUserReserve: RawUserReserveData = {
   usageAsCollateralEnabledOnUser: true,
   scaledVariableDebt: '0',
   principalStableDebt: '0',
+  stableBorrowRate: '0',
   stableBorrowLastUpdateTimestamp: 0,
   reserve: {
     id: '0x8798249c2e607446efb7ad49ec89dd1865ff42720xb53c1a33016b2dc2ff3653530bff1848a515c8c5',
@@ -69,6 +71,7 @@ export const ethUserReserve: RawUserReserveData = {
   usageAsCollateralEnabledOnUser: true,
   scaledVariableDebt: '1761463562232346784',
   principalStableDebt: '0',
+  stableBorrowRate: '0',
   stableBorrowLastUpdateTimestamp: 0,
   reserve: {
     id: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc20xb53c1a33016b2dc2ff3653530bff1848a515c8c5',
