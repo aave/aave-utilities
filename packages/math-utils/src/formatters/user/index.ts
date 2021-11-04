@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { BigNumberValue, normalize } from '../../bignumber';
-import { LTV_PRECISION, USD_DECIMALS } from '../../constants';
+import { LTV_PRECISION } from '../../constants';
 import { formatUserReserve } from './format-user-reserve';
 import { generateRawUserSummary } from './generate-raw-user-summary';
 import {
@@ -79,13 +79,17 @@ export interface FormatUserSummaryResponse {
   totalBorrowsMarketReferenceCurrency: string;
   totalBorrowsUSD: string;
   availableBorrowsMarketReferenceCurrency: string;
+  availableBorrowsUSD: string;
   currentLoanToValue: string;
   currentLiquidationThreshold: string;
   healthFactor: string;
 }
 
-function normalizeUSD(value: BigNumber): string {
-  return normalize(value, USD_DECIMALS);
+function normalizeUSD(
+  value: BigNumber,
+  marketRefCurrencyDecimals: number,
+): string {
+  return normalize(value, marketRefCurrencyDecimals);
 }
 
 export function formatUserSummary({
@@ -126,19 +130,32 @@ export function formatUserSummary({
       userData.totalLiquidityMarketReferenceCurrency,
       marketRefCurrencyDecimals,
     ),
-    totalLiquidityUSD: normalizeUSD(userData.totalLiquidityUSD),
+    totalLiquidityUSD: normalizeUSD(
+      userData.totalLiquidityUSD,
+      marketRefCurrencyDecimals,
+    ),
     totalCollateralMarketReferenceCurrency: normalize(
       userData.totalCollateralMarketReferenceCurrency,
       marketRefCurrencyDecimals,
     ),
-    totalCollateralUSD: normalizeUSD(userData.totalCollateralUSD),
+    totalCollateralUSD: normalizeUSD(
+      userData.totalCollateralUSD,
+      marketRefCurrencyDecimals,
+    ),
     totalBorrowsMarketReferenceCurrency: normalize(
       userData.totalBorrowsMarketReferenceCurrency,
       marketRefCurrencyDecimals,
     ),
-    totalBorrowsUSD: normalizeUSD(userData.totalBorrowsUSD),
+    totalBorrowsUSD: normalizeUSD(
+      userData.totalBorrowsUSD,
+      marketRefCurrencyDecimals,
+    ),
     availableBorrowsMarketReferenceCurrency: normalize(
       userData.availableBorrowsMarketReferenceCurrency,
+      marketRefCurrencyDecimals,
+    ),
+    availableBorrowsUSD: normalize(
+      userData.availableBorrowsUSD,
       marketRefCurrencyDecimals,
     ),
     currentLoanToValue: normalize(userData.currentLoanToValue, LTV_PRECISION),
