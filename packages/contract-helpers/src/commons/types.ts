@@ -65,12 +65,6 @@ export type ConstantAddressesByNetwork = Record<
     SYNTHETIX_PROXY_ADDRESS?: tEthereumAddress;
   }
 >;
-export type GovernanceConfig = {
-  AAVE_GOVERNANCE_V2: tEthereumAddress;
-  AAVE_GOVERNANCE_V2_EXECUTOR_SHORT: tEthereumAddress;
-  AAVE_GOVERNANCE_V2_EXECUTOR_LONG: tEthereumAddress;
-  AAVE_GOVERNANCE_V2_HELPER: tEthereumAddress;
-};
 
 export type MigratorConfig = {
   LEND_TO_AAVE_MIGRATOR: tEthereumAddress;

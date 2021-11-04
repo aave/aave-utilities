@@ -8,8 +8,6 @@ import {
 import { valueToWei } from '../commons/utils';
 import { ERC20Service } from '../erc20-contract';
 import { WETHGatewayService } from './index';
-// import { IWETHGateway } from './typechain/IWETHGateway';
-// import { IWETHGateway__factory } from './typechain/IWETHGateway__factory';
 
 jest.mock('../commons/gasStation', () => {
   return {

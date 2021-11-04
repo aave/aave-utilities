@@ -1,18 +1,14 @@
 # Change Log
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 ## 0.21.2 (2021-11-04)
 
-
 ### Bug Fixes
 
-* fix lockfile ([#153](https://github.com/@aave/aave-utilities/issues/153)) ([c52345c](https://github.com/@aave/aave-utilities/commit/c52345c87f3323b9cc026da3e85f8d4487a40c23))
-
-
-
-
+- fix lockfile ([#153](https://github.com/@aave/aave-utilities/issues/153))
+  ([c52345c](https://github.com/@aave/aave-utilities/commit/c52345c87f3323b9cc026da3e85f8d4487a40c23))
 
 # Change Log
 
