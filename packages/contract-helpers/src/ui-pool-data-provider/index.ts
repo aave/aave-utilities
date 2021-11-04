@@ -13,6 +13,25 @@ import {
 
 export * from './types/UiPoolDataProviderTypes';
 
+const ammSymbolMap: Record<string, string> = {
+  '0xae461ca67b15dc8dc81ce7615e0320da1a9ab8d5': 'UNI DAI/USDC',
+  '0x004375dff511095cc5a197a54140a24efef3a416': 'UNI WBTC/USDC',
+  '0xa478c2975ab1ea89e8196811f51a7b7ade33eb11': 'UNI DAI/WETH',
+  '0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc': 'UNI USDC/WETH',
+  '0xdfc14d2af169b0d36c4eff567ada9b2e0cae044f': 'UNI AAVE/WETH',
+  '0xb6909b960dbbe7392d405429eb2b3649752b4838': 'UNI BAT/WETH',
+  '0x3da1313ae46132a397d90d95b1424a9a7e3e0fce': 'UNI CRV/WETH',
+  '0xa2107fa5b38d9bbd2c461d6edf11b11a50f6b974': 'UNI LINK/WETH',
+  '0xc2adda861f89bbb333c90c492cb837741916a225': 'UNI MKR/WETH',
+  '0x8bd1661da98ebdd3bd080f0be4e6d9be8ce9858c': 'UNI REN/WETH',
+  '0x43ae24960e5534731fc831386c07755a2dc33d47': 'UNI SNX/WETH',
+  '0xd3d2e2692501a5c9ca623199d38826e513033a17': 'UNI UNI/WETH',
+  '0xbb2b8038a1640196fbe3e38816f3e67cba72d940': 'UNI WBTC/WETH',
+  '0x2fdbadf3c4d5a8666bc06645b8358ab803996e28': 'UNI YFI/WETH',
+  '0x1eff8af5d577060ba4ac8a29a13525bb0ee2a3d5': 'BPT WBTC/WETH',
+  '0x59a19d8c652fa0284f44113d0ff9aba70bd46fb4': 'BPT BAL/WETH',
+};
+
 export interface UiPoolDataProviderContext {
   uiPoolDataProviderAddress: string;
   provider: providers.Provider;
@@ -111,7 +130,9 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
         ).toLowerCase(),
         underlyingAsset: reserveRaw.underlyingAsset.toLowerCase(),
         name: reserveRaw.name,
-        symbol: reserveRaw.symbol,
+        symbol: ammSymbolMap[reserveRaw.underlyingAsset.toLowerCase()]
+          ? ammSymbolMap[reserveRaw.underlyingAsset.toLowerCase()]
+          : reserveRaw.symbol,
         decimals: reserveRaw.decimals.toNumber(),
         baseLTVasCollateral: reserveRaw.baseLTVasCollateral.toString(),
         reserveLiquidationThreshold:
