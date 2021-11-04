@@ -1,5 +1,21 @@
 # Change Log
 
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# 0.22.0 (2021-11-04)
+
+
+### Features
+
+* governance voting contract ([#151](https://github.com/@aave/aave-utilities/issues/151)) ([ff6726f](https://github.com/@aave/aave-utilities/commit/ff6726fc1333b5fbb2794a472e82f6660f89e05d))
+
+
+
+
+
+# Change Log
+
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
