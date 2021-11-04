@@ -1,14 +1,14 @@
 import { BigNumber, providers, utils } from 'ethers';
 import * as ipfs from '../commons/ipfs';
 import { eEthereumTxType, GasType, transactionType } from '../commons/types';
+import { IAaveGovernanceV2 } from './typechain/IAaveGovernanceV2';
+import { IAaveGovernanceV2__factory } from './typechain/IAaveGovernanceV2__factory';
+import { IGovernanceStrategy } from './typechain/IGovernanceStrategy';
+import { IGovernanceStrategy__factory } from './typechain/IGovernanceStrategy__factory';
 import { IGovernanceV2Helper } from './typechain/IGovernanceV2Helper';
 import { IGovernanceV2Helper__factory } from './typechain/IGovernanceV2Helper__factory';
 import { ProposalState } from './types';
 import { AaveGovernanceService } from './index';
-import { IGovernanceStrategy__factory } from './typechain/IGovernanceStrategy__factory';
-import { IGovernanceStrategy } from './typechain/IGovernanceStrategy';
-import { IAaveGovernanceV2__factory } from './typechain/IAaveGovernanceV2__factory';
-import { IAaveGovernanceV2 } from './typechain/IAaveGovernanceV2';
 
 jest.mock('../commons/gasStation', () => {
   return {
