@@ -166,7 +166,7 @@ describe('UiPoolDataProvider', () => {
             id: '0xa478c2975ab1ea89e8196811f51a7b7ade33eb110x88757f2f99175387ab4c6a4b3067c77a695b0349',
             underlyingAsset: '0xa478c2975ab1ea89e8196811f51a7b7ade33eb11',
             name: '',
-            symbol: 'UNI DAI/WETH',
+            symbol: 'UNIDAIWETH',
             decimals: 0,
             baseLTVasCollateral: '0',
             reserveLiquidationThreshold: '0',
