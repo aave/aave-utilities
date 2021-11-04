@@ -1,6 +1,8 @@
 import { BigNumber, BytesLike, PopulatedTransaction } from 'ethers';
 
 export type tEthereumAddress = string;
+export type tStringCurrencyUnits = string; // ex 2.5 eth
+export type tStringDecimalUnits = string; // ex 2500000000000000000
 export type ENS = string; // something.eth
 
 /** InterestRate options */

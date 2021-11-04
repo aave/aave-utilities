@@ -97,32 +97,32 @@ export function isEthAddressArray(field?: string) {
 //   };
 // }
 
-// export function isEthAddressOrENS(field?: string) {
-//   return function (
-//     target: any,
-//     propertyKey: string | symbol,
-//     parameterIndex: number,
-//   ): void {
-//     const existingPossibleAddresses: paramsType[] =
-//       Reflect.getOwnMetadata(
-//         isEthAddressOrENSMetadataKey,
-//         target,
-//         propertyKey,
-//       ) || [];
+export function isEthAddressOrENS(field?: string) {
+  return function (
+    target: any,
+    propertyKey: string | symbol,
+    parameterIndex: number,
+  ): void {
+    const existingPossibleAddresses: paramsType[] =
+      Reflect.getOwnMetadata(
+        isEthAddressOrENSMetadataKey,
+        target,
+        propertyKey,
+      ) || [];
 
-//     existingPossibleAddresses.push({
-//       index: parameterIndex,
-//       field,
-//     });
+    existingPossibleAddresses.push({
+      index: parameterIndex,
+      field,
+    });
 
-//     Reflect.defineMetadata(
-//       isEthAddressOrENSMetadataKey,
-//       existingPossibleAddresses,
-//       target,
-//       propertyKey,
-//     );
-//   };
-// }
+    Reflect.defineMetadata(
+      isEthAddressOrENSMetadataKey,
+      existingPossibleAddresses,
+      target,
+      propertyKey,
+    );
+  };
+}
 
 export function isPositiveAmount(field?: string) {
   return function (
