@@ -3,7 +3,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable prefer-rest-params */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// import { utils } from 'ethers';
 import { utils } from 'ethers';
 import {
   amount0OrPositiveValidator,
@@ -258,72 +257,57 @@ export function RepayWithCollateralValidator(
   };
 }
 
-// export function StakingValidator(
-//   target: any,
-//   propertyName: string,
-//   descriptor: TypedPropertyDescriptor<any>,
-// ): any {
-//   const method = descriptor.value;
-//   descriptor.value = function () {
-//     // No need to check if addresses exist for network
-//     // because this is checked at initialization and type checking of config
+export function StakingValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    if (
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.stakingContractAddress)
+    ) {
+      console.error(`[StakingValidator] You need to pass valid addresses`);
+      return [];
+    }
 
-//     // @ts-expect-error todo: check why this ignore is needed
-//     const { TOKEN_STAKING, STAKING_REWARD_TOKEN } = this.stakingConfig || {};
+    isEthAddressValidator(target, propertyName, arguments);
 
-//     // Check if addresses are valid.
-//     if (
-//       !utils.isAddress(TOKEN_STAKING) ||
-//       !utils.isAddress(STAKING_REWARD_TOKEN)
-//     ) {
-//       console.error(`[StakingValidator] You need to pass valid addresses`);
-//       return [];
-//     }
+    amountGtThan0Validator(target, propertyName, arguments);
 
-//     const isParamOptional = optionalValidator(target, propertyName, arguments);
+    amountGtThan0OrMinus1(target, propertyName, arguments);
 
-//     isEthAddressValidator(target, propertyName, arguments, isParamOptional);
+    return method.apply(this, arguments);
+  };
+}
 
-//     amountGtThan0Validator(target, propertyName, arguments, isParamOptional);
+export function SignStakingValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    if (
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.stakingContractAddress) ||
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.stakingHelperContractAddress)
+    ) {
+      console.error(`[StakingValidator] You need to pass valid addresses`);
+      return [];
+    }
 
-//     return method?.apply(this, arguments);
-//   };
-// }
+    isEthAddressValidator(target, propertyName, arguments);
 
-// export function SignStakingValidator(
-//   target: any,
-//   propertyName: string,
-//   descriptor: TypedPropertyDescriptor<any>,
-// ): any {
-//   const method = descriptor.value;
-//   descriptor.value = function () {
-//     // No need to check if addresses exist for network
-//     // because this is checked at initialization and type checking of config
+    amountGtThan0Validator(target, propertyName, arguments);
 
-//     const { TOKEN_STAKING, STAKING_REWARD_TOKEN, STAKING_HELPER } =
-//       // @ts-expect-error todo: check why this ignore is needed
-//       this.stakingConfig || {};
+    amount0OrPositiveValidator(target, propertyName, arguments);
 
-//     // Check if addresses are valid.
-//     if (
-//       !utils.isAddress(TOKEN_STAKING) ||
-//       !utils.isAddress(STAKING_REWARD_TOKEN) ||
-//       !STAKING_HELPER ||
-//       !utils.isAddress(TOKEN_STAKING)
-//     ) {
-//       console.error(`[StakingValidator] You need to pass valid addresses`);
-//       return [];
-//     }
-
-//     const isParamOptional = optionalValidator(target, propertyName, arguments);
-
-//     isEthAddressValidator(target, propertyName, arguments, isParamOptional);
-
-//     amountGtThan0Validator(target, propertyName, arguments, isParamOptional);
-
-//     return method?.apply(this, arguments);
-//   };
-// }
+    return method.apply(this, arguments);
+  };
+}
 
 export function FaucetValidator(
   target: any,
@@ -371,38 +355,55 @@ export function WETHValidator(
   };
 }
 
-// export function GovValidator(
-//   target: any,
-//   propertyName: string,
-//   descriptor: TypedPropertyDescriptor<any>,
-// ): any {
-//   const method = descriptor.value;
-//   descriptor.value = function () {
-//     const {
-//       AAVE_GOVERNANCE_V2,
-//       AAVE_GOVERNANCE_V2_HELPER,
-//       AAVE_GOVERNANCE_V2_EXECUTOR_SHORT,
-//       AAVE_GOVERNANCE_V2_EXECUTOR_LONG,
-//       // @ts-expect-error todo: check why this ignore is needed
-//     } = this.governanceConfig || {};
+export function GovHelperValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    if (
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.aaveGovernanceV2Address) ||
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.aaveGovernanceV2HelperAddress)
+    ) {
+      console.error(`[GovernanceValidator] You need to pass valid addresses`);
+      return [];
+    }
 
-//     if (
-//       !utils.isAddress(AAVE_GOVERNANCE_V2) ||
-//       !utils.isAddress(AAVE_GOVERNANCE_V2_HELPER) ||
-//       !utils.isAddress(AAVE_GOVERNANCE_V2_EXECUTOR_SHORT) ||
-//       !utils.isAddress(AAVE_GOVERNANCE_V2_EXECUTOR_LONG)
-//     ) {
-//       console.error(`[GovernanceValidator] You need to pass valid addresses`);
-//       return [];
-//     }
+    isEthAddressValidator(target, propertyName, arguments);
 
-//     isEthAddressValidator(target, propertyName, arguments);
+    amount0OrPositiveValidator(target, propertyName, arguments);
 
-//     amount0OrPositiveValidator(target, propertyName, arguments);
+    isEthAddressArrayValidator(target, propertyName, arguments);
 
-//     return method?.apply(this, arguments);
-//   };
-// }
+    return method.apply(this, arguments);
+  };
+}
+
+export function GovValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    if (
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.aaveGovernanceV2Address)
+    ) {
+      console.error(`[GovernanceValidator] You need to pass valid addresses`);
+      return [];
+    }
+
+    isEthAddressValidator(target, propertyName, arguments);
+
+    amount0OrPositiveValidator(target, propertyName, arguments);
+
+    return method.apply(this, arguments);
+  };
+}
 
 // export function GovDelegationValidator(
 //   target: any,

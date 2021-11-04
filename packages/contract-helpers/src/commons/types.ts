@@ -65,12 +65,6 @@ export type ConstantAddressesByNetwork = Record<
     SYNTHETIX_PROXY_ADDRESS?: tEthereumAddress;
   }
 >;
-export type GovernanceConfig = {
-  AAVE_GOVERNANCE_V2: tEthereumAddress;
-  AAVE_GOVERNANCE_V2_EXECUTOR_SHORT: tEthereumAddress;
-  AAVE_GOVERNANCE_V2_EXECUTOR_LONG: tEthereumAddress;
-  AAVE_GOVERNANCE_V2_HELPER: tEthereumAddress;
-};
 
 export type MigratorConfig = {
   LEND_TO_AAVE_MIGRATOR: tEthereumAddress;
@@ -88,24 +82,6 @@ export type LendingPoolConfig = Record<
   string,
   Record<string, LendingPoolMarketConfig>
 >;
-
-export type StakingNetworkConfig = {
-  TOKEN_STAKING: tEthereumAddress;
-  STAKING_REWARD_TOKEN: tEthereumAddress;
-  STAKING_HELPER?: tEthereumAddress;
-};
-
-export type StakingConfig = Record<
-  string,
-  Record<string, StakingNetworkConfig>
->;
-
-export type TxBuilderConfig = {
-  governance?: Record<string, GovernanceConfig>;
-  migrator?: Record<string, MigratorConfig>;
-  lendingPool?: LendingPoolConfig;
-  staking?: StakingConfig;
-};
 
 export enum eEthereumTxType {
   ERC20_APPROVAL = 'ERC20_APPROVAL',

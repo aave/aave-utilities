@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.22.0 (2021-11-04)
+
+
+### Features
+
+* governance voting contract ([#151](https://github.com/@aave/aave-utilities/issues/151)) ([ff6726f](https://github.com/@aave/aave-utilities/commit/ff6726fc1333b5fbb2794a472e82f6660f89e05d))
+
+
+
+
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## 0.21.2 (2021-11-04)
+
+### Bug Fixes
+
+- fix lockfile ([#153](https://github.com/@aave/aave-utilities/issues/153))
+  ([c52345c](https://github.com/@aave/aave-utilities/commit/c52345c87f3323b9cc026da3e85f8d4487a40c23))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## 0.21.1 (2021-11-01)
 
 ### Bug Fixes
