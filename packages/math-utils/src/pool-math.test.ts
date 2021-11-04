@@ -197,14 +197,14 @@ describe('pool math', () => {
     const balanceRequest = {
       balance: 10 ** 19, // 10
       priceInMarketReferenceCurrency: 10 ** 18, // 1
-      marketReferenceCurrencyDecimals: 18,
+      marketRefCurrencyDecimals: 18,
       decimals: 18,
-      usdPriceMarketReferenceCurrency: 250000000,
+      marketRefPriceInUsd: 250000000,
     };
     const { marketReferenceCurrencyBalance, usdBalance } =
       getMarketReferenceCurrencyAndUsdBalance(balanceRequest);
     expect(marketReferenceCurrencyBalance.toNumber()).toEqual(
-      10 * 10 ** balanceRequest.marketReferenceCurrencyDecimals,
+      10 * 10 ** balanceRequest.marketRefCurrencyDecimals,
     );
     expect(usdBalance.toNumber()).toEqual(25 * 10 ** USD_DECIMALS);
   });
