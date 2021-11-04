@@ -1,258 +1,186 @@
 # Change Log
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## 0.21.2 (2021-11-04)
+
+### Bug Fixes
+
+- fix lockfile ([#153](https://github.com/@aave/aave-utilities/issues/153))
+  ([c52345c](https://github.com/@aave/aave-utilities/commit/c52345c87f3323b9cc026da3e85f8d4487a40c23))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 ## 0.21.1 (2021-11-01)
 
-
 ### Bug Fixes
 
-* add missing export ([#141](https://github.com/@aave/aave-utilities/issues/141)) ([72a2aa0](https://github.com/@aave/aave-utilities/commit/72a2aa07f2478bd877fcbc4850f36bf789bfad2a))
-
-
-
-
+- add missing export
+  ([#141](https://github.com/@aave/aave-utilities/issues/141))
+  ([72a2aa0](https://github.com/@aave/aave-utilities/commit/72a2aa07f2478bd877fcbc4850f36bf789bfad2a))
 
 # 0.21.0 (2021-11-01)
 
-
 ### Features
 
-* add lending pool txbuilder logic ([#129](https://github.com/@aave/aave-utilities/issues/129)) ([1121de4](https://github.com/@aave/aave-utilities/commit/1121de49ca2c3508cc377edfd72927c4e36dc445))
-
-
-
-
+- add lending pool txbuilder logic
+  ([#129](https://github.com/@aave/aave-utilities/issues/129))
+  ([1121de4](https://github.com/@aave/aave-utilities/commit/1121de49ca2c3508cc377edfd72927c4e36dc445))
 
 ## 0.20.4 (2021-10-28)
 
-
 ### Bug Fixes
 
-* fixed get decimals quote param ([#134](https://github.com/@aave/aave-utilities/issues/134)) ([7c133e5](https://github.com/@aave/aave-utilities/commit/7c133e5ac8f85ad053184c6c663701221ea3109f))
-
-
-
-
+- fixed get decimals quote param
+  ([#134](https://github.com/@aave/aave-utilities/issues/134))
+  ([7c133e5](https://github.com/@aave/aave-utilities/commit/7c133e5ac8f85ad053184c6c663701221ea3109f))
 
 ## 0.20.3 (2021-10-27)
 
-
 ### Bug Fixes
 
-* handle user incentives calculation with empty userReserves ([#133](https://github.com/@aave/aave-utilities/issues/133)) ([49371fa](https://github.com/@aave/aave-utilities/commit/49371fa8fa05bcc9002a9a1cdd151aeeadc3047b))
-
-
-
-
+- handle user incentives calculation with empty userReserves
+  ([#133](https://github.com/@aave/aave-utilities/issues/133))
+  ([49371fa](https://github.com/@aave/aave-utilities/commit/49371fa8fa05bcc9002a9a1cdd151aeeadc3047b))
 
 ## 0.20.2 (2021-10-27)
 
 **Note:** Version bump only for package @aave/contract-helpers
 
-
-
-
-
 ## 0.20.1 (2021-10-26)
-
 
 ### Bug Fixes
 
-* accept empty assets array ([#128](https://github.com/@aave/aave-utilities/issues/128)) ([7f34ace](https://github.com/@aave/aave-utilities/commit/7f34aced708608b8f3e3ea7411dbedf8a37107ac))
-
-
-
-
+- accept empty assets array
+  ([#128](https://github.com/@aave/aave-utilities/issues/128))
+  ([7f34ace](https://github.com/@aave/aave-utilities/commit/7f34aced708608b8f3e3ea7411dbedf8a37107ac))
 
 # 0.20.0 (2021-10-26)
 
-
 ### Features
 
-* all reserve incentives ([#107](https://github.com/@aave/aave-utilities/issues/107)) ([657575f](https://github.com/@aave/aave-utilities/commit/657575f12625493f3250ce3c23ca7fb90c222ed2))
-
-
-
-
+- all reserve incentives
+  ([#107](https://github.com/@aave/aave-utilities/issues/107))
+  ([657575f](https://github.com/@aave/aave-utilities/commit/657575f12625493f3250ce3c23ca7fb90c222ed2))
 
 # 0.19.0 (2021-10-26)
 
-
 ### Features
 
-* ported repay with collateral logic and updated ([#127](https://github.com/@aave/aave-utilities/issues/127)) ([eff8beb](https://github.com/@aave/aave-utilities/commit/eff8beb85b74111ad67a702fab77fdfa0ad652ab))
-
-
-
-
+- ported repay with collateral logic and updated
+  ([#127](https://github.com/@aave/aave-utilities/issues/127))
+  ([eff8beb](https://github.com/@aave/aave-utilities/commit/eff8beb85b74111ad67a702fab77fdfa0ad652ab))
 
 # 0.18.0 (2021-10-26)
 
-
 ### Features
 
-* swap liquidity ported. missing tests ([#126](https://github.com/@aave/aave-utilities/issues/126)) ([bf09981](https://github.com/@aave/aave-utilities/commit/bf099819d5d4d43aadd3b557567470a276ef3885))
-
-
-
-
+- swap liquidity ported. missing tests
+  ([#126](https://github.com/@aave/aave-utilities/issues/126))
+  ([bf09981](https://github.com/@aave/aave-utilities/commit/bf099819d5d4d43aadd3b557567470a276ef3885))
 
 ## 0.17.2 (2021-10-26)
 
-
 ### Bug Fixes
 
-* port apy calculation fix from aave-js ([#125](https://github.com/@aave/aave-utilities/issues/125)) ([7ff9307](https://github.com/@aave/aave-utilities/commit/7ff93077b6bb97ec2c608f4e19e973d0368f4ef7))
-
-
-
-
+- port apy calculation fix from aave-js
+  ([#125](https://github.com/@aave/aave-utilities/issues/125))
+  ([7ff9307](https://github.com/@aave/aave-utilities/commit/7ff93077b6bb97ec2c608f4e19e973d0368f4ef7))
 
 ## 0.17.1 (2021-10-26)
 
 **Note:** Version bump only for package @aave/contract-helpers
 
-
-
-
-
 # 0.17.0 (2021-10-25)
-
 
 ### Features
 
-* ported synthetix service ([#123](https://github.com/@aave/aave-utilities/issues/123)) ([8f87c14](https://github.com/@aave/aave-utilities/commit/8f87c14a2e93def7622fe3e94816b8657c68bcc1))
-
-
-
-
+- ported synthetix service
+  ([#123](https://github.com/@aave/aave-utilities/issues/123))
+  ([8f87c14](https://github.com/@aave/aave-utilities/commit/8f87c14a2e93def7622fe3e94816b8657c68bcc1))
 
 ## 0.16.1 (2021-10-25)
 
 **Note:** Version bump only for package @aave/contract-helpers
 
-
-
-
-
 # 0.16.0 (2021-10-22)
-
 
 ### Features
 
-* wip: added initial class flow for tx services ([#108](https://github.com/@aave/aave-utilities/issues/108)) ([dd6a53b](https://github.com/@aave/aave-utilities/commit/dd6a53b1e10f005b64151a55a3bd5cc4119ab62a))
-
-
-
-
+- wip: added initial class flow for tx services
+  ([#108](https://github.com/@aave/aave-utilities/issues/108))
+  ([dd6a53b](https://github.com/@aave/aave-utilities/commit/dd6a53b1e10f005b64151a55a3bd5cc4119ab62a))
 
 ## 0.15.4 (2021-10-15)
 
-
 ### Bug Fixes
 
-* uipooldataprovider price aggregators ([#100](https://github.com/@aave/aave-utilities/issues/100)) ([329a50e](https://github.com/@aave/aave-utilities/commit/329a50e971263debba8d9122fc55ce323dc71929))
-
-
-
-
+- uipooldataprovider price aggregators
+  ([#100](https://github.com/@aave/aave-utilities/issues/100))
+  ([329a50e](https://github.com/@aave/aave-utilities/commit/329a50e971263debba8d9122fc55ce323dc71929))
 
 ## 0.15.3 (2021-10-14)
 
 **Note:** Version bump only for package @aave/contract-helpers
 
-
-
-
-
 ## 0.15.2 (2021-10-14)
-
 
 ### Bug Fixes
 
-* added missing id ([#98](https://github.com/@aave/aave-utilities/issues/98)) ([abee3f3](https://github.com/@aave/aave-utilities/commit/abee3f39d6f2c9a0c25054ac9033f34daf628523))
-
-
-
-
+- added missing id ([#98](https://github.com/@aave/aave-utilities/issues/98))
+  ([abee3f3](https://github.com/@aave/aave-utilities/commit/abee3f39d6f2c9a0c25054ac9033f34daf628523))
 
 ## 0.15.1 (2021-10-14)
 
 **Note:** Version bump only for package @aave/contract-helpers
 
-
-
-
-
 # 0.15.0 (2021-10-13)
-
 
 ### Features
 
-* updated version with network base currency ([#92](https://github.com/@aave/aave-utilities/issues/92)) ([072c775](https://github.com/@aave/aave-utilities/commit/072c775f2386bd34f2c4fa4da8ddb7e5f2893c86))
-
-
-
-
+- updated version with network base currency
+  ([#92](https://github.com/@aave/aave-utilities/issues/92))
+  ([072c775](https://github.com/@aave/aave-utilities/commit/072c775f2386bd34f2c4fa4da8ddb7e5f2893c86))
 
 ## 0.14.1 (2021-10-13)
 
-
 ### Bug Fixes
 
-* added id to reserves object ([#90](https://github.com/@aave/aave-utilities/issues/90)) ([3fff4ad](https://github.com/@aave/aave-utilities/commit/3fff4ad3fb422f94df9c55a2be5d1c8f7d325a83))
-
-
-
-
+- added id to reserves object
+  ([#90](https://github.com/@aave/aave-utilities/issues/90))
+  ([3fff4ad](https://github.com/@aave/aave-utilities/commit/3fff4ad3fb422f94df9c55a2be5d1c8f7d325a83))
 
 # 0.14.0 (2021-10-13)
 
-
 ### Features
 
-* new uipooldataprovider ([#89](https://github.com/@aave/aave-utilities/issues/89)) ([9995fc2](https://github.com/@aave/aave-utilities/commit/9995fc267572c5ec5a014ead700b932e7c0082e8))
-
-
-
-
+- new uipooldataprovider
+  ([#89](https://github.com/@aave/aave-utilities/issues/89))
+  ([9995fc2](https://github.com/@aave/aave-utilities/commit/9995fc267572c5ec5a014ead700b932e7c0082e8))
 
 # 0.13.0 (2021-10-08)
 
-
 ### Features
 
-* add reward token decimals to user dictionary ([#87](https://github.com/@aave/aave-utilities/issues/87)) ([c70f38d](https://github.com/@aave/aave-utilities/commit/c70f38dfb3e2e88c5a5cfff716050bf332422111))
-
-
-
-
+- add reward token decimals to user dictionary
+  ([#87](https://github.com/@aave/aave-utilities/issues/87))
+  ([c70f38d](https://github.com/@aave/aave-utilities/commit/c70f38dfb3e2e88c5a5cfff716050bf332422111))
 
 ## 0.12.3 (2021-10-07)
 
 **Note:** Version bump only for package @aave/contract-helpers
 
-
-
-
-
 ## 0.12.2 (2021-10-06)
 
 **Note:** Version bump only for package @aave/contract-helpers
 
-
-
-
-
 ## 0.12.1 (2021-10-06)
 
 **Note:** Version bump only for package @aave/contract-helpers
-
-
-
-
 
 # Change Log
 
