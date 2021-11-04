@@ -21,6 +21,7 @@ export interface RawUserSummaryResponse {
   totalCollateralMarketReferenceCurrency: BigNumber;
   totalBorrowsMarketReferenceCurrency: BigNumber;
   availableBorrowsMarketReferenceCurrency: BigNumber;
+  availableBorrowsUSD: BigNumber;
   currentLoanToValue: BigNumber;
   currentLiquidationThreshold: BigNumber;
   healthFactor: BigNumber;
@@ -49,6 +50,14 @@ export function generateRawUserSummary({
     currentLiquidationThreshold,
   } = calculateUserReserveTotals({ userReserves });
 
+  const availableBorrowsMarketReferenceCurrency =
+    calculateAvailableBorrowsMarketReferenceCurrency({
+      collateralBalanceMarketReferenceCurrency:
+        totalCollateralMarketReferenceCurrency,
+      borrowBalanceMarketReferenceCurrency: totalBorrowsMarketReferenceCurrency,
+      currentLtv,
+    });
+
   return {
     totalLiquidityUSD: convertToUsd(
       totalLiquidityMarketReferenceCurrency,
@@ -68,14 +77,12 @@ export function generateRawUserSummary({
     totalLiquidityMarketReferenceCurrency,
     totalCollateralMarketReferenceCurrency,
     totalBorrowsMarketReferenceCurrency,
-    availableBorrowsMarketReferenceCurrency:
-      calculateAvailableBorrowsMarketReferenceCurrency({
-        collateralBalanceMarketReferenceCurrency:
-          totalCollateralMarketReferenceCurrency,
-        borrowBalanceMarketReferenceCurrency:
-          totalBorrowsMarketReferenceCurrency,
-        currentLtv,
-      }),
+    availableBorrowsMarketReferenceCurrency,
+    availableBorrowsUSD: convertToUsd(
+      availableBorrowsMarketReferenceCurrency,
+      marketRefPriceInUsd,
+      marketRefCurrencyDecimals,
+    ),
     currentLoanToValue: currentLtv,
     currentLiquidationThreshold,
     healthFactor: calculateHealthFactorFromBalances({

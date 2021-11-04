@@ -96,6 +96,9 @@ describe('generateRawUserSummary', () => {
     expect(
       rawSummary.availableBorrowsMarketReferenceCurrency.toFixed(),
     ).toEqual('7667390636343705242.6');
+    expect(rawSummary.availableBorrowsUSD.toFixed()).toEqual(
+      '35038000241380601827995.299934722',
+    );
     expect(rawSummary.currentLoanToValue.toFixed()).toEqual('8000');
     expect(rawSummary.currentLiquidationThreshold.toFixed()).toEqual(
       '8261.3698796199320993174',
