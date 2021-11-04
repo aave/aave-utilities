@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { base58 } from 'ethers/lib/utils';
+import fetch from 'isomorphic-unfetch';
 
 const ipfsEndpoint = 'https://cloudflare-ipfs.com/ipfs';
 
@@ -24,8 +24,13 @@ export async function getProposalMetadata(
   const ipfsHash = base58.encode(Buffer.from(`1220${hash.slice(2)}`, 'hex'));
   if (MEMORIZE[ipfsHash]) return MEMORIZE[ipfsHash];
   try {
+    const ipfsResponse: Response = await fetch(getLink(ipfsHash));
+    if (!ipfsResponse.ok) {
+      throw Error('Fetch not working');
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { data } = await axios.get(getLink(ipfsHash), { timeout: 2000 });
+    const { data } = await ipfsResponse.json();
     if (!data) {
       throw Error('No data returned');
     }

@@ -1,6 +1,8 @@
-import axios from 'axios';
 import { base58 } from 'ethers/lib/utils';
+import fetch from 'isomorphic-unfetch';
 import { getLink, getProposalMetadata } from './ipfs';
+
+jest.mock('isomorphic-unfetch', () => jest.fn());
 
 describe('ipfs', () => {
   const hash =
@@ -17,23 +19,29 @@ describe('ipfs', () => {
     afterEach(() => {
       jest.clearAllMocks();
     });
+
+    const mockFetch = fetch as jest.MockedFunction<typeof fetch>;
     it('Expects to return metadata when hash complete', async () => {
       const ipfsHash = base58.encode(
         Buffer.from(`1220${hash.slice(2)}`, 'hex'),
       );
-      const getSpy = jest.spyOn(axios, 'get').mockReturnValue(
-        Promise.resolve({
-          data: {
-            title: 'mockTitle',
-            description: 'mockDescription',
-            shortDescription: 'mockShortDescription',
-          },
-        }),
-      );
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const json = jest.fn() as jest.MockedFunction<any>;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      json.mockResolvedValue({
+        data: {
+          title: 'mockTitle',
+          description: 'mockDescription',
+          shortDescription: 'mockShortDescription',
+        },
+      });
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      mockFetch.mockResolvedValue({ ok: true, json } as Response);
 
       const metadata = await getProposalMetadata(hash);
 
-      expect(getSpy).toHaveBeenCalledTimes(1);
+      expect(json.mock.calls.length).toEqual(1);
       expect(metadata).toEqual({
         title: 'mockTitle',
         description: 'mockDescription',
@@ -47,20 +55,23 @@ describe('ipfs', () => {
       const ipfsHash = base58.encode(
         Buffer.from(`1220${hash.slice(2)}`, 'hex'),
       );
-      const getSpy = jest.spyOn(axios, 'get').mockReturnValue(
-        Promise.resolve({
-          data: {
-            title: 'mockTitle',
-            description: 'mockDescription',
-            shortDescription: 'mockShortDescription',
-          },
-        }),
-      );
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const json = jest.fn() as jest.MockedFunction<any>;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      json.mockResolvedValue({
+        data: {
+          title: 'mockTitle',
+          description: 'mockDescription',
+          shortDescription: 'mockShortDescription',
+        },
+      });
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      mockFetch.mockResolvedValue({ ok: true, json } as Response);
 
       const metadata = await getProposalMetadata(hash);
       const metadata2 = await getProposalMetadata(hash);
 
-      expect(getSpy).toHaveBeenCalledTimes(1);
+      expect(json.mock.calls.length).toEqual(1);
       expect(metadata).toEqual({
         title: 'mockTitle',
         description: 'mockDescription',
@@ -80,18 +91,21 @@ describe('ipfs', () => {
       const ipfsHash = base58.encode(
         Buffer.from(`1220${hash.slice(2)}`, 'hex'),
       );
-      const getSpy = jest.spyOn(axios, 'get').mockReturnValue(
-        Promise.resolve({
-          data: {
-            description: 'mockDescription',
-            shortDescription: 'mockShortDescription',
-          },
-        }),
-      );
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const json = jest.fn() as jest.MockedFunction<any>;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      json.mockResolvedValue({
+        data: {
+          description: 'mockDescription',
+          shortDescription: 'mockShortDescription',
+        },
+      });
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      mockFetch.mockResolvedValue({ ok: true, json } as Response);
 
       const metadata = await getProposalMetadata(hash);
 
-      expect(getSpy).toHaveBeenCalled();
+      expect(json.mock.calls.length).toEqual(1);
       expect(metadata).toEqual({
         title: `Proposal - ${ipfsHash}`,
         description: `Proposal with invalid metadata format or IPFS gateway is down`,
@@ -105,18 +119,21 @@ describe('ipfs', () => {
       const ipfsHash = base58.encode(
         Buffer.from(`1220${hash.slice(2)}`, 'hex'),
       );
-      const getSpy = jest.spyOn(axios, 'get').mockReturnValue(
-        Promise.resolve({
-          data: {
-            title: 'mockTitle',
-            shortDescription: 'mockShortDescription',
-          },
-        }),
-      );
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const json = jest.fn() as jest.MockedFunction<any>;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      json.mockResolvedValue({
+        data: {
+          title: 'mockTitle',
+          shortDescription: 'mockShortDescription',
+        },
+      });
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      mockFetch.mockResolvedValue({ ok: true, json } as Response);
 
       const metadata = await getProposalMetadata(hash);
 
-      expect(getSpy).toHaveBeenCalled();
+      expect(json.mock.calls.length).toEqual(1);
       expect(metadata).toEqual({
         title: `Proposal - ${ipfsHash}`,
         description: `Proposal with invalid metadata format or IPFS gateway is down`,
@@ -130,18 +147,21 @@ describe('ipfs', () => {
       const ipfsHash = base58.encode(
         Buffer.from(`1220${hash.slice(2)}`, 'hex'),
       );
-      const getSpy = jest.spyOn(axios, 'get').mockReturnValue(
-        Promise.resolve({
-          data: {
-            title: 'mockTitle',
-            description: 'mockDescription',
-          },
-        }),
-      );
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const json = jest.fn() as jest.MockedFunction<any>;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      json.mockResolvedValue({
+        data: {
+          title: 'mockTitle',
+          description: 'mockDescription',
+        },
+      });
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      mockFetch.mockResolvedValue({ ok: true, json } as Response);
 
       const metadata = await getProposalMetadata(hash);
 
-      expect(getSpy).toHaveBeenCalled();
+      expect(json.mock.calls.length).toEqual(1);
       expect(metadata).toEqual({
         title: `Proposal - ${ipfsHash}`,
         description: `Proposal with invalid metadata format or IPFS gateway is down`,
@@ -155,13 +175,39 @@ describe('ipfs', () => {
       const ipfsHash = base58.encode(
         Buffer.from(`1220${hash.slice(2)}`, 'hex'),
       );
-      const getSpy = jest
-        .spyOn(axios, 'get')
-        .mockReturnValue(Promise.resolve({}));
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const json = jest.fn() as jest.MockedFunction<any>;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      json.mockResolvedValue({});
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      mockFetch.mockResolvedValue({ ok: true, json } as Response);
 
       const metadata = await getProposalMetadata(hash);
 
-      expect(getSpy).toHaveBeenCalled();
+      expect(json.mock.calls.length).toEqual(1);
+      expect(metadata).toEqual({
+        title: `Proposal - ${ipfsHash}`,
+        description: `Proposal with invalid metadata format or IPFS gateway is down`,
+        shortDescription: `Proposal with invalid metadata format or IPFS gateway is down`,
+        ipfsHash,
+      });
+    });
+    it('Expects to fail if there is no response ok', async () => {
+      const hash =
+        '0x04d1fd83d352a7caa14408cee133be97b5919c3a5cf79a47ded3c9b658447d74';
+      const ipfsHash = base58.encode(
+        Buffer.from(`1220${hash.slice(2)}`, 'hex'),
+      );
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const json = jest.fn() as jest.MockedFunction<any>;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      json.mockResolvedValue({});
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      mockFetch.mockResolvedValue({ ok: false, json } as Response);
+
+      const metadata = await getProposalMetadata(hash);
+
+      expect(json.mock.calls.length).toEqual(0);
       expect(metadata).toEqual({
         title: `Proposal - ${ipfsHash}`,
         description: `Proposal with invalid metadata format or IPFS gateway is down`,
