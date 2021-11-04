@@ -55,6 +55,16 @@ describe('pool math', () => {
     };
     const balance = getCompoundedBalance(compoundedBalanceRequest);
     expect(balance.toFixed()).toEqual('10485');
+
+    const compoundedBalanceZeroRequest = {
+      principalBalance: 0,
+      reserveIndex: '1048540642417873765200833079',
+      reserveRate: 500000000000000000,
+      currentTimestamp: 1729942300,
+      lastUpdateTimestamp: 1629942200,
+    };
+    const balanceZero = getCompoundedBalance(compoundedBalanceZeroRequest);
+    expect(balanceZero.toFixed()).toEqual('0');
   });
 
   it('should calculate linear interest', () => {
