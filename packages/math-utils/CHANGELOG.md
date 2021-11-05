@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.23.0 (2021-11-05)
+
+
+### Features
+
+* delegation tx builder ([#156](https://github.com/@aave/aave-utilities/issues/156)) ([6abae6d](https://github.com/@aave/aave-utilities/commit/6abae6da9204d39cbf30e447a2ba76a6fdc43242))
+
+
+
+
+
 # 0.22.0 (2021-11-04)
 
 
