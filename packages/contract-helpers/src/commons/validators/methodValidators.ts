@@ -417,6 +417,6 @@ export function GovDelegationValidator(
     amountGtThan0Validator(target, propertyName, arguments);
     amount0OrPositiveValidator(target, propertyName, arguments);
 
-    return method?.apply(this, arguments);
+    return method.apply(this, arguments);
   };
 }

@@ -135,7 +135,7 @@ export class GovernancePowerDelegationTokenService
     const delegateeAddress: string = await this.getDelegateeAddress(delegatee);
 
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
-      rawTxMethod: () =>
+      rawTxMethod: async () =>
         governanceDelegationToken.populateTransaction.delegate(
           delegateeAddress,
         ),
@@ -165,7 +165,7 @@ export class GovernancePowerDelegationTokenService
     const delegateeAddress: string = await this.getDelegateeAddress(delegatee);
 
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
-      rawTxMethod: () =>
+      rawTxMethod: async () =>
         governanceDelegationToken.populateTransaction.delegateByType(
           delegateeAddress,
           delegationType,
@@ -198,7 +198,7 @@ export class GovernancePowerDelegationTokenService
     const delegateeAddress: string = await this.getDelegateeAddress(delegatee);
 
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
-      rawTxMethod: () =>
+      rawTxMethod: async () =>
         governanceDelegationToken.populateTransaction.delegateBySig(
           delegateeAddress,
           nonce,
@@ -242,7 +242,7 @@ export class GovernancePowerDelegationTokenService
     const delegateeAddress: string = await this.getDelegateeAddress(delegatee);
 
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
-      rawTxMethod: () =>
+      rawTxMethod: async () =>
         governanceDelegationToken.populateTransaction.delegateByTypeBySig(
           delegateeAddress,
           delegationType,
@@ -410,7 +410,7 @@ export class GovernancePowerDelegationTokenService
   ): Promise<tStringDecimalUnits> {
     const governanceDelegationToken: IGovernancePowerDelegationToken =
       this.getContractInstance(governanceToken);
-    // eslint-disable-next-line no-underscore-dangle
+
     return (await governanceDelegationToken._nonces(user)).toString();
   }
 
@@ -418,7 +418,7 @@ export class GovernancePowerDelegationTokenService
     if (canBeEnsAddress(delegatee)) {
       const delegateeAddress = await this.provider.resolveName(delegatee);
       if (!delegateeAddress)
-        throw new Error(`Address ${delegatee} is not a valid ENS address`);
+        throw new Error(`Address: ${delegatee} is not a valid ENS address`);
 
       return delegateeAddress;
     }
