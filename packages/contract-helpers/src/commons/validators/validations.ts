@@ -3,18 +3,19 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { utils } from 'ethers';
+import { canBeEnsAddress } from '../utils';
 // import { canBeEnsAddress } from '../../commons/utils';
 // import 'reflect-metadata';
 import {
   is0OrPositiveMetadataKey,
   isEthAddressArrayMetadataKey,
   isEthAddressMetadataKey,
-  // isEthAddressOrENSMetadataKey,
   isPositiveMetadataKey,
   isPositiveOrMinusOneMetadataKey,
   // optionalMetadataKey,
   paramsType,
   isEthAddressArrayMetadataKeyNotEmpty,
+  isEthAddressOrENSMetadataKey,
 } from './paramValidators';
 
 // export function optionalValidator(
@@ -179,52 +180,52 @@ export function isEthAddressArrayValidatorNotEmpty(
   }
 }
 
-// export function isEthAddressOrEnsValidator(
-//   target: any,
-//   propertyName: string,
-//   methodArguments: any,
-//   isParamOptional?: boolean[],
-// ): void {
-//   const addressParameters: paramsType[] = Reflect.getOwnMetadata(
-//     isEthAddressOrENSMetadataKey,
-//     target,
-//     propertyName,
-//   );
+export function isEthAddressOrEnsValidator(
+  target: any,
+  propertyName: string,
+  methodArguments: any,
+  isParamOptional?: boolean[],
+): void {
+  const addressParameters: paramsType[] = Reflect.getOwnMetadata(
+    isEthAddressOrENSMetadataKey,
+    target,
+    propertyName,
+  );
 
-//   if (addressParameters) {
-//     addressParameters.forEach(storedParams => {
-//       if (storedParams.field) {
-//         if (
-//           methodArguments[0][storedParams.field] &&
-//           !utils.isAddress(methodArguments[0][storedParams.field])
-//         ) {
-//           if (!canBeEnsAddress(methodArguments[0][storedParams.field])) {
-//             throw new Error(
-//               `Address ${
-//                 methodArguments[0][storedParams.field]
-//               } is not valid ENS format or a valid ethereum Address`,
-//             );
-//           }
-//         }
-//       } else {
-//         const isOptional = isParamOptional?.[storedParams.index];
-//         if (
-//           methodArguments[storedParams.index] &&
-//           !isOptional &&
-//           !utils.isAddress(methodArguments[storedParams.index])
-//         ) {
-//           if (!canBeEnsAddress(methodArguments[storedParams.index])) {
-//             throw new Error(
-//               `Address ${
-//                 methodArguments[storedParams.index]
-//               } is not valid ENS format or a valid ethereum Address`,
-//             );
-//           }
-//         }
-//       }
-//     });
-//   }
-// }
+  if (addressParameters) {
+    addressParameters.forEach(storedParams => {
+      if (storedParams.field) {
+        if (
+          methodArguments[0][storedParams.field] &&
+          !utils.isAddress(methodArguments[0][storedParams.field])
+        ) {
+          if (!canBeEnsAddress(methodArguments[0][storedParams.field])) {
+            throw new Error(
+              `Address ${
+                methodArguments[0][storedParams.field]
+              } is not valid ENS format or a valid ethereum Address`,
+            );
+          }
+        }
+      } else {
+        const isOptional = isParamOptional?.[storedParams.index];
+        if (
+          methodArguments[storedParams.index] &&
+          !isOptional &&
+          !utils.isAddress(methodArguments[storedParams.index])
+        ) {
+          if (!canBeEnsAddress(methodArguments[storedParams.index])) {
+            throw new Error(
+              `Address ${
+                methodArguments[storedParams.index]
+              } is not valid ENS format or a valid ethereum Address`,
+            );
+          }
+        }
+      }
+    });
+  }
+}
 
 export function amountGtThan0Validator(
   target: any,

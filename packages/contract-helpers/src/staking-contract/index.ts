@@ -54,6 +54,11 @@ export interface StakingInterface {
   ) => Promise<EthereumTransactionTypeExtended[]>;
 }
 
+type StakingServiceConfig = {
+  TOKEN_STAKING_ADDRESS: string;
+  STAKING_HELPER_ADDRESS?: string;
+};
+
 export class StakingService
   extends BaseService<IStakedToken>
   implements StakingInterface
@@ -70,15 +75,15 @@ export class StakingService
 
   constructor(
     provider: providers.Provider,
-    tokenStakingAddress: string,
-    stakingHelperAddress?: string,
+    stakingServiceConfig: StakingServiceConfig,
   ) {
     super(provider, IStakedToken__factory);
 
     this.erc20Service = new ERC20Service(provider);
 
-    this.stakingContractAddress = tokenStakingAddress;
-    this.stakingHelperContractAddress = stakingHelperAddress ?? '';
+    this.stakingContractAddress = stakingServiceConfig.TOKEN_STAKING_ADDRESS;
+    this.stakingHelperContractAddress =
+      stakingServiceConfig.STAKING_HELPER_ADDRESS ?? '';
 
     if (this.stakingHelperContractAddress !== '') {
       this.stakingHelperContract = IAaveStakingHelper__factory.connect(

@@ -103,6 +103,11 @@ export interface AaveGovernanceInterface {
   getVoteOnProposal: (args: GovGetVoteOnProposal) => Promise<Vote>;
 }
 
+type AaveGovernanceServiceConfig = {
+  GOVERNANCE_ADDRESS: string;
+  GOVERNANCE_HELPER_ADDRESS?: string;
+};
+
 export class AaveGovernanceService
   extends BaseService<IAaveGovernanceV2>
   implements AaveGovernanceInterface
@@ -113,13 +118,12 @@ export class AaveGovernanceService
 
   constructor(
     provider: providers.Provider,
-    governanceAddress: string,
-    governanceHelperAddress?: string,
+    config: AaveGovernanceServiceConfig,
   ) {
     super(provider, IAaveGovernanceV2__factory);
 
-    this.aaveGovernanceV2Address = governanceAddress;
-    this.aaveGovernanceV2HelperAddress = governanceHelperAddress ?? '';
+    this.aaveGovernanceV2Address = config.GOVERNANCE_ADDRESS;
+    this.aaveGovernanceV2HelperAddress = config.GOVERNANCE_HELPER_ADDRESS ?? '';
   }
 
   @GovValidator

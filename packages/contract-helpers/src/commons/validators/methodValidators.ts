@@ -10,7 +10,7 @@ import {
   amountGtThan0Validator,
   isEthAddressArrayValidator,
   // isEthAddressArrayValidatorNotEmpty,
-  // isEthAddressOrEnsValidator,
+  isEthAddressOrEnsValidator,
   isEthAddressValidator,
   // optionalValidator,
 } from './validations';
@@ -405,18 +405,18 @@ export function GovValidator(
   };
 }
 
-// export function GovDelegationValidator(
-//   target: any,
-//   propertyName: string,
-//   descriptor: TypedPropertyDescriptor<any>,
-// ): any {
-//   const method = descriptor.value;
-//   descriptor.value = function () {
-//     isEthAddressValidator(target, propertyName, arguments);
-//     isEthAddressOrEnsValidator(target, propertyName, arguments);
-//     amountGtThan0Validator(target, propertyName, arguments);
-//     amount0OrPositiveValidator(target, propertyName, arguments);
+export function GovDelegationValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    isEthAddressValidator(target, propertyName, arguments);
+    isEthAddressOrEnsValidator(target, propertyName, arguments);
+    amountGtThan0Validator(target, propertyName, arguments);
+    amount0OrPositiveValidator(target, propertyName, arguments);
 
-//     return method?.apply(this, arguments);
-//   };
-// }
+    return method.apply(this, arguments);
+  };
+}
