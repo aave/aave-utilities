@@ -15,3 +15,6 @@ export * from './lendingPool-contract';
 export * from './faucet-contract';
 export * from './staking-contract';
 export * from './governance-contract';
+
+// commons
+export * from './commons/types';
