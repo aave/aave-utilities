@@ -7,8 +7,6 @@ import {
   EthereumTransactionTypeExtended,
   tEthereumAddress,
   transactionType,
-  tStringCurrencyUnits,
-  tStringDecimalUnits,
 } from '../commons/types';
 import { canBeEnsAddress } from '../commons/utils';
 import { GovDelegationValidator } from '../commons/validators/methodValidators';
@@ -30,14 +28,14 @@ export type GovDelegate = {
 export type GovDelegateByType = {
   user: tEthereumAddress;
   delegatee: tEthereumAddress | ENS;
-  delegationType: tStringDecimalUnits;
+  delegationType: string;
   governanceToken: tEthereumAddress;
 };
 
 export type GovDelegateBySig = {
   user: tEthereumAddress;
   delegatee: tEthereumAddress | ENS;
-  expiry: tStringDecimalUnits;
+  expiry: string;
   signature: string;
   governanceToken: tEthereumAddress;
 };
@@ -45,25 +43,25 @@ export type GovDelegateBySig = {
 export type GovDelegateByTypeBySig = {
   user: tEthereumAddress;
   delegatee: tEthereumAddress | ENS;
-  delegationType: tStringDecimalUnits;
-  expiry: tStringDecimalUnits;
+  delegationType: string;
+  expiry: string;
   signature: string;
   governanceToken: tEthereumAddress;
 };
 
 export type GovPrepareDelegateSig = {
   delegatee: tEthereumAddress | ENS;
-  nonce: tStringDecimalUnits;
-  expiry: tStringDecimalUnits;
+  nonce: string;
+  expiry: string;
   governanceTokenName: string;
   governanceToken: tEthereumAddress;
 };
 
 export type GovPrepareDelegateSigByType = {
   delegatee: tEthereumAddress | ENS;
-  type: tStringDecimalUnits;
-  nonce: tStringDecimalUnits;
-  expiry: tStringDecimalUnits;
+  type: string;
+  nonce: string;
+  expiry: string;
   governanceTokenName: string;
   governanceToken: tEthereumAddress;
 };
@@ -71,18 +69,18 @@ export type GovPrepareDelegateSigByType = {
 // Data types
 export type GovGetDelegateeByType = {
   delegator: tEthereumAddress;
-  delegationType: tStringDecimalUnits;
+  delegationType: string;
   governanceToken: tEthereumAddress;
 };
 export type GovGetPowerCurrent = {
   user: tEthereumAddress;
-  delegationType: tStringDecimalUnits;
+  delegationType: string;
   governanceToken: tEthereumAddress;
 };
 export type GovGetPowerAtBlock = {
   user: tEthereumAddress;
-  blockNumber: tStringDecimalUnits;
-  delegationType: tStringDecimalUnits;
+  blockNumber: string;
+  delegationType: string;
   governanceToken: tEthereumAddress;
 };
 export type GovGetNonce = {
@@ -108,9 +106,9 @@ export interface GovernancePowerDelegationToken {
   getDelegateeByType: (
     args: GovGetDelegateeByType,
   ) => Promise<tEthereumAddress>;
-  getPowerCurrent: (args: GovGetPowerCurrent) => Promise<tStringCurrencyUnits>;
-  getPowerAtBlock: (args: GovGetPowerAtBlock) => Promise<tStringCurrencyUnits>;
-  getNonce: (args: GovGetNonce) => Promise<tStringDecimalUnits>;
+  getPowerCurrent: (args: GovGetPowerCurrent) => Promise<string>;
+  getPowerAtBlock: (args: GovGetPowerAtBlock) => Promise<string>;
+  getNonce: (args: GovGetNonce) => Promise<string>;
 }
 
 export class GovernancePowerDelegationTokenService
@@ -376,7 +374,7 @@ export class GovernancePowerDelegationTokenService
     @isEthAddress('user')
     @isEthAddress('governanceToken')
     { user, delegationType, governanceToken }: GovGetPowerCurrent,
-  ): Promise<tStringDecimalUnits> {
+  ): Promise<string> {
     const governanceDelegationToken: IGovernancePowerDelegationToken =
       this.getContractInstance(governanceToken);
     return (
@@ -390,7 +388,7 @@ export class GovernancePowerDelegationTokenService
     @isEthAddress('governanceToken')
     @isPositiveAmount('blockNumber')
     { user, blockNumber, delegationType, governanceToken }: GovGetPowerAtBlock,
-  ): Promise<tStringDecimalUnits> {
+  ): Promise<string> {
     const governanceDelegationToken: IGovernancePowerDelegationToken =
       this.getContractInstance(governanceToken);
     return (
@@ -407,7 +405,7 @@ export class GovernancePowerDelegationTokenService
     @isEthAddress('user')
     @isEthAddress('governanceToken')
     { user, governanceToken }: GovGetNonce,
-  ): Promise<tStringDecimalUnits> {
+  ): Promise<string> {
     const governanceDelegationToken: IGovernancePowerDelegationToken =
       this.getContractInstance(governanceToken);
 
