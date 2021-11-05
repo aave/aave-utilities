@@ -53,37 +53,25 @@ export function formatUserReserve({
       _reserve.underlyingBalanceMarketReferenceCurrency,
       marketRefCurrencyDecimals,
     ),
-    underlyingBalanceUSD: normalize(
-      _reserve.underlyingBalanceUSD,
-      marketRefCurrencyDecimals,
-    ),
+    underlyingBalanceUSD: _reserve.underlyingBalanceUSD.toString(),
     stableBorrows: normalizeWithReserve(_reserve.stableBorrows),
     stableBorrowsMarketReferenceCurrency: normalize(
       _reserve.stableBorrowsMarketReferenceCurrency,
       marketRefCurrencyDecimals,
     ),
-    stableBorrowsUSD: normalize(
-      _reserve.stableBorrowsUSD,
-      marketRefCurrencyDecimals,
-    ),
+    stableBorrowsUSD: _reserve.stableBorrowsUSD.toString(),
     variableBorrows: normalizeWithReserve(_reserve.variableBorrows),
     variableBorrowsMarketReferenceCurrency: normalize(
       _reserve.variableBorrowsMarketReferenceCurrency,
       marketRefCurrencyDecimals,
     ),
-    variableBorrowsUSD: normalize(
-      _reserve.variableBorrowsUSD,
-      marketRefCurrencyDecimals,
-    ),
+    variableBorrowsUSD: _reserve.variableBorrowsUSD.toString(),
     totalBorrows: normalizeWithReserve(_reserve.totalBorrows),
     totalBorrowsMarketReferenceCurrency: normalize(
       _reserve.totalBorrowsMarketReferenceCurrency,
       marketRefCurrencyDecimals,
     ),
-    totalBorrowsUSD: normalize(
-      _reserve.totalBorrowsUSD,
-      marketRefCurrencyDecimals,
-    ),
+    totalBorrowsUSD: _reserve.totalBorrowsUSD.toString(),
     totalLiquidity: normalizeWithReserve(_reserve.totalLiquidity),
     totalStableDebt: normalizeWithReserve(_reserve.totalStableDebt),
     totalVariableDebt: normalizeWithReserve(_reserve.totalVariableDebt),

@@ -7,7 +7,7 @@ import { usdcUserReserveEthMarket } from './user.mocks';
 import { ComputedUserReserve } from './index';
 
 describe('formatUserReserve', () => {
-  const marketRefPriceInUsd = 4569742419970000000000;
+  const marketRefPriceInUsd = 4569.74241997;
   const currentTimestamp = 1629942229;
   const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
@@ -29,13 +29,15 @@ describe('formatUserReserve', () => {
       '0.53756570959579768',
     );
     expect(formattedReserve.underlyingBalanceUSD).toEqual(
-      '2456.53682666119074074571',
+      '2456.5368266611907407457116696',
     );
     expect(formattedReserve.totalBorrows).toEqual('52.314205');
     expect(formattedReserve.totalBorrowsMarketReferenceCurrency).toEqual(
       '0.0115203841632001',
     );
-    expect(formattedReserve.totalBorrowsUSD).toEqual('52.64518820492608839335');
+    expect(formattedReserve.totalBorrowsUSD).toEqual(
+      '52.645188204926088393345997',
+    );
     expect(formattedReserve.totalLiquidity).toEqual('5735355757.091039');
     expect(formattedReserve.totalStableDebt).toEqual('47382349.631778');
     expect(formattedReserve.totalVariableDebt).toEqual('5129957324.438749');
@@ -45,7 +47,7 @@ describe('formatUserReserve', () => {
       '0.0115203841632001',
     );
     expect(formattedReserve.variableBorrowsUSD).toEqual(
-      '52.64518820492608839335',
+      '52.645188204926088393345997',
     );
   });
 });

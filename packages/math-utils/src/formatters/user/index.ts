@@ -1,4 +1,3 @@
-import { BigNumber } from 'bignumber.js';
 import { BigNumberValue, normalize } from '../../bignumber';
 import { LTV_PRECISION } from '../../constants';
 import { formatUserReserve } from './format-user-reserve';
@@ -85,27 +84,17 @@ export interface FormatUserSummaryResponse {
   healthFactor: string;
 }
 
-function normalizeUSD(
-  value: BigNumber,
-  marketRefCurrencyDecimals: number,
-): string {
-  return normalize(value, marketRefCurrencyDecimals);
-}
-
 export function formatUserSummary({
   currentTimestamp,
   marketRefPriceInUsd,
   marketRefCurrencyDecimals,
   rawUserReserves,
 }: FormatUserSummaryRequest): FormatUserSummaryResponse {
-  const formattedMarketRefPriceInUsd = new BigNumber(marketRefPriceInUsd)
-    .shiftedBy(marketRefCurrencyDecimals)
-    .toString();
   const computedUserReserves: UserReserveSummaryResponse[] =
     rawUserReserves.map(userReserve =>
       generateUserReserveSummary({
         userReserve,
-        marketRefPriceInUsd: formattedMarketRefPriceInUsd,
+        marketRefPriceInUsd,
         marketRefCurrencyDecimals,
         currentTimestamp,
       }),
@@ -120,7 +109,7 @@ export function formatUserSummary({
 
   const userData = generateRawUserSummary({
     userReserves: computedUserReserves,
-    marketRefPriceInUsd: formattedMarketRefPriceInUsd,
+    marketRefPriceInUsd,
     marketRefCurrencyDecimals,
   });
 
@@ -130,34 +119,22 @@ export function formatUserSummary({
       userData.totalLiquidityMarketReferenceCurrency,
       marketRefCurrencyDecimals,
     ),
-    totalLiquidityUSD: normalizeUSD(
-      userData.totalLiquidityUSD,
-      marketRefCurrencyDecimals,
-    ),
+    totalLiquidityUSD: userData.totalLiquidityUSD.toString(),
     totalCollateralMarketReferenceCurrency: normalize(
       userData.totalCollateralMarketReferenceCurrency,
       marketRefCurrencyDecimals,
     ),
-    totalCollateralUSD: normalizeUSD(
-      userData.totalCollateralUSD,
-      marketRefCurrencyDecimals,
-    ),
+    totalCollateralUSD: userData.totalCollateralUSD.toString(),
     totalBorrowsMarketReferenceCurrency: normalize(
       userData.totalBorrowsMarketReferenceCurrency,
       marketRefCurrencyDecimals,
     ),
-    totalBorrowsUSD: normalizeUSD(
-      userData.totalBorrowsUSD,
-      marketRefCurrencyDecimals,
-    ),
+    totalBorrowsUSD: userData.totalBorrowsUSD.toString(),
     availableBorrowsMarketReferenceCurrency: normalize(
       userData.availableBorrowsMarketReferenceCurrency,
       marketRefCurrencyDecimals,
     ),
-    availableBorrowsUSD: normalize(
-      userData.availableBorrowsUSD,
-      marketRefCurrencyDecimals,
-    ),
+    availableBorrowsUSD: userData.availableBorrowsUSD.toString(),
     currentLoanToValue: normalize(userData.currentLoanToValue, LTV_PRECISION),
     currentLiquidationThreshold: normalize(
       userData.currentLiquidationThreshold,
