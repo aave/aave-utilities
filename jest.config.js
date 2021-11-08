@@ -31,7 +31,7 @@ module.exports = {
     'packages/contract-helpers/src/wethgateway-contract/typechain',
     'packages/contract-helpers/src/paraswap-liquiditySwapAdapter-contract/typechain',
     'packages/contract-helpers/src/staking-contract/typechain',
-    'packages/contract-helpers/src/new-UiPoolDataProvider-contract/typechain',
+    'packages/contract-helpers/src/v3-UiPoolDataProvider-contract/typechain',
     'packages/contract-helpers/src/governance-contract/typechain',
     'packages/contract-helpers/src/governance-power-delegation-contract/typechain',
     'packages/contract-helpers/src/index.ts',
