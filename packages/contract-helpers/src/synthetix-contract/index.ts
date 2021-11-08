@@ -29,6 +29,8 @@ export class SynthetixService
 {
   constructor(provider: providers.Provider) {
     super(provider, ISynthetix__factory);
+
+    this.synthetixValidation = this.synthetixValidation.bind(this);
   }
 
   @SynthetixValidator

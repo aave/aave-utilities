@@ -105,7 +105,6 @@ export class ERC20Service
   public async decimalsOf(
     @isEthAddress() token: tEthereumAddress,
   ): Promise<number> {
-    console.log(this);
     if (token.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) return 18;
     if (!this.tokenDecimals[token]) {
       const erc20Contract = this.getContractInstance(token);

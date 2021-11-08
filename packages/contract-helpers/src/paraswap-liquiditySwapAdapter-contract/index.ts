@@ -75,6 +75,8 @@ export class LiquiditySwapAdapterService
     super(provider, IParaSwapLiquiditySwapAdapter__factory);
 
     this.liquiditySwapAdapterAddress = swapCollateralAdapterAddress ?? '';
+
+    this.swapAndDeposit = this.swapAndDeposit.bind(this);
   }
 
   @LiquiditySwapValidator

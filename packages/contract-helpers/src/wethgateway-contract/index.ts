@@ -94,6 +94,11 @@ export class WETHGatewayService
     );
 
     this.wethGatewayAddress = wethGatewayAddress ?? '';
+
+    this.depositETH = this.depositETH.bind(this);
+    this.withdrawETH = this.withdrawETH.bind(this);
+    this.repayETH = this.repayETH.bind(this);
+    this.borrowETH = this.borrowETH.bind(this);
   }
 
   @WETHValidator
