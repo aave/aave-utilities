@@ -10,36 +10,14 @@ export enum InterestRate {
   Variable = 'Variable',
 }
 
-export enum Market {
-  Proto = 'proto',
-  AMM = 'amm',
-}
-
-export enum Network {
-  mainnet = 'mainnet',
-  ropsten = 'ropsten',
-  kovan = 'kovan',
-  polygon = 'polygon',
-  fork = 'fork',
-  mumbai = 'mumbai',
-  polygon_fork = 'polygon_fork',
-  avalanche = 'avalanche',
-  avalanche_fork = 'avalanche_fork',
-  fuji = 'fuji', // avalanche test network
-  arbitrum_one = 'arbitrum_one',
-  arbitrum_rinkeby = 'arbitrum_rinkeby',
-}
-
 export const ChainIdToNetwork: Record<number, string> = {
-  1: 'homestead', // 'mainnet'
+  1: 'mainnet',
   3: 'ropsten',
   42: 'kovan',
+  100: 'xDAI',
   137: 'polygon',
-  1337: 'fork',
   80001: 'mumbai',
-  1338: 'polygon_fork',
   43114: 'avalanche',
-  1339: 'avalanche_fork',
   43113: 'fuji',
   42161: 'arbitrum_one',
   421611: 'arbitrum_rinkeby',
@@ -50,11 +28,8 @@ export enum ChainId {
   ropsten = 3,
   kovan = 42,
   polygon = 137,
-  fork = 1337,
   mumbai = 80001,
-  polygon_fork = 1338,
   avalanche = 43114,
-  avalanche_fork = 1337,
   fuji = 43113, // avalanche test network
   arbitrum_one = 42161,
   arbitrum_rinkeby = 421611,
@@ -65,12 +40,6 @@ export type ConstantAddressesByNetwork = Record<
     SYNTHETIX_PROXY_ADDRESS?: tEthereumAddress;
   }
 >;
-export type GovernanceConfig = {
-  AAVE_GOVERNANCE_V2: tEthereumAddress;
-  AAVE_GOVERNANCE_V2_EXECUTOR_SHORT: tEthereumAddress;
-  AAVE_GOVERNANCE_V2_EXECUTOR_LONG: tEthereumAddress;
-  AAVE_GOVERNANCE_V2_HELPER: tEthereumAddress;
-};
 
 export type MigratorConfig = {
   LEND_TO_AAVE_MIGRATOR: tEthereumAddress;
@@ -149,13 +118,6 @@ export type transactionType = {
   gasPrice?: BigNumber;
   data?: string;
   chainId?: number;
-};
-
-export type TokenMetadataType = {
-  name: string;
-  symbol: string;
-  decimals: number;
-  address: string;
 };
 
 export type AddressModel = {
@@ -270,19 +232,6 @@ export type LendingPoolConfigType = Record<
   string,
   Record<string, tDistinctContractAddressBetweenMarketsV2>
 >;
-
-export type EnabledNetworksType = {
-  staking: Record<string, Network[]>;
-  lendingPool: Record<string, Network[]>;
-  governance: Network[];
-  wethGateway: Network[];
-  faucet: Network[];
-  liquiditySwapAdapter: Network[];
-  repayWithCollateralAdapter: Network[];
-  aaveGovernanceV2: Network[];
-  ltaMigrator: Network[];
-  incentivesController: Network[];
-};
 
 export type PermitSignature = {
   amount: string;

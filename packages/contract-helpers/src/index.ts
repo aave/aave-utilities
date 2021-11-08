@@ -14,3 +14,8 @@ export * from './erc20-contract';
 export * from './lendingPool-contract';
 export * from './faucet-contract';
 export * from './staking-contract';
+export * from './governance-contract';
+export * from './governance-power-delegation-contract';
+
+// commons
+export * from './commons/types';

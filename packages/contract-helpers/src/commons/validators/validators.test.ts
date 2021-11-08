@@ -3,6 +3,7 @@ import {
   isEthAddressArrayMetadataKey,
   isEthAddressArrayMetadataKeyNotEmpty,
   isEthAddressMetadataKey,
+  isEthAddressOrENSMetadataKey,
   isPositiveMetadataKey,
   isPositiveOrMinusOneMetadataKey,
 } from './paramValidators';
@@ -12,6 +13,7 @@ import {
   amountGtThan0Validator,
   isEthAddressArrayValidator,
   isEthAddressArrayValidatorNotEmpty,
+  isEthAddressOrEnsValidator,
   isEthAddressValidator,
 } from './validations';
 
@@ -654,6 +656,103 @@ describe('validators', () => {
       }).toThrowError(
         new Error(`Address: asdf is not a valid ethereum Address`),
       );
+    });
+  });
+  describe('isEthAddressOrEnsValidator', () => {
+    it('should not throw for valid ens with isParaOptional omitted', () => {
+      const methodArguments = {
+        '0': 'aave.eth',
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: undefined,
+        },
+      ];
+
+      Reflect.defineMetadata(
+        isEthAddressOrENSMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isEthAddressOrEnsValidator(target, propertyName, methodArguments);
+      }).not.toThrow();
+    });
+    it('should not throw for valid ens with isParaOptional truthy', () => {
+      const methodArguments = {
+        '0': 'aave.eth',
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: undefined,
+        },
+      ];
+
+      Reflect.defineMetadata(
+        isEthAddressOrENSMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isEthAddressOrEnsValidator(target, propertyName, methodArguments, [
+          true,
+        ]);
+      }).not.toThrow();
+    });
+    it('should not throw for valid ens with isParaOptional falsy', () => {
+      const methodArguments = {
+        '0': 'aave.eth',
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: undefined,
+        },
+      ];
+
+      Reflect.defineMetadata(
+        isEthAddressOrENSMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isEthAddressOrEnsValidator(target, propertyName, methodArguments, [
+          false,
+        ]);
+      }).not.toThrow();
+    });
+
+    it('should throw for invalid address', () => {
+      const methodArguments = {
+        '0': 'aave',
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: undefined,
+        },
+      ];
+
+      Reflect.defineMetadata(
+        isEthAddressOrENSMetadataKey,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isEthAddressOrEnsValidator(target, propertyName, methodArguments, [
+          false,
+        ]);
+      }).toThrow();
     });
   });
   describe('amountGtThan0Validator', () => {

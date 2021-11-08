@@ -3,7 +3,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable prefer-rest-params */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// import { utils } from 'ethers';
 import { utils } from 'ethers';
 import {
   amount0OrPositiveValidator,
@@ -11,7 +10,7 @@ import {
   amountGtThan0Validator,
   isEthAddressArrayValidator,
   // isEthAddressArrayValidatorNotEmpty,
-  // isEthAddressOrEnsValidator,
+  isEthAddressOrEnsValidator,
   isEthAddressValidator,
   // optionalValidator,
 } from './validations';
@@ -356,51 +355,68 @@ export function WETHValidator(
   };
 }
 
-// export function GovValidator(
-//   target: any,
-//   propertyName: string,
-//   descriptor: TypedPropertyDescriptor<any>,
-// ): any {
-//   const method = descriptor.value;
-//   descriptor.value = function () {
-//     const {
-//       AAVE_GOVERNANCE_V2,
-//       AAVE_GOVERNANCE_V2_HELPER,
-//       AAVE_GOVERNANCE_V2_EXECUTOR_SHORT,
-//       AAVE_GOVERNANCE_V2_EXECUTOR_LONG,
-//       // @ts-expect-error todo: check why this ignore is needed
-//     } = this.governanceConfig || {};
+export function GovHelperValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    if (
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.aaveGovernanceV2Address) ||
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.aaveGovernanceV2HelperAddress)
+    ) {
+      console.error(`[GovernanceValidator] You need to pass valid addresses`);
+      return [];
+    }
 
-//     if (
-//       !utils.isAddress(AAVE_GOVERNANCE_V2) ||
-//       !utils.isAddress(AAVE_GOVERNANCE_V2_HELPER) ||
-//       !utils.isAddress(AAVE_GOVERNANCE_V2_EXECUTOR_SHORT) ||
-//       !utils.isAddress(AAVE_GOVERNANCE_V2_EXECUTOR_LONG)
-//     ) {
-//       console.error(`[GovernanceValidator] You need to pass valid addresses`);
-//       return [];
-//     }
+    isEthAddressValidator(target, propertyName, arguments);
 
-//     isEthAddressValidator(target, propertyName, arguments);
+    amount0OrPositiveValidator(target, propertyName, arguments);
 
-//     amount0OrPositiveValidator(target, propertyName, arguments);
+    isEthAddressArrayValidator(target, propertyName, arguments);
 
-//     return method?.apply(this, arguments);
-//   };
-// }
+    return method.apply(this, arguments);
+  };
+}
 
-// export function GovDelegationValidator(
-//   target: any,
-//   propertyName: string,
-//   descriptor: TypedPropertyDescriptor<any>,
-// ): any {
-//   const method = descriptor.value;
-//   descriptor.value = function () {
-//     isEthAddressValidator(target, propertyName, arguments);
-//     isEthAddressOrEnsValidator(target, propertyName, arguments);
-//     amountGtThan0Validator(target, propertyName, arguments);
-//     amount0OrPositiveValidator(target, propertyName, arguments);
+export function GovValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    if (
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.aaveGovernanceV2Address)
+    ) {
+      console.error(`[GovernanceValidator] You need to pass valid addresses`);
+      return [];
+    }
 
-//     return method?.apply(this, arguments);
-//   };
-// }
+    isEthAddressValidator(target, propertyName, arguments);
+
+    amount0OrPositiveValidator(target, propertyName, arguments);
+
+    return method.apply(this, arguments);
+  };
+}
+
+export function GovDelegationValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    isEthAddressValidator(target, propertyName, arguments);
+    isEthAddressOrEnsValidator(target, propertyName, arguments);
+    amountGtThan0Validator(target, propertyName, arguments);
+    amount0OrPositiveValidator(target, propertyName, arguments);
+
+    return method.apply(this, arguments);
+  };
+}
