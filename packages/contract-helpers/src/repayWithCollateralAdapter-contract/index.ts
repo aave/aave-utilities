@@ -48,6 +48,7 @@ export class RepayWithCollateralAdapterService
     super(provider, IRepayWithCollateral__factory);
 
     this.repayWithCollateralAddress = repayWithCollateralAddress ?? '';
+    this.swapAndRepay = this.swapAndRepay.bind(this);
   }
 
   @RepayWithCollateralValidator

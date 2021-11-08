@@ -52,6 +52,11 @@ export class ERC20Service
     super(provider, IERC20Detailed__factory);
     this.tokenDecimals = {};
     this.tokenMetadata = {};
+
+    this.approve = this.approve.bind(this);
+    this.isApproved = this.isApproved.bind(this);
+    this.getTokenData = this.getTokenData.bind(this);
+    this.decimalsOf = this.decimalsOf.bind(this);
   }
 
   @ERC20Validator
