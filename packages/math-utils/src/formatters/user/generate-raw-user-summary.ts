@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import { BigNumberValue } from '../../bignumber';
-import { USD_DECIMALS } from '../../constants';
 import {
   calculateAvailableBorrowsMarketReferenceCurrency,
   calculateHealthFactorFromBalances,
@@ -10,7 +9,8 @@ import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
 
 export interface RawUserSummaryRequest {
   userReserves: UserReserveSummaryResponse[];
-  usdPriceMarketReferenceCurrency: BigNumberValue;
+  marketRefPriceInUsd: BigNumberValue;
+  marketRefCurrencyDecimals: number;
 }
 
 export interface RawUserSummaryResponse {
@@ -21,6 +21,7 @@ export interface RawUserSummaryResponse {
   totalCollateralMarketReferenceCurrency: BigNumber;
   totalBorrowsMarketReferenceCurrency: BigNumber;
   availableBorrowsMarketReferenceCurrency: BigNumber;
+  availableBorrowsUSD: BigNumber;
   currentLoanToValue: BigNumber;
   currentLiquidationThreshold: BigNumber;
   healthFactor: BigNumber;
@@ -28,16 +29,18 @@ export interface RawUserSummaryResponse {
 
 function convertToUsd(
   value: BigNumber,
-  usdPriceMarketReferenceCurrency: BigNumberValue,
+  marketRefPriceInUsd: BigNumberValue,
+  marketRefCurrencyDecimals: number,
 ): BigNumber {
   return value
-    .shiftedBy(USD_DECIMALS)
-    .dividedBy(usdPriceMarketReferenceCurrency);
+    .multipliedBy(marketRefPriceInUsd)
+    .shiftedBy(marketRefCurrencyDecimals * -1);
 }
 
 export function generateRawUserSummary({
   userReserves,
-  usdPriceMarketReferenceCurrency,
+  marketRefPriceInUsd,
+  marketRefCurrencyDecimals,
 }: RawUserSummaryRequest): RawUserSummaryResponse {
   const {
     totalLiquidityMarketReferenceCurrency,
@@ -47,30 +50,39 @@ export function generateRawUserSummary({
     currentLiquidationThreshold,
   } = calculateUserReserveTotals({ userReserves });
 
+  const availableBorrowsMarketReferenceCurrency =
+    calculateAvailableBorrowsMarketReferenceCurrency({
+      collateralBalanceMarketReferenceCurrency:
+        totalCollateralMarketReferenceCurrency,
+      borrowBalanceMarketReferenceCurrency: totalBorrowsMarketReferenceCurrency,
+      currentLtv,
+    });
+
   return {
     totalLiquidityUSD: convertToUsd(
       totalLiquidityMarketReferenceCurrency,
-      usdPriceMarketReferenceCurrency,
+      marketRefPriceInUsd,
+      marketRefCurrencyDecimals,
     ),
     totalCollateralUSD: convertToUsd(
       totalCollateralMarketReferenceCurrency,
-      usdPriceMarketReferenceCurrency,
+      marketRefPriceInUsd,
+      marketRefCurrencyDecimals,
     ),
     totalBorrowsUSD: convertToUsd(
       totalBorrowsMarketReferenceCurrency,
-      usdPriceMarketReferenceCurrency,
+      marketRefPriceInUsd,
+      marketRefCurrencyDecimals,
     ),
     totalLiquidityMarketReferenceCurrency,
     totalCollateralMarketReferenceCurrency,
     totalBorrowsMarketReferenceCurrency,
-    availableBorrowsMarketReferenceCurrency:
-      calculateAvailableBorrowsMarketReferenceCurrency({
-        collateralBalanceMarketReferenceCurrency:
-          totalCollateralMarketReferenceCurrency,
-        borrowBalanceMarketReferenceCurrency:
-          totalBorrowsMarketReferenceCurrency,
-        currentLtv,
-      }),
+    availableBorrowsMarketReferenceCurrency,
+    availableBorrowsUSD: convertToUsd(
+      availableBorrowsMarketReferenceCurrency,
+      marketRefPriceInUsd,
+      marketRefCurrencyDecimals,
+    ),
     currentLoanToValue: currentLtv,
     currentLiquidationThreshold,
     healthFactor: calculateHealthFactorFromBalances({

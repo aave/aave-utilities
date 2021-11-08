@@ -4,56 +4,45 @@ import {
   UserReserveSummaryResponse,
 } from './generate-user-reserve-summary';
 import {
-  usdcUserReserve,
-  xSushiUserReserve,
-  ethUserReserve,
+  usdcUserReserveEthMarket,
+  ethUserReserveEthMarket,
 } from './user.mocks';
 
 describe('calculateUserReserveTotals', () => {
-  const usdPriceMarketReferenceCurrency = 309519442156873;
+  const marketRefPriceInUsd = 309519442156873;
   const currentTimestamp = 1629942229;
   const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
-      userReserve: usdcUserReserve,
-      usdPriceMarketReferenceCurrency,
-      marketReferenceCurrencyDecimals: 18,
+      userReserve: usdcUserReserveEthMarket,
+      marketRefPriceInUsd,
+      marketRefCurrencyDecimals: 18,
       currentTimestamp,
     },
   );
 
-  const rawXSUSHISummary: UserReserveSummaryResponse =
-    generateUserReserveSummary({
-      userReserve: xSushiUserReserve,
-      usdPriceMarketReferenceCurrency,
-      marketReferenceCurrencyDecimals: 18,
-      currentTimestamp,
-    });
-
   const rawETHSummary: UserReserveSummaryResponse = generateUserReserveSummary({
-    userReserve: ethUserReserve,
-    usdPriceMarketReferenceCurrency,
-    marketReferenceCurrencyDecimals: 18,
+    userReserve: ethUserReserveEthMarket,
+    marketRefPriceInUsd,
+    marketRefCurrencyDecimals: 18,
     currentTimestamp,
   });
 
   it('should compute totals from user reserve array', () => {
     const userReserveTotals = calculateUserReserveTotals({
-      userReserves: [rawUSDCSummary, rawXSUSHISummary, rawETHSummary],
+      userReserves: [rawUSDCSummary, rawETHSummary],
     });
     expect(
       userReserveTotals.totalLiquidityMarketReferenceCurrency.toFixed(),
-    ).toEqual('5461791539140663086.919458539672351564');
+    ).toEqual('11819951652201573862');
     expect(
       userReserveTotals.totalBorrowsMarketReferenceCurrency.toFixed(),
-    ).toEqual('1793279247840914816.850175');
+    ).toEqual('1788570685417553847');
     expect(
       userReserveTotals.totalCollateralMarketReferenceCurrency.toFixed(),
-    ).toEqual('5461791539140663086.919458539672351564');
-    expect(userReserveTotals.currentLtv.toFixed()).toEqual(
-      '3363.36560928956611758556',
-    );
+    ).toEqual('11819951652201573862');
+    expect(userReserveTotals.currentLtv.toFixed()).toEqual('8000');
     expect(userReserveTotals.currentLiquidationThreshold.toFixed()).toEqual(
-      '5123.32086463568964151797',
+      '8261.3698796199320993174',
     );
   });
 
@@ -61,21 +50,21 @@ describe('calculateUserReserveTotals', () => {
     const rawUSDCSummary: UserReserveSummaryResponse =
       generateUserReserveSummary({
         userReserve: {
-          ...usdcUserReserve,
+          ...usdcUserReserveEthMarket,
           usageAsCollateralEnabledOnUser: false,
         },
-        usdPriceMarketReferenceCurrency,
-        marketReferenceCurrencyDecimals: 18,
+        marketRefPriceInUsd,
+        marketRefCurrencyDecimals: 18,
         currentTimestamp,
       });
     const rawETHSummary: UserReserveSummaryResponse =
       generateUserReserveSummary({
         userReserve: {
-          ...ethUserReserve,
+          ...ethUserReserveEthMarket,
           usageAsCollateralEnabledOnUser: false,
         },
-        usdPriceMarketReferenceCurrency,
-        marketReferenceCurrencyDecimals: 18,
+        marketRefPriceInUsd,
+        marketRefCurrencyDecimals: 18,
         currentTimestamp,
       });
     const userReserveTotals = calculateUserReserveTotals({

@@ -55,6 +55,16 @@ describe('pool math', () => {
     };
     const balance = getCompoundedBalance(compoundedBalanceRequest);
     expect(balance.toFixed()).toEqual('10485');
+
+    const compoundedBalanceZeroRequest = {
+      principalBalance: 0,
+      reserveIndex: '1048540642417873765200833079',
+      reserveRate: 500000000000000000,
+      currentTimestamp: 1729942300,
+      lastUpdateTimestamp: 1629942200,
+    };
+    const balanceZero = getCompoundedBalance(compoundedBalanceZeroRequest);
+    expect(balanceZero.toFixed()).toEqual('0');
   });
 
   it('should calculate linear interest', () => {
@@ -197,14 +207,14 @@ describe('pool math', () => {
     const balanceRequest = {
       balance: 10 ** 19, // 10
       priceInMarketReferenceCurrency: 10 ** 18, // 1
-      marketReferenceCurrencyDecimals: 18,
+      marketRefCurrencyDecimals: 18,
       decimals: 18,
-      usdPriceMarketReferenceCurrency: 250000000,
+      marketRefPriceInUsd: 250000000,
     };
     const { marketReferenceCurrencyBalance, usdBalance } =
       getMarketReferenceCurrencyAndUsdBalance(balanceRequest);
     expect(marketReferenceCurrencyBalance.toNumber()).toEqual(
-      10 * 10 ** balanceRequest.marketReferenceCurrencyDecimals,
+      10 * 10 ** balanceRequest.marketRefCurrencyDecimals,
     );
     expect(usdBalance.toNumber()).toEqual(25 * 10 ** USD_DECIMALS);
   });

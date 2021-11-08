@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.24.2 (2021-11-08)
+
+
+### Bug Fixes
+
+* bind this context ([#164](https://github.com/@aave/aave-utilities/issues/164)) ([b1606ab](https://github.com/@aave/aave-utilities/commit/b1606ab89d214c0d46e2c7eb0ae06f7ad3c9bc3a))
+
+
+
+
+
+## 0.24.1 (2021-11-08)
+
+
+### Bug Fixes
+
+* user usd formatting ([#155](https://github.com/@aave/aave-utilities/issues/155)) ([0f3521b](https://github.com/@aave/aave-utilities/commit/0f3521bf0862f0c0b70b6d3b6c2801414cdce977))
+
+
+
+
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 # 0.24.0 (2021-11-08)
 
 
