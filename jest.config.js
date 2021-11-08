@@ -31,6 +31,7 @@ module.exports = {
     'packages/contract-helpers/src/wethgateway-contract/typechain',
     'packages/contract-helpers/src/paraswap-liquiditySwapAdapter-contract/typechain',
     'packages/contract-helpers/src/staking-contract/typechain',
+    'packages/contract-helpers/src/new-UiPoolDataProvider-contract/typechain',
     'packages/contract-helpers/src/index.ts',
   ],
   modulePathIgnorePatterns: ['node_modules'],
