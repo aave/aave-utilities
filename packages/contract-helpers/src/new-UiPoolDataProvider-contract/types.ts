@@ -1,98 +1,98 @@
 import { BigNumber } from 'ethers';
 
 export interface ReservesData {
-  0: Array<
-    [
-      string,
-      string,
-      string,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      boolean,
-      boolean,
-      boolean,
-      boolean,
-      boolean,
-      boolean,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      number,
-      string,
-      string,
-      string,
-      string,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      number,
-      BigNumber,
-      BigNumber,
-      number,
-      number,
-      number,
-      string,
-      string,
-    ] & {
-      underlyingAsset: string;
-      name: string;
-      symbol: string;
-      decimals: BigNumber;
-      baseLTVasCollateral: BigNumber;
-      reserveLiquidationThreshold: BigNumber;
-      reserveLiquidationBonus: BigNumber;
-      reserveFactor: BigNumber;
-      usageAsCollateralEnabled: boolean;
-      borrowingEnabled: boolean;
-      stableBorrowRateEnabled: boolean;
-      isActive: boolean;
-      isFrozen: boolean;
-      isPaused: boolean;
-      liquidityIndex: BigNumber;
-      variableBorrowIndex: BigNumber;
-      liquidityRate: BigNumber;
-      variableBorrowRate: BigNumber;
-      stableBorrowRate: BigNumber;
-      lastUpdateTimestamp: number;
-      aTokenAddress: string;
-      stableDebtTokenAddress: string;
-      variableDebtTokenAddress: string;
-      interestRateStrategyAddress: string;
-      availableLiquidity: BigNumber;
-      totalPrincipalStableDebt: BigNumber;
-      averageStableRate: BigNumber;
-      stableDebtLastUpdateTimestamp: BigNumber;
-      totalScaledVariableDebt: BigNumber;
-      priceInMarketReferenceCurrency: BigNumber;
-      variableRateSlope1: BigNumber;
-      variableRateSlope2: BigNumber;
-      stableRateSlope1: BigNumber;
-      stableRateSlope2: BigNumber;
-      debtCeiling: BigNumber;
-      eModeCategoryId: number;
-      borrowCap: BigNumber;
-      supplyCap: BigNumber;
-      eModeLtv: number;
-      eModeLiquidationThreshold: number;
-      eModeLiquidationBonus: number;
-      eModePriceSource: string;
-      eModeLabel: string;
-    }
-  >;
-  1: [BigNumber, BigNumber, BigNumber, number] & {
+  0: Array<// [
+  //   string,
+  //   string,
+  //   string,
+  //   BigNumber,
+  //   BigNumber,
+  //   BigNumber,
+  //   BigNumber,
+  //   BigNumber,
+  //   boolean,
+  //   boolean,
+  //   boolean,
+  //   boolean,
+  //   boolean,
+  //   boolean,
+  //   BigNumber,
+  //   BigNumber,
+  //   BigNumber,
+  //   BigNumber,
+  //   BigNumber,
+  //   number,
+  //   string,
+  //   string,
+  //   string,
+  //   string,
+  //   BigNumber,
+  //   BigNumber,
+  //   BigNumber,
+  //   BigNumber,
+  //   BigNumber,
+  //   BigNumber,
+  //   BigNumber,
+  //   BigNumber,
+  //   BigNumber,
+  //   BigNumber,
+  //   BigNumber,
+  //   number,
+  //   BigNumber,
+  //   BigNumber,
+  //   number,
+  //   number,
+  //   number,
+  //   string,
+  //   string,
+  // ] &
+  {
+    underlyingAsset: string;
+    name: string;
+    symbol: string;
+    decimals: BigNumber;
+    baseLTVasCollateral: BigNumber;
+    reserveLiquidationThreshold: BigNumber;
+    reserveLiquidationBonus: BigNumber;
+    reserveFactor: BigNumber;
+    usageAsCollateralEnabled: boolean;
+    borrowingEnabled: boolean;
+    stableBorrowRateEnabled: boolean;
+    isActive: boolean;
+    isFrozen: boolean;
+    isPaused: boolean;
+    liquidityIndex: BigNumber;
+    variableBorrowIndex: BigNumber;
+    liquidityRate: BigNumber;
+    variableBorrowRate: BigNumber;
+    stableBorrowRate: BigNumber;
+    lastUpdateTimestamp: number;
+    aTokenAddress: string;
+    stableDebtTokenAddress: string;
+    variableDebtTokenAddress: string;
+    interestRateStrategyAddress: string;
+    availableLiquidity: BigNumber;
+    totalPrincipalStableDebt: BigNumber;
+    averageStableRate: BigNumber;
+    stableDebtLastUpdateTimestamp: BigNumber;
+    totalScaledVariableDebt: BigNumber;
+    priceInMarketReferenceCurrency: BigNumber;
+    variableRateSlope1: BigNumber;
+    variableRateSlope2: BigNumber;
+    stableRateSlope1: BigNumber;
+    stableRateSlope2: BigNumber;
+    debtCeiling: BigNumber;
+    eModeCategoryId: number;
+    borrowCap: BigNumber;
+    supplyCap: BigNumber;
+    eModeLtv: number;
+    eModeLiquidationThreshold: number;
+    eModeLiquidationBonus: number;
+    eModePriceSource: string;
+    eModeLabel: string;
+  }>;
+  1: // [BigNumber, BigNumber, BigNumber, number] &
+  {
     marketReferenceCurrencyUnit: BigNumber;
     marketReferenceCurrencyPriceInUsd: BigNumber;
     networkBaseTokenPriceInUsd: BigNumber;
@@ -101,17 +101,16 @@ export interface ReservesData {
 }
 
 export interface UserReserveData {
-  0: Array<
-    [string, BigNumber, boolean, BigNumber, BigNumber, BigNumber, BigNumber] & {
-      underlyingAsset: string;
-      scaledATokenBalance: BigNumber;
-      usageAsCollateralEnabledOnUser: boolean;
-      stableBorrowRate: BigNumber;
-      scaledVariableDebt: BigNumber;
-      principalStableDebt: BigNumber;
-      stableBorrowLastUpdateTimestamp: BigNumber;
-    }
-  >;
+  0: Array<// [string, BigNumber, boolean, BigNumber, BigNumber, BigNumber, BigNumber] &
+  {
+    underlyingAsset: string;
+    scaledATokenBalance: BigNumber;
+    usageAsCollateralEnabledOnUser: boolean;
+    stableBorrowRate: BigNumber;
+    scaledVariableDebt: BigNumber;
+    principalStableDebt: BigNumber;
+    stableBorrowLastUpdateTimestamp: BigNumber;
+  }>;
   1: number;
 }
 
