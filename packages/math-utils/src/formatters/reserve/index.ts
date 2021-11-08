@@ -188,8 +188,8 @@ export type ReserveDataWithPrice = ReserveData & {
 export interface FormatReserveUSDRequest {
   reserve: ReserveDataWithPrice;
   currentTimestamp: number;
-  usdPriceMarketReferenceCurrency: string;
-  marketReferenceCurrencyDecimals: number;
+  marketRefPriceInUsd: string;
+  marketRefCurrencyDecimals: number;
 }
 
 /**
@@ -199,8 +199,8 @@ export interface FormatReserveUSDRequest {
 export function formatReserveUSD({
   reserve,
   currentTimestamp,
-  usdPriceMarketReferenceCurrency,
-  marketReferenceCurrencyDecimals,
+  marketRefPriceInUsd,
+  marketRefCurrencyDecimals,
 }: FormatReserveUSDRequest) {
   const computedFields = getComputedReserveFields({
     reserve,
@@ -215,30 +215,30 @@ export function formatReserveUSD({
     totalLiquidityUSD: nativeToUSD({
       amount: computedFields.totalLiquidity,
       currencyDecimals: reserve.decimals,
-      marketReferenceCurrencyDecimals,
+      marketRefCurrencyDecimals,
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-      usdPriceMarketReferenceCurrency,
+      marketRefPriceInUsd,
     }),
     totalDebtUSD: nativeToUSD({
       amount: computedFields.totalDebt,
       currencyDecimals: reserve.decimals,
-      marketReferenceCurrencyDecimals,
+      marketRefCurrencyDecimals,
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-      usdPriceMarketReferenceCurrency,
+      marketRefPriceInUsd,
     }),
     totalVariableDebtUSD: nativeToUSD({
       amount: computedFields.totalVariableDebt,
       currencyDecimals: reserve.decimals,
-      marketReferenceCurrencyDecimals,
+      marketRefCurrencyDecimals,
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-      usdPriceMarketReferenceCurrency,
+      marketRefPriceInUsd,
     }),
     totalStableDebtUSD: nativeToUSD({
       amount: computedFields.totalStableDebt,
       currencyDecimals: reserve.decimals,
-      marketReferenceCurrencyDecimals,
+      marketRefCurrencyDecimals,
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-      usdPriceMarketReferenceCurrency,
+      marketRefPriceInUsd,
     }),
   };
 }

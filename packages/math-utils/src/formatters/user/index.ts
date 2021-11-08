@@ -1,6 +1,5 @@
-import { BigNumber } from 'bignumber.js';
 import { BigNumberValue, normalize } from '../../bignumber';
-import { LTV_PRECISION, USD_DECIMALS } from '../../constants';
+import { LTV_PRECISION } from '../../constants';
 import { formatUserReserve } from './format-user-reserve';
 import { generateRawUserSummary } from './generate-raw-user-summary';
 import {
@@ -65,8 +64,8 @@ export interface ComputedUserReserve extends RawUserReserveData {
 
 export interface FormatUserSummaryRequest {
   rawUserReserves: RawUserReserveData[];
-  usdPriceMarketReferenceCurrency: BigNumberValue;
-  marketReferenceCurrencyDecimals: number;
+  marketRefPriceInUsd: BigNumberValue;
+  marketRefCurrencyDecimals: number;
   currentTimestamp: number;
 }
 
@@ -79,27 +78,24 @@ export interface FormatUserSummaryResponse {
   totalBorrowsMarketReferenceCurrency: string;
   totalBorrowsUSD: string;
   availableBorrowsMarketReferenceCurrency: string;
+  availableBorrowsUSD: string;
   currentLoanToValue: string;
   currentLiquidationThreshold: string;
   healthFactor: string;
 }
 
-function normalizeUSD(value: BigNumber): string {
-  return normalize(value, USD_DECIMALS);
-}
-
 export function formatUserSummary({
   currentTimestamp,
-  usdPriceMarketReferenceCurrency,
-  marketReferenceCurrencyDecimals,
+  marketRefPriceInUsd,
+  marketRefCurrencyDecimals,
   rawUserReserves,
 }: FormatUserSummaryRequest): FormatUserSummaryResponse {
   const computedUserReserves: UserReserveSummaryResponse[] =
     rawUserReserves.map(userReserve =>
       generateUserReserveSummary({
         userReserve,
-        usdPriceMarketReferenceCurrency,
-        marketReferenceCurrencyDecimals,
+        marketRefPriceInUsd,
+        marketRefCurrencyDecimals,
         currentTimestamp,
       }),
     );
@@ -107,36 +103,38 @@ export function formatUserSummary({
   const formattedUserReserves = computedUserReserves.map(computedUserReserve =>
     formatUserReserve({
       reserve: computedUserReserve,
-      marketReferenceCurrencyDecimals,
+      marketRefCurrencyDecimals,
     }),
   );
 
   const userData = generateRawUserSummary({
     userReserves: computedUserReserves,
-    usdPriceMarketReferenceCurrency,
+    marketRefPriceInUsd,
+    marketRefCurrencyDecimals,
   });
 
   return {
     userReservesData: formattedUserReserves,
     totalLiquidityMarketReferenceCurrency: normalize(
       userData.totalLiquidityMarketReferenceCurrency,
-      marketReferenceCurrencyDecimals,
+      marketRefCurrencyDecimals,
     ),
-    totalLiquidityUSD: normalizeUSD(userData.totalLiquidityUSD),
+    totalLiquidityUSD: userData.totalLiquidityUSD.toString(),
     totalCollateralMarketReferenceCurrency: normalize(
       userData.totalCollateralMarketReferenceCurrency,
-      marketReferenceCurrencyDecimals,
+      marketRefCurrencyDecimals,
     ),
-    totalCollateralUSD: normalizeUSD(userData.totalCollateralUSD),
+    totalCollateralUSD: userData.totalCollateralUSD.toString(),
     totalBorrowsMarketReferenceCurrency: normalize(
       userData.totalBorrowsMarketReferenceCurrency,
-      marketReferenceCurrencyDecimals,
+      marketRefCurrencyDecimals,
     ),
-    totalBorrowsUSD: normalizeUSD(userData.totalBorrowsUSD),
+    totalBorrowsUSD: userData.totalBorrowsUSD.toString(),
     availableBorrowsMarketReferenceCurrency: normalize(
       userData.availableBorrowsMarketReferenceCurrency,
-      marketReferenceCurrencyDecimals,
+      marketRefCurrencyDecimals,
     ),
+    availableBorrowsUSD: userData.availableBorrowsUSD.toString(),
     currentLoanToValue: normalize(userData.currentLoanToValue, LTV_PRECISION),
     currentLiquidationThreshold: normalize(
       userData.currentLiquidationThreshold,

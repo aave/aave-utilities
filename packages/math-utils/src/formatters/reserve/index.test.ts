@@ -123,8 +123,8 @@ describe('formatReserve', () => {
         priceInMarketReferenceCurrency: '323337881619534',
       },
       currentTimestamp: formatReserveRequestDAI.currentTimestamp,
-      usdPriceMarketReferenceCurrency: '291464715827',
-      marketReferenceCurrencyDecimals: 18,
+      marketRefPriceInUsd: '291464715827',
+      marketRefCurrencyDecimals: 18,
     });
 
     expect(reserve.totalLiquidity).toBe('43133.641118657852003256');

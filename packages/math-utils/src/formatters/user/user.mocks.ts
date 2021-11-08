@@ -1,6 +1,6 @@
 import { FormatUserSummaryRequest, RawUserReserveData } from './index';
 
-export const usdcUserReserve: RawUserReserveData = {
+export const usdcUserReserveEthMarket: RawUserReserveData = {
   scaledATokenBalance: '2328085146',
   usageAsCollateralEnabledOnUser: true,
   scaledVariableDebt: '48856783',
@@ -16,7 +16,7 @@ export const usdcUserReserve: RawUserReserveData = {
     liquidityRate: '46062683922433651545591283',
     reserveLiquidationBonus: '10500',
     lastUpdateTimestamp: 1629942075,
-    priceInMarketReferenceCurrency: '310220648226635',
+    priceInMarketReferenceCurrency: '220215220000000',
     reserveFactor: '1000',
     baseLTVasCollateral: '8000',
     averageStableRate: '106672256721053059345703064',
@@ -33,41 +33,8 @@ export const usdcUserReserve: RawUserReserveData = {
   },
 };
 
-export const xSushiUserReserve: RawUserReserveData = {
-  scaledATokenBalance: '1031991722452535126997',
-  usageAsCollateralEnabledOnUser: true,
-  scaledVariableDebt: '0',
-  principalStableDebt: '0',
-  stableBorrowRate: '0',
-  stableBorrowLastUpdateTimestamp: 0,
-  reserve: {
-    id: '0x8798249c2e607446efb7ad49ec89dd1865ff42720xb53c1a33016b2dc2ff3653530bff1848a515c8c5',
-    symbol: 'XSUSHI',
-    name: 'XSUSHI',
-    decimals: 18,
-    underlyingAsset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-    liquidityRate: '60907795848090763073598',
-    reserveLiquidationBonus: '11500',
-    lastUpdateTimestamp: 1629936152,
-    priceInMarketReferenceCurrency: '4461141236372503',
-    reserveFactor: '3500',
-    baseLTVasCollateral: '2500',
-    averageStableRate: '0',
-    stableDebtLastUpdateTimestamp: 0,
-    liquidityIndex: '1000122254330797728596142162',
-    reserveLiquidationThreshold: '4500',
-    variableBorrowIndex: '1002026240154574876504626909',
-    variableBorrowRate: '3817882220211400976902451',
-    availableLiquidity: '14256005298876037133863099',
-    stableBorrowRate: '0',
-    totalPrincipalStableDebt: '0',
-    totalScaledVariableDebt: '357971011986405973662046',
-    usageAsCollateralEnabled: true,
-  },
-};
-
-export const ethUserReserve: RawUserReserveData = {
-  scaledATokenBalance: '99353924118371338',
+export const ethUserReserveEthMarket: RawUserReserveData = {
+  scaledATokenBalance: '11199353924118371338',
   usageAsCollateralEnabledOnUser: true,
   scaledVariableDebt: '1761463562232346784',
   principalStableDebt: '0',
@@ -78,7 +45,7 @@ export const ethUserReserve: RawUserReserveData = {
     symbol: 'ETH',
     name: 'ETH',
     decimals: 18,
-    underlyingAsset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    underlyingAsset: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
     liquidityRate: '254255556752591383202873',
     reserveLiquidationBonus: '10500',
     lastUpdateTimestamp: 1629941871,
@@ -99,15 +66,92 @@ export const ethUserReserve: RawUserReserveData = {
   },
 };
 
-export const userReserves = [
-  usdcUserReserve,
-  xSushiUserReserve,
-  ethUserReserve,
+export const usdcUserReserveUsdMarket: RawUserReserveData = {
+  scaledATokenBalance: '2328085146',
+  usageAsCollateralEnabledOnUser: true,
+  scaledVariableDebt: '996253',
+  principalStableDebt: '0',
+  stableBorrowRate: '0',
+  stableBorrowLastUpdateTimestamp: 0,
+  reserve: {
+    id: '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c6640xb6a86025f0fe1862b372cb0ca18ce3ede02a318f',
+    underlyingAsset: '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664',
+    name: '',
+    symbol: 'USDC.e',
+    decimals: 6,
+    baseLTVasCollateral: '7500',
+    reserveLiquidationThreshold: '8000',
+    reserveLiquidationBonus: '10500',
+    reserveFactor: '1000',
+    usageAsCollateralEnabled: true,
+    liquidityIndex: '1002555489746874909126479212',
+    variableBorrowIndex: '1003761170344029737416278526',
+    liquidityRate: '27214972288801992543847831',
+    variableBorrowRate: '38883710020179967778364329',
+    stableBorrowRate: '58441855010089983889182164',
+    lastUpdateTimestamp: 1636036065,
+    availableLiquidity: '259205692239725',
+    totalPrincipalStableDebt: '0',
+    averageStableRate: '0',
+    stableDebtLastUpdateTimestamp: 0,
+    totalScaledVariableDebt: '903279120622455',
+    priceInMarketReferenceCurrency: '100019103',
+  },
+};
+
+export const avaxUserReserveUsdMarket: RawUserReserveData = {
+  scaledATokenBalance: '99353924118371338',
+  usageAsCollateralEnabledOnUser: true,
+  scaledVariableDebt: '1761463562232346784',
+  principalStableDebt: '0',
+  stableBorrowRate: '0',
+  stableBorrowLastUpdateTimestamp: 0,
+  reserve: {
+    id: '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c70xb6a86025f0fe1862b372cb0ca18ce3ede02a318f',
+    underlyingAsset: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    name: '',
+    symbol: 'WAVAX',
+    decimals: 18,
+    baseLTVasCollateral: '5000',
+    reserveLiquidationThreshold: '6500',
+    reserveLiquidationBonus: '11000',
+    reserveFactor: '1500',
+    usageAsCollateralEnabled: true,
+    liquidityIndex: '1002997731198453258741914111',
+    variableBorrowIndex: '1007875911212627062165813423',
+    liquidityRate: '25870857783806523244273505',
+    variableBorrowRate: '68807965127667771506074629',
+    stableBorrowRate: '50000000000000000000000000',
+    lastUpdateTimestamp: 1636035444,
+    availableLiquidity: '5882170421326532304593164',
+    totalPrincipalStableDebt: '0',
+    averageStableRate: '0',
+    stableDebtLastUpdateTimestamp: 0,
+    totalScaledVariableDebt: '4629262753941821913005198',
+    priceInMarketReferenceCurrency: '7740533040',
+  },
+};
+
+export const userReservesEthMarket = [
+  usdcUserReserveEthMarket,
+  ethUserReserveEthMarket,
 ];
 
-export const formatUserSummaryRequest: FormatUserSummaryRequest = {
-  rawUserReserves: userReserves,
-  usdPriceMarketReferenceCurrency: 309519442156873,
-  marketReferenceCurrencyDecimals: 18,
+export const userReservesUsdMarket = [
+  usdcUserReserveUsdMarket,
+  avaxUserReserveUsdMarket,
+];
+
+export const formatUserSummaryRequestEthMarket: FormatUserSummaryRequest = {
+  rawUserReserves: userReservesEthMarket,
+  marketRefPriceInUsd: 4569.74241997,
+  marketRefCurrencyDecimals: 18,
+  currentTimestamp: 1629942229,
+};
+
+export const formatUserSummaryRequestUsdMarket: FormatUserSummaryRequest = {
+  rawUserReserves: userReservesUsdMarket,
+  marketRefPriceInUsd: 1,
+  marketRefCurrencyDecimals: 8,
   currentTimestamp: 1629942229,
 };
