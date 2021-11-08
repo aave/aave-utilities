@@ -1,5 +1,21 @@
 # Change Log
 
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# 0.24.0 (2021-11-08)
+
+
+### Features
+
+* added new fields to v3 uipooldataprovider ([#154](https://github.com/@aave/aave-utilities/issues/154)) ([09584fe](https://github.com/@aave/aave-utilities/commit/09584fede051cfc2be0c05d496d31018431a69f2))
+
+
+
+
+
+# Change Log
+
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
