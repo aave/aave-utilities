@@ -38,7 +38,8 @@ import {
 import {
   LPBorrowParamsType,
   LPDepositParamsType,
-  LPSignSupplyType,
+  LPRepayParamsType,
+  LPSignERC20ApprovalType,
   LPSupplyWithPermitType,
   LPWithdrawParamsType,
 } from './lendingPoolTypes';
@@ -52,9 +53,18 @@ export interface PoolInterface {
   supply: (
     args: LPDepositParamsType,
   ) => Promise<EthereumTransactionTypeExtended[]>;
-  signSupply: (args: LPSignSupplyType) => Promise<string>;
+  signERC20Approval: (args: LPSignERC20ApprovalType) => Promise<string>;
   supplyWithPermit: (
     args: LPSupplyWithPermitType,
+  ) => Promise<EthereumTransactionTypeExtended[]>;
+  withdraw: (
+    args: LPWithdrawParamsType,
+  ) => Promise<EthereumTransactionTypeExtended[]>;
+  borrow: (
+    args: LPBorrowParamsType,
+  ) => Promise<EthereumTransactionTypeExtended[]>;
+  repay: (
+    args: LPRepayParamsType,
   ) => Promise<EthereumTransactionTypeExtended[]>;
 }
 
@@ -285,11 +295,11 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
 
   // Sign permit supply
   @LPValidatorV3
-  public async signSupply(
+  public async signERC20Approval(
     @isEthAddress('user')
     @isEthAddress('reserve')
     @isPositiveAmount('amount')
-    { user, reserve, amount }: LPSignSupplyType,
+    { user, reserve, amount }: LPSignERC20ApprovalType,
   ): Promise<string> {
     const { getTokenData } = this.erc20Service;
     const { name, decimals } = await getTokenData(reserve);
@@ -493,11 +503,11 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
 
     const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
 
-    const lendingPoolContract = this.getContractInstance(this.poolAddress);
+    const poolContract = this.getContractInstance(this.poolAddress);
 
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>
-        lendingPoolContract.populateTransaction.borrow(
+        poolContract.populateTransaction.borrow(
           reserve,
           formatAmount,
           numericRateMode,
@@ -514,5 +524,91 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         gas: this.generateTxPriceEstimation([], txCallback),
       },
     ];
+  }
+
+  @LPValidatorV3
+  public async repay(
+    @isEthAddress('user')
+    @isEthAddress('reserve')
+    @isPositiveOrMinusOneAmount('amount')
+    @isEthAddress('onBehalfOf')
+    { user, reserve, amount, interestRateMode, onBehalfOf }: LPRepayParamsType,
+  ): Promise<EthereumTransactionTypeExtended[]> {
+    if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
+      return this.wethGatewayService.repayETH({
+        lendingPool: this.poolAddress,
+        user,
+        amount,
+        interestRateMode,
+        onBehalfOf,
+      });
+    }
+
+    const txs: EthereumTransactionTypeExtended[] = [];
+    const { isApproved, approve, decimalsOf }: IERC20ServiceInterface =
+      this.erc20Service;
+
+    const poolContract = this.getContractInstance(this.poolAddress);
+    const { populateTransaction }: IPool = poolContract;
+    const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
+    const decimals: number = await decimalsOf(reserve);
+
+    const convertedAmount: string =
+      amount === '-1'
+        ? constants.MaxUint256.toString()
+        : valueToWei(amount, decimals);
+
+    if (amount !== '-1') {
+      const fundsAvailable: boolean =
+        await this.synthetixService.synthetixValidation({
+          user,
+          reserve,
+          amount: convertedAmount,
+        });
+      if (!fundsAvailable) {
+        throw new Error('Not enough funds to execute operation');
+      }
+    }
+
+    const approved: boolean = await isApproved({
+      token: reserve,
+      user,
+      spender: this.poolAddress,
+      amount,
+    });
+
+    if (!approved) {
+      const approveTx: EthereumTransactionTypeExtended = approve({
+        user,
+        token: reserve,
+        spender: this.poolAddress,
+        amount: DEFAULT_APPROVE_AMOUNT,
+      });
+      txs.push(approveTx);
+    }
+
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        populateTransaction.repay(
+          reserve,
+          convertedAmount,
+          numericRateMode,
+          onBehalfOf ?? user,
+        ),
+      from: user,
+      value: getTxValue(reserve, convertedAmount),
+    });
+
+    txs.push({
+      tx: txCallback,
+      txType: eEthereumTxType.DLP_ACTION,
+      gas: this.generateTxPriceEstimation(
+        txs,
+        txCallback,
+        ProtocolAction.repay,
+      ),
+    });
+
+    return txs;
   }
 }

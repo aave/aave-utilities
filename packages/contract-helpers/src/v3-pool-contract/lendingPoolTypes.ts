@@ -118,7 +118,7 @@ export type LPSupplyWithPermitType = {
   referralCode?: number;
 };
 
-export type LPSignSupplyType = {
+export type LPSignERC20ApprovalType = {
   user: tEthereumAddress;
   reserve: tEthereumAddress;
   amount: string;
