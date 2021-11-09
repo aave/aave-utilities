@@ -4888,4 +4888,350 @@ describe('Pool', () => {
       );
     });
   });
+  describe('repayWithATokens', () => {
+    const user = '0x0000000000000000000000000000000000000006';
+    const reserve = '0x0000000000000000000000000000000000000007';
+    const onBehalfOf = '0x0000000000000000000000000000000000000008';
+    const amount = '123.456';
+    const decimals = 18;
+    const rateMode = InterestRate.None;
+
+    const config = { POOL };
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('Expects to fail if passing all params with repay eth address', async () => {
+      const reserve = API_ETH_MOCK_ADDRESS;
+      const poolInstance = new Pool(provider, config);
+
+      await expect(async () =>
+        poolInstance.repayWithATokens({
+          user,
+          reserve,
+          amount,
+          rateMode,
+          onBehalfOf,
+        }),
+      ).rejects.toThrowError(
+        'Can not repay with aTokens with eth. Should be WETH instead',
+      );
+    });
+    it('Expects the tx object passing all params without onBehalfOf', async () => {
+      const poolInstance = new Pool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const synthetixSpy = jest
+        .spyOn(poolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(true));
+
+      const depositTxObj = await poolInstance.repayWithATokens({
+        user,
+        reserve,
+        amount,
+        rateMode,
+      });
+
+      expect(synthetixSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(depositTxObj.length).toEqual(1);
+      const txObj = depositTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256', 'uint256', 'address'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
+      expect(decoded[2]).toEqual(BigNumber.from(1));
+      expect(decoded[3]).toEqual(user);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params with amount -1 with reate stable', async () => {
+      const poolInstance = new Pool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const synthetixSpy = jest
+        .spyOn(poolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(true));
+
+      const amount = '-1';
+      const rateMode = InterestRate.Stable;
+      const reapyTxObj = await poolInstance.repayWithATokens({
+        user,
+        reserve,
+        amount,
+        rateMode,
+        onBehalfOf,
+      });
+
+      expect(synthetixSpy).not.toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(reapyTxObj.length).toEqual(1);
+      const txObj = reapyTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256', 'uint256', 'address'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(constants.MaxUint256);
+      expect(decoded[2]).toEqual(BigNumber.from(1));
+      expect(decoded[3]).toEqual(onBehalfOf);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params with with specific amount and synthetix repayment with valid amount and rate variable', async () => {
+      const poolInstance = new Pool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const synthetixSpy = jest
+        .spyOn(poolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(true));
+
+      const rateMode = InterestRate.Variable;
+      const reapyTxObj = await poolInstance.repayWithATokens({
+        user,
+        reserve,
+        amount,
+        rateMode,
+        onBehalfOf,
+      });
+
+      expect(synthetixSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(reapyTxObj.length).toEqual(1);
+      const txObj = reapyTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256', 'uint256', 'address'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
+      expect(decoded[2]).toEqual(BigNumber.from(2));
+      expect(decoded[3]).toEqual(onBehalfOf);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects to fail passing all params with with specific amount and synthetix repayment but not valid amount', async () => {
+      const poolInstance = new Pool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+
+      const synthetixSpy = jest
+        .spyOn(poolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(false));
+
+      await expect(async () =>
+        poolInstance.repayWithATokens({
+          user,
+          reserve,
+          amount,
+          rateMode,
+          onBehalfOf,
+        }),
+      ).rejects.toThrowError('Not enough funds to execute operation');
+
+      expect(decimalsSpy).toHaveBeenCalled();
+      expect(synthetixSpy).toHaveBeenCalled();
+    });
+    it('Expects to fail when PoolAddress not provided', async () => {
+      const poolInstance = new Pool(provider);
+      const txObj = await poolInstance.repayWithATokens({
+        user,
+        reserve,
+        amount,
+        rateMode,
+        onBehalfOf,
+      });
+      expect(txObj).toEqual([]);
+    });
+    it('Expects to fail when user not and eth address', async () => {
+      const poolInstance = new Pool(provider, config);
+      const user = 'asdf';
+      await expect(async () =>
+        poolInstance.repayWithATokens({
+          user,
+          reserve,
+          amount,
+          rateMode,
+          onBehalfOf,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${user} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when reserve not and eth address', async () => {
+      const poolInstance = new Pool(provider, config);
+      const reserve = 'asdf';
+      await expect(async () =>
+        poolInstance.repayWithATokens({
+          user,
+          reserve,
+          amount,
+          rateMode,
+          onBehalfOf,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${reserve} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when onBehalfOf not and eth address', async () => {
+      const poolInstance = new Pool(provider, config);
+      const onBehalfOf = 'asdf';
+      await expect(async () =>
+        poolInstance.repayWithATokens({
+          user,
+          reserve,
+          amount,
+          rateMode,
+          onBehalfOf,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${onBehalfOf} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when amount 0', async () => {
+      const poolInstance = new Pool(provider, config);
+      const amount = '0';
+      await expect(async () =>
+        poolInstance.repayWithATokens({
+          user,
+          reserve,
+          amount,
+          rateMode,
+          onBehalfOf,
+        }),
+      ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
+    });
+    it('Expects to fail when amount not number', async () => {
+      const poolInstance = new Pool(provider, config);
+      const amount = 'asdf';
+      await expect(async () =>
+        poolInstance.repayWithATokens({
+          user,
+          reserve,
+          amount,
+          rateMode,
+          onBehalfOf,
+        }),
+      ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
+    });
+  });
+  describe('setUserEMode', () => {
+    const user = '0x0000000000000000000000000000000000000006';
+    const categoryId = 1;
+
+    const config = { POOL };
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('Expects the tx object when passing all params', async () => {
+      const poolInstance = new Pool(provider, config);
+
+      const setUserEModeTxObj = poolInstance.setUserEMode({
+        user,
+        categoryId,
+      });
+
+      expect(setUserEModeTxObj.length).toEqual(1);
+      const txObj = setUserEModeTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['uint8'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(categoryId);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects to fail when PoolAddress not provided', () => {
+      const poolInstance = new Pool(provider);
+      const txObj = poolInstance.setUserEMode({
+        user,
+        categoryId,
+      });
+      expect(txObj).toEqual([]);
+    });
+    it('Expects to fail when user not and eth address', () => {
+      const poolInstance = new Pool(provider, config);
+      const user = 'asdf';
+      expect(() =>
+        poolInstance.setUserEMode({
+          user,
+          categoryId,
+        }),
+      ).toThrowError(`Address: ${user} is not a valid ethereum Address`);
+    });
+    it('Expects to fail when categoryId not positive or 0', () => {
+      const poolInstance = new Pool(provider, config);
+      const categoryId = -1;
+      expect(() =>
+        poolInstance.setUserEMode({
+          user,
+          categoryId,
+        }),
+      ).toThrowError(
+        `Amount: ${categoryId} needs to be greater or equal than 0`,
+      );
+    });
+  });
 });

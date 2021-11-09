@@ -23,6 +23,7 @@ import {
   LPValidatorV3,
 } from '../commons/validators/methodValidators';
 import {
+  is0OrPositiveAmount,
   isEthAddress,
   isPositiveAmount,
   isPositiveOrMinusOneAmount,
@@ -48,9 +49,11 @@ import {
   LPFlashLiquidation,
   LPLiquidationCall,
   LPRepayParamsType,
+  LPRepayWithATokensType,
   LPRepayWithCollateral,
   LPRepayWithPermitParamsType,
   LPSetUsageAsCollateral,
+  LPSetUserEModeType,
   LPSignERC20ApprovalType,
   LPSupplyWithPermitType,
   LPSwapBorrowRateMode,
@@ -92,9 +95,16 @@ export interface PoolInterface {
   repayWithCollateral: (
     args: LPRepayWithCollateral,
   ) => Promise<EthereumTransactionTypeExtended[]>;
+  flashLiquidation: (
+    args: LPFlashLiquidation,
+  ) => Promise<EthereumTransactionTypeExtended[]>;
+  repayWithATokens: (
+    args: LPRepayWithATokensType,
+  ) => Promise<EthereumTransactionTypeExtended[]>;
+  setUserEMode: (args: LPSetUserEModeType) => EthereumTransactionTypeExtended[];
 }
 
-export type LendingPoolMarketConfig = {
+export type LendingPoolMarketConfigV3 = {
   POOL: tEthereumAddress;
   WETH_GATEWAY?: tEthereumAddress;
   FLASH_LIQUIDATION_ADAPTER?: tEthereumAddress;
@@ -155,7 +165,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
 
   constructor(
     provider: providers.Provider,
-    lendingPoolConfig?: LendingPoolMarketConfig,
+    lendingPoolConfig?: LendingPoolMarketConfigV3,
   ) {
     super(provider, IPoolFactory);
 
@@ -1233,5 +1243,95 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       ),
     });
     return txs;
+  }
+
+  @LPValidatorV3
+  public async repayWithATokens(
+    @isEthAddress('user')
+    @isEthAddress('reserve')
+    @isEthAddress('onBehalfOf')
+    @isPositiveOrMinusOneAmount('amount')
+    { user, amount, reserve, rateMode, onBehalfOf }: LPRepayWithATokensType,
+  ): Promise<EthereumTransactionTypeExtended[]> {
+    if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
+      throw new Error(
+        'Can not repay with aTokens with eth. Should be WETH instead',
+      );
+    }
+
+    const txs: EthereumTransactionTypeExtended[] = [];
+    const { decimalsOf }: IERC20ServiceInterface = this.erc20Service;
+
+    const poolContract = this.getContractInstance(this.poolAddress);
+    const { populateTransaction }: IPool = poolContract;
+    const numericRateMode = rateMode === InterestRate.Variable ? 2 : 1;
+    const decimals: number = await decimalsOf(reserve);
+
+    const convertedAmount: string =
+      amount === '-1'
+        ? constants.MaxUint256.toString()
+        : valueToWei(amount, decimals);
+
+    if (amount !== '-1') {
+      const fundsAvailable: boolean =
+        await this.synthetixService.synthetixValidation({
+          user,
+          reserve,
+          amount: convertedAmount,
+        });
+      if (!fundsAvailable) {
+        throw new Error('Not enough funds to execute operation');
+      }
+    }
+
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        populateTransaction.repayWithATokens(
+          reserve,
+          convertedAmount,
+          numericRateMode,
+          onBehalfOf ?? user,
+        ),
+      from: user,
+      value: getTxValue(reserve, convertedAmount),
+    });
+
+    txs.push({
+      tx: txCallback,
+      txType: eEthereumTxType.DLP_ACTION,
+      gas: this.generateTxPriceEstimation(
+        txs,
+        txCallback,
+        ProtocolAction.repay,
+      ),
+    });
+
+    return txs;
+  }
+
+  @LPValidatorV3
+  public setUserEMode(
+    @isEthAddress('user')
+    @is0OrPositiveAmount('categoryId')
+    { user, categoryId }: LPSetUserEModeType,
+  ): EthereumTransactionTypeExtended[] {
+    const poolContract = this.getContractInstance(this.poolAddress);
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        poolContract.populateTransaction.setUserEMode(categoryId),
+      from: user,
+    });
+
+    return [
+      {
+        tx: txCallback,
+        txType: eEthereumTxType.DLP_ACTION,
+        gas: this.generateTxPriceEstimation(
+          [],
+          txCallback,
+          ProtocolAction.repay,
+        ),
+      },
+    ];
   }
 }

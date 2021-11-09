@@ -132,3 +132,16 @@ export type LPSignERC20ApprovalType = {
   reserve: tEthereumAddress;
   amount: string;
 };
+
+export type LPSetUserEModeType = {
+  user: string;
+  categoryId: number;
+};
+
+export type LPRepayWithATokensType = {
+  user: string;
+  reserve: string;
+  amount: string;
+  rateMode: InterestRate;
+  onBehalfOf?: string;
+};
