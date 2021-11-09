@@ -39,6 +39,7 @@ import {
   LPBorrowParamsType,
   LPDepositParamsType,
   LPRepayParamsType,
+  LPRepayWithPermitParamsType,
   LPSignERC20ApprovalType,
   LPSupplyWithPermitType,
   LPWithdrawParamsType,
@@ -594,6 +595,76 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           convertedAmount,
           numericRateMode,
           onBehalfOf ?? user,
+        ),
+      from: user,
+      value: getTxValue(reserve, convertedAmount),
+    });
+
+    txs.push({
+      tx: txCallback,
+      txType: eEthereumTxType.DLP_ACTION,
+      gas: this.generateTxPriceEstimation(
+        txs,
+        txCallback,
+        ProtocolAction.repay,
+      ),
+    });
+
+    return txs;
+  }
+
+  @LPValidatorV3
+  public async repayWithPermit(
+    @isEthAddress('user')
+    @isEthAddress('reserve')
+    @isPositiveOrMinusOneAmount('amount')
+    @isEthAddress('onBehalfOf')
+    {
+      user,
+      reserve,
+      amount,
+      interestRateMode,
+      onBehalfOf,
+      signature,
+    }: LPRepayWithPermitParamsType,
+  ): Promise<EthereumTransactionTypeExtended[]> {
+    const txs: EthereumTransactionTypeExtended[] = [];
+    const { decimalsOf }: IERC20ServiceInterface = this.erc20Service;
+
+    const poolContract = this.getContractInstance(this.poolAddress);
+    const { populateTransaction }: IPool = poolContract;
+    const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
+    const decimals: number = await decimalsOf(reserve);
+    const sig: Signature = utils.splitSignature(signature);
+
+    const convertedAmount: string =
+      amount === '-1'
+        ? constants.MaxUint256.toString()
+        : valueToWei(amount, decimals);
+
+    if (amount !== '-1') {
+      const fundsAvailable: boolean =
+        await this.synthetixService.synthetixValidation({
+          user,
+          reserve,
+          amount: convertedAmount,
+        });
+      if (!fundsAvailable) {
+        throw new Error('Not enough funds to execute operation');
+      }
+    }
+
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        populateTransaction.repayWithPermit(
+          reserve,
+          convertedAmount,
+          numericRateMode,
+          onBehalfOf ?? user,
+          constants.MaxUint256.toString(),
+          sig.v,
+          sig.r,
+          sig.s,
         ),
       from: user,
       value: getTxValue(reserve, convertedAmount),

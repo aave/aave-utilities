@@ -118,6 +118,15 @@ export type LPSupplyWithPermitType = {
   referralCode?: number;
 };
 
+export type LPRepayWithPermitParamsType = {
+  user: tEthereumAddress;
+  reserve: tEthereumAddress;
+  amount: string;
+  interestRateMode: InterestRate;
+  onBehalfOf?: tEthereumAddress;
+  signature: SignatureLike;
+};
+
 export type LPSignERC20ApprovalType = {
   user: tEthereumAddress;
   reserve: tEthereumAddress;

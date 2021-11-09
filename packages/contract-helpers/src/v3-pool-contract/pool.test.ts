@@ -1987,4 +1987,326 @@ describe('Pool', () => {
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
   });
+  describe('repayWithPermit', () => {
+    const user = '0x0000000000000000000000000000000000000006';
+    const reserve = '0x0000000000000000000000000000000000000007';
+    const onBehalfOf = '0x0000000000000000000000000000000000000008';
+    const amount = '123.456';
+    const decimals = 18;
+    const interestRateMode = InterestRate.None;
+    // const message = 'victor washington'
+    const signature =
+      '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c';
+
+    const config = { POOL };
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('Expects the tx object passing all params without onBehalfOf', async () => {
+      const poolInstance = new Pool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const synthetixSpy = jest
+        .spyOn(poolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(true));
+
+      const depositTxObj = await poolInstance.repayWithPermit({
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        signature,
+      });
+
+      expect(synthetixSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(depositTxObj.length).toEqual(1);
+      const txObj = depositTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        [
+          'address',
+          'uint256',
+          'uint256',
+          'address',
+          'uint256',
+          'uint8',
+          'bytes32',
+          'bytes32',
+        ],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
+      expect(decoded[2]).toEqual(BigNumber.from(1));
+      expect(decoded[3]).toEqual(user);
+      expect(decoded[4]).toEqual(constants.MaxUint256);
+      expect(decoded[5]).toEqual(28);
+      expect(decoded[6]).toEqual(
+        '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e',
+      );
+      expect(decoded[7]).toEqual(
+        '0x47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4',
+      );
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params with amount -1 and reate stable', async () => {
+      const poolInstance = new Pool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+
+      const synthetixSpy = jest
+        .spyOn(poolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(true));
+
+      const amount = '-1';
+      const interestRateMode = InterestRate.Stable;
+      const reapyTxObj = await poolInstance.repayWithPermit({
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        onBehalfOf,
+        signature,
+      });
+
+      expect(synthetixSpy).not.toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(reapyTxObj.length).toEqual(1);
+      const txObj = reapyTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        [
+          'address',
+          'uint256',
+          'uint256',
+          'address',
+          'uint256',
+          'uint8',
+          'bytes32',
+          'bytes32',
+        ],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(constants.MaxUint256);
+      expect(decoded[2]).toEqual(BigNumber.from(1));
+      expect(decoded[3]).toEqual(onBehalfOf);
+      expect(decoded[5]).toEqual(28);
+      expect(decoded[6]).toEqual(
+        '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e',
+      );
+      expect(decoded[7]).toEqual(
+        '0x47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4',
+      );
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params with with specific amount and synthetix repayment with valid amount and rate variable', async () => {
+      const poolInstance = new Pool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const synthetixSpy = jest
+        .spyOn(poolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(true));
+
+      const interestRateMode = InterestRate.Variable;
+      const reapyTxObj = await poolInstance.repayWithPermit({
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        onBehalfOf,
+        signature,
+      });
+
+      expect(synthetixSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(reapyTxObj.length).toEqual(1);
+      const txObj = reapyTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        [
+          'address',
+          'uint256',
+          'uint256',
+          'address',
+          'uint256',
+          'uint8',
+          'bytes32',
+          'bytes32',
+        ],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
+      expect(decoded[2]).toEqual(BigNumber.from(2));
+      expect(decoded[3]).toEqual(onBehalfOf);
+      expect(decoded[5]).toEqual(28);
+      expect(decoded[6]).toEqual(
+        '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e',
+      );
+      expect(decoded[7]).toEqual(
+        '0x47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4',
+      );
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects to fail passing all params with with specific amount and synthetix repayment but not valid amount', async () => {
+      const poolInstance = new Pool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+
+      const synthetixSpy = jest
+        .spyOn(poolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(false));
+
+      await expect(async () =>
+        poolInstance.repayWithPermit({
+          user,
+          reserve,
+          amount,
+          interestRateMode,
+          onBehalfOf,
+          signature,
+        }),
+      ).rejects.toThrowError('Not enough funds to execute operation');
+
+      expect(decimalsSpy).toHaveBeenCalled();
+      expect(synthetixSpy).toHaveBeenCalled();
+    });
+    it('Expects to fail when PoolAddress not provided', async () => {
+      const poolInstance = new Pool(provider);
+      const txObj = await poolInstance.repayWithPermit({
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        onBehalfOf,
+        signature,
+      });
+      expect(txObj).toEqual([]);
+    });
+    it('Expects to fail when user not and eth address', async () => {
+      const poolInstance = new Pool(provider, config);
+      const user = 'asdf';
+      await expect(async () =>
+        poolInstance.repayWithPermit({
+          user,
+          reserve,
+          amount,
+          interestRateMode,
+          onBehalfOf,
+          signature,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${user} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when reserve not and eth address', async () => {
+      const poolInstance = new Pool(provider, config);
+      const reserve = 'asdf';
+      await expect(async () =>
+        poolInstance.repayWithPermit({
+          user,
+          reserve,
+          amount,
+          interestRateMode,
+          onBehalfOf,
+          signature,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${reserve} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when onBehalfOf not and eth address', async () => {
+      const poolInstance = new Pool(provider, config);
+      const onBehalfOf = 'asdf';
+      await expect(async () =>
+        poolInstance.repayWithPermit({
+          user,
+          reserve,
+          amount,
+          interestRateMode,
+          onBehalfOf,
+          signature,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${onBehalfOf} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when amount 0', async () => {
+      const poolInstance = new Pool(provider, config);
+      const amount = '0';
+      await expect(async () =>
+        poolInstance.repayWithPermit({
+          user,
+          reserve,
+          amount,
+          interestRateMode,
+          onBehalfOf,
+          signature,
+        }),
+      ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
+    });
+    it('Expects to fail when amount not number', async () => {
+      const poolInstance = new Pool(provider, config);
+      const amount = 'asdf';
+      await expect(async () =>
+        poolInstance.repayWithPermit({
+          user,
+          reserve,
+          amount,
+          interestRateMode,
+          onBehalfOf,
+          signature,
+        }),
+      ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
+    });
+  });
 });
