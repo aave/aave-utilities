@@ -17,6 +17,7 @@ import {
   valueToWei,
 } from '../commons/utils';
 import {
+  LPFlashLiquidationValidatorV3,
   LPRepayWithCollateralValidatorV3,
   LPSwapCollateralValidatorV3,
   LPValidatorV3,
@@ -44,6 +45,7 @@ import {
 import {
   LPBorrowParamsType,
   LPDepositParamsType,
+  LPFlashLiquidation,
   LPLiquidationCall,
   LPRepayParamsType,
   LPRepayWithCollateral,
@@ -1151,6 +1153,85 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
 
     txs.push(swapAndRepayTx);
 
+    return txs;
+  }
+
+  @LPFlashLiquidationValidatorV3
+  public async flashLiquidation(
+    @isEthAddress('user')
+    @isEthAddress('collateralAsset')
+    @isEthAddress('borrowedAsset')
+    @isPositiveAmount('debtTokenCover')
+    @isEthAddress('initiator')
+    {
+      user,
+      collateralAsset,
+      borrowedAsset,
+      debtTokenCover,
+      liquidateAll,
+      initiator,
+      useEthPath,
+    }: LPFlashLiquidation,
+  ): Promise<EthereumTransactionTypeExtended[]> {
+    const addSurplus = (amount: string): string => {
+      return (
+        Number(amount) +
+        (Number(amount) * Number(amount)) / 100
+      ).toString();
+    };
+
+    const txs: EthereumTransactionTypeExtended[] = [];
+
+    const poolContract: IPool = this.getContractInstance(this.poolAddress);
+
+    const tokenDecimals: number = await this.erc20Service.decimalsOf(
+      borrowedAsset,
+    );
+
+    const convertedDebt = valueToWei(debtTokenCover, tokenDecimals);
+
+    const convertedDebtTokenCover: string = liquidateAll
+      ? constants.MaxUint256.toString()
+      : convertedDebt;
+
+    const flashBorrowAmount = liquidateAll
+      ? valueToWei(addSurplus(debtTokenCover), tokenDecimals)
+      : convertedDebt;
+
+    const params: string = utils.defaultAbiCoder.encode(
+      ['address', 'address', 'address', 'uint256', 'bool'],
+      [
+        collateralAsset,
+        borrowedAsset,
+        user,
+        convertedDebtTokenCover,
+        useEthPath ?? false,
+      ],
+    );
+
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        poolContract.populateTransaction.flashLoan(
+          this.flashLiquidationAddress,
+          [borrowedAsset],
+          [flashBorrowAmount],
+          [0],
+          initiator,
+          params,
+          '0',
+        ),
+      from: initiator,
+    });
+
+    txs.push({
+      tx: txCallback,
+      txType: eEthereumTxType.DLP_ACTION,
+      gas: this.generateTxPriceEstimation(
+        txs,
+        txCallback,
+        ProtocolAction.liquidationFlash,
+      ),
+    });
     return txs;
   }
 }

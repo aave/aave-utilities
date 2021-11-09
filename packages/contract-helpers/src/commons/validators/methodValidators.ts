@@ -44,6 +44,35 @@ export function LPFlashLiquidationValidator(
   };
 }
 
+export function LPFlashLiquidationValidatorV3(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    if (
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.poolAddress) ||
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.flashLiquidationAddress)
+    ) {
+      console.error(
+        `[LPFlahsLiquidationValidator] You need to pass valid addresses`,
+      );
+      return [];
+    }
+
+    isEthAddressValidator(target, propertyName, arguments);
+
+    amountGtThan0Validator(target, propertyName, arguments);
+
+    amountGtThan0OrMinus1(target, propertyName, arguments);
+
+    return method.apply(this, arguments);
+  };
+}
+
 export function LPRepayWithCollateralValidator(
   target: any,
   propertyName: string,
