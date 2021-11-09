@@ -40,8 +40,10 @@ import {
   LPDepositParamsType,
   LPRepayParamsType,
   LPRepayWithPermitParamsType,
+  LPSetUsageAsCollateral,
   LPSignERC20ApprovalType,
   LPSupplyWithPermitType,
+  LPSwapBorrowRateMode,
   LPWithdrawParamsType,
 } from './lendingPoolTypes';
 import { IPool } from './typechain/IPool';
@@ -67,6 +69,12 @@ export interface PoolInterface {
   repay: (
     args: LPRepayParamsType,
   ) => Promise<EthereumTransactionTypeExtended[]>;
+  swapBorrowRateMode: (
+    args: LPSwapBorrowRateMode,
+  ) => EthereumTransactionTypeExtended[];
+  setUsageAsCollateral: (
+    args: LPSetUsageAsCollateral,
+  ) => EthereumTransactionTypeExtended[];
 }
 
 export type LendingPoolMarketConfig = {
@@ -681,5 +689,58 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     });
 
     return txs;
+  }
+
+  @LPValidatorV3
+  public swapBorrowRateMode(
+    @isEthAddress('user')
+    @isEthAddress('reserve')
+    { user, reserve, interestRateMode }: LPSwapBorrowRateMode,
+  ): EthereumTransactionTypeExtended[] {
+    const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
+
+    const poolContract: IPool = this.getContractInstance(this.poolAddress);
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        poolContract.populateTransaction.swapBorrowRateMode(
+          reserve,
+          numericRateMode,
+        ),
+      from: user,
+    });
+
+    return [
+      {
+        txType: eEthereumTxType.DLP_ACTION,
+        tx: txCallback,
+        gas: this.generateTxPriceEstimation([], txCallback),
+      },
+    ];
+  }
+
+  @LPValidatorV3
+  public setUsageAsCollateral(
+    @isEthAddress('user')
+    @isEthAddress('reserve')
+    { user, reserve, usageAsCollateral }: LPSetUsageAsCollateral,
+  ): EthereumTransactionTypeExtended[] {
+    const poolContract: IPool = this.getContractInstance(this.poolAddress);
+
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        poolContract.populateTransaction.setUserUseReserveAsCollateral(
+          reserve,
+          usageAsCollateral,
+        ),
+      from: user,
+    });
+
+    return [
+      {
+        tx: txCallback,
+        txType: eEthereumTxType.DLP_ACTION,
+        gas: this.generateTxPriceEstimation([], txCallback),
+      },
+    ];
   }
 }
