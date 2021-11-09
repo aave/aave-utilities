@@ -38,6 +38,7 @@ import {
 import {
   LPBorrowParamsType,
   LPDepositParamsType,
+  LPLiquidationCall,
   LPRepayParamsType,
   LPRepayWithPermitParamsType,
   LPSetUsageAsCollateral,
@@ -742,5 +743,78 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         gas: this.generateTxPriceEstimation([], txCallback),
       },
     ];
+  }
+
+  @LPValidatorV3
+  public async liquidationCall(
+    @isEthAddress('liquidator')
+    @isEthAddress('liquidatedUser')
+    @isEthAddress('debtReserve')
+    @isEthAddress('collateralReserve')
+    @isPositiveAmount('purchaseAmount')
+    {
+      liquidator,
+      liquidatedUser,
+      debtReserve,
+      collateralReserve,
+      purchaseAmount,
+      getAToken,
+      liquidateAll,
+    }: LPLiquidationCall,
+  ): Promise<EthereumTransactionTypeExtended[]> {
+    const txs: EthereumTransactionTypeExtended[] = [];
+    const { isApproved, approve, decimalsOf }: IERC20ServiceInterface =
+      this.erc20Service;
+
+    const approved = await isApproved({
+      token: debtReserve,
+      user: liquidator,
+      spender: this.poolAddress,
+      amount: purchaseAmount,
+    });
+
+    if (!approved) {
+      const approveTx: EthereumTransactionTypeExtended = approve({
+        user: liquidator,
+        token: debtReserve,
+        spender: this.poolAddress,
+        amount: DEFAULT_APPROVE_AMOUNT,
+      });
+
+      txs.push(approveTx);
+    }
+
+    let convertedAmount = constants.MaxUint256.toString();
+    if (!liquidateAll) {
+      const reserveDecimals = await decimalsOf(debtReserve);
+      convertedAmount = valueToWei(purchaseAmount, reserveDecimals);
+    }
+
+    const poolContract = this.getContractInstance(this.poolAddress);
+
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        poolContract.populateTransaction.liquidationCall(
+          collateralReserve,
+          debtReserve,
+          liquidatedUser,
+          convertedAmount,
+          getAToken ?? false,
+        ),
+      from: liquidator,
+      value: getTxValue(debtReserve, convertedAmount),
+    });
+
+    txs.push({
+      tx: txCallback,
+      txType: eEthereumTxType.DLP_ACTION,
+      gas: this.generateTxPriceEstimation(
+        txs,
+        txCallback,
+        ProtocolAction.liquidationCall,
+      ),
+    });
+
+    return txs;
   }
 }
