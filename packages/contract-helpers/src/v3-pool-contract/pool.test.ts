@@ -3,6 +3,7 @@ import {
   eEthereumTxType,
   // EthereumTransactionTypeExtended,
   GasType,
+  InterestRate,
   ProtocolAction,
   // InterestRate,
   // ProtocolAction,
@@ -1377,6 +1378,299 @@ describe('Pool', () => {
           amount,
           onBehalfOf,
           aTokenAddress,
+        }),
+      ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
+    });
+  });
+  describe('borrow', () => {
+    const user = '0x0000000000000000000000000000000000000006';
+    const reserve = '0x0000000000000000000000000000000000000007';
+    const onBehalfOf = '0x0000000000000000000000000000000000000008';
+    const debtTokenAddress = '0x0000000000000000000000000000000000000009';
+    const amount = '123.456';
+    const decimals = 18;
+    const referralCode = '1';
+    const interestRateMode = InterestRate.None;
+
+    const config = { POOL };
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('Expects the tx object passing all parameters with borrow eth', async () => {
+      const reserve = API_ETH_MOCK_ADDRESS;
+      const poolInstance = new Pool(provider, config);
+      const borrowEthSpy = jest
+        .spyOn(poolInstance.wethGatewayService, 'borrowETH')
+        .mockReturnValue(Promise.resolve([]));
+      await poolInstance.borrow({
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        debtTokenAddress,
+        onBehalfOf,
+        referralCode,
+      });
+      expect(borrowEthSpy).toHaveBeenCalled();
+    });
+    it('Expects the tx object passing all parameters but not onBehalfOf and rate none', async () => {
+      const poolInstance = new Pool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+
+      const borrowTxObj = await poolInstance.borrow({
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        debtTokenAddress,
+        referralCode,
+      });
+
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(borrowTxObj.length).toEqual(1);
+      const txObj = borrowTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256', 'uint256', 'uint16', 'address'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
+      expect(decoded[2]).toEqual(BigNumber.from(1));
+      expect(decoded[3]).toEqual(Number(referralCode));
+      expect(decoded[4]).toEqual(user);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all parameters but not referralCode and rate stable', async () => {
+      const poolInstance = new Pool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+
+      const interestRateMode = InterestRate.Stable;
+      const borrowTxObj = await poolInstance.borrow({
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        debtTokenAddress,
+        onBehalfOf,
+      });
+
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(borrowTxObj.length).toEqual(1);
+      const txObj = borrowTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256', 'uint256', 'uint16', 'address'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
+      expect(decoded[2]).toEqual(BigNumber.from(1));
+      expect(decoded[3]).toEqual(0);
+      expect(decoded[4]).toEqual(onBehalfOf);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all parameters with Interest rate Variable', async () => {
+      const poolInstance = new Pool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+
+      const interestRateMode = InterestRate.Variable;
+      const borrowTxObj = await poolInstance.borrow({
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        debtTokenAddress,
+        onBehalfOf,
+      });
+
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(borrowTxObj.length).toEqual(1);
+      const txObj = borrowTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256', 'uint256', 'uint16', 'address'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
+      expect(decoded[2]).toEqual(BigNumber.from(2));
+      expect(decoded[3]).toEqual(0);
+      expect(decoded[4]).toEqual(onBehalfOf);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects to fail when borrowing eth and not passing debtTokenAddress', async () => {
+      const reserve = API_ETH_MOCK_ADDRESS;
+      const poolInstance = new Pool(provider, config);
+
+      await expect(async () =>
+        poolInstance.borrow({
+          user,
+          reserve,
+          amount,
+          interestRateMode,
+          onBehalfOf,
+          referralCode,
+        }),
+      ).rejects.toThrowError(
+        `To borrow ETH you need to pass the stable or variable WETH debt Token Address corresponding the interestRateMode`,
+      );
+    });
+    it('Expects to fail when PoolAddress not provided', async () => {
+      const poolInstance = new Pool(provider);
+
+      const txs = await poolInstance.borrow({
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        debtTokenAddress,
+        onBehalfOf,
+        referralCode,
+      });
+      expect(txs).toEqual([]);
+    });
+    it('Expects to fail when user not and eth address', async () => {
+      const poolInstance = new Pool(provider, config);
+      const user = 'asdf';
+      await expect(async () =>
+        poolInstance.borrow({
+          user,
+          reserve,
+          amount,
+          interestRateMode,
+          debtTokenAddress,
+          onBehalfOf,
+          referralCode,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${user} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when reserve not and eth address', async () => {
+      const poolInstance = new Pool(provider, config);
+      const reserve = 'asdf';
+      await expect(async () =>
+        poolInstance.borrow({
+          user,
+          reserve,
+          amount,
+          interestRateMode,
+          debtTokenAddress,
+          onBehalfOf,
+          referralCode,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${reserve} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when onBehalfOf not and eth address', async () => {
+      const poolInstance = new Pool(provider, config);
+      const onBehalfOf = 'asdf';
+      await expect(async () =>
+        poolInstance.borrow({
+          user,
+          reserve,
+          amount,
+          interestRateMode,
+          debtTokenAddress,
+          onBehalfOf,
+          referralCode,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${onBehalfOf} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when debtTokenAddress not and eth address', async () => {
+      const poolInstance = new Pool(provider, config);
+      const debtTokenAddress = 'asdf';
+      await expect(async () =>
+        poolInstance.borrow({
+          user,
+          reserve,
+          amount,
+          interestRateMode,
+          debtTokenAddress,
+          onBehalfOf,
+          referralCode,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${debtTokenAddress} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when amount not positive', async () => {
+      const poolInstance = new Pool(provider, config);
+      const amount = '0';
+      await expect(async () =>
+        poolInstance.borrow({
+          user,
+          reserve,
+          amount,
+          interestRateMode,
+          debtTokenAddress,
+          onBehalfOf,
+          referralCode,
+        }),
+      ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
+    });
+    it('Expects to fail when amount not number', async () => {
+      const poolInstance = new Pool(provider, config);
+      const amount = 'asfd';
+      await expect(async () =>
+        poolInstance.borrow({
+          user,
+          reserve,
+          amount,
+          interestRateMode,
+          debtTokenAddress,
+          onBehalfOf,
+          referralCode,
         }),
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });

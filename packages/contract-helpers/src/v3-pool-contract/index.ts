@@ -4,6 +4,7 @@ import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
   EthereumTransactionTypeExtended,
+  InterestRate,
   ProtocolAction,
   tEthereumAddress,
   transactionType,
@@ -35,6 +36,7 @@ import {
   WETHGatewayService,
 } from '../wethgateway-contract';
 import {
+  LPBorrowParamsType,
   LPDepositParamsType,
   LPSignSupplyType,
   LPSupplyWithPermitType,
@@ -447,6 +449,69 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           txCallback,
           ProtocolAction.withdraw,
         ),
+      },
+    ];
+  }
+
+  @LPValidatorV3
+  public async borrow(
+    @isEthAddress('user')
+    @isEthAddress('reserve')
+    @isPositiveAmount('amount')
+    @isEthAddress('debtTokenAddress')
+    @isEthAddress('onBehalfOf')
+    {
+      user,
+      reserve,
+      amount,
+      interestRateMode,
+      debtTokenAddress,
+      onBehalfOf,
+      referralCode,
+    }: LPBorrowParamsType,
+  ): Promise<EthereumTransactionTypeExtended[]> {
+    if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
+      if (!debtTokenAddress) {
+        throw new Error(
+          `To borrow ETH you need to pass the stable or variable WETH debt Token Address corresponding the interestRateMode`,
+        );
+      }
+
+      return this.wethGatewayService.borrowETH({
+        lendingPool: this.poolAddress,
+        user,
+        amount,
+        debtTokenAddress,
+        interestRateMode,
+        referralCode,
+      });
+    }
+
+    const { decimalsOf }: IERC20ServiceInterface = this.erc20Service;
+    const reserveDecimals = await decimalsOf(reserve);
+    const formatAmount: string = valueToWei(amount, reserveDecimals);
+
+    const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
+
+    const lendingPoolContract = this.getContractInstance(this.poolAddress);
+
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        lendingPoolContract.populateTransaction.borrow(
+          reserve,
+          formatAmount,
+          numericRateMode,
+          referralCode ?? 0,
+          onBehalfOf ?? user,
+        ),
+      from: user,
+    });
+
+    return [
+      {
+        tx: txCallback,
+        txType: eEthereumTxType.DLP_ACTION,
+        gas: this.generateTxPriceEstimation([], txCallback),
       },
     ];
   }
