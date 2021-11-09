@@ -18,6 +18,7 @@ import { LPValidatorV3 } from '../commons/validators/methodValidators';
 import {
   isEthAddress,
   isPositiveAmount,
+  isPositiveOrMinusOneAmount,
 } from '../commons/validators/paramValidators';
 import { ERC20Service, IERC20ServiceInterface } from '../erc20-contract';
 import {
@@ -37,6 +38,7 @@ import {
   LPDepositParamsType,
   LPSignSupplyType,
   LPSupplyWithPermitType,
+  LPWithdrawParamsType,
 } from './lendingPoolTypes';
 import { IPool } from './typechain/IPool';
 import { IPoolFactory } from './typechain/IPoolFactory';
@@ -388,5 +390,64 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     });
 
     return txs;
+  }
+
+  @LPValidatorV3
+  public async withdraw(
+    @isEthAddress('user')
+    @isEthAddress('reserve')
+    @isPositiveOrMinusOneAmount('amount')
+    @isEthAddress('onBehalfOf')
+    @isEthAddress('aTokenAddress')
+    { user, reserve, amount, onBehalfOf, aTokenAddress }: LPWithdrawParamsType,
+  ): Promise<EthereumTransactionTypeExtended[]> {
+    if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
+      if (!aTokenAddress) {
+        throw new Error(
+          'To withdraw ETH you need to pass the aWETH token address',
+        );
+      }
+
+      return this.wethGatewayService.withdrawETH({
+        lendingPool: this.poolAddress,
+        user,
+        amount,
+        onBehalfOf,
+        aTokenAddress,
+      });
+    }
+
+    const { decimalsOf }: IERC20ServiceInterface = this.erc20Service;
+    const decimals: number = await decimalsOf(reserve);
+
+    const convertedAmount: string =
+      amount === '-1'
+        ? constants.MaxUint256.toString()
+        : valueToWei(amount, decimals);
+
+    const poolContract: IPool = this.getContractInstance(this.poolAddress);
+
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        poolContract.populateTransaction.withdraw(
+          reserve,
+          convertedAmount,
+          onBehalfOf ?? user,
+        ),
+      from: user,
+      action: ProtocolAction.withdraw,
+    });
+
+    return [
+      {
+        tx: txCallback,
+        txType: eEthereumTxType.DLP_ACTION,
+        gas: this.generateTxPriceEstimation(
+          [],
+          txCallback,
+          ProtocolAction.withdraw,
+        ),
+      },
+    ];
   }
 }
