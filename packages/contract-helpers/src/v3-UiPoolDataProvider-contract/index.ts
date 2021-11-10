@@ -172,6 +172,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
         // new fields
         isPaused: reserveRaw.isPaused,
         debtCeiling: reserveRaw.debtCeiling.toString(),
+        debtCeilingDecimals: reserveRaw.debtCeilingDecimals.toNumber(),
         eModeCategoryId: reserveRaw.eModeCategoryId,
         borrowCap: reserveRaw.borrowCap.toString(),
         supplyCap: reserveRaw.supplyCap.toString(),

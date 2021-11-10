@@ -164,6 +164,7 @@ describe('UiPoolDataProvider', () => {
             stableRateSlope2: '0',
             // new
             debtCeiling: '0',
+            debtCeilingDecimals: 0,
             eModeCategoryId: 1,
             borrowCap: '0',
             supplyCap: '0',
@@ -214,6 +215,7 @@ describe('UiPoolDataProvider', () => {
             stableRateSlope2: '0',
             // new
             debtCeiling: '0',
+            debtCeilingDecimals: 0,
             eModeCategoryId: 1,
             borrowCap: '0',
             supplyCap: '0',

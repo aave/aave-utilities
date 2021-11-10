@@ -103,6 +103,10 @@ export const reservesMock: ReservesData = {
         _hex: '0x0',
         _isBigNumber: true,
       }),
+      debtCeilingDecimals: BigNumber.from({
+        _hex: '0x0',
+        _isBigNumber: true,
+      }),
       eModeCategoryId: 1,
       borrowCap: BigNumber.from({
         _hex: '0x0',
@@ -215,6 +219,10 @@ export const reservesMock: ReservesData = {
       }),
       // new
       debtCeiling: BigNumber.from({
+        _hex: '0x0',
+        _isBigNumber: true,
+      }),
+      debtCeilingDecimals: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
       }),

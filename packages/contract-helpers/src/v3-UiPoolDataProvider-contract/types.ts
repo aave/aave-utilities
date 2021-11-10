@@ -82,6 +82,7 @@ export interface ReservesData {
     stableRateSlope1: BigNumber;
     stableRateSlope2: BigNumber;
     debtCeiling: BigNumber;
+    debtCeilingDecimals: BigNumber;
     eModeCategoryId: number;
     borrowCap: BigNumber;
     supplyCap: BigNumber;
@@ -256,6 +257,7 @@ export interface ReserveDataHumanized {
   // new fields
   isPaused: boolean;
   debtCeiling: string;
+  debtCeilingDecimals: number;
   eModeCategoryId: number;
   borrowCap: string;
   supplyCap: string;

@@ -192,8 +192,28 @@ const _abi = [
             type: 'uint256',
           },
           {
+            internalType: 'uint128',
+            name: 'accruedToTreasury',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'unbacked',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'isolationModeTotalDebt',
+            type: 'uint128',
+          },
+          {
             internalType: 'uint256',
             name: 'debtCeiling',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'debtCeilingDecimals',
             type: 'uint256',
           },
           {

@@ -138,6 +138,10 @@ export class IUiPoolDataProvider extends BaseContract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
           number,
           BigNumber,
           BigNumber,
@@ -181,7 +185,11 @@ export class IUiPoolDataProvider extends BaseContract {
           variableRateSlope2: BigNumber;
           stableRateSlope1: BigNumber;
           stableRateSlope2: BigNumber;
+          accruedToTreasury: BigNumber;
+          unbacked: BigNumber;
+          isolationModeTotalDebt: BigNumber;
           debtCeiling: BigNumber;
+          debtCeilingDecimals: BigNumber;
           eModeCategoryId: number;
           borrowCap: BigNumber;
           supplyCap: BigNumber;
@@ -274,6 +282,10 @@ export class IUiPoolDataProvider extends BaseContract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
         number,
         BigNumber,
         BigNumber,
@@ -317,7 +329,11 @@ export class IUiPoolDataProvider extends BaseContract {
         variableRateSlope2: BigNumber;
         stableRateSlope1: BigNumber;
         stableRateSlope2: BigNumber;
+        accruedToTreasury: BigNumber;
+        unbacked: BigNumber;
+        isolationModeTotalDebt: BigNumber;
         debtCeiling: BigNumber;
+        debtCeilingDecimals: BigNumber;
         eModeCategoryId: number;
         borrowCap: BigNumber;
         supplyCap: BigNumber;
@@ -410,6 +426,10 @@ export class IUiPoolDataProvider extends BaseContract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
           number,
           BigNumber,
           BigNumber,
@@ -453,7 +473,11 @@ export class IUiPoolDataProvider extends BaseContract {
           variableRateSlope2: BigNumber;
           stableRateSlope1: BigNumber;
           stableRateSlope2: BigNumber;
+          accruedToTreasury: BigNumber;
+          unbacked: BigNumber;
+          isolationModeTotalDebt: BigNumber;
           debtCeiling: BigNumber;
+          debtCeilingDecimals: BigNumber;
           eModeCategoryId: number;
           borrowCap: BigNumber;
           supplyCap: BigNumber;
