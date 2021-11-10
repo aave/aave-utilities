@@ -34,6 +34,7 @@ module.exports = {
     'packages/contract-helpers/src/v3-UiPoolDataProvider-contract/typechain',
     'packages/contract-helpers/src/governance-contract/typechain',
     'packages/contract-helpers/src/governance-power-delegation-contract/typechain',
+    'packages/contract-helpers/src/v3-pool-contract/typechain',
     'packages/contract-helpers/src/index.ts',
   ],
   modulePathIgnorePatterns: ['node_modules'],
