@@ -122,7 +122,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
   ): Promise<ReservesDataHumanized> {
     const { 0: reservesRaw, 1: poolBaseCurrencyRaw }: ReservesData =
       await this.getReservesData(lendingPoolAddressProvider);
-
+    console.log('raw reserves: ', reservesRaw);
     const reservesData: ReserveDataHumanized[] = reservesRaw.map(
       reserveRaw => ({
         id: (
