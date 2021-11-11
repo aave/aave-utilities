@@ -12,6 +12,9 @@ export type ProposalMetadata = {
   description: string;
   shortDescription: string;
   ipfsHash: string;
+  aip: number;
+  discussions: string;
+  author: string;
 };
 
 type MemorizeMetadata = Record<string, ProposalMetadata>;
@@ -24,13 +27,17 @@ export async function getProposalMetadata(
   const ipfsHash = base58.encode(Buffer.from(`1220${hash.slice(2)}`, 'hex'));
   if (MEMORIZE[ipfsHash]) return MEMORIZE[ipfsHash];
   try {
-    const ipfsResponse: Response = await fetch(getLink(ipfsHash));
+    const ipfsResponse: Response = await fetch(getLink(ipfsHash), {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     if (!ipfsResponse.ok) {
       throw Error('Fetch not working');
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { data } = await ipfsResponse.json();
+    const data: ProposalMetadata = await ipfsResponse.json();
     if (!data) {
       throw Error('No data returned');
     }
@@ -48,23 +55,21 @@ export async function getProposalMetadata(
     }
 
     MEMORIZE[ipfsHash] = {
+      ...data,
       ipfsHash,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      title: data.title,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      description: data.description,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      shortDescription: data.shortDescription,
     };
     return MEMORIZE[ipfsHash];
   } catch (e: unknown) {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    console.error(`@aave/protocol-js: IPFS fetch Error: ${e}`);
+    console.error(`@aave/contract-helpers: IPFS fetch Error: ${e}`);
     return {
       ipfsHash,
       title: `Proposal - ${ipfsHash}`,
       description: `Proposal with invalid metadata format or IPFS gateway is down`,
       shortDescription: `Proposal with invalid metadata format or IPFS gateway is down`,
+      aip: 0,
+      author: `Proposal with invalid metadata format or IPFS gateway is down`,
+      discussions: `Proposal with invalid metadata format or IPFS gateway is down`,
     };
   }
 }

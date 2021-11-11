@@ -30,11 +30,9 @@ describe('ipfs', () => {
       const json = jest.fn() as jest.MockedFunction<any>;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       json.mockResolvedValue({
-        data: {
-          title: 'mockTitle',
-          description: 'mockDescription',
-          shortDescription: 'mockShortDescription',
-        },
+        title: 'mockTitle',
+        description: 'mockDescription',
+        shortDescription: 'mockShortDescription',
       });
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       mockFetch.mockResolvedValue({ ok: true, json } as Response);
@@ -59,11 +57,9 @@ describe('ipfs', () => {
       const json = jest.fn() as jest.MockedFunction<any>;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       json.mockResolvedValue({
-        data: {
-          title: 'mockTitle',
-          description: 'mockDescription',
-          shortDescription: 'mockShortDescription',
-        },
+        title: 'mockTitle',
+        description: 'mockDescription',
+        shortDescription: 'mockShortDescription',
       });
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       mockFetch.mockResolvedValue({ ok: true, json } as Response);
@@ -95,10 +91,8 @@ describe('ipfs', () => {
       const json = jest.fn() as jest.MockedFunction<any>;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       json.mockResolvedValue({
-        data: {
-          description: 'mockDescription',
-          shortDescription: 'mockShortDescription',
-        },
+        description: 'mockDescription',
+        shortDescription: 'mockShortDescription',
       });
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       mockFetch.mockResolvedValue({ ok: true, json } as Response);
@@ -111,6 +105,9 @@ describe('ipfs', () => {
         description: `Proposal with invalid metadata format or IPFS gateway is down`,
         shortDescription: `Proposal with invalid metadata format or IPFS gateway is down`,
         ipfsHash,
+        aip: 0,
+        author: `Proposal with invalid metadata format or IPFS gateway is down`,
+        discussions: `Proposal with invalid metadata format or IPFS gateway is down`,
       });
     });
     it('Expects to fail if there is no description', async () => {
@@ -123,10 +120,8 @@ describe('ipfs', () => {
       const json = jest.fn() as jest.MockedFunction<any>;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       json.mockResolvedValue({
-        data: {
-          title: 'mockTitle',
-          shortDescription: 'mockShortDescription',
-        },
+        title: 'mockTitle',
+        shortDescription: 'mockShortDescription',
       });
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       mockFetch.mockResolvedValue({ ok: true, json } as Response);
@@ -139,6 +134,9 @@ describe('ipfs', () => {
         description: `Proposal with invalid metadata format or IPFS gateway is down`,
         shortDescription: `Proposal with invalid metadata format or IPFS gateway is down`,
         ipfsHash,
+        aip: 0,
+        author: `Proposal with invalid metadata format or IPFS gateway is down`,
+        discussions: `Proposal with invalid metadata format or IPFS gateway is down`,
       });
     });
     it('Expects to fail if there is no shortDescription', async () => {
@@ -151,10 +149,8 @@ describe('ipfs', () => {
       const json = jest.fn() as jest.MockedFunction<any>;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       json.mockResolvedValue({
-        data: {
-          title: 'mockTitle',
-          description: 'mockDescription',
-        },
+        title: 'mockTitle',
+        description: 'mockDescription',
       });
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       mockFetch.mockResolvedValue({ ok: true, json } as Response);
@@ -167,6 +163,9 @@ describe('ipfs', () => {
         description: `Proposal with invalid metadata format or IPFS gateway is down`,
         shortDescription: `Proposal with invalid metadata format or IPFS gateway is down`,
         ipfsHash,
+        aip: 0,
+        author: `Proposal with invalid metadata format or IPFS gateway is down`,
+        discussions: `Proposal with invalid metadata format or IPFS gateway is down`,
       });
     });
     it('Expects to fail if there is no data', async () => {
@@ -190,6 +189,9 @@ describe('ipfs', () => {
         description: `Proposal with invalid metadata format or IPFS gateway is down`,
         shortDescription: `Proposal with invalid metadata format or IPFS gateway is down`,
         ipfsHash,
+        aip: 0,
+        author: `Proposal with invalid metadata format or IPFS gateway is down`,
+        discussions: `Proposal with invalid metadata format or IPFS gateway is down`,
       });
     });
     it('Expects to fail if there is no response ok', async () => {
@@ -213,6 +215,9 @@ describe('ipfs', () => {
         description: `Proposal with invalid metadata format or IPFS gateway is down`,
         shortDescription: `Proposal with invalid metadata format or IPFS gateway is down`,
         ipfsHash,
+        aip: 0,
+        author: `Proposal with invalid metadata format or IPFS gateway is down`,
+        discussions: `Proposal with invalid metadata format or IPFS gateway is down`,
       });
     });
   });
