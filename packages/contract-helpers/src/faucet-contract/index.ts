@@ -55,6 +55,7 @@ export class FaucetService
     }
 
     const faucetContract = this.getContractInstance(this.faucetAddress);
+    console.log('mint this amount: ', amount);
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>
         faucetContract.populateTransaction.mint(reserve, amount),
