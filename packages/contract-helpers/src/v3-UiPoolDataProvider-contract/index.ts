@@ -179,7 +179,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
         eModeLiquidationThreshold: reserveRaw.eModeLiquidationThreshold,
         eModeLiquidationBonus: reserveRaw.eModeLiquidationBonus,
         eModePriceSource: reserveRaw.eModePriceSource.toString(),
-        eModeLabel: reserveRaw.eModeLabel.toString(),
+        eModeLabel: '', // reserveRaw.eModeLabel.toString(),
       }),
     );
 
