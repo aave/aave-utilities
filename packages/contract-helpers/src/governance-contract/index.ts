@@ -82,16 +82,13 @@ export const parseProposal = async (
     executed,
     canceled,
     strategy,
-    ipfsHash: proposalMetadata.ipfsHash,
     state: Object.values(ProposalState)[proposalState],
     minimumQuorum: minimumQuorum.toString(),
     minimumDiff: minimumDiff.toString(),
     executionTimeWithGracePeriod: executionTimeWithGracePeriod.toString(),
-    title: proposalMetadata.title,
-    description: proposalMetadata.description,
-    shortDescription: proposalMetadata.shortDescription,
     proposalCreated: Number(proposalCreated.toString()),
     totalVotingSupply: totalVotingSupply.toString(),
+    ...proposalMetadata,
   };
 
   return proposal;
@@ -162,7 +159,6 @@ export class AaveGovernanceService
       this.aaveGovernanceV2HelperAddress,
       this.provider,
     );
-    console.log(helper);
     const result = await helper.getProposals(
       skip.toString(),
       limit.toString(),
