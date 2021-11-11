@@ -91,10 +91,8 @@ describe('ipfs', () => {
       const json = jest.fn() as jest.MockedFunction<any>;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       json.mockResolvedValue({
-        data: {
-          description: 'mockDescription',
-          shortDescription: 'mockShortDescription',
-        },
+        description: 'mockDescription',
+        shortDescription: 'mockShortDescription',
       });
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       mockFetch.mockResolvedValue({ ok: true, json } as Response);
@@ -122,10 +120,8 @@ describe('ipfs', () => {
       const json = jest.fn() as jest.MockedFunction<any>;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       json.mockResolvedValue({
-        data: {
-          title: 'mockTitle',
-          shortDescription: 'mockShortDescription',
-        },
+        title: 'mockTitle',
+        shortDescription: 'mockShortDescription',
       });
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       mockFetch.mockResolvedValue({ ok: true, json } as Response);
@@ -153,10 +149,8 @@ describe('ipfs', () => {
       const json = jest.fn() as jest.MockedFunction<any>;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       json.mockResolvedValue({
-        data: {
-          title: 'mockTitle',
-          description: 'mockDescription',
-        },
+        title: 'mockTitle',
+        description: 'mockDescription',
       });
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       mockFetch.mockResolvedValue({ ok: true, json } as Response);

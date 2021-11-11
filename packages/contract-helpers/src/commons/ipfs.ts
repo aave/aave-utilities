@@ -38,7 +38,6 @@ export async function getProposalMetadata(
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const data: ProposalMetadata = await ipfsResponse.json();
-    console.log(data);
     if (!data) {
       throw Error('No data returned');
     }
