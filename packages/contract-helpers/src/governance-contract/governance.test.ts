@@ -198,6 +198,9 @@ describe('GovernanceService', () => {
           shortDescription: 'mockShortDescription',
           ipfsHash:
             '0x04d1fd83d352a7caa14408cee133be97b5919c3a5cf79a47ded3c9b658447d79',
+          aip: 0,
+          author: 'lachs',
+          discussions: 'link',
         }),
       );
       const spy = jest

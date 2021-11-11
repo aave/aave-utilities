@@ -12,6 +12,9 @@ export type ProposalMetadata = {
   description: string;
   shortDescription: string;
   ipfsHash: string;
+  aip: number;
+  discussions: string;
+  author: string;
 };
 
 type MemorizeMetadata = Record<string, ProposalMetadata>;
@@ -30,7 +33,7 @@ export async function getProposalMetadata(
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { data } = await ipfsResponse.json();
+    const { data }: { data: ProposalMetadata } = await ipfsResponse.json();
     if (!data) {
       throw Error('No data returned');
     }
@@ -48,13 +51,8 @@ export async function getProposalMetadata(
     }
 
     MEMORIZE[ipfsHash] = {
+      ...data,
       ipfsHash,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      title: data.title,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      description: data.description,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      shortDescription: data.shortDescription,
     };
     return MEMORIZE[ipfsHash];
   } catch (e: unknown) {
@@ -65,6 +63,9 @@ export async function getProposalMetadata(
       title: `Proposal - ${ipfsHash}`,
       description: `Proposal with invalid metadata format or IPFS gateway is down`,
       shortDescription: `Proposal with invalid metadata format or IPFS gateway is down`,
+      aip: 0,
+      author: `Proposal with invalid metadata format or IPFS gateway is down`,
+      discussions: `Proposal with invalid metadata format or IPFS gateway is down`,
     };
   }
 }

@@ -111,6 +111,9 @@ describe('ipfs', () => {
         description: `Proposal with invalid metadata format or IPFS gateway is down`,
         shortDescription: `Proposal with invalid metadata format or IPFS gateway is down`,
         ipfsHash,
+        aip: 0,
+        author: `Proposal with invalid metadata format or IPFS gateway is down`,
+        discussions: `Proposal with invalid metadata format or IPFS gateway is down`,
       });
     });
     it('Expects to fail if there is no description', async () => {
@@ -139,6 +142,9 @@ describe('ipfs', () => {
         description: `Proposal with invalid metadata format or IPFS gateway is down`,
         shortDescription: `Proposal with invalid metadata format or IPFS gateway is down`,
         ipfsHash,
+        aip: 0,
+        author: `Proposal with invalid metadata format or IPFS gateway is down`,
+        discussions: `Proposal with invalid metadata format or IPFS gateway is down`,
       });
     });
     it('Expects to fail if there is no shortDescription', async () => {
@@ -167,6 +173,9 @@ describe('ipfs', () => {
         description: `Proposal with invalid metadata format or IPFS gateway is down`,
         shortDescription: `Proposal with invalid metadata format or IPFS gateway is down`,
         ipfsHash,
+        aip: 0,
+        author: `Proposal with invalid metadata format or IPFS gateway is down`,
+        discussions: `Proposal with invalid metadata format or IPFS gateway is down`,
       });
     });
     it('Expects to fail if there is no data', async () => {
@@ -190,6 +199,9 @@ describe('ipfs', () => {
         description: `Proposal with invalid metadata format or IPFS gateway is down`,
         shortDescription: `Proposal with invalid metadata format or IPFS gateway is down`,
         ipfsHash,
+        aip: 0,
+        author: `Proposal with invalid metadata format or IPFS gateway is down`,
+        discussions: `Proposal with invalid metadata format or IPFS gateway is down`,
       });
     });
     it('Expects to fail if there is no response ok', async () => {
@@ -213,6 +225,9 @@ describe('ipfs', () => {
         description: `Proposal with invalid metadata format or IPFS gateway is down`,
         shortDescription: `Proposal with invalid metadata format or IPFS gateway is down`,
         ipfsHash,
+        aip: 0,
+        author: `Proposal with invalid metadata format or IPFS gateway is down`,
+        discussions: `Proposal with invalid metadata format or IPFS gateway is down`,
       });
     });
   });
