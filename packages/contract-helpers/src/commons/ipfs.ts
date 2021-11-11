@@ -38,10 +38,6 @@ export async function getProposalMetadata(
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const data: ProposalMetadata = await ipfsResponse.json();
-    if (!data) {
-      throw Error('No data returned');
-    }
-
     if (!data.title) {
       throw Error('Missing title field at proposal metadata.');
     }
