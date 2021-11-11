@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.25.1 (2021-11-11)
+
+
+### Bug Fixes
+
+* coverage ([#171](https://github.com/@aave/aave-utilities/issues/171)) ([9c16633](https://github.com/@aave/aave-utilities/commit/9c166331e1c343481129a49b3e4eb610b2de13f6))
+
+
+
+
+
 # 0.25.0 (2021-11-10)
 
 
