@@ -30,11 +30,9 @@ describe('ipfs', () => {
       const json = jest.fn() as jest.MockedFunction<any>;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       json.mockResolvedValue({
-        data: {
-          title: 'mockTitle',
-          description: 'mockDescription',
-          shortDescription: 'mockShortDescription',
-        },
+        title: 'mockTitle',
+        description: 'mockDescription',
+        shortDescription: 'mockShortDescription',
       });
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       mockFetch.mockResolvedValue({ ok: true, json } as Response);
@@ -59,11 +57,9 @@ describe('ipfs', () => {
       const json = jest.fn() as jest.MockedFunction<any>;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       json.mockResolvedValue({
-        data: {
-          title: 'mockTitle',
-          description: 'mockDescription',
-          shortDescription: 'mockShortDescription',
-        },
+        title: 'mockTitle',
+        description: 'mockDescription',
+        shortDescription: 'mockShortDescription',
       });
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       mockFetch.mockResolvedValue({ ok: true, json } as Response);
