@@ -241,6 +241,9 @@ describe('GovernanceService', () => {
         shortDescription: 'mockShortDescription',
         proposalCreated: Number(proposalMock.proposalCreated.toString()),
         totalVotingSupply: proposalMock.totalVotingSupply.toString(),
+        aip: 0,
+        author: 'lachs',
+        discussions: 'link',
       });
     });
     it('Expects to fail if gov address not eth address', async () => {
