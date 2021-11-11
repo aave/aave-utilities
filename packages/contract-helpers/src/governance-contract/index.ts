@@ -35,7 +35,9 @@ import {
   Vote,
 } from './types';
 
-const parseProposal = async (rawProposal: ProposalRPC): Promise<Proposal> => {
+export const parseProposal = async (
+  rawProposal: ProposalRPC,
+): Promise<Proposal> => {
   const {
     id,
     creator,
