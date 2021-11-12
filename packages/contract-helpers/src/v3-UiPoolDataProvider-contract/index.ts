@@ -96,7 +96,11 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
       throw new Error('Lending pool address is not valid');
     }
 
-    return this._contract.getReservesData(lendingPoolAddressProvider);
+    const data = await this._contract.getReservesData(
+      lendingPoolAddressProvider,
+    );
+    console.log('pure data: ', data);
+    return data;
   }
 
   /**
