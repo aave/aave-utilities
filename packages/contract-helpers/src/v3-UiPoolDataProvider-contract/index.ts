@@ -123,7 +123,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
     const { 0: reservesRaw, 1: poolBaseCurrencyRaw }: ReservesData =
       await this.getReservesData(lendingPoolAddressProvider);
     console.log('raw reserves: ', reservesRaw);
-    console.log('emode label: ', reservesRaw[0].eModeLabel);
+    // console.log('emode label: ', reservesRaw[0].eModeLabel);
     const reservesData: ReserveDataHumanized[] = reservesRaw.map(
       reserveRaw => ({
         id: (
