@@ -124,8 +124,16 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
       await this.getReservesData(lendingPoolAddressProvider);
     console.log('raw reserves: ', reservesRaw);
     // console.log('emode label: ', reservesRaw[0].eModeLabel);
-    const reservesData: ReserveDataHumanized[] = reservesRaw.map(
-      reserveRaw => ({
+    console.log(
+      'stable timestamp: ',
+      reservesRaw[0].stableDebtLastUpdateTimestamp.toString(),
+    );
+    const reservesData: ReserveDataHumanized[] = reservesRaw.map(reserveRaw => {
+      console.log(
+        'stable timestamp: ',
+        reservesRaw[0].stableDebtLastUpdateTimestamp.toString(),
+      );
+      return {
         id: (
           reserveRaw.underlyingAsset + lendingPoolAddressProvider
         ).toLowerCase(),
@@ -161,8 +169,9 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
         totalPrincipalStableDebt:
           reserveRaw.totalPrincipalStableDebt.toString(),
         averageStableRate: reserveRaw.averageStableRate.toString(),
-        stableDebtLastUpdateTimestamp:
-          reserveRaw.stableDebtLastUpdateTimestamp.toNumber(),
+        stableDebtLastUpdateTimestamp: Number(
+          reserveRaw.stableDebtLastUpdateTimestamp.toString(),
+        ),
         totalScaledVariableDebt: reserveRaw.totalScaledVariableDebt.toString(),
         priceInMarketReferenceCurrency:
           reserveRaw.priceInMarketReferenceCurrency.toString(),
@@ -181,8 +190,8 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
         eModeLiquidationBonus: reserveRaw.eModeLiquidationBonus,
         eModePriceSource: reserveRaw.eModePriceSource.toString(),
         eModeLabel: '', // reserveRaw.eModeLabel.toString(),
-      }),
-    );
+      };
+    });
 
     const baseCurrencyData: PoolBaseCurrencyHumanized = {
       // this is to get the decimals from the unit so 1e18 = string length of 19 - 1 to get the number of 0
