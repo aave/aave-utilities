@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.25.2 (2021-11-12)
+
+
+### Bug Fixes
+
+* remove staking address from type ([#173](https://github.com/@aave/aave-utilities/issues/173)) ([57ff194](https://github.com/@aave/aave-utilities/commit/57ff1944c174a3fa32df755c7e08ee18a614f914))
+
+
+
+
+
 ## 0.25.1 (2021-11-11)
 
 
