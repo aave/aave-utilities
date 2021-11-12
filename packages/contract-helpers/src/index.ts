@@ -43,4 +43,3 @@ export * from './v3-pool-contract';
 
 // commons
 export * from './commons/types';
-export * from './commons/ipfs';
