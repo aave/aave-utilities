@@ -26,7 +26,6 @@ import { IStakedToken__factory } from './typechain/IStakedToken__factory';
 
 export interface StakingInterface {
   stakingContractAddress: tEthereumAddress;
-  stakingRewardTokenContractAddress: tEthereumAddress;
 
   stake: (
     user: tEthereumAddress,
@@ -66,8 +65,6 @@ export class StakingService
   readonly stakingHelperContract: IAaveStakingHelper;
 
   public readonly stakingContractAddress: tEthereumAddress;
-
-  public readonly stakingRewardTokenContractAddress: tEthereumAddress;
 
   readonly stakingHelperContractAddress: tEthereumAddress;
 
