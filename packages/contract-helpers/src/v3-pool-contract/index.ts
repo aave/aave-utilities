@@ -378,12 +378,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
 
     const typeData = {
       types: {
-        EIP712Domain: [
-          { name: 'name', type: 'string' },
-          { name: 'version', type: 'string' },
-          { name: 'chainId', type: 'uint256' },
-          { name: 'verifyingContract', type: 'address' },
-        ],
         Permit: [
           { name: 'owner', type: 'address' },
           { name: 'spender', type: 'address' },
