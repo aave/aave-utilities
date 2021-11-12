@@ -123,6 +123,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
     const { 0: reservesRaw, 1: poolBaseCurrencyRaw }: ReservesData =
       await this.getReservesData(lendingPoolAddressProvider);
     console.log('raw reserves: ', reservesRaw);
+    console.log('emode label: ', reservesRaw[0].eModeLabel);
     const reservesData: ReserveDataHumanized[] = reservesRaw.map(
       reserveRaw => ({
         id: (
@@ -179,7 +180,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
         eModeLiquidationThreshold: reserveRaw.eModeLiquidationThreshold,
         eModeLiquidationBonus: reserveRaw.eModeLiquidationBonus,
         eModePriceSource: reserveRaw.eModePriceSource.toString(),
-        eModeLabel: reserveRaw.eModeLabel.toString(),
+        eModeLabel: '', // reserveRaw.eModeLabel.toString(),
       }),
     );
 
