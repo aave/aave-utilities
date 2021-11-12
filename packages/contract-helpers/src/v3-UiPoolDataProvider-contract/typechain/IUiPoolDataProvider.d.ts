@@ -116,7 +116,6 @@ export class IUiPoolDataProvider extends BaseContract {
           boolean,
           boolean,
           boolean,
-          boolean,
           BigNumber,
           BigNumber,
           BigNumber,
@@ -133,6 +132,11 @@ export class IUiPoolDataProvider extends BaseContract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          boolean,
           BigNumber,
           BigNumber,
           BigNumber,
@@ -160,7 +164,6 @@ export class IUiPoolDataProvider extends BaseContract {
           stableBorrowRateEnabled: boolean;
           isActive: boolean;
           isFrozen: boolean;
-          isPaused: boolean;
           liquidityIndex: BigNumber;
           variableBorrowIndex: BigNumber;
           liquidityRate: BigNumber;
@@ -181,7 +184,12 @@ export class IUiPoolDataProvider extends BaseContract {
           variableRateSlope2: BigNumber;
           stableRateSlope1: BigNumber;
           stableRateSlope2: BigNumber;
+          isPaused: boolean;
+          accruedToTreasury: BigNumber;
+          unbacked: BigNumber;
+          isolationModeTotalDebt: BigNumber;
           debtCeiling: BigNumber;
+          debtCeilingDecimals: BigNumber;
           eModeCategoryId: number;
           borrowCap: BigNumber;
           supplyCap: BigNumber;
@@ -252,7 +260,6 @@ export class IUiPoolDataProvider extends BaseContract {
         boolean,
         boolean,
         boolean,
-        boolean,
         BigNumber,
         BigNumber,
         BigNumber,
@@ -269,6 +276,11 @@ export class IUiPoolDataProvider extends BaseContract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        boolean,
         BigNumber,
         BigNumber,
         BigNumber,
@@ -296,7 +308,6 @@ export class IUiPoolDataProvider extends BaseContract {
         stableBorrowRateEnabled: boolean;
         isActive: boolean;
         isFrozen: boolean;
-        isPaused: boolean;
         liquidityIndex: BigNumber;
         variableBorrowIndex: BigNumber;
         liquidityRate: BigNumber;
@@ -317,7 +328,12 @@ export class IUiPoolDataProvider extends BaseContract {
         variableRateSlope2: BigNumber;
         stableRateSlope1: BigNumber;
         stableRateSlope2: BigNumber;
+        isPaused: boolean;
+        accruedToTreasury: BigNumber;
+        unbacked: BigNumber;
+        isolationModeTotalDebt: BigNumber;
         debtCeiling: BigNumber;
+        debtCeilingDecimals: BigNumber;
         eModeCategoryId: number;
         borrowCap: BigNumber;
         supplyCap: BigNumber;
@@ -388,7 +404,6 @@ export class IUiPoolDataProvider extends BaseContract {
           boolean,
           boolean,
           boolean,
-          boolean,
           BigNumber,
           BigNumber,
           BigNumber,
@@ -405,6 +420,11 @@ export class IUiPoolDataProvider extends BaseContract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          boolean,
           BigNumber,
           BigNumber,
           BigNumber,
@@ -432,7 +452,6 @@ export class IUiPoolDataProvider extends BaseContract {
           stableBorrowRateEnabled: boolean;
           isActive: boolean;
           isFrozen: boolean;
-          isPaused: boolean;
           liquidityIndex: BigNumber;
           variableBorrowIndex: BigNumber;
           liquidityRate: BigNumber;
@@ -453,7 +472,12 @@ export class IUiPoolDataProvider extends BaseContract {
           variableRateSlope2: BigNumber;
           stableRateSlope1: BigNumber;
           stableRateSlope2: BigNumber;
+          isPaused: boolean;
+          accruedToTreasury: BigNumber;
+          unbacked: BigNumber;
+          isolationModeTotalDebt: BigNumber;
           debtCeiling: BigNumber;
+          debtCeilingDecimals: BigNumber;
           eModeCategoryId: number;
           borrowCap: BigNumber;
           supplyCap: BigNumber;
