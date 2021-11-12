@@ -128,14 +128,10 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
       await this.getReservesData(lendingPoolAddressProvider);
     console.log('raw reserves: ', reservesRaw);
     // console.log('emode label: ', reservesRaw[0].eModeLabel);
-    console.log(
-      'stable timestamp: ',
-      reservesRaw[0].stableDebtLastUpdateTimestamp.toString(),
-    );
     const reservesData: ReserveDataHumanized[] = reservesRaw.map(reserveRaw => {
       console.log(
-        'stable timestamp: ',
-        reservesRaw[0].stableDebtLastUpdateTimestamp.toString(),
+        'available liquidity ',
+        reserveRaw.availableLiquidity.toString(),
       );
       return {
         id: (
@@ -173,9 +169,8 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
         totalPrincipalStableDebt:
           reserveRaw.totalPrincipalStableDebt.toString(),
         averageStableRate: reserveRaw.averageStableRate.toString(),
-        stableDebtLastUpdateTimestamp: Number(
-          reserveRaw.stableDebtLastUpdateTimestamp.toString(),
-        ),
+        stableDebtLastUpdateTimestamp:
+          reserveRaw.stableDebtLastUpdateTimestamp.toNumber(),
         totalScaledVariableDebt: reserveRaw.totalScaledVariableDebt.toString(),
         priceInMarketReferenceCurrency:
           reserveRaw.priceInMarketReferenceCurrency.toString(),
