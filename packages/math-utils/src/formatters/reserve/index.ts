@@ -196,6 +196,15 @@ export interface FormatReserveUSDRequest {
   marketRefCurrencyDecimals: number;
 }
 
+export interface FormatReserveUSDResponse extends FormatReserveResponse {
+  totalLiquidityUSD: string;
+  totalDebtUSD: string;
+  totalVariableDebtUSD: string;
+  totalStableDebtUSD: string;
+  borrowCapUSD: string;
+  supplyCapUSD: string;
+}
+
 /**
  * @description computes additional fields and normalizes numbers into human readable decimals
  * In addition to that it also converts the numbers to USD
@@ -205,7 +214,7 @@ export function formatReserveUSD({
   currentTimestamp,
   marketRefPriceInUsd,
   marketRefCurrencyDecimals,
-}: FormatReserveUSDRequest) {
+}: FormatReserveUSDRequest): FormatReserveUSDResponse {
   const computedFields = getComputedReserveFields({
     reserve,
     currentTimestamp,
@@ -250,11 +259,11 @@ export function formatReserveUSD({
       new BigNumber(reserve.borrowCap),
       marketRefPriceInUsd,
       marketRefCurrencyDecimals,
-    ),
+    ).toString(),
     supplyCapUSD: normalizedToUsd(
       new BigNumber(reserve.supplyCap),
       marketRefPriceInUsd,
       marketRefCurrencyDecimals,
-    ),
+    ).toString(),
   };
 }
