@@ -198,6 +198,7 @@ export interface FormatReserveUSDRequest {
 
 export interface FormatReserveUSDResponse extends FormatReserveResponse {
   totalLiquidityUSD: string;
+  availableLiquidityUSD: string;
   totalDebtUSD: string;
   totalVariableDebtUSD: string;
   totalStableDebtUSD: string;
@@ -232,6 +233,11 @@ export function formatReserveUSD({
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
       marketRefPriceInUsd,
     }),
+    availableLiquidityUSD: normalizedToUsd(
+      new BigNumber(formattedReserve.availableLiquidity),
+      marketRefPriceInUsd,
+      marketRefCurrencyDecimals,
+    ).toString(),
     totalDebtUSD: nativeToUSD({
       amount: computedFields.totalDebt,
       currencyDecimals: reserve.decimals,
