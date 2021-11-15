@@ -110,10 +110,12 @@ function getComputedReserveFields({
           reserve.availableLiquidity,
           new BigNumber(reserve.borrowCap)
             .shiftedBy(reserve.decimals)
+            // sub 0.5% as the balances increase per block and we don't want users to have failed txn
+            .multipliedBy(995)
+            .dividedBy(1000)
             .minus(
-              new BigNumber(1)
-                .plus(reserve.totalScaledVariableDebt)
-                .plus(reserve.totalPrincipalStableDebt),
+              // plus 1 as the cap is exclusive
+              totalDebt.plus(1),
             ),
         ).toFixed();
 
