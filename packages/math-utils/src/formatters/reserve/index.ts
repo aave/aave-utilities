@@ -246,7 +246,6 @@ export function formatReserveUSD({
     reserve,
     currentTimestamp,
   });
-  console.log(reserve, computedFields);
   const formattedReserve = formatEnhancedReserve({
     reserve: { ...reserve, ...computedFields },
   });
