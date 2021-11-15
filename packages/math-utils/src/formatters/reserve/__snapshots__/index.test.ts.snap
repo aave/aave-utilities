@@ -53,6 +53,7 @@ Object {
 exports[`formatReserve should calculate usd values 1`] = `
 Object {
   "availableLiquidity": "43133.641118657852003256",
+  "availableLiquidityUSD": "0.012571934451233413221771232718732712",
   "baseLTVasCollateral": "0.75",
   "borrowCapUSD": "2914.64715827",
   "liquidityIndex": "1.00016444737961059057",
