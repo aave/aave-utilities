@@ -96,11 +96,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
       throw new Error('Lending pool address is not valid');
     }
 
-    const data = await this._contract.getReservesData(
-      lendingPoolAddressProvider,
-    );
-    console.log('pure data: ', data);
-    return data;
+    return this._contract.getReservesData(lendingPoolAddressProvider);
   }
 
   /**
@@ -126,13 +122,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
   ): Promise<ReservesDataHumanized> {
     const { 0: reservesRaw, 1: poolBaseCurrencyRaw }: ReservesData =
       await this.getReservesData(lendingPoolAddressProvider);
-    console.log('raw reserves: ', reservesRaw);
-    // console.log('emode label: ', reservesRaw[0].eModeLabel);
     const reservesData: ReserveDataHumanized[] = reservesRaw.map(reserveRaw => {
-      console.log(
-        'available liquidity ',
-        reserveRaw.availableLiquidity.toString(),
-      );
       return {
         id: (
           reserveRaw.underlyingAsset + lendingPoolAddressProvider
