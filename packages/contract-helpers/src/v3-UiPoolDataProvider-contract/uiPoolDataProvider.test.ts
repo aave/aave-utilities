@@ -172,6 +172,10 @@ describe('UiPoolDataProvider', () => {
             eModeLiquidationBonus: 1,
             eModePriceSource: '0x3E0437898a5667a4769B1Ca5A34aAB1ae7E81377',
             eModeLabel: 'test label',
+            accruedToTreasury: '0',
+            unbacked: '0',
+            isolationModeTotalDebt: '0',
+            debtCeilingDecimals: 0,
           },
           {
             id: '0xa478c2975ab1ea89e8196811f51a7b7ade33eb110x88757f2f99175387ab4c6a4b3067c77a695b0349',
@@ -222,6 +226,10 @@ describe('UiPoolDataProvider', () => {
             eModeLiquidationBonus: 1,
             eModePriceSource: '0x3E0437898a5667a4769B1Ca5A34aAB1ae7E81377',
             eModeLabel: 'test label',
+            accruedToTreasury: '0',
+            unbacked: '0',
+            isolationModeTotalDebt: '0',
+            debtCeilingDecimals: 0,
           },
         ],
         baseCurrencyData: {
