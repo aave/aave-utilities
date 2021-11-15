@@ -171,8 +171,9 @@ function formatEnhancedReserve({
     ),
     variableBorrowIndex: normalize(reserve.variableBorrowIndex, RAY_DECIMALS),
     // v3
-    borrowCap: normalizeWithReserve(reserve.borrowCap),
-    supplyCap: normalizeWithReserve(reserve.supplyCap),
+    // caps are in absolute units of tokens
+    borrowCap: reserve.borrowCap,
+    supplyCap: reserve.supplyCap,
   };
 }
 
