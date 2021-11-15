@@ -563,6 +563,8 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     const reserveDecimals = await decimalsOf(reserve);
     const formatAmount: string = valueToWei(amount, reserveDecimals);
 
+    console.log(formatAmount);
+
     const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
 
     const poolContract = this.getContractInstance(this.poolAddress);
