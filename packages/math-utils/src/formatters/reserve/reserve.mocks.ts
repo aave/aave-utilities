@@ -18,6 +18,8 @@ export const formatReserveRequestWMATIC: FormatReserveRequest = {
     totalPrincipalStableDebt: '0',
     totalScaledVariableDebt: '40102377650818088556713088',
     lastUpdateTimestamp: 1629706026,
+    borrowCap: '0',
+    supplyCap: '0',
   },
   currentTimestamp: 1329706026,
 };
@@ -40,6 +42,8 @@ export const formatReserveRequestDAI: FormatReserveRequest = {
     averageStableRate: '109284236984257451326752610',
     stableDebtLastUpdateTimestamp: 1606992400,
     totalScaledVariableDebt: '145496831599325217573288',
+    borrowCap: '10000000000',
+    supplyCap: '10000000000000',
   },
   currentTimestamp: 1329706026,
 };

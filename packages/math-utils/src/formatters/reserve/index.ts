@@ -31,6 +31,9 @@ export interface FormatReserveResponse {
   totalVariableDebt: string;
   totalDebt: string;
   totalLiquidity: string;
+  // v3
+  borrowCap: string;
+  supplyCap: string;
 }
 
 export interface FormatReserveRequest {
@@ -55,6 +58,9 @@ export interface ReserveData {
   totalPrincipalStableDebt: string;
   totalScaledVariableDebt: string;
   lastUpdateTimestamp: number;
+  // v3
+  borrowCap: string;
+  supplyCap: string;
 }
 
 interface GetComputedReserveFieldsResponse {
@@ -164,6 +170,9 @@ function formatEnhancedReserve({
       reserve.totalPrincipalStableDebt,
     ),
     variableBorrowIndex: normalize(reserve.variableBorrowIndex, RAY_DECIMALS),
+    // v3
+    borrowCap: normalizeWithReserve(reserve.borrowCap),
+    supplyCap: normalizeWithReserve(reserve.supplyCap),
   };
 }
 
@@ -235,6 +244,21 @@ export function formatReserveUSD({
     }),
     totalStableDebtUSD: nativeToUSD({
       amount: computedFields.totalStableDebt,
+      currencyDecimals: reserve.decimals,
+      marketRefCurrencyDecimals,
+      priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+      marketRefPriceInUsd,
+    }),
+    // v3
+    borrowCapUSD: nativeToUSD({
+      amount: new BigNumber(formattedReserve.borrowCap),
+      currencyDecimals: reserve.decimals,
+      marketRefCurrencyDecimals,
+      priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+      marketRefPriceInUsd,
+    }),
+    supplyCapUSD: nativeToUSD({
+      amount: new BigNumber(formattedReserve.supplyCap),
       currencyDecimals: reserve.decimals,
       marketRefCurrencyDecimals,
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
