@@ -4,6 +4,7 @@ import {
   calculateAvailableBorrowsMarketReferenceCurrency,
   calculateHealthFactorFromBalances,
 } from '../../pool-math';
+import { normalizedToUsd } from '../usd/normalized-to-usd';
 import { calculateUserReserveTotals } from './calculate-user-reserve-totals';
 import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
 
@@ -25,16 +26,6 @@ export interface RawUserSummaryResponse {
   currentLoanToValue: BigNumber;
   currentLiquidationThreshold: BigNumber;
   healthFactor: BigNumber;
-}
-
-function convertToUsd(
-  value: BigNumber,
-  marketRefPriceInUsd: BigNumberValue,
-  marketRefCurrencyDecimals: number,
-): BigNumber {
-  return value
-    .multipliedBy(marketRefPriceInUsd)
-    .shiftedBy(marketRefCurrencyDecimals * -1);
 }
 
 export function generateRawUserSummary({
@@ -59,17 +50,17 @@ export function generateRawUserSummary({
     });
 
   return {
-    totalLiquidityUSD: convertToUsd(
+    totalLiquidityUSD: normalizedToUsd(
       totalLiquidityMarketReferenceCurrency,
       marketRefPriceInUsd,
       marketRefCurrencyDecimals,
     ),
-    totalCollateralUSD: convertToUsd(
+    totalCollateralUSD: normalizedToUsd(
       totalCollateralMarketReferenceCurrency,
       marketRefPriceInUsd,
       marketRefCurrencyDecimals,
     ),
-    totalBorrowsUSD: convertToUsd(
+    totalBorrowsUSD: normalizedToUsd(
       totalBorrowsMarketReferenceCurrency,
       marketRefPriceInUsd,
       marketRefCurrencyDecimals,
@@ -78,7 +69,7 @@ export function generateRawUserSummary({
     totalCollateralMarketReferenceCurrency,
     totalBorrowsMarketReferenceCurrency,
     availableBorrowsMarketReferenceCurrency,
-    availableBorrowsUSD: convertToUsd(
+    availableBorrowsUSD: normalizedToUsd(
       availableBorrowsMarketReferenceCurrency,
       marketRefPriceInUsd,
       marketRefCurrencyDecimals,

@@ -85,7 +85,6 @@ describe('formatReserve', () => {
       marketRefCurrencyDecimals: 18,
     });
 
-    expect(reserve.totalLiquidity).toBe('43133.641118657852003256');
-    expect(reserve.totalLiquidityUSD).toBe('40649.82653321450505835335');
+    expect(reserve).toMatchSnapshot();
   });
 });
