@@ -42,8 +42,8 @@ export const formatReserveRequestDAI: FormatReserveRequest = {
     averageStableRate: '109284236984257451326752610',
     stableDebtLastUpdateTimestamp: 1606992400,
     totalScaledVariableDebt: '145496831599325217573288',
-    borrowCap: '10000000000',
-    supplyCap: '10000000000000',
+    borrowCap: '300000',
+    supplyCap: '500000',
   },
-  currentTimestamp: 1329706026,
+  currentTimestamp: 1606992400,
 };

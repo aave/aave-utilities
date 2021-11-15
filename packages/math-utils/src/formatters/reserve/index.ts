@@ -18,7 +18,10 @@ export interface FormatReserveResponse {
   reserveLiquidationThreshold: string;
   reserveLiquidationBonus: string;
   variableBorrowIndex: string;
+  /** @description min(unborrowedLiquidity, availableLiquidity) */
   availableLiquidity: string;
+  /** @description totalLiquidity - totalDebt */
+  unborrowedLiquidity: string;
   supplyAPY: string;
   supplyAPR: string;
   variableBorrowAPY: string;
@@ -71,6 +74,8 @@ interface GetComputedReserveFieldsResponse {
   supplyAPY: BigNumber;
   variableBorrowAPY: BigNumber;
   stableBorrowAPY: BigNumber;
+  availableLiquidity: string;
+  unborrowedLiquidity: string;
 }
 
 /**
@@ -93,6 +98,24 @@ function getComputedReserveFields({
     ),
     LTV_PRECISION,
   );
+
+  /**
+   * availableLiquidity returned by the helper is the amount of unborrowed tokens
+   * the actual availableLiquidity might be lower due to borrowCap
+   */
+  const availableLiquidity =
+    reserve.borrowCap === '0'
+      ? reserve.availableLiquidity
+      : BigNumber.min(
+          reserve.availableLiquidity,
+          new BigNumber(reserve.borrowCap)
+            .shiftedBy(reserve.decimals)
+            .minus(
+              new BigNumber(1)
+                .plus(reserve.totalScaledVariableDebt)
+                .plus(reserve.totalPrincipalStableDebt),
+            ),
+        ).toFixed();
 
   const supplyAPY = rayPow(
     valueToZDBigNumber(reserve.liquidityRate)
@@ -125,6 +148,8 @@ function getComputedReserveFields({
     supplyAPY,
     variableBorrowAPY,
     stableBorrowAPY,
+    availableLiquidity,
+    unborrowedLiquidity: reserve.availableLiquidity,
   };
 }
 
@@ -145,6 +170,7 @@ function formatEnhancedReserve({
     totalStableDebt: normalizeWithReserve(reserve.totalStableDebt),
     totalLiquidity: normalizeWithReserve(reserve.totalLiquidity),
     availableLiquidity: normalizeWithReserve(reserve.availableLiquidity),
+    unborrowedLiquidity: normalizeWithReserve(reserve.unborrowedLiquidity),
     utilizationRate: reserve.utilizationRate,
     totalDebt: normalizeWithReserve(reserve.totalDebt),
     baseLTVasCollateral: normalize(reserve.baseLTVasCollateral, LTV_PRECISION),
@@ -220,6 +246,7 @@ export function formatReserveUSD({
     reserve,
     currentTimestamp,
   });
+  console.log(reserve, computedFields);
   const formattedReserve = formatEnhancedReserve({
     reserve: { ...reserve, ...computedFields },
   });
