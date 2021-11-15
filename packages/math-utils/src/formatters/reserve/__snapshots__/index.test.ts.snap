@@ -4,7 +4,6 @@ exports[`formatReserve DAI should return the correct response 1`] = `
 Object {
   "availableLiquidity": "43133.641118657852003256",
   "baseLTVasCollateral": "0.75",
-  "borrowCap": "0.00000001",
   "liquidityIndex": "1.00016444737961059057",
   "reserveFactor": "0.1",
   "reserveLiquidationBonus": "0.05",
@@ -13,7 +12,6 @@ Object {
   "stableBorrowAPY": "0.11547951583122878182",
   "supplyAPR": "0.02677620073531209306",
   "supplyAPY": "0.02713790431950061223",
-  "supplyCap": "0.00001",
   "totalDebt": "104546.724902523987620455",
   "totalLiquidity": "147680.366021181839623711",
   "totalPrincipalStableDebt": "1",
@@ -31,7 +29,6 @@ exports[`formatReserve WMATIC should return the correct response 1`] = `
 Object {
   "availableLiquidity": "150629528.254290021063240208",
   "baseLTVasCollateral": "0.5",
-  "borrowCap": "0",
   "liquidityIndex": "1.00920114827430421106",
   "reserveFactor": "0.2",
   "reserveLiquidationBonus": "0.1",
@@ -40,7 +37,6 @@ Object {
   "stableBorrowAPY": "0.10266878586756504545",
   "supplyAPR": "0.00574176577170011131",
   "supplyAPY": "0.00575828130257027055",
-  "supplyCap": "0",
   "totalDebt": "30186360.792775159242526245",
   "totalLiquidity": "180815889.047065180305766453",
   "totalPrincipalStableDebt": "0",
@@ -51,5 +47,36 @@ Object {
   "variableBorrowAPR": "0.03341338737105765182",
   "variableBorrowAPY": "0.03397788428671542517",
   "variableBorrowIndex": "1.02739968325035004938",
+}
+`;
+
+exports[`formatReserve should calculate usd values 1`] = `
+Object {
+  "availableLiquidity": "43133.641118657852003256",
+  "baseLTVasCollateral": "0.75",
+  "borrowCapUSD": "2914.64715827",
+  "liquidityIndex": "1.00016444737961059057",
+  "reserveFactor": "0.1",
+  "reserveLiquidationBonus": "0.05",
+  "reserveLiquidationThreshold": "0.8",
+  "stableBorrowAPR": "0.10928437169401419784",
+  "stableBorrowAPY": "0.11547951583122878182",
+  "supplyAPR": "0.02677620073531209306",
+  "supplyAPY": "0.02713790431950061223",
+  "supplyCapUSD": "2914647.15827",
+  "totalDebt": "0",
+  "totalDebtUSD": "0",
+  "totalLiquidity": "43133.641118657852003256",
+  "totalLiquidityUSD": "40649.82653321450505835335",
+  "totalPrincipalStableDebt": "1",
+  "totalScaledVariableDebt": "145496.831599325217573288",
+  "totalStableDebt": "0",
+  "totalStableDebtUSD": "0",
+  "totalVariableDebt": "0",
+  "totalVariableDebtUSD": "0",
+  "utilizationRate": "0",
+  "variableBorrowAPR": "0.03856874338802839568",
+  "variableBorrowAPY": "0.03932217240517564451",
+  "variableBorrowIndex": "1.00023285443371120965",
 }
 `;

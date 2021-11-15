@@ -8,6 +8,7 @@ import {
 import { RAY_DECIMALS, SECONDS_PER_YEAR } from '../../constants';
 import { LTV_PRECISION, RAY, rayPow } from '../../index';
 import { nativeToUSD } from '../usd/native-to-usd';
+import { normalizedToUsd } from '../usd/normalized-to-usd';
 import { calculateReserveDebt } from './calculate-reserve-debt';
 
 export interface FormatReserveResponse {
@@ -31,9 +32,6 @@ export interface FormatReserveResponse {
   totalVariableDebt: string;
   totalDebt: string;
   totalLiquidity: string;
-  // v3
-  borrowCap: string;
-  supplyCap: string;
 }
 
 export interface FormatReserveRequest {
@@ -170,9 +168,6 @@ function formatEnhancedReserve({
       reserve.totalPrincipalStableDebt,
     ),
     variableBorrowIndex: normalize(reserve.variableBorrowIndex, RAY_DECIMALS),
-    // v3
-    borrowCap: normalizeWithReserve(reserve.borrowCap),
-    supplyCap: normalizeWithReserve(reserve.supplyCap),
   };
 }
 
@@ -250,19 +245,16 @@ export function formatReserveUSD({
       marketRefPriceInUsd,
     }),
     // v3
-    borrowCapUSD: nativeToUSD({
-      amount: new BigNumber(formattedReserve.borrowCap),
-      currencyDecimals: reserve.decimals,
-      marketRefCurrencyDecimals,
-      priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+    // caps are already in absolutes
+    borrowCapUSD: normalizedToUsd(
+      new BigNumber(reserve.borrowCap),
       marketRefPriceInUsd,
-    }),
-    supplyCapUSD: nativeToUSD({
-      amount: new BigNumber(formattedReserve.supplyCap),
-      currencyDecimals: reserve.decimals,
       marketRefCurrencyDecimals,
-      priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+    ),
+    supplyCapUSD: normalizedToUsd(
+      new BigNumber(reserve.supplyCap),
       marketRefPriceInUsd,
-    }),
+      marketRefCurrencyDecimals,
+    ),
   };
 }
