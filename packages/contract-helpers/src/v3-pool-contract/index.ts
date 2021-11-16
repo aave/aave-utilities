@@ -407,7 +407,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         deadline: constants.MaxUint256.toString(),
       },
     };
-
+    console.log('type data => ', typeData);
     return JSON.stringify(typeData);
   }
 
