@@ -386,7 +386,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           { name: 'deadline', type: 'uint256' },
         ],
       },
-      primaryType: 'Permit',
+      primaryType: 'Permit' as const,
       domain: {
         name,
         version: '1',
