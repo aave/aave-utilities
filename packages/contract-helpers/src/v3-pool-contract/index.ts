@@ -392,7 +392,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           { name: 'deadline', type: 'uint256' },
         ],
       },
-      primaryType: 'Permit' as const,
+      primaryType: 'Permit',
       domain: {
         name,
         version: '1',
@@ -433,7 +433,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     const stakedTokenDecimals: number = await decimalsOf(reserve);
     const convertedAmount: string = valueToWei(amount, stakedTokenDecimals);
     const sig: Signature = utils.splitSignature(signature);
-
+    console.log('sig ===> ', sig);
     const fundsAvailable: boolean =
       await this.synthetixService.synthetixValidation({
         user,
@@ -462,11 +462,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     txs.push({
       tx: txCallback,
       txType: eEthereumTxType.DLP_ACTION,
-      gas: this.generateTxPriceEstimation(
-        txs,
-        txCallback,
-        ProtocolAction.deposit,
-      ),
+      gas: this.generateTxPriceEstimation(txs, txCallback),
     });
 
     return txs;
