@@ -1,5 +1,5 @@
 import { BigNumberValue, normalize } from '../../bignumber';
-import { LTV_PRECISION } from '../../constants';
+import { LTV_PRECISION, USD_DECIMALS } from '../../constants';
 import { formatUserReserve } from './format-user-reserve';
 import { generateRawUserSummary } from './generate-raw-user-summary';
 import {
@@ -90,11 +90,16 @@ export function formatUserSummary({
   marketRefCurrencyDecimals,
   rawUserReserves,
 }: FormatUserSummaryRequest): FormatUserSummaryResponse {
+  const humanizedMarketRefPriceInUsd = normalize(
+    marketRefPriceInUsd,
+    USD_DECIMALS,
+  );
+  console.log(humanizedMarketRefPriceInUsd);
   const computedUserReserves: UserReserveSummaryResponse[] =
     rawUserReserves.map(userReserve =>
       generateUserReserveSummary({
         userReserve,
-        marketRefPriceInUsd,
+        marketRefPriceInUsd: humanizedMarketRefPriceInUsd,
         marketRefCurrencyDecimals,
         currentTimestamp,
       }),
@@ -109,7 +114,7 @@ export function formatUserSummary({
 
   const userData = generateRawUserSummary({
     userReserves: computedUserReserves,
-    marketRefPriceInUsd,
+    marketRefPriceInUsd: humanizedMarketRefPriceInUsd,
     marketRefCurrencyDecimals,
   });
 
