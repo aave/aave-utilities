@@ -94,7 +94,6 @@ export function formatUserSummary({
     marketRefPriceInUsd,
     USD_DECIMALS,
   );
-  console.log(humanizedMarketRefPriceInUsd);
   const computedUserReserves: UserReserveSummaryResponse[] =
     rawUserReserves.map(userReserve =>
       generateUserReserveSummary({

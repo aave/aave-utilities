@@ -5,7 +5,7 @@ import {
   valueToBigNumber,
   valueToZDBigNumber,
 } from '../../bignumber';
-import { RAY_DECIMALS, SECONDS_PER_YEAR, USD_DECIMALS } from '../../constants';
+import { RAY_DECIMALS, SECONDS_PER_YEAR } from '../../constants';
 import { LTV_PRECISION, RAY, rayPow } from '../../index';
 import { nativeToUSD } from '../usd/native-to-usd';
 import { normalizedToUsd } from '../usd/normalized-to-usd';
@@ -74,7 +74,7 @@ interface GetComputedReserveFieldsResponse {
   supplyAPY: BigNumber;
   variableBorrowAPY: BigNumber;
   stableBorrowAPY: BigNumber;
-  availableLiquidity: string;
+  availableLiquidity: BigNumber;
   unborrowedLiquidity: string;
 }
 
@@ -105,19 +105,15 @@ function getComputedReserveFields({
    */
   const availableLiquidity =
     reserve.borrowCap === '0'
-      ? reserve.availableLiquidity
+      ? new BigNumber(reserve.availableLiquidity)
       : BigNumber.min(
           reserve.availableLiquidity,
-          new BigNumber(reserve.borrowCap)
-            .shiftedBy(reserve.decimals)
-            // sub 0.5% as the balances increase per block and we don't want users to have failed txn
-            .multipliedBy(995)
-            .dividedBy(1000)
-            .minus(
-              // plus 1 as the cap is exclusive
-              totalDebt.plus(1),
-            ),
-        ).toFixed();
+          new BigNumber(reserve.borrowCap).shiftedBy(reserve.decimals).minus(
+            // plus 1 as the cap is exclusive
+            // sub 0.5% as the balances increase per block and we don't want users to have failed tx
+            totalDebt.multipliedBy(1005).dividedBy(1000).plus(1),
+          ),
+        );
 
   const supplyAPY = rayPow(
     valueToZDBigNumber(reserve.liquidityRate)
@@ -156,7 +152,8 @@ function getComputedReserveFields({
 }
 
 interface FormatEnhancedReserveRequest {
-  reserve: ReserveData & GetComputedReserveFieldsResponse;
+  reserve: Omit<ReserveData, 'availableLiquidity'> &
+    GetComputedReserveFieldsResponse;
 }
 /**
  * @description normalizes reserve values & computed fields
@@ -261,13 +258,13 @@ export function formatReserveUSD({
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
       marketRefPriceInUsd,
     }),
-    availableLiquidityUSD: new BigNumber(formattedReserve.availableLiquidity)
-      .multipliedBy(reserve.priceInMarketReferenceCurrency)
-      .multipliedBy(marketRefPriceInUsd)
-      .dividedBy(
-        new BigNumber(1).shiftedBy(marketRefCurrencyDecimals + USD_DECIMALS),
-      )
-      .toString(),
+    availableLiquidityUSD: nativeToUSD({
+      amount: computedFields.availableLiquidity,
+      currencyDecimals: reserve.decimals,
+      marketRefCurrencyDecimals,
+      priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+      marketRefPriceInUsd,
+    }),
     totalDebtUSD: nativeToUSD({
       amount: computedFields.totalDebt,
       currencyDecimals: reserve.decimals,
