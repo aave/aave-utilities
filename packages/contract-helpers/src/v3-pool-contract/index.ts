@@ -444,6 +444,12 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       throw new Error('Not enough funds to execute operation');
     }
 
+    console.log('reserve: ', reserve);
+    console.log('convertedAmount: ', convertedAmount);
+    console.log('user: ', user);
+    console.log('onbehalfof ', onBehalfOf);
+    console.log('referralCode ', referralCode);
+
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>
         poolContract.populateTransaction.supplyWithPermit(
