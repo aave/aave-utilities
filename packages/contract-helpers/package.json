@@ -38,6 +38,7 @@
     "access": "public"
   },
   "dependencies": {
+    "ethereumjs-util": "^7.1.3",
     "isomorphic-unfetch": "^3.1.0"
   }
 }

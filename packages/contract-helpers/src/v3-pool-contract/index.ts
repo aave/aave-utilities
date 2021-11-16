@@ -1,5 +1,7 @@
-import { BytesLike, Signature } from '@ethersproject/bytes';
+import { BytesLike, Signature, splitSignature } from '@ethersproject/bytes';
+// import { splitSignature } from '@ethersproject/bytes'
 import { BigNumberish, constants, providers, utils } from 'ethers';
+// import { fromRpcSig } from 'ethereumjs-util';
 import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
@@ -432,7 +434,8 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     const poolContract: IPool = this.getContractInstance(this.poolAddress);
     const stakedTokenDecimals: number = await decimalsOf(reserve);
     const convertedAmount: string = valueToWei(amount, stakedTokenDecimals);
-    const sig: Signature = utils.splitSignature(signature);
+    // const sig: Signature = utils.splitSignature(signature);
+    const sig: Signature = splitSignature(signature);
     console.log('sig ===> ', sig);
     const fundsAvailable: boolean =
       await this.synthetixService.synthetixValidation({
