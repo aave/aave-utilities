@@ -5,7 +5,7 @@ import {
   valueToBigNumber,
   valueToZDBigNumber,
 } from '../../bignumber';
-import { RAY_DECIMALS, SECONDS_PER_YEAR } from '../../constants';
+import { RAY_DECIMALS, SECONDS_PER_YEAR, USD_DECIMALS } from '../../constants';
 import { LTV_PRECISION, RAY, rayPow } from '../../index';
 import { nativeToUSD } from '../usd/native-to-usd';
 import { normalizedToUsd } from '../usd/normalized-to-usd';
@@ -261,11 +261,13 @@ export function formatReserveUSD({
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
       marketRefPriceInUsd,
     }),
-    availableLiquidityUSD: normalizedToUsd(
-      new BigNumber(formattedReserve.availableLiquidity),
-      marketRefPriceInUsd,
-      marketRefCurrencyDecimals,
-    ).toString(),
+    availableLiquidityUSD: new BigNumber(formattedReserve.availableLiquidity)
+      .multipliedBy(reserve.priceInMarketReferenceCurrency)
+      .multipliedBy(marketRefPriceInUsd)
+      .dividedBy(
+        new BigNumber(1).shiftedBy(marketRefCurrencyDecimals + USD_DECIMALS),
+      )
+      .toString(),
     totalDebtUSD: nativeToUSD({
       amount: computedFields.totalDebt,
       currencyDecimals: reserve.decimals,
