@@ -132,7 +132,7 @@ export const avaxUserReserveUsdMarket: RawUserReserveData = {
     stableDebtLastUpdateTimestamp: 0,
     totalScaledVariableDebt: '4629262753941821913005198',
     priceInMarketReferenceCurrency: '7740533040',
-    debtCeiling: '0',
+    debtCeiling: '10000000',
   },
 };
 
