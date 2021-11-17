@@ -787,7 +787,7 @@ describe('Pool', () => {
       expect(message.owner).toEqual(user);
       expect(message.spender).toEqual(POOL);
       expect(message.value).toEqual(valueToWei(amount, decimals));
-      expect(message.nonce).toEqual(1);
+      expect(message.nonce).toEqual(0);
       expect(message.deadline).toEqual(constants.MaxUint256.toString());
     });
     it('Expects to fail when not initialized with POOL', async () => {
