@@ -90,6 +90,7 @@ export interface ReservesData {
     eModeLiquidationBonus: number;
     eModePriceSource: string;
     eModeLabel: string;
+    borrowableInIsolation: boolean;
   }>;
   1: // [BigNumber, BigNumber, BigNumber, number] &
   {
@@ -264,6 +265,7 @@ export interface ReserveDataHumanized {
   eModeLiquidationBonus: number;
   eModePriceSource: string;
   eModeLabel: string;
+  borrowableInIsolation: boolean;
 }
 
 export interface ReservesDataHumanized {

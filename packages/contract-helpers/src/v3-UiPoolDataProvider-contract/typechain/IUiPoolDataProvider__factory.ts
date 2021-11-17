@@ -87,11 +87,6 @@ const _abi = [
             type: 'bool',
           },
           {
-            internalType: 'bool',
-            name: 'isPaused',
-            type: 'bool',
-          },
-          {
             internalType: 'uint128',
             name: 'liquidityIndex',
             type: 'uint128',
@@ -192,8 +187,33 @@ const _abi = [
             type: 'uint256',
           },
           {
+            internalType: 'bool',
+            name: 'isPaused',
+            type: 'bool',
+          },
+          {
+            internalType: 'uint128',
+            name: 'accruedToTreasury',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'unbacked',
+            type: 'uint128',
+          },
+          {
+            internalType: 'uint128',
+            name: 'isolationModeTotalDebt',
+            type: 'uint128',
+          },
+          {
             internalType: 'uint256',
             name: 'debtCeiling',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'debtCeilingDecimals',
             type: 'uint256',
           },
           {
@@ -235,6 +255,11 @@ const _abi = [
             internalType: 'string',
             name: 'eModeLabel',
             type: 'string',
+          },
+          {
+            internalType: 'bool',
+            name: 'borrowableInIsolation',
+            type: 'bool',
           },
         ],
         internalType: 'struct IUiPoolDataProvider.AggregatedReserveData[]',
