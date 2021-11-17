@@ -30,6 +30,7 @@ export const usdcUserReserveEthMarket: RawUserReserveData = {
     totalPrincipalStableDebt: '47382324949680',
     totalScaledVariableDebt: '4790920796601146',
     usageAsCollateralEnabled: true,
+    debtCeiling: '0',
   },
 };
 
@@ -63,6 +64,7 @@ export const ethUserReserveEthMarket: RawUserReserveData = {
     totalPrincipalStableDebt: '692086532295070779065',
     totalScaledVariableDebt: '86780929701599575562906',
     usageAsCollateralEnabled: true,
+    debtCeiling: '0',
   },
 };
 
@@ -96,6 +98,7 @@ export const usdcUserReserveUsdMarket: RawUserReserveData = {
     stableDebtLastUpdateTimestamp: 0,
     totalScaledVariableDebt: '903279120622455',
     priceInMarketReferenceCurrency: '100019103',
+    debtCeiling: '0',
   },
 };
 
@@ -129,6 +132,7 @@ export const avaxUserReserveUsdMarket: RawUserReserveData = {
     stableDebtLastUpdateTimestamp: 0,
     totalScaledVariableDebt: '4629262753941821913005198',
     priceInMarketReferenceCurrency: '7740533040',
+    debtCeiling: '0',
   },
 };
 
