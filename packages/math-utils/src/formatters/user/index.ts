@@ -30,6 +30,7 @@ export interface RawReserveData {
   usageAsCollateralEnabled: boolean;
   underlyingAsset: string;
   name: string;
+  debtCeiling: string;
 }
 
 export interface RawUserReserveData {
@@ -82,6 +83,7 @@ export interface FormatUserSummaryResponse {
   currentLoanToValue: string;
   currentLiquidationThreshold: string;
   healthFactor: string;
+  isInIsolationMode: boolean;
 }
 
 export function formatUserSummary({
@@ -117,6 +119,14 @@ export function formatUserSummary({
     marketRefCurrencyDecimals,
   });
 
+  const isInIsolationMode = Boolean(
+    rawUserReserves.find(
+      reserve =>
+        reserve.reserve.debtCeiling !== '0' &&
+        reserve.scaledATokenBalance !== '0',
+    ),
+  );
+
   return {
     userReservesData: formattedUserReserves,
     totalLiquidityMarketReferenceCurrency: normalize(
@@ -145,5 +155,6 @@ export function formatUserSummary({
       LTV_PRECISION,
     ),
     healthFactor: userData.healthFactor.toFixed(),
+    isInIsolationMode,
   };
 }
