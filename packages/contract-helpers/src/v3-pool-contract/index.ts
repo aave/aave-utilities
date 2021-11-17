@@ -1280,6 +1280,13 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       }
     }
 
+    console.log('------ helper ------');
+    console.log('reserve: ', reserve);
+    console.log('converted amount: ', convertedAmount);
+    console.log('numbericratemode: ', numericRateMode);
+    console.log('onbehalhf ', onBehalfOf ?? user);
+    console.log('-------------------------');
+
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>
         populateTransaction.repayWithATokens(
