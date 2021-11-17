@@ -31,6 +31,8 @@ export interface RawReserveData {
   underlyingAsset: string;
   name: string;
   debtCeiling: string;
+  debtCeilingDecimals: number;
+  isolationModeTotalDebt: string;
 }
 
 export interface RawUserReserveData {
