@@ -377,9 +377,14 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
 
     const { chainId } = await this.provider.getNetwork();
     // const nonce = await this.provider.getTransactionCount(user);
-    const reserveContract = this.getContractInstance(reserve);
-    // eslint-disable-next-line
-    const nonce: number = await reserveContract._nonces(user).toString();
+    let nonce = 1;
+    try {
+      const reserveContract = this.getContractInstance(reserve);
+      // eslint-disable-next-line
+      nonce = await reserveContract._nonces(user).toString();
+    } catch (e: unknown) {
+      console.log('_nonce not implemented on reserve token contract', e);
+    }
 
     const typeData = {
       types: {
