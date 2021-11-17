@@ -20,6 +20,9 @@ export const formatReserveRequestWMATIC: FormatReserveRequest = {
     lastUpdateTimestamp: 1629706026,
     borrowCap: '0',
     supplyCap: '0',
+    debtCeiling: '200000000',
+    debtCeilingDecimals: 2,
+    isolationModeTotalDebt: '10000',
   },
   currentTimestamp: 1329706026,
 };
@@ -44,6 +47,9 @@ export const formatReserveRequestDAI: FormatReserveRequest = {
     totalScaledVariableDebt: '145496831599325217573288',
     borrowCap: '300000',
     supplyCap: '500000',
+    debtCeiling: '0',
+    debtCeilingDecimals: 0,
+    isolationModeTotalDebt: '0',
   },
   currentTimestamp: 1606992400,
 };

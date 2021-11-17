@@ -176,6 +176,7 @@ describe('UiPoolDataProvider', () => {
             unbacked: '0',
             isolationModeTotalDebt: '0',
             debtCeilingDecimals: 0,
+            borrowableInIsolation: false,
           },
           {
             id: '0xa478c2975ab1ea89e8196811f51a7b7ade33eb110x88757f2f99175387ab4c6a4b3067c77a695b0349',
@@ -230,6 +231,7 @@ describe('UiPoolDataProvider', () => {
             unbacked: '0',
             isolationModeTotalDebt: '0',
             debtCeilingDecimals: 0,
+            borrowableInIsolation: false,
           },
         ],
         baseCurrencyData: {

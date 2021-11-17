@@ -256,6 +256,11 @@ const _abi = [
             name: 'eModeLabel',
             type: 'string',
           },
+          {
+            internalType: 'bool',
+            name: 'borrowableInIsolation',
+            type: 'bool',
+          },
         ],
         internalType: 'struct IUiPoolDataProvider.AggregatedReserveData[]',
         name: '',

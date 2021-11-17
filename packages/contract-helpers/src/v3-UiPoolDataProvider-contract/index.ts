@@ -180,6 +180,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
         eModeLiquidationBonus: reserveRaw.eModeLiquidationBonus,
         eModePriceSource: reserveRaw.eModePriceSource.toString(),
         eModeLabel: reserveRaw.eModeLabel.toString(),
+        borrowableInIsolation: reserveRaw.borrowableInIsolation,
         accruedToTreasury: reserveRaw.accruedToTreasury.toString(),
         unbacked: reserveRaw.unbacked.toString(),
         isolationModeTotalDebt: reserveRaw.isolationModeTotalDebt.toString(),
