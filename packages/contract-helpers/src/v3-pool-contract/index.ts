@@ -377,7 +377,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
 
     const { chainId } = await this.provider.getNetwork();
     // const nonce = await this.provider.getTransactionCount(user);
-    let nonce = 1;
+    let nonce = 0;
     try {
       const reserveContract = this.getContractInstance(reserve);
       // eslint-disable-next-line
