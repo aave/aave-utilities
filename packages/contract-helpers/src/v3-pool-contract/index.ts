@@ -457,7 +457,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     console.log('convertedAmount: ', convertedAmount);
     console.log('user: ', user);
     console.log('onbehalfof ', onBehalfOf);
-    console.log('referralCode ', referralCode);
 
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>
