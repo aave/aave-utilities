@@ -771,7 +771,9 @@ describe('Pool', () => {
           address: '0x0000000000000000000000000000000000000006',
         }),
       );
-
+      jest
+        .spyOn(poolInstance.erc20_2612Service, 'getNonce')
+        .mockReturnValue(Promise.resolve(1));
       const signature: string = await poolInstance.signERC20Approval({
         user,
         reserve,
@@ -787,8 +789,32 @@ describe('Pool', () => {
       expect(message.owner).toEqual(user);
       expect(message.spender).toEqual(POOL);
       expect(message.value).toEqual(valueToWei(amount, decimals));
-      expect(message.nonce).toEqual(0);
+      expect(message.nonce).toEqual(1);
       expect(message.deadline).toEqual(constants.MaxUint256.toString());
+    });
+    it('Expects the permission string to be `` when nononce', async () => {
+      const poolInstance = new Pool(provider, config);
+
+      jest.spyOn(poolInstance.erc20Service, 'getTokenData').mockReturnValue(
+        Promise.resolve({
+          name: 'mockToken',
+          decimals,
+          symbol: 'MT',
+          address: '0x0000000000000000000000000000000000000006',
+        }),
+      );
+
+      jest
+        .spyOn(poolInstance.erc20_2612Service, 'getNonce')
+        .mockReturnValue(Promise.resolve(null));
+
+      const signature: string = await poolInstance.signERC20Approval({
+        user,
+        reserve,
+        amount,
+      });
+
+      expect(signature).toEqual('');
     });
     it('Expects to fail when not initialized with POOL', async () => {
       const poolInstance = new Pool(provider, { POOL: 'asdf' });

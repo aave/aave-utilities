@@ -30,6 +30,7 @@ import {
   isPositiveAmount,
   isPositiveOrMinusOneAmount,
 } from '../commons/validators/paramValidators';
+import { ERC20_2612Service, ERC20_2612Interface } from '../erc20-2612';
 import { ERC20Service, IERC20ServiceInterface } from '../erc20-contract';
 import {
   augustusFromAmountOffsetFromCalldata,
@@ -159,6 +160,8 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
 
   readonly repayWithCollateralAdapterService: RepayWithCollateralAdapterInterface;
 
+  readonly erc20_2612Service: ERC20_2612Interface;
+
   readonly flashLiquidationAddress: string;
 
   readonly swapCollateralAddress: string;
@@ -185,6 +188,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     this.repayWithCollateralAddress = REPAY_WITH_COLLATERAL_ADAPTER ?? '';
 
     // initialize services
+    this.erc20_2612Service = new ERC20_2612Service(provider);
     this.erc20Service = new ERC20Service(provider);
     this.synthetixService = new SynthetixService(provider);
     this.wethGatewayService = new WETHGatewayService(
@@ -376,14 +380,14 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     const convertedAmount: string = valueToWei(amount, decimals);
 
     const { chainId } = await this.provider.getNetwork();
-    // const nonce = await this.provider.getTransactionCount(user);
-    let nonce = 0;
-    try {
-      const reserveContract = this.getContractInstance(reserve);
-      // eslint-disable-next-line
-      nonce = await reserveContract._nonces(user).toString();
-    } catch (e: unknown) {
-      console.log('_nonce not implemented on reserve token contract', e);
+
+    const nonce = await this.erc20_2612Service.getNonce({
+      token: reserve,
+      owner: user,
+    });
+
+    if (!nonce) {
+      return '';
     }
 
     const typeData = {
