@@ -35,6 +35,9 @@ export interface FormatReserveResponse {
   totalVariableDebt: string;
   totalDebt: string;
   totalLiquidity: string;
+  debtCeiling: string;
+  isolationModeTotalDebt: string;
+  isIsolated: boolean;
 }
 
 export interface FormatReserveRequest {
@@ -62,6 +65,9 @@ export interface ReserveData {
   // v3
   borrowCap: string;
   supplyCap: string;
+  debtCeiling: string;
+  debtCeilingDecimals: number;
+  isolationModeTotalDebt: string;
 }
 
 interface GetComputedReserveFieldsResponse {
@@ -163,6 +169,8 @@ function formatEnhancedReserve({
   const normalizeWithReserve = (n: BigNumberValue) =>
     normalize(n, reserve.decimals);
 
+  const isIsolated = reserve.debtCeiling !== '0';
+
   return {
     totalVariableDebt: normalizeWithReserve(reserve.totalVariableDebt),
     totalStableDebt: normalizeWithReserve(reserve.totalStableDebt),
@@ -192,6 +200,13 @@ function formatEnhancedReserve({
       reserve.totalPrincipalStableDebt,
     ),
     variableBorrowIndex: normalize(reserve.variableBorrowIndex, RAY_DECIMALS),
+    debtCeiling: isIsolated
+      ? normalize(reserve.debtCeiling, reserve.debtCeilingDecimals)
+      : '0',
+    isolationModeTotalDebt: isIsolated
+      ? normalize(reserve.isolationModeTotalDebt, reserve.debtCeilingDecimals)
+      : '0',
+    isIsolated,
   };
 }
 
