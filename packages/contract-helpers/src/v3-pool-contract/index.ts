@@ -1,7 +1,5 @@
 import { BytesLike, Signature, splitSignature } from '@ethersproject/bytes';
-// import { splitSignature } from '@ethersproject/bytes'
 import { BigNumberish, constants, providers, utils } from 'ethers';
-// import { fromRpcSig } from 'ethereumjs-util';
 import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
