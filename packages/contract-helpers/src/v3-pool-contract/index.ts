@@ -375,9 +375,20 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     @isPositiveAmount('amount')
     { user, reserve, amount }: LPSignERC20ApprovalType,
   ): Promise<string> {
-    const { getTokenData } = this.erc20Service;
+    const { getTokenData, isApproved } = this.erc20Service;
     const { name, decimals } = await getTokenData(reserve);
     const convertedAmount: string = valueToWei(amount, decimals);
+
+    const approved = await isApproved({
+      token: reserve,
+      user,
+      spender: this.poolAddress,
+      amount,
+    });
+
+    if (approved) {
+      return '';
+    }
 
     const { chainId } = await this.provider.getNetwork();
 
