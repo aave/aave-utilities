@@ -1,4 +1,4 @@
-import { BytesLike, Signature } from '@ethersproject/bytes';
+import { BytesLike, Signature, splitSignature } from '@ethersproject/bytes';
 import { BigNumberish, constants, providers, utils } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
@@ -28,6 +28,7 @@ import {
   isPositiveAmount,
   isPositiveOrMinusOneAmount,
 } from '../commons/validators/paramValidators';
+import { ERC20_2612Service, ERC20_2612Interface } from '../erc20-2612';
 import { ERC20Service, IERC20ServiceInterface } from '../erc20-contract';
 import {
   augustusFromAmountOffsetFromCalldata,
@@ -157,6 +158,8 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
 
   readonly repayWithCollateralAdapterService: RepayWithCollateralAdapterInterface;
 
+  readonly erc20_2612Service: ERC20_2612Interface;
+
   readonly flashLiquidationAddress: string;
 
   readonly swapCollateralAddress: string;
@@ -183,6 +186,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     this.repayWithCollateralAddress = REPAY_WITH_COLLATERAL_ADAPTER ?? '';
 
     // initialize services
+    this.erc20_2612Service = new ERC20_2612Service(provider);
     this.erc20Service = new ERC20Service(provider);
     this.synthetixService = new SynthetixService(provider);
     this.wethGatewayService = new WETHGatewayService(
@@ -369,15 +373,40 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     @isPositiveAmount('amount')
     { user, reserve, amount }: LPSignERC20ApprovalType,
   ): Promise<string> {
-    const { getTokenData } = this.erc20Service;
+    const { getTokenData, isApproved } = this.erc20Service;
     const { name, decimals } = await getTokenData(reserve);
     const convertedAmount: string = valueToWei(amount, decimals);
 
+    const approved = await isApproved({
+      token: reserve,
+      user,
+      spender: this.poolAddress,
+      amount,
+    });
+
+    if (approved) {
+      return '';
+    }
+
     const { chainId } = await this.provider.getNetwork();
-    const nonce = await this.provider.getTransactionCount(user);
+
+    const nonce = await this.erc20_2612Service.getNonce({
+      token: reserve,
+      owner: user,
+    });
+
+    if (nonce === null) {
+      return '';
+    }
 
     const typeData = {
       types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
+        ],
         Permit: [
           { name: 'owner', type: 'address' },
           { name: 'spender', type: 'address' },
@@ -401,7 +430,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         deadline: constants.MaxUint256.toString(),
       },
     };
-
     return JSON.stringify(typeData);
   }
 
@@ -426,8 +454,8 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     const poolContract: IPool = this.getContractInstance(this.poolAddress);
     const stakedTokenDecimals: number = await decimalsOf(reserve);
     const convertedAmount: string = valueToWei(amount, stakedTokenDecimals);
-    const sig: Signature = utils.splitSignature(signature);
-
+    // const sig: Signature = utils.splitSignature(signature);
+    const sig: Signature = splitSignature(signature);
     const fundsAvailable: boolean =
       await this.synthetixService.synthetixValidation({
         user,
@@ -456,11 +484,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     txs.push({
       tx: txCallback,
       txType: eEthereumTxType.DLP_ACTION,
-      gas: this.generateTxPriceEstimation(
-        txs,
-        txCallback,
-        ProtocolAction.deposit,
-      ),
+      gas: this.generateTxPriceEstimation(txs, txCallback),
     });
 
     return txs;
