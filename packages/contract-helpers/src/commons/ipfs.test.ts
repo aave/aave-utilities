@@ -64,7 +64,7 @@ describe('ipfs', () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       mockFetch.mockResolvedValue({ ok: true, json } as Response);
 
-      const metadata = await getProposalMetadata(hash);
+      const metadata = await getProposalMetadata(ipfsHash);
       const metadata2 = await getProposalMetadata(hash);
 
       expect(json.mock.calls.length).toEqual(1);
