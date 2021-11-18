@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.25.8 (2021-11-18)
+
+
+### Bug Fixes
+
+* dont encode encoded hashes ([#183](https://github.com/@aave/aave-utilities/issues/183)) ([90e001b](https://github.com/@aave/aave-utilities/commit/90e001bb13ced072ea1532d767e9ed0678e13430))
+
+
+
+
+
 ## 0.25.7 (2021-11-16)
 
 **Note:** Version bump only for package @aave/contract-helpers
