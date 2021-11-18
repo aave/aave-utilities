@@ -396,7 +396,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       token: reserve,
       owner: user,
     });
-    console.log('nonce: ', nonce);
 
     if (nonce === null) {
       return '';
@@ -433,7 +432,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         deadline: constants.MaxUint256.toString(),
       },
     };
-    console.log('type data => ', typeData);
     return JSON.stringify(typeData);
   }
 
@@ -460,7 +458,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     const convertedAmount: string = valueToWei(amount, stakedTokenDecimals);
     // const sig: Signature = utils.splitSignature(signature);
     const sig: Signature = splitSignature(signature);
-    console.log('sig ===> ', sig);
     const fundsAvailable: boolean =
       await this.synthetixService.synthetixValidation({
         user,
@@ -470,11 +467,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     if (!fundsAvailable) {
       throw new Error('Not enough funds to execute operation');
     }
-
-    console.log('reserve: ', reserve);
-    console.log('convertedAmount: ', convertedAmount);
-    console.log('user: ', user);
-    console.log('onbehalfof ', onBehalfOf);
 
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>

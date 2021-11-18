@@ -33,15 +33,14 @@ export class ERC20_2612Service
       nonce = await tokenContract.nonces(owner);
       return nonce.toNumber();
     } catch (_: unknown) {
-      console.log(`Token ${token} does not implement nonces method`);
+      // Skip console log here since other nonce method can also work
     }
 
     try {
       nonce = await tokenContract._nonces(owner);
-      console.log(`Token ${token} nonce is ${nonce.toNumber()}`);
       return nonce.toNumber();
     } catch (_: unknown) {
-      console.log(`Token ${token} does not implement _nonces method`);
+      console.log(`Token ${token} does not implement nonces or _nonces method`);
     }
 
     return null;
