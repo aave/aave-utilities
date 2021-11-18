@@ -386,7 +386,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       owner: user,
     });
     console.log('nonce: ', nonce);
-    if (!nonce && nonce !== 0) {
+    if (!nonce) {
       return '';
     }
 
