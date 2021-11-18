@@ -24,7 +24,9 @@ const MEMORIZE: MemorizeMetadata = {};
 export async function getProposalMetadata(
   hash: string,
 ): Promise<ProposalMetadata> {
-  const ipfsHash = base58.encode(Buffer.from(`1220${hash.slice(2)}`, 'hex'));
+  const ipfsHash = hash.startsWith('0x')
+    ? base58.encode(Buffer.from(`1220${hash.slice(2)}`, 'hex'))
+    : hash;
   if (MEMORIZE[ipfsHash]) return MEMORIZE[ipfsHash];
   try {
     const ipfsResponse: Response = await fetch(getLink(ipfsHash), {
