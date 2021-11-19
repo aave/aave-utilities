@@ -188,10 +188,11 @@ describe('GovernanceService', () => {
         GOVERNANCE_ADDRESS,
         GOVERNANCE_HELPER_ADDRESS,
       });
+      const { values, ...rest } = proposalMock;
       const spy = jest
         .spyOn(IGovernanceV2Helper__factory, 'connect')
         .mockReturnValue({
-          getProposal: async () => Promise.resolve(proposalMock),
+          getProposal: async () => Promise.resolve(rest),
         } as unknown as IGovernanceV2Helper);
 
       const proposal = await instance.getProposal({ proposalId: 1 });
@@ -202,7 +203,7 @@ describe('GovernanceService', () => {
         creator: proposalMock.creator,
         executor: proposalMock.executor,
         targets: proposalMock.targets,
-        values: proposalMock.values.map(v => v.toString()),
+        values: undefined,
         signatures: proposalMock.signatures,
         calldatas: proposalMock.calldatas,
         withDelegatecalls: proposalMock.withDelegatecalls,
