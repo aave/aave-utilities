@@ -122,7 +122,7 @@ export type Proposal = {
   creator: tEthereumAddress;
   executor: tEthereumAddress;
   targets: tEthereumAddress[];
-  values: string[];
+  values: BigNumber[];
   signatures: string[];
   calldatas: string[];
   withDelegatecalls: boolean[];
