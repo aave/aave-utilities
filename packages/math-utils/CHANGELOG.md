@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.26.0 (2021-11-19)
+
+
+### Features
+
+* make gateway configurable ([#185](https://github.com/@aave/aave-utilities/issues/185)) ([b0b63a7](https://github.com/@aave/aave-utilities/commit/b0b63a7832cdeb282f4ba244be84ae40342a06d0))
+
+
+
+
+
 ## 0.25.8 (2021-11-18)
 
 
