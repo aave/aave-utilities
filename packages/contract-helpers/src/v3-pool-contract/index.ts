@@ -370,12 +370,16 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
   public async signERC20Approval(
     @isEthAddress('user')
     @isEthAddress('reserve')
-    @isPositiveAmount('amount')
+    @isPositiveOrMinusOneAmount('amount')
     { user, reserve, amount }: LPSignERC20ApprovalType,
   ): Promise<string> {
     const { getTokenData, isApproved } = this.erc20Service;
     const { name, decimals } = await getTokenData(reserve);
-    const convertedAmount: string = valueToWei(amount, decimals);
+
+    const convertedAmount =
+      amount === '-1'
+        ? constants.MaxUint256.toString()
+        : valueToWei(amount, decimals);
 
     const approved = await isApproved({
       token: reserve,
