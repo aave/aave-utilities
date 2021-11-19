@@ -37,6 +37,7 @@ import {
 
 export const parseProposal = async (
   rawProposal: ProposalRPC,
+  gateway?: string,
 ): Promise<Proposal> => {
   const {
     id,
@@ -64,7 +65,7 @@ export const parseProposal = async (
     proposalState,
   } = rawProposal;
 
-  const proposalMetadata = await getProposalMetadata(ipfsHex);
+  const proposalMetadata = await getProposalMetadata(ipfsHex, gateway);
   const proposal: Proposal = {
     id: Number(id.toString()),
     creator,
@@ -105,6 +106,7 @@ export interface AaveGovernanceInterface {
 type AaveGovernanceServiceConfig = {
   GOVERNANCE_ADDRESS: string;
   GOVERNANCE_HELPER_ADDRESS?: string;
+  ipfsGateway?: string;
 };
 
 export class AaveGovernanceService
@@ -115,6 +117,8 @@ export class AaveGovernanceService
 
   readonly aaveGovernanceV2HelperAddress: string;
 
+  readonly ipfsGateway: string | undefined;
+
   constructor(
     provider: providers.Provider,
     config: AaveGovernanceServiceConfig,
@@ -123,6 +127,7 @@ export class AaveGovernanceService
 
     this.aaveGovernanceV2Address = config.GOVERNANCE_ADDRESS;
     this.aaveGovernanceV2HelperAddress = config.GOVERNANCE_HELPER_ADDRESS ?? '';
+    this.ipfsGateway = config.ipfsGateway;
   }
 
   @GovValidator
@@ -168,7 +173,7 @@ export class AaveGovernanceService
     const proposals: Promise<Proposal[]> = Promise.all(
       result.map(
         async (rawProposal: ProposalRPC): Promise<Proposal> =>
-          parseProposal(rawProposal),
+          parseProposal(rawProposal, this.ipfsGateway),
       ),
     );
 

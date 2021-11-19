@@ -249,6 +249,7 @@ describe('GovernanceService', () => {
     it('Expects to fail if gov address not eth address', async () => {
       const instance = new AaveGovernanceService(provider, {
         GOVERNANCE_ADDRESS: 'asdf',
+        ipfsGateway: 'https://cloudflare-ipfs.com/ipfs',
       });
       const getProposals = instance.getProposals({ skip, limit });
       expect(getProposals).toEqual([]);
