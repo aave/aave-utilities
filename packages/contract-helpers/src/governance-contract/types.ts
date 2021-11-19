@@ -96,7 +96,7 @@ export type ProposalIpfs = {
   creator: tEthereumAddress;
   executor: tEthereumAddress;
   targets: tEthereumAddress[];
-  values: BigNumber[];
+  values: string[];
   signatures: string[];
   calldatas: string[];
   withDelegatecalls: boolean[];
@@ -122,7 +122,7 @@ export type Proposal = {
   creator: tEthereumAddress;
   executor: tEthereumAddress;
   targets: tEthereumAddress[];
-  values: BigNumber[];
+  values: string[];
   signatures: string[];
   calldatas: string[];
   withDelegatecalls: boolean[];
