@@ -375,7 +375,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
   ): Promise<string> {
     const { getTokenData, isApproved } = this.erc20Service;
     const { name, decimals } = await getTokenData(reserve);
-    console.log('sign amount: ', amount);
+
     const convertedAmount =
       amount === '-1'
         ? constants.MaxUint256.toString()
@@ -591,8 +591,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     const reserveDecimals = await decimalsOf(reserve);
     const formatAmount: string = valueToWei(amount, reserveDecimals);
 
-    console.log(formatAmount);
-
     const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
 
     const poolContract = this.getContractInstance(this.poolAddress);
@@ -719,7 +717,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       signature,
     }: LPRepayWithPermitParamsType,
   ): Promise<EthereumTransactionTypeExtended[]> {
-    console.log('repaywithpermit amount: ', amount);
     const txs: EthereumTransactionTypeExtended[] = [];
     const { decimalsOf }: IERC20ServiceInterface = this.erc20Service;
 
