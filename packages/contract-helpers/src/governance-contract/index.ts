@@ -41,7 +41,7 @@ export const humanizeProposal = (rawProposal: ProposalRPC): Proposal => {
     creator: rawProposal.creator,
     executor: rawProposal.executor,
     targets: rawProposal.targets,
-    values: rawProposal.values.map(value => value.toString()),
+    values: rawProposal.values?.map(value => value.toString()),
     signatures: rawProposal.signatures,
     calldatas: rawProposal.calldatas,
     withDelegatecalls: rawProposal.withDelegatecalls,
