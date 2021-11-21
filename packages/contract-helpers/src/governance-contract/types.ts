@@ -169,13 +169,6 @@ export type ProposalRPC = {
   proposalState: number;
 };
 
-export type ProposalMetadata = {
-  title: string;
-  description: string;
-  shortDescription: string;
-  ipfsHash: string;
-};
-
 export type Power = {
   votingPower: BigNumber;
   delegatedAddressVotingPower: string;
