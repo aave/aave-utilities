@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.26.1 (2021-11-21)
+
+
+### Bug Fixes
+
+* drop ipfs fetching ([#186](https://github.com/@aave/aave-utilities/issues/186)) ([cffb69e](https://github.com/@aave/aave-utilities/commit/cffb69eae36279b9946c0815dea04c36a9a9f1e5))
+
+
+
+
+
 # 0.26.0 (2021-11-19)
 
 
