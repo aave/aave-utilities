@@ -28,11 +28,7 @@ export async function getProposalMetadata(
     : hash;
   if (MEMORIZE[ipfsHash]) return MEMORIZE[ipfsHash];
   try {
-    const ipfsResponse: Response = await fetch(getLink(ipfsHash, gateway), {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const ipfsResponse: Response = await fetch(getLink(ipfsHash, gateway));
     if (!ipfsResponse.ok) {
       throw Error('Fetch not working');
     }
