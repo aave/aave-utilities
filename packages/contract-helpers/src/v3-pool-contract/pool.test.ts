@@ -797,6 +797,45 @@ describe('Pool', () => {
       expect(message.nonce).toEqual(1);
       expect(message.deadline).toEqual(constants.MaxUint256.toString());
     });
+    it('Expects the permission string to be returned when all params and amount -1', async () => {
+      const poolInstance = new Pool(provider, config);
+
+      jest.spyOn(poolInstance.erc20Service, 'getTokenData').mockReturnValue(
+        Promise.resolve({
+          name: 'mockToken',
+          decimals,
+          symbol: 'MT',
+          address: '0x0000000000000000000000000000000000000006',
+        }),
+      );
+
+      jest
+        .spyOn(poolInstance.erc20Service, 'isApproved')
+        .mockReturnValue(Promise.resolve(false));
+
+      jest
+        .spyOn(poolInstance.erc20_2612Service, 'getNonce')
+        .mockReturnValue(Promise.resolve(1));
+
+      const amount = '-1';
+      const signature: string = await poolInstance.signERC20Approval({
+        user,
+        reserve,
+        amount,
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const { primaryType, domain, message } = await JSON.parse(signature);
+      expect(primaryType).toEqual('Permit');
+      expect(domain.name).toEqual('mockToken');
+      expect(domain.chainId).toEqual(1);
+
+      expect(message.owner).toEqual(user);
+      expect(message.spender).toEqual(POOL);
+      expect(message.value).toEqual(constants.MaxUint256.toString());
+      expect(message.nonce).toEqual(1);
+      expect(message.deadline).toEqual(constants.MaxUint256.toString());
+    });
     it('Expects the permission string to be `` when no nonce', async () => {
       const poolInstance = new Pool(provider, config);
 
