@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.26.2 (2021-11-22)
+
+
+### Bug Fixes
+
+* drop fetch options ([#193](https://github.com/@aave/aave-utilities/issues/193)) ([f6d0cf9](https://github.com/@aave/aave-utilities/commit/f6d0cf9edb7ffdea43a3ac2bbd505cea3d24710c))
+
+
+
+
+
 ## 0.26.1 (2021-11-21)
 
 
