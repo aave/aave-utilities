@@ -12,6 +12,7 @@ export interface RawUserSummaryRequest {
   userReserves: UserReserveSummaryResponse[];
   marketRefPriceInUsd: BigNumberValue;
   marketRefCurrencyDecimals: number;
+  userEmodeCategoryId: number;
 }
 
 export interface RawUserSummaryResponse {
@@ -32,6 +33,7 @@ export function generateRawUserSummary({
   userReserves,
   marketRefPriceInUsd,
   marketRefCurrencyDecimals,
+  userEmodeCategoryId,
 }: RawUserSummaryRequest): RawUserSummaryResponse {
   const {
     totalLiquidityMarketReferenceCurrency,
@@ -39,7 +41,7 @@ export function generateRawUserSummary({
     totalCollateralMarketReferenceCurrency,
     currentLtv,
     currentLiquidationThreshold,
-  } = calculateUserReserveTotals({ userReserves });
+  } = calculateUserReserveTotals({ userReserves, userEmodeCategoryId });
 
   const availableBorrowsMarketReferenceCurrency =
     calculateAvailableBorrowsMarketReferenceCurrency({

@@ -46,6 +46,12 @@ export function formatUserReserve({
         ),
         LTV_PRECISION,
       ),
+      eModeLiquidationBonus: normalize(
+        valueToBigNumber(reserve.eModeLiquidationBonus).shiftedBy(
+          LTV_PRECISION,
+        ),
+        LTV_PRECISION,
+      ),
     },
     scaledATokenBalance: normalizeWithReserve(userReserve.scaledATokenBalance),
     underlyingBalance: normalize(_reserve.underlyingBalance, reserveDecimals),
