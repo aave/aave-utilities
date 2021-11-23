@@ -33,6 +33,10 @@ export const usdcUserReserveEthMarket: RawUserReserveData = {
     debtCeiling: '0',
     debtCeilingDecimals: 2,
     isolationModeTotalDebt: '0',
+    eModeCategoryId: 1,
+    eModeLtv: '9500',
+    eModeLiquidationThreshold: '9700',
+    eModeLiquidationBonus: '8500',
   },
 };
 
@@ -69,6 +73,10 @@ export const ethUserReserveEthMarket: RawUserReserveData = {
     debtCeiling: '0',
     debtCeilingDecimals: 2,
     isolationModeTotalDebt: '0',
+    eModeCategoryId: 2,
+    eModeLtv: '9000',
+    eModeLiquidationThreshold: '9500',
+    eModeLiquidationBonus: '10250',
   },
 };
 
@@ -105,6 +113,10 @@ export const usdcUserReserveUsdMarket: RawUserReserveData = {
     debtCeiling: '0',
     debtCeilingDecimals: 2,
     isolationModeTotalDebt: '0',
+    eModeCategoryId: 1,
+    eModeLtv: '9500',
+    eModeLiquidationThreshold: '9700',
+    eModeLiquidationBonus: '10250',
   },
 };
 
@@ -141,6 +153,10 @@ export const avaxUserReserveUsdMarket: RawUserReserveData = {
     debtCeiling: '10000000',
     debtCeilingDecimals: 2,
     isolationModeTotalDebt: '0',
+    eModeCategoryId: 0,
+    eModeLtv: '0',
+    eModeLiquidationThreshold: '0',
+    eModeLiquidationBonus: '0',
   },
 };
 
@@ -159,6 +175,7 @@ export const formatUserSummaryRequestEthMarket: FormatUserSummaryRequest = {
   marketRefPriceInUsd: 456974241997,
   marketRefCurrencyDecimals: 18,
   currentTimestamp: 1629942229,
+  userEmodeCategoryId: 0,
 };
 
 export const formatUserSummaryRequestUsdMarket: FormatUserSummaryRequest = {
@@ -166,4 +183,5 @@ export const formatUserSummaryRequestUsdMarket: FormatUserSummaryRequest = {
   marketRefPriceInUsd: 100000000,
   marketRefCurrencyDecimals: 8,
   currentTimestamp: 1629942229,
+  userEmodeCategoryId: 0,
 };
