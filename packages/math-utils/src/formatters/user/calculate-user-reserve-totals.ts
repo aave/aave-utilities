@@ -4,6 +4,7 @@ import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
 
 interface UserReserveTotalsRequest {
   userReserves: UserReserveSummaryResponse[];
+  userEmodeCategoryId: number;
 }
 
 interface UserReserveTotalsResponse {
@@ -16,6 +17,7 @@ interface UserReserveTotalsResponse {
 
 export function calculateUserReserveTotals({
   userReserves,
+  userEmodeCategoryId,
 }: UserReserveTotalsRequest): UserReserveTotalsResponse {
   let totalLiquidityMarketReferenceCurrency = valueToZDBigNumber('0');
   let totalCollateralMarketReferenceCurrency = valueToZDBigNumber('0');
@@ -40,20 +42,39 @@ export function calculateUserReserveTotals({
         totalCollateralMarketReferenceCurrency.plus(
           userReserveSummary.underlyingBalanceMarketReferenceCurrency,
         );
-      currentLtv = currentLtv.plus(
-        valueToBigNumber(
-          userReserveSummary.underlyingBalanceMarketReferenceCurrency,
-        ).multipliedBy(
-          userReserveSummary.userReserve.reserve.baseLTVasCollateral,
-        ),
-      );
-      currentLiquidationThreshold = currentLiquidationThreshold.plus(
-        valueToBigNumber(
-          userReserveSummary.underlyingBalanceMarketReferenceCurrency,
-        ).multipliedBy(
-          userReserveSummary.userReserve.reserve.reserveLiquidationThreshold,
-        ),
-      );
+      if (
+        userEmodeCategoryId &&
+        userEmodeCategoryId ===
+          userReserveSummary.userReserve.reserve.eModeCategoryId
+      ) {
+        currentLtv = currentLtv.plus(
+          valueToBigNumber(
+            userReserveSummary.underlyingBalanceMarketReferenceCurrency,
+          ).multipliedBy(userReserveSummary.userReserve.reserve.eModeLtv),
+        );
+        currentLiquidationThreshold = currentLiquidationThreshold.plus(
+          valueToBigNumber(
+            userReserveSummary.underlyingBalanceMarketReferenceCurrency,
+          ).multipliedBy(
+            userReserveSummary.userReserve.reserve.eModeLiquidationThreshold,
+          ),
+        );
+      } else {
+        currentLtv = currentLtv.plus(
+          valueToBigNumber(
+            userReserveSummary.underlyingBalanceMarketReferenceCurrency,
+          ).multipliedBy(
+            userReserveSummary.userReserve.reserve.baseLTVasCollateral,
+          ),
+        );
+        currentLiquidationThreshold = currentLiquidationThreshold.plus(
+          valueToBigNumber(
+            userReserveSummary.underlyingBalanceMarketReferenceCurrency,
+          ).multipliedBy(
+            userReserveSummary.userReserve.reserve.reserveLiquidationThreshold,
+          ),
+        );
+      }
     }
   });
 
