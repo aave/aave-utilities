@@ -71,6 +71,7 @@ export interface AaveGovernanceInterface {
   getVotingPowerAt: (args: GovGetVotingAtBlockType) => Promise<string>;
   getTokensPower: (args: GovGetPower) => Promise<Power[]>;
   getVoteOnProposal: (args: GovGetVoteOnProposal) => Promise<Vote>;
+  getProposalsCount: () => Promise<number>;
 }
 
 type AaveGovernanceServiceConfig = {
@@ -195,5 +196,14 @@ export class AaveGovernanceService
       this.aaveGovernanceV2Address,
     );
     return govContract.getVoteOnProposal(proposalId, user);
+  }
+
+  @GovValidator
+  public async getProposalsCount() {
+    const govContract: IAaveGovernanceV2 = this.getContractInstance(
+      this.aaveGovernanceV2Address,
+    );
+
+    return (await govContract.getProposalsCount()).toNumber();
   }
 }

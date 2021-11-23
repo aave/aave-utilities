@@ -117,6 +117,24 @@ describe('GovernanceService', () => {
       expect(instance instanceof AaveGovernanceService).toEqual(true);
     });
   });
+
+  describe('getProposalsCount', () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('returns a number', async () => {
+      const instance = new AaveGovernanceService(provider, {
+        GOVERNANCE_ADDRESS,
+      });
+      jest.spyOn(IAaveGovernanceV2__factory, 'connect').mockReturnValueOnce({
+        getProposalsCount: async () => Promise.resolve(BigNumber.from(1)),
+      } as unknown as IAaveGovernanceV2);
+
+      const result = await instance.getProposalsCount();
+      expect(result).toBe(1);
+    });
+  });
+
   describe('submitVote', () => {
     afterEach(() => {
       jest.clearAllMocks();

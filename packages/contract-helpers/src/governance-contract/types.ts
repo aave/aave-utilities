@@ -28,11 +28,13 @@ export type GovExecuteType = {
   user: tEthereumAddress;
   proposalId: number;
 };
+
 export type GovSubmitVoteType = {
   user: tEthereumAddress;
   proposalId: number;
   support: boolean;
 };
+
 export type GovSubmitVoteSignType = {
   user: tEthereumAddress;
   proposalId: number;
