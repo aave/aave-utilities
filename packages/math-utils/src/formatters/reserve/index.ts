@@ -71,9 +71,9 @@ export interface ReserveData {
   debtCeiling: string;
   debtCeilingDecimals: number;
   isolationModeTotalDebt: string;
-  eModeLTV: string;
-  eModeLiquidationThreshold: string;
-  eModeLiquidationBonus: string;
+  eModeLTV: number;
+  eModeLiquidationThreshold: number;
+  eModeLiquidationBonus: number;
 }
 
 interface GetComputedReserveFieldsResponse {
@@ -83,6 +83,8 @@ interface GetComputedReserveFieldsResponse {
   totalLiquidity: BigNumber;
   utilizationRate: string;
   reserveLiquidationBonus: string;
+  eModeLTV: string;
+  eModeLiquidationThreshold: string;
   eModeLiquidationBonus: string;
   supplyAPY: BigNumber;
   variableBorrowAPY: BigNumber;
@@ -160,6 +162,8 @@ function getComputedReserveFields({
     utilizationRate,
     reserveLiquidationBonus,
     eModeLiquidationBonus,
+    eModeLiquidationThreshold: reserve.eModeLiquidationThreshold.toString(),
+    eModeLTV: reserve.eModeLTV.toString(),
     supplyAPY,
     variableBorrowAPY,
     stableBorrowAPY,
@@ -169,7 +173,13 @@ function getComputedReserveFields({
 }
 
 interface FormatEnhancedReserveRequest {
-  reserve: Omit<ReserveData, 'availableLiquidity'> &
+  reserve: Omit<
+    ReserveData,
+    | 'availableLiquidity'
+    | 'eModeLTV'
+    | 'eModeLiquidationThreshold'
+    | 'eModeLiquidationBonus'
+  > &
     GetComputedReserveFieldsResponse;
 }
 /**
