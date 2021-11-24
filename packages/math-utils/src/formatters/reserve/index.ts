@@ -14,7 +14,7 @@ import { calculateReserveDebt } from './calculate-reserve-debt';
 export interface FormatReserveResponse {
   reserveFactor: string;
   baseLTVasCollateral: string;
-  eModeLTV: string;
+  eModeLtv: string;
   liquidityIndex: string;
   reserveLiquidationThreshold: string;
   eModeLiquidationThreshold: string;
@@ -71,7 +71,7 @@ export interface ReserveData {
   debtCeiling: string;
   debtCeilingDecimals: number;
   isolationModeTotalDebt: string;
-  eModeLTV: number;
+  eModeLtv: number;
   eModeLiquidationThreshold: number;
   eModeLiquidationBonus: number;
 }
@@ -83,7 +83,7 @@ interface GetComputedReserveFieldsResponse {
   totalLiquidity: BigNumber;
   utilizationRate: string;
   reserveLiquidationBonus: string;
-  eModeLTV: string;
+  eModeLtv: string;
   eModeLiquidationThreshold: string;
   eModeLiquidationBonus: string;
   supplyAPY: BigNumber;
@@ -163,7 +163,7 @@ function getComputedReserveFields({
     reserveLiquidationBonus,
     eModeLiquidationBonus,
     eModeLiquidationThreshold: reserve.eModeLiquidationThreshold.toString(),
-    eModeLTV: reserve.eModeLTV.toString(),
+    eModeLtv: reserve.eModeLtv.toString(),
     supplyAPY,
     variableBorrowAPY,
     stableBorrowAPY,
@@ -176,7 +176,7 @@ interface FormatEnhancedReserveRequest {
   reserve: Omit<
     ReserveData,
     | 'availableLiquidity'
-    | 'eModeLTV'
+    | 'eModeLtv'
     | 'eModeLiquidationThreshold'
     | 'eModeLiquidationBonus'
   > &
@@ -202,7 +202,7 @@ function formatEnhancedReserve({
     utilizationRate: reserve.utilizationRate,
     totalDebt: normalizeWithReserve(reserve.totalDebt),
     baseLTVasCollateral: normalize(reserve.baseLTVasCollateral, LTV_PRECISION),
-    eModeLTV: normalize(reserve.eModeLTV, LTV_PRECISION),
+    eModeLtv: normalize(reserve.eModeLtv, LTV_PRECISION),
     reserveFactor: normalize(reserve.reserveFactor, LTV_PRECISION),
     supplyAPY: normalize(reserve.supplyAPY, RAY_DECIMALS),
     supplyAPR: normalize(reserve.liquidityRate, RAY_DECIMALS),
