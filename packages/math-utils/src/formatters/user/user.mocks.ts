@@ -34,9 +34,9 @@ export const usdcUserReserveEthMarket: RawUserReserveData = {
     debtCeilingDecimals: 2,
     isolationModeTotalDebt: '0',
     eModeCategoryId: 1,
-    eModeLtv: '9500',
-    eModeLiquidationThreshold: '9700',
-    eModeLiquidationBonus: '8500',
+    eModeLtv: 9500,
+    eModeLiquidationThreshold: 9700,
+    eModeLiquidationBonus: 8500,
   },
 };
 
@@ -74,9 +74,9 @@ export const ethUserReserveEthMarket: RawUserReserveData = {
     debtCeilingDecimals: 2,
     isolationModeTotalDebt: '0',
     eModeCategoryId: 2,
-    eModeLtv: '9000',
-    eModeLiquidationThreshold: '9500',
-    eModeLiquidationBonus: '10250',
+    eModeLtv: 9000,
+    eModeLiquidationThreshold: 9500,
+    eModeLiquidationBonus: 10250,
   },
 };
 
@@ -114,9 +114,9 @@ export const usdcUserReserveUsdMarket: RawUserReserveData = {
     debtCeilingDecimals: 2,
     isolationModeTotalDebt: '0',
     eModeCategoryId: 1,
-    eModeLtv: '9500',
-    eModeLiquidationThreshold: '9700',
-    eModeLiquidationBonus: '10250',
+    eModeLtv: 9500,
+    eModeLiquidationThreshold: 9700,
+    eModeLiquidationBonus: 10250,
   },
 };
 
@@ -154,9 +154,9 @@ export const avaxUserReserveUsdMarket: RawUserReserveData = {
     debtCeilingDecimals: 2,
     isolationModeTotalDebt: '0',
     eModeCategoryId: 0,
-    eModeLtv: '0',
-    eModeLiquidationThreshold: '0',
-    eModeLiquidationBonus: '0',
+    eModeLtv: 0,
+    eModeLiquidationThreshold: 0,
+    eModeLiquidationBonus: 0,
   },
 };
 

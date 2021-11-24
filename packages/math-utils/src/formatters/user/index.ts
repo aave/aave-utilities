@@ -34,9 +34,9 @@ export interface RawReserveData {
   debtCeilingDecimals: number;
   isolationModeTotalDebt: string;
   eModeCategoryId: number;
-  eModeLtv: string;
-  eModeLiquidationThreshold: string;
-  eModeLiquidationBonus: string;
+  eModeLtv: number;
+  eModeLiquidationThreshold: number;
+  eModeLiquidationBonus: number;
 }
 
 export interface RawUserReserveData {
