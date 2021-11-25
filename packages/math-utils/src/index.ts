@@ -6,3 +6,4 @@ export * from './formatters/user';
 export * from './formatters/reserve';
 export * from './formatters/incentive';
 export * from './formatters/usd/native-to-usd';
+export * from './formatters/user/calculate-user-reserve-totals';
