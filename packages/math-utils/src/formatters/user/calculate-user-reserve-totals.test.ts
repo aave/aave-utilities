@@ -30,6 +30,7 @@ describe('calculateUserReserveTotals', () => {
   it('should compute totals from user reserve array', () => {
     const userReserveTotals = calculateUserReserveTotals({
       userReserves: [rawUSDCSummary, rawETHSummary],
+      userEmodeCategoryId: 0,
     });
     expect(
       userReserveTotals.totalLiquidityMarketReferenceCurrency.toFixed(),
@@ -44,6 +45,16 @@ describe('calculateUserReserveTotals', () => {
     expect(userReserveTotals.currentLiquidationThreshold.toFixed()).toEqual(
       '8261.3698796199320993174',
     );
+    const userReserveEModeTotals = calculateUserReserveTotals({
+      userReserves: [rawUSDCSummary, rawETHSummary],
+      userEmodeCategoryId: 1,
+    });
+    expect(userReserveEModeTotals.currentLtv.toFixed()).toEqual(
+      '8068.2192777195925959044',
+    );
+    expect(
+      userReserveEModeTotals.currentLiquidationThreshold.toFixed(),
+    ).toEqual('8315.94530179560617604092');
   });
 
   it('should not compute collateral or LTV if usageAsCollateralEnabledOnUser is false', () => {
@@ -69,6 +80,7 @@ describe('calculateUserReserveTotals', () => {
       });
     const userReserveTotals = calculateUserReserveTotals({
       userReserves: [rawUSDCSummary, rawETHSummary],
+      userEmodeCategoryId: 0,
     });
     expect(
       userReserveTotals.totalCollateralMarketReferenceCurrency.toFixed(),

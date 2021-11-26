@@ -33,6 +33,10 @@ export interface RawReserveData {
   debtCeiling: string;
   debtCeilingDecimals: number;
   isolationModeTotalDebt: string;
+  eModeCategoryId: number;
+  eModeLtv: number;
+  eModeLiquidationThreshold: number;
+  eModeLiquidationBonus: number;
 }
 
 export interface RawUserReserveData {
@@ -70,6 +74,7 @@ export interface FormatUserSummaryRequest {
   marketRefPriceInUsd: BigNumberValue;
   marketRefCurrencyDecimals: number;
   currentTimestamp: number;
+  userEmodeCategoryId: number;
 }
 
 export interface FormatUserSummaryResponse {
@@ -93,6 +98,7 @@ export function formatUserSummary({
   marketRefPriceInUsd,
   marketRefCurrencyDecimals,
   rawUserReserves,
+  userEmodeCategoryId,
 }: FormatUserSummaryRequest): FormatUserSummaryResponse {
   const humanizedMarketRefPriceInUsd = normalize(
     marketRefPriceInUsd,
@@ -119,6 +125,7 @@ export function formatUserSummary({
     userReserves: computedUserReserves,
     marketRefPriceInUsd: humanizedMarketRefPriceInUsd,
     marketRefCurrencyDecimals,
+    userEmodeCategoryId,
   });
 
   const isInIsolationMode = Boolean(
