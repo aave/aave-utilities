@@ -3,6 +3,50 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.26.2 (2021-11-22)
+
+
+### Bug Fixes
+
+* drop fetch options ([#193](https://github.com/@aave/aave-utilities/issues/193)) ([f6d0cf9](https://github.com/@aave/aave-utilities/commit/f6d0cf9edb7ffdea43a3ac2bbd505cea3d24710c))
+
+
+
+
+
+## 0.26.1 (2021-11-21)
+
+
+### Bug Fixes
+
+* drop ipfs fetching ([#186](https://github.com/@aave/aave-utilities/issues/186)) ([cffb69e](https://github.com/@aave/aave-utilities/commit/cffb69eae36279b9946c0815dea04c36a9a9f1e5))
+
+
+
+
+
+# 0.26.0 (2021-11-19)
+
+
+### Features
+
+* make gateway configurable ([#185](https://github.com/@aave/aave-utilities/issues/185)) ([b0b63a7](https://github.com/@aave/aave-utilities/commit/b0b63a7832cdeb282f4ba244be84ae40342a06d0))
+
+
+
+
+
+## 0.25.8 (2021-11-18)
+
+
+### Bug Fixes
+
+* dont encode encoded hashes ([#183](https://github.com/@aave/aave-utilities/issues/183)) ([90e001b](https://github.com/@aave/aave-utilities/commit/90e001bb13ced072ea1532d767e9ed0678e13430))
+
+
+
+
+
 ## 0.25.7 (2021-11-16)
 
 **Note:** Version bump only for package @aave/contract-helpers

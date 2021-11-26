@@ -1,7 +1,6 @@
 import { providers } from 'ethers';
 import { formatEther } from 'ethers/lib/utils';
 import BaseService from '../commons/BaseService';
-import { getProposalMetadata } from '../commons/ipfs';
 import {
   eEthereumTxType,
   EthereumTransactionTypeExtended,
@@ -24,6 +23,7 @@ import { IGovernanceV2Helper } from './typechain/IGovernanceV2Helper';
 import { IGovernanceV2Helper__factory } from './typechain/IGovernanceV2Helper__factory';
 import {
   GovGetProposalsType,
+  GovGetProposalType,
   GovGetVotingAtBlockType,
   GovSubmitVoteType,
   GovGetTokensVotingPower as GovGetPower,
@@ -35,67 +35,38 @@ import {
   Vote,
 } from './types';
 
-export const parseProposal = async (
-  rawProposal: ProposalRPC,
-): Promise<Proposal> => {
-  const {
-    id,
-    creator,
-    executor,
-    targets,
-    values,
-    signatures,
-    calldatas,
-    withDelegatecalls,
-    startBlock,
-    endBlock,
-    executionTime,
-    forVotes,
-    againstVotes,
-    executed,
-    canceled,
-    strategy,
-    ipfsHash: ipfsHex,
-    totalVotingSupply,
-    minimumQuorum,
-    minimumDiff,
-    executionTimeWithGracePeriod,
-    proposalCreated,
-    proposalState,
-  } = rawProposal;
-
-  const proposalMetadata = await getProposalMetadata(ipfsHex);
-  const proposal: Proposal = {
-    id: Number(id.toString()),
-    creator,
-    executor,
-    targets,
-    values,
-    signatures,
-    calldatas,
-    withDelegatecalls,
-    startBlock: Number(startBlock.toString()),
-    endBlock: Number(endBlock.toString()),
-    executionTime: executionTime.toString(),
-    forVotes: forVotes.toString(),
-    againstVotes: againstVotes.toString(),
-    executed,
-    canceled,
-    strategy,
-    state: Object.values(ProposalState)[proposalState],
-    minimumQuorum: minimumQuorum.toString(),
-    minimumDiff: minimumDiff.toString(),
-    executionTimeWithGracePeriod: executionTimeWithGracePeriod.toString(),
-    proposalCreated: Number(proposalCreated.toString()),
-    totalVotingSupply: totalVotingSupply.toString(),
-    ...proposalMetadata,
+export const humanizeProposal = (rawProposal: ProposalRPC): Proposal => {
+  return {
+    id: Number(rawProposal.id.toString()),
+    creator: rawProposal.creator,
+    executor: rawProposal.executor,
+    targets: rawProposal.targets,
+    values: rawProposal.values,
+    signatures: rawProposal.signatures,
+    calldatas: rawProposal.calldatas,
+    withDelegatecalls: rawProposal.withDelegatecalls,
+    startBlock: Number(rawProposal.startBlock.toString()),
+    endBlock: Number(rawProposal.endBlock.toString()),
+    executionTime: rawProposal.executionTime.toString(),
+    forVotes: rawProposal.forVotes.toString(),
+    againstVotes: rawProposal.againstVotes.toString(),
+    executed: rawProposal.executed,
+    canceled: rawProposal.canceled,
+    strategy: rawProposal.strategy,
+    state: Object.values(ProposalState)[rawProposal.proposalState],
+    minimumQuorum: rawProposal.minimumQuorum.toString(),
+    minimumDiff: rawProposal.minimumDiff.toString(),
+    executionTimeWithGracePeriod:
+      rawProposal.executionTimeWithGracePeriod.toString(),
+    proposalCreated: Number(rawProposal.proposalCreated.toString()),
+    totalVotingSupply: rawProposal.totalVotingSupply.toString(),
+    ipfsHash: rawProposal.ipfsHash,
   };
-
-  return proposal;
 };
 
 export interface AaveGovernanceInterface {
   submitVote: (args: GovSubmitVoteType) => EthereumTransactionTypeExtended[];
+  getProposal: (args: GovGetProposalType) => Promise<Proposal>;
   getProposals: (args: GovGetProposalsType) => Promise<Proposal[]>;
   getVotingPowerAt: (args: GovGetVotingAtBlockType) => Promise<string>;
   getTokensPower: (args: GovGetPower) => Promise<Power[]>;
@@ -105,6 +76,7 @@ export interface AaveGovernanceInterface {
 type AaveGovernanceServiceConfig = {
   GOVERNANCE_ADDRESS: string;
   GOVERNANCE_HELPER_ADDRESS?: string;
+  ipfsGateway?: string;
 };
 
 export class AaveGovernanceService
@@ -165,14 +137,24 @@ export class AaveGovernanceService
       this.aaveGovernanceV2Address,
     );
 
-    const proposals: Promise<Proposal[]> = Promise.all(
-      result.map(
-        async (rawProposal: ProposalRPC): Promise<Proposal> =>
-          parseProposal(rawProposal),
-      ),
+    return result.map(proposal => humanizeProposal(proposal));
+  }
+
+  @GovHelperValidator
+  public async getProposal(
+    @is0OrPositiveAmount('proposalId')
+    { proposalId }: GovGetProposalType,
+  ) {
+    const helper: IGovernanceV2Helper = IGovernanceV2Helper__factory.connect(
+      this.aaveGovernanceV2HelperAddress,
+      this.provider,
+    );
+    const result = await helper.getProposal(
+      proposalId,
+      this.aaveGovernanceV2Address,
     );
 
-    return proposals;
+    return humanizeProposal(result);
   }
 
   @GovValidator

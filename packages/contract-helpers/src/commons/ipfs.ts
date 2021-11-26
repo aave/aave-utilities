@@ -1,10 +1,8 @@
 import { base58 } from 'ethers/lib/utils';
 import fetch from 'isomorphic-unfetch';
 
-const ipfsEndpoint = 'https://cloudflare-ipfs.com/ipfs';
-
-export function getLink(hash: string): string {
-  return `${ipfsEndpoint}/${hash}`;
+export function getLink(hash: string, gateway: string): string {
+  return `${gateway}/${hash}`;
 }
 
 export type ProposalMetadata = {
@@ -23,15 +21,14 @@ const MEMORIZE: MemorizeMetadata = {};
 
 export async function getProposalMetadata(
   hash: string,
+  gateway = 'https://cloudflare-ipfs.com/ipfs',
 ): Promise<ProposalMetadata> {
-  const ipfsHash = base58.encode(Buffer.from(`1220${hash.slice(2)}`, 'hex'));
+  const ipfsHash = hash.startsWith('0x')
+    ? base58.encode(Buffer.from(`1220${hash.slice(2)}`, 'hex'))
+    : hash;
   if (MEMORIZE[ipfsHash]) return MEMORIZE[ipfsHash];
   try {
-    const ipfsResponse: Response = await fetch(getLink(ipfsHash), {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const ipfsResponse: Response = await fetch(getLink(ipfsHash, gateway));
     if (!ipfsResponse.ok) {
       throw Error('Fetch not working');
     }

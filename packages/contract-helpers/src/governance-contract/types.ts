@@ -88,11 +88,37 @@ export enum ProposalState {
   Executed = 'Executed',
 }
 
-export type Proposal = {
+export type ProposalIpfs = {
   id: number;
   title: string;
   description: string;
   shortDescription: string;
+  creator: tEthereumAddress;
+  executor: tEthereumAddress;
+  targets: tEthereumAddress[];
+  values: string[];
+  signatures: string[];
+  calldatas: string[];
+  withDelegatecalls: boolean[];
+  startBlock: number;
+  endBlock: number;
+  executionTime: string;
+  executionTimeWithGracePeriod: string;
+  forVotes: string;
+  againstVotes: string;
+  executed: boolean;
+  canceled: boolean;
+  strategy: string;
+  ipfsHash: string;
+  state: ProposalState;
+  minimumQuorum: string;
+  minimumDiff: string;
+  proposalCreated: number;
+  totalVotingSupply: string;
+};
+
+export type Proposal = {
+  id: number;
   creator: tEthereumAddress;
   executor: tEthereumAddress;
   targets: tEthereumAddress[];
@@ -141,13 +167,6 @@ export type ProposalRPC = {
   strategy: string;
   ipfsHash: string;
   proposalState: number;
-};
-
-export type ProposalMetadata = {
-  title: string;
-  description: string;
-  shortDescription: string;
-  ipfsHash: string;
 };
 
 export type Power = {
