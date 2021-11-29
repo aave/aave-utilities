@@ -7,6 +7,12 @@ import {
 } from '../../bignumber';
 import { RAY_DECIMALS, SECONDS_PER_YEAR } from '../../constants';
 import { LTV_PRECISION, RAY, rayPow } from '../../index';
+import { calculateRewardTokenPrice } from '../incentive';
+import {
+  calculateReserveIncentives,
+  CalculateReserveIncentivesResponse,
+} from '../incentive/calculate-reserve-incentives';
+import { ReserveIncentiveWithFeedsResponse } from '../incentive/types';
 import { nativeToUSD } from '../usd/native-to-usd';
 import { normalizedToUsd } from '../usd/normalized-to-usd';
 import { calculateReserveDebt } from './calculate-reserve-debt';
@@ -338,4 +344,65 @@ export function formatReserveUSD({
       marketRefCurrencyDecimals,
     ).toString(),
   };
+}
+
+export interface FormatReservesUSDRequest {
+  reserves: Array<ReserveDataWithPrice & { underlyingAsset: string }>;
+  reserveIncentives?: ReserveIncentiveWithFeedsResponse[];
+  currentTimestamp: number;
+  marketRefPriceInUsd: string;
+  marketRefCurrencyDecimals: number;
+}
+
+export function formatReserves({
+  reserves,
+  currentTimestamp,
+  marketRefPriceInUsd,
+  marketRefCurrencyDecimals,
+  reserveIncentives,
+}: FormatReservesUSDRequest): Array<
+  FormatReserveUSDResponse & Partial<CalculateReserveIncentivesResponse>
+> {
+  return reserves.map(reserve => {
+    const formattedReserve = formatReserveUSD({
+      reserve,
+      currentTimestamp,
+      marketRefPriceInUsd,
+      marketRefCurrencyDecimals,
+    });
+
+    if (reserveIncentives) {
+      const reserveIncentive = reserveIncentives.find(
+        reserveIncentive =>
+          reserveIncentive.underlyingAsset === reserve.underlyingAsset,
+      );
+      if (!reserveIncentive) return formattedReserve;
+      const incentive = calculateReserveIncentives({
+        reserveIncentiveData: reserveIncentive,
+        totalLiquidity: formattedReserve.totalLiquidity,
+        totalVariableDebt: formattedReserve.totalVariableDebt,
+        totalStableDebt: formattedReserve.totalStableDebt,
+        priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+        decimals: reserve.decimals,
+        aRewardTokenPriceInMarketReferenceCurrency: calculateRewardTokenPrice(
+          reserves,
+          reserveIncentive.aIncentiveData.rewardTokenAddress.toLowerCase(),
+          reserveIncentive.aIncentiveData.priceFeed,
+        ),
+        vRewardTokenPriceInMarketReferenceCurrency: calculateRewardTokenPrice(
+          reserves,
+          reserveIncentive.vIncentiveData.rewardTokenAddress.toLowerCase(),
+          reserveIncentive.vIncentiveData.priceFeed,
+        ),
+        sRewardTokenPriceInMarketReferenceCurrency: calculateRewardTokenPrice(
+          reserves,
+          reserveIncentive.sIncentiveData.rewardTokenAddress.toLowerCase(),
+          reserveIncentive.sIncentiveData.priceFeed,
+        ),
+      });
+      return { ...formattedReserve, ...incentive };
+    }
+
+    return formattedReserve;
+  });
 }
