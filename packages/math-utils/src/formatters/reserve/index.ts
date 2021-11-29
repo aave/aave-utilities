@@ -354,15 +354,17 @@ export interface FormatReservesUSDRequest {
   marketRefCurrencyDecimals: number;
 }
 
+export type FormatReservesUSDResponse = Array<
+  FormatReserveUSDResponse & Partial<CalculateReserveIncentivesResponse>
+>;
+
 export function formatReserves({
   reserves,
   currentTimestamp,
   marketRefPriceInUsd,
   marketRefCurrencyDecimals,
   reserveIncentives,
-}: FormatReservesUSDRequest): Array<
-  FormatReserveUSDResponse & Partial<CalculateReserveIncentivesResponse>
-> {
+}: FormatReservesUSDRequest): FormatReservesUSDResponse {
   return reserves.map(reserve => {
     const formattedReserve = formatReserveUSD({
       reserve,
