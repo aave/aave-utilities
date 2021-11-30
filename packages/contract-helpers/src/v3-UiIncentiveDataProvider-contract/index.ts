@@ -161,12 +161,11 @@ export class UiIncentiveDataProvider
   }
 
   @UiIncentiveDataProviderValidator
-  public async getUserReservesIncentivesDataHumanized({
-    user,
-    lendingPoolAddressProvider,
-  }: UserReservesIncentivesDataType): Promise<
-    UserReservesIncentivesDataHumanized[]
-  > {
+  public async getUserReservesIncentivesDataHumanized(
+    @isEthAddress('user')
+    @isEthAddress('lendingPoolAddressProvider')
+    { user, lendingPoolAddressProvider }: UserReservesIncentivesDataType,
+  ): Promise<UserReservesIncentivesDataHumanized[]> {
     const response: UserReservesIncentivesData[] =
       await this.getUserReservesIncentivesData({
         user,
@@ -187,13 +186,16 @@ export class UiIncentiveDataProvider
     }));
   }
 
-  public async getIncentivesDataWithPriceLegacy({
-    lendingPoolAddressProvider,
-    chainlinkFeedsRegistry,
-    quote = Denominations.eth,
-  }: GetIncentivesDataWithPriceType): Promise<
-    ReservesIncentiveDataHumanized[]
-  > {
+  @UiIncentiveDataProviderValidator
+  public async getIncentivesDataWithPriceLegacy(
+    @isEthAddress('lendingPoolAddressProvider')
+    @isEthAddress('chainlinkFeedsRegistry')
+    {
+      lendingPoolAddressProvider,
+      chainlinkFeedsRegistry,
+      quote = Denominations.eth,
+    }: GetIncentivesDataWithPriceType,
+  ): Promise<ReservesIncentiveDataHumanized[]> {
     const incentives: ReservesIncentiveDataHumanized[] =
       await this.getReservesIncentivesDataHumanized(lendingPoolAddressProvider);
     const feeds: FeedResultSuccessful[] = [];
