@@ -254,8 +254,12 @@ export class UiIncentiveDataProvider
                 );
                 return {
                   ...rewardTokenInfo,
-                  rewardPriceFeed: feed ? feed.answer : '0',
-                  priceFeedDecimals: feed ? feed.decimals : 0,
+                  rewardPriceFeed: feed?.answer
+                    ? feed.answer
+                    : rewardTokenInfo.rewardPriceFeed,
+                  priceFeedDecimals: feed?.decimals
+                    ? feed.decimals
+                    : rewardTokenInfo.priceFeedDecimals,
                 };
               },
             ),
@@ -272,8 +276,12 @@ export class UiIncentiveDataProvider
                 );
                 return {
                   ...rewardTokenInfo,
-                  rewardPriceFeed: feed ? feed.answer : '0',
-                  priceFeedDecimals: feed ? feed.decimals : 0,
+                  rewardPriceFeed: feed?.answer
+                    ? feed.answer
+                    : rewardTokenInfo.rewardPriceFeed,
+                  priceFeedDecimals: feed?.decimals
+                    ? feed.decimals
+                    : rewardTokenInfo.priceFeedDecimals,
                 };
               },
             ),
@@ -290,8 +298,12 @@ export class UiIncentiveDataProvider
                 );
                 return {
                   ...rewardTokenInfo,
-                  rewardPriceFeed: feed ? feed.answer : '0',
-                  priceFeedDecimals: feed ? feed.decimals : 0,
+                  rewardPriceFeed: feed?.answer
+                    ? feed.answer
+                    : rewardTokenInfo.rewardPriceFeed,
+                  priceFeedDecimals: feed?.decimals
+                    ? feed.decimals
+                    : rewardTokenInfo.priceFeedDecimals,
                 };
               },
             ),

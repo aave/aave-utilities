@@ -1,7 +1,7 @@
 import { BigNumber, providers } from 'ethers';
-// import { mocked } from 'ts-jest/utils';
-// import { ChainlinkFeedsRegistry } from '../cl-feed-registry/index';
-// import { Denominations } from '../cl-feed-registry/types/ChainlinkFeedsRegistryTypes';
+import { mocked } from 'ts-jest/utils';
+import { ChainlinkFeedsRegistry } from '../cl-feed-registry/index';
+import { Denominations } from '../cl-feed-registry/types/ChainlinkFeedsRegistryTypes';
 import {
   getReservesIncentivesDataMock,
   getUserIncentivesDataMock,
@@ -92,7 +92,7 @@ describe('UiIncentiveDataProvider', () => {
     });
   });
 
-  describe('getReservesIncentivesData - to get 100% in coverage :( pointless test', () => {
+  describe('getReservesIncentivesData', () => {
     const instance = new UiIncentiveDataProvider({
       uiIncentiveDataProviderAddress,
       provider,
@@ -308,7 +308,38 @@ describe('UiIncentiveDataProvider', () => {
             tokenAddress: '0xb2007801F8c9dB4241E12C81E9d83741d14d7227',
             incentiveControllerAddress:
               '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
-            rewardsTokenInformation: [],
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
           },
         },
       ]);
@@ -440,1051 +471,1250 @@ describe('UiIncentiveDataProvider', () => {
     });
   });
 
-  // describe('getIncentivesDataWithPrice', () => {
-  //   it('Should throw error if token address is wrong', async () => {
-  //     const instance = createValidInstance();
-  //     await expect(
-  //       instance.getReservesIncentivesDataHumanized(mockInvalidEthereumAddress),
-  //     ).rejects.toThrow('Lending pool address provider is not valid');
-  //   });
-  //   it('should work with one feed', async () => {
-  //     const clInstance = new ChainlinkFeedsRegistry({
-  //       chainlinkFeedsRegistry: mockValidEthereumAddress,
-  //       provider: new providers.JsonRpcProvider(),
-  //     });
-  //     const instance = createValidInstance();
+  describe('getIncentivesDataWithPrice', () => {
+    const instance = new UiIncentiveDataProvider({
+      uiIncentiveDataProviderAddress,
+      provider,
+    });
+    const chainlinkFeedsRegistry = '0x0000000000000000000000000000000000000004';
 
-  //     mocked(clInstance).getPriceFeed.mockReturnValueOnce(Promise.reject());
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('should throw if uiIncentiveDataProvider is not a valid ethereum address', async () => {
+      const instance = new UiIncentiveDataProvider({
+        uiIncentiveDataProviderAddress: 'asdf',
+        provider,
+      });
+      await expect(async () =>
+        instance.getIncentivesDataWithPriceLegacy({
+          lendingPoolAddressProvider,
+        }),
+      ).rejects.toThrowError(
+        'UiIncentiveDataProviderAddress must be an eth valid address',
+      );
+    });
+    it('Expects to fail if lendingPoolAddressProvider not an eth address', async () => {
+      const lendingPoolAddressProvider = 'asdf';
+      await expect(async () =>
+        instance.getIncentivesDataWithPriceLegacy({
+          lendingPoolAddressProvider,
+        }),
+      ).rejects.toThrow(
+        `Address: ${lendingPoolAddressProvider} is not a valid ethereum Address`,
+      );
+    });
+    it('should work with no feed', async () => {
+      const clInstance = new ChainlinkFeedsRegistry({
+        chainlinkFeedsRegistry,
+        provider,
+      });
 
-  //     mocked(clInstance).getPriceFeed.mockReturnValue(
-  //       Promise.resolve({
-  //         answer: '2',
-  //         updatedAt: 4,
-  //         decimals: 1,
-  //       }),
-  //     );
+      mocked(clInstance).getPriceFeed.mockReturnValue(Promise.reject());
 
-  //     const result: ReserveIncentiveWithFeedsResponse[] =
-  //       await instance.getIncentivesDataWithPrice({
-  //         lendingPoolAddressProvider: mockValidEthereumAddress,
-  //         chainlinkFeedsRegistry: mockValidEthereumAddress,
-  //         quote: Denominations.eth,
-  //       });
+      const spy = jest
+        .spyOn(IUiIncentiveDataProviderV3__factory, 'connect')
+        .mockReturnValue({
+          getReservesIncentivesData: async () =>
+            Promise.resolve(getReservesIncentivesDataMock),
+        } as unknown as IUiIncentiveDataProviderV3);
 
-  //     expect(clInstance.getPriceFeed).toBeCalled();
-  //     expect(typeof result[0].aIncentiveData.emissionEndTimestamp).toEqual(
-  //       typeof 1,
-  //     );
-  //     expect(result).toEqual([
-  //       {
-  //         underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  //         aIncentiveData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '43565143328112327495233486',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         vIncentiveData: {
-  //           tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '57970476598005880594044681',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '2',
-  //           priceFeedTimestamp: 4,
-  //           priceFeedDecimals: 1,
-  //         },
-  //         sIncentiveData: {
-  //           tokenAddress: '0x0000000000000000000000000000000000000000',
-  //           precision: 0,
-  //           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-  //           incentiveControllerAddress:
-  //             '0x0000000000000000000000000000000000000000',
-  //           rewardTokenDecimals: 0,
-  //           emissionPerSecond: '0',
-  //           incentivesLastUpdateTimestamp: 0,
-  //           tokenIncentivesIndex: '0',
-  //           emissionEndTimestamp: 0,
-  //           priceFeed: '2',
-  //           priceFeedTimestamp: 4,
-  //           priceFeedDecimals: 1,
-  //         },
-  //       },
-  //       {
-  //         underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  //         aIncentiveData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '43565143328112327495233486',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         vIncentiveData: {
-  //           tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '57970476598005880594044681',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '2',
-  //           priceFeedTimestamp: 4,
-  //           priceFeedDecimals: 1,
-  //         },
-  //         sIncentiveData: {
-  //           tokenAddress: '0x0000000000000000000000000000000000000000',
-  //           precision: 0,
-  //           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-  //           incentiveControllerAddress:
-  //             '0x0000000000000000000000000000000000000000',
-  //           rewardTokenDecimals: 0,
-  //           emissionPerSecond: '0',
-  //           incentivesLastUpdateTimestamp: 0,
-  //           tokenIncentivesIndex: '0',
-  //           emissionEndTimestamp: 0,
-  //           priceFeed: '2',
-  //           priceFeedTimestamp: 4,
-  //           priceFeedDecimals: 1,
-  //         },
-  //       },
-  //     ]);
-  //   });
-  //   it('should work with all feeds', async () => {
-  //     const clInstance = new ChainlinkFeedsRegistry({
-  //       chainlinkFeedsRegistry: mockValidEthereumAddress,
-  //       provider: new providers.JsonRpcProvider(),
-  //     });
-  //     const instance = createValidInstance();
+      const result = await instance.getIncentivesDataWithPriceLegacy({
+        lendingPoolAddressProvider,
+        chainlinkFeedsRegistry,
+        quote: Denominations.eth,
+      });
 
-  //     mocked(clInstance).getPriceFeed.mockReturnValue(
-  //       Promise.resolve({
-  //         answer: '2',
-  //         updatedAt: 4,
-  //         decimals: 1,
-  //       }),
-  //     );
+      expect(spy).toBeCalled();
+      expect(clInstance.getPriceFeed).toBeCalled();
+      expect(result).toEqual([
+        {
+          underlyingAsset:
+            '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
+          aIncentiveData: {
+            tokenAddress: '0x6d0eeb7b37BF26E182EB9a8631DCF79e4EF43DDd',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+          vIncentiveData: {
+            tokenAddress: '0xaD99ef885623E8520f631625b2675d6dAd3aaDC1',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+          sIncentiveData: {
+            tokenAddress: '0xb2007801F8c9dB4241E12C81E9d83741d14d7227',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+        },
+      ]);
+    });
+    it('should work with one feed', async () => {
+      const clInstance = new ChainlinkFeedsRegistry({
+        chainlinkFeedsRegistry,
+        provider,
+      });
 
-  //     const result: ReserveIncentiveWithFeedsResponse[] =
-  //       await instance.getIncentivesDataWithPrice({
-  //         lendingPoolAddressProvider: mockValidEthereumAddress,
-  //         chainlinkFeedsRegistry: mockValidEthereumAddress,
-  //         quote: Denominations.eth,
-  //       });
+      mocked(clInstance).getPriceFeed.mockReturnValueOnce(Promise.reject());
 
-  //     expect(clInstance.getPriceFeed).toBeCalled();
-  //     expect(typeof result[0].aIncentiveData.emissionEndTimestamp).toEqual(
-  //       typeof 1,
-  //     );
-  //     expect(result).toEqual([
-  //       {
-  //         underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  //         aIncentiveData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '43565143328112327495233486',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '2',
-  //           priceFeedTimestamp: 4,
-  //           priceFeedDecimals: 1,
-  //         },
-  //         vIncentiveData: {
-  //           tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '57970476598005880594044681',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '2',
-  //           priceFeedTimestamp: 4,
-  //           priceFeedDecimals: 1,
-  //         },
-  //         sIncentiveData: {
-  //           tokenAddress: '0x0000000000000000000000000000000000000000',
-  //           precision: 0,
-  //           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-  //           incentiveControllerAddress:
-  //             '0x0000000000000000000000000000000000000000',
-  //           rewardTokenDecimals: 0,
-  //           emissionPerSecond: '0',
-  //           incentivesLastUpdateTimestamp: 0,
-  //           tokenIncentivesIndex: '0',
-  //           emissionEndTimestamp: 0,
-  //           priceFeed: '2',
-  //           priceFeedTimestamp: 4,
-  //           priceFeedDecimals: 1,
-  //         },
-  //       },
-  //       {
-  //         underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  //         aIncentiveData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '43565143328112327495233486',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '2',
-  //           priceFeedTimestamp: 4,
-  //           priceFeedDecimals: 1,
-  //         },
-  //         vIncentiveData: {
-  //           tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '57970476598005880594044681',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '2',
-  //           priceFeedTimestamp: 4,
-  //           priceFeedDecimals: 1,
-  //         },
-  //         sIncentiveData: {
-  //           tokenAddress: '0x0000000000000000000000000000000000000000',
-  //           precision: 0,
-  //           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-  //           incentiveControllerAddress:
-  //             '0x0000000000000000000000000000000000000000',
-  //           rewardTokenDecimals: 0,
-  //           emissionPerSecond: '0',
-  //           incentivesLastUpdateTimestamp: 0,
-  //           tokenIncentivesIndex: '0',
-  //           emissionEndTimestamp: 0,
-  //           priceFeed: '2',
-  //           priceFeedTimestamp: 4,
-  //           priceFeedDecimals: 1,
-  //         },
-  //       },
-  //     ]);
-  //   });
-  //   it('should work with all feeds and no quote', async () => {
-  //     const clInstance = new ChainlinkFeedsRegistry({
-  //       chainlinkFeedsRegistry: mockValidEthereumAddress,
-  //       provider: new providers.JsonRpcProvider(),
-  //     });
-  //     const instance = createValidInstance();
+      mocked(clInstance).getPriceFeed.mockReturnValue(
+        Promise.resolve({
+          answer: '2',
+          updatedAt: 4,
+          decimals: 1,
+        }),
+      );
 
-  //     mocked(clInstance).getPriceFeed.mockReturnValue(
-  //       Promise.resolve({
-  //         answer: '2',
-  //         updatedAt: 4,
-  //         decimals: 1,
-  //       }),
-  //     );
+      jest
+        .spyOn(IUiIncentiveDataProviderV3__factory, 'connect')
+        .mockReturnValue({
+          getReservesIncentivesData: async () =>
+            Promise.resolve(getReservesIncentivesDataMock),
+        } as unknown as IUiIncentiveDataProviderV3);
 
-  //     const result: ReserveIncentiveWithFeedsResponse[] =
-  //       await instance.getIncentivesDataWithPrice({
-  //         lendingPoolAddressProvider: mockValidEthereumAddress,
-  //         chainlinkFeedsRegistry: mockValidEthereumAddress,
-  //       });
+      const result = await instance.getIncentivesDataWithPriceLegacy({
+        lendingPoolAddressProvider,
+        chainlinkFeedsRegistry,
+        quote: Denominations.eth,
+      });
 
-  //     expect(clInstance.getPriceFeed).toBeCalled();
-  //     expect(typeof result[0].aIncentiveData.emissionEndTimestamp).toEqual(
-  //       typeof 1,
-  //     );
-  //     expect(result).toEqual([
-  //       {
-  //         underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  //         aIncentiveData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '43565143328112327495233486',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '2',
-  //           priceFeedTimestamp: 4,
-  //           priceFeedDecimals: 1,
-  //         },
-  //         vIncentiveData: {
-  //           tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '57970476598005880594044681',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '2',
-  //           priceFeedTimestamp: 4,
-  //           priceFeedDecimals: 1,
-  //         },
-  //         sIncentiveData: {
-  //           tokenAddress: '0x0000000000000000000000000000000000000000',
-  //           precision: 0,
-  //           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-  //           incentiveControllerAddress:
-  //             '0x0000000000000000000000000000000000000000',
-  //           rewardTokenDecimals: 0,
-  //           emissionPerSecond: '0',
-  //           incentivesLastUpdateTimestamp: 0,
-  //           tokenIncentivesIndex: '0',
-  //           emissionEndTimestamp: 0,
-  //           priceFeed: '2',
-  //           priceFeedTimestamp: 4,
-  //           priceFeedDecimals: 1,
-  //         },
-  //       },
-  //       {
-  //         underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  //         aIncentiveData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '43565143328112327495233486',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '2',
-  //           priceFeedTimestamp: 4,
-  //           priceFeedDecimals: 1,
-  //         },
-  //         vIncentiveData: {
-  //           tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '57970476598005880594044681',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '2',
-  //           priceFeedTimestamp: 4,
-  //           priceFeedDecimals: 1,
-  //         },
-  //         sIncentiveData: {
-  //           tokenAddress: '0x0000000000000000000000000000000000000000',
-  //           precision: 0,
-  //           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-  //           incentiveControllerAddress:
-  //             '0x0000000000000000000000000000000000000000',
-  //           rewardTokenDecimals: 0,
-  //           emissionPerSecond: '0',
-  //           incentivesLastUpdateTimestamp: 0,
-  //           tokenIncentivesIndex: '0',
-  //           emissionEndTimestamp: 0,
-  //           priceFeed: '2',
-  //           priceFeedTimestamp: 4,
-  //           priceFeedDecimals: 1,
-  //         },
-  //       },
-  //     ]);
-  //   });
-  //   it('should work with no feed', async () => {
-  //     const clInstance = new ChainlinkFeedsRegistry({
-  //       chainlinkFeedsRegistry: mockValidEthereumAddress,
-  //       provider: new providers.JsonRpcProvider(),
-  //     });
-  //     const instance = createValidInstance();
+      expect(clInstance.getPriceFeed).toBeCalled();
+      expect(result).toEqual([
+        {
+          underlyingAsset:
+            '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
+          aIncentiveData: {
+            tokenAddress: '0x6d0eeb7b37BF26E182EB9a8631DCF79e4EF43DDd',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+          vIncentiveData: {
+            tokenAddress: '0xaD99ef885623E8520f631625b2675d6dAd3aaDC1',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+          sIncentiveData: {
+            tokenAddress: '0xb2007801F8c9dB4241E12C81E9d83741d14d7227',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+        },
+      ]);
+    });
+    it('should work with all feeds', async () => {
+      const clInstance = new ChainlinkFeedsRegistry({
+        chainlinkFeedsRegistry,
+        provider: new providers.JsonRpcProvider(),
+      });
 
-  //     mocked(clInstance).getPriceFeed.mockReturnValue(Promise.reject());
+      mocked(clInstance).getPriceFeed.mockReturnValue(
+        Promise.resolve({
+          answer: '2',
+          updatedAt: 4,
+          decimals: 1,
+        }),
+      );
 
-  //     const result: ReserveIncentiveWithFeedsResponse[] =
-  //       await instance.getIncentivesDataWithPrice({
-  //         lendingPoolAddressProvider: mockValidEthereumAddress,
-  //         chainlinkFeedsRegistry: mockValidEthereumAddress,
-  //         quote: Denominations.eth,
-  //       });
+      jest
+        .spyOn(IUiIncentiveDataProviderV3__factory, 'connect')
+        .mockReturnValue({
+          getReservesIncentivesData: async () =>
+            Promise.resolve(getReservesIncentivesDataMock),
+        } as unknown as IUiIncentiveDataProviderV3);
 
-  //     expect(clInstance.getPriceFeed).toBeCalled();
-  //     expect(typeof result[0].aIncentiveData.emissionEndTimestamp).toEqual(
-  //       typeof 1,
-  //     );
-  //     expect(result).toEqual([
-  //       {
-  //         underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  //         aIncentiveData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '43565143328112327495233486',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         vIncentiveData: {
-  //           tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '57970476598005880594044681',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         sIncentiveData: {
-  //           tokenAddress: '0x0000000000000000000000000000000000000000',
-  //           precision: 0,
-  //           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-  //           incentiveControllerAddress:
-  //             '0x0000000000000000000000000000000000000000',
-  //           rewardTokenDecimals: 0,
-  //           emissionPerSecond: '0',
-  //           incentivesLastUpdateTimestamp: 0,
-  //           tokenIncentivesIndex: '0',
-  //           emissionEndTimestamp: 0,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //       },
-  //       {
-  //         underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  //         aIncentiveData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '43565143328112327495233486',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         vIncentiveData: {
-  //           tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '57970476598005880594044681',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         sIncentiveData: {
-  //           tokenAddress: '0x0000000000000000000000000000000000000000',
-  //           precision: 0,
-  //           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-  //           incentiveControllerAddress:
-  //             '0x0000000000000000000000000000000000000000',
-  //           rewardTokenDecimals: 0,
-  //           emissionPerSecond: '0',
-  //           incentivesLastUpdateTimestamp: 0,
-  //           tokenIncentivesIndex: '0',
-  //           emissionEndTimestamp: 0,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //       },
-  //     ]);
-  //   });
-  //   it('should work with no feed twice', async () => {
-  //     const clInstance = new ChainlinkFeedsRegistry({
-  //       chainlinkFeedsRegistry: mockValidEthereumAddress,
-  //       provider: new providers.JsonRpcProvider(),
-  //     });
-  //     const instance = createValidInstance();
+      const result = await instance.getIncentivesDataWithPriceLegacy({
+        lendingPoolAddressProvider,
+        chainlinkFeedsRegistry,
+        quote: Denominations.eth,
+      });
 
-  //     mocked(clInstance).getPriceFeed.mockReturnValue(Promise.reject());
+      expect(clInstance.getPriceFeed).toBeCalled();
+      expect(result).toEqual([
+        {
+          underlyingAsset:
+            '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
+          aIncentiveData: {
+            tokenAddress: '0x6d0eeb7b37BF26E182EB9a8631DCF79e4EF43DDd',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: '2',
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 1,
+              },
+            ],
+          },
+          vIncentiveData: {
+            tokenAddress: '0xaD99ef885623E8520f631625b2675d6dAd3aaDC1',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: '2',
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 1,
+              },
+            ],
+          },
+          sIncentiveData: {
+            tokenAddress: '0xb2007801F8c9dB4241E12C81E9d83741d14d7227',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: '2',
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 1,
+              },
+            ],
+          },
+        },
+      ]);
+    });
+    it('should work with all feeds and no quote', async () => {
+      const clInstance = new ChainlinkFeedsRegistry({
+        chainlinkFeedsRegistry,
+        provider: new providers.JsonRpcProvider(),
+      });
 
-  //     const result: ReserveIncentiveWithFeedsResponse[] =
-  //       await instance.getIncentivesDataWithPrice({
-  //         lendingPoolAddressProvider: mockValidEthereumAddress,
-  //         chainlinkFeedsRegistry: mockValidEthereumAddress,
-  //         quote: Denominations.eth,
-  //       });
-  //     const result2: ReserveIncentiveWithFeedsResponse[] =
-  //       await instance.getIncentivesDataWithPrice({
-  //         lendingPoolAddressProvider: mockValidEthereumAddress,
-  //         chainlinkFeedsRegistry: mockValidEthereumAddress,
-  //         quote: Denominations.eth,
-  //       });
+      mocked(clInstance).getPriceFeed.mockReturnValue(
+        Promise.resolve({
+          answer: '2',
+          updatedAt: 4,
+          decimals: 1,
+        }),
+      );
+      jest
+        .spyOn(IUiIncentiveDataProviderV3__factory, 'connect')
+        .mockReturnValue({
+          getReservesIncentivesData: async () =>
+            Promise.resolve(getReservesIncentivesDataMock),
+        } as unknown as IUiIncentiveDataProviderV3);
+      const result = await instance.getIncentivesDataWithPriceLegacy({
+        lendingPoolAddressProvider,
+        chainlinkFeedsRegistry,
+      });
 
-  //     expect(clInstance.getPriceFeed).toBeCalled();
-  //     expect(typeof result[0].aIncentiveData.emissionEndTimestamp).toEqual(
-  //       typeof 1,
-  //     );
-  //     expect(result).toEqual([
-  //       {
-  //         underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  //         aIncentiveData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '43565143328112327495233486',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         vIncentiveData: {
-  //           tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '57970476598005880594044681',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         sIncentiveData: {
-  //           tokenAddress: '0x0000000000000000000000000000000000000000',
-  //           precision: 0,
-  //           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-  //           incentiveControllerAddress:
-  //             '0x0000000000000000000000000000000000000000',
-  //           rewardTokenDecimals: 0,
-  //           emissionPerSecond: '0',
-  //           incentivesLastUpdateTimestamp: 0,
-  //           tokenIncentivesIndex: '0',
-  //           emissionEndTimestamp: 0,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //       },
-  //       {
-  //         underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  //         aIncentiveData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '43565143328112327495233486',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         vIncentiveData: {
-  //           tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '57970476598005880594044681',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         sIncentiveData: {
-  //           tokenAddress: '0x0000000000000000000000000000000000000000',
-  //           precision: 0,
-  //           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-  //           incentiveControllerAddress:
-  //             '0x0000000000000000000000000000000000000000',
-  //           rewardTokenDecimals: 0,
-  //           emissionPerSecond: '0',
-  //           incentivesLastUpdateTimestamp: 0,
-  //           tokenIncentivesIndex: '0',
-  //           emissionEndTimestamp: 0,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //       },
-  //     ]);
-  //     expect(result2).toEqual([
-  //       {
-  //         underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  //         aIncentiveData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '43565143328112327495233486',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         vIncentiveData: {
-  //           tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '57970476598005880594044681',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         sIncentiveData: {
-  //           tokenAddress: '0x0000000000000000000000000000000000000000',
-  //           precision: 0,
-  //           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-  //           incentiveControllerAddress:
-  //             '0x0000000000000000000000000000000000000000',
-  //           rewardTokenDecimals: 0,
-  //           emissionPerSecond: '0',
-  //           incentivesLastUpdateTimestamp: 0,
-  //           tokenIncentivesIndex: '0',
-  //           emissionEndTimestamp: 0,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //       },
-  //       {
-  //         underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  //         aIncentiveData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '43565143328112327495233486',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         vIncentiveData: {
-  //           tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '57970476598005880594044681',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         sIncentiveData: {
-  //           tokenAddress: '0x0000000000000000000000000000000000000000',
-  //           precision: 0,
-  //           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-  //           incentiveControllerAddress:
-  //             '0x0000000000000000000000000000000000000000',
-  //           rewardTokenDecimals: 0,
-  //           emissionPerSecond: '0',
-  //           incentivesLastUpdateTimestamp: 0,
-  //           tokenIncentivesIndex: '0',
-  //           emissionEndTimestamp: 0,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //       },
-  //     ]);
-  //   });
-  //   it('should work with chainlinkRegistry address incorrect', async () => {
-  //     const instance = createValidInstance();
-  //     const result: ReserveIncentiveWithFeedsResponse[] =
-  //       await instance.getIncentivesDataWithPrice({
-  //         lendingPoolAddressProvider: mockValidEthereumAddress,
-  //         chainlinkFeedsRegistry: mockInvalidEthereumAddress,
-  //         quote: Denominations.usd,
-  //       });
+      expect(clInstance.getPriceFeed).toBeCalled();
 
-  //     expect(result).toEqual([
-  //       {
-  //         underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  //         aIncentiveData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '43565143328112327495233486',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         vIncentiveData: {
-  //           tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '57970476598005880594044681',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         sIncentiveData: {
-  //           tokenAddress: '0x0000000000000000000000000000000000000000',
-  //           precision: 0,
-  //           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-  //           incentiveControllerAddress:
-  //             '0x0000000000000000000000000000000000000000',
-  //           rewardTokenDecimals: 0,
-  //           emissionPerSecond: '0',
-  //           incentivesLastUpdateTimestamp: 0,
-  //           tokenIncentivesIndex: '0',
-  //           emissionEndTimestamp: 0,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //       },
-  //       {
-  //         underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  //         aIncentiveData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '43565143328112327495233486',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         vIncentiveData: {
-  //           tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '57970476598005880594044681',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         sIncentiveData: {
-  //           tokenAddress: '0x0000000000000000000000000000000000000000',
-  //           precision: 0,
-  //           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-  //           incentiveControllerAddress:
-  //             '0x0000000000000000000000000000000000000000',
-  //           rewardTokenDecimals: 0,
-  //           emissionPerSecond: '0',
-  //           incentivesLastUpdateTimestamp: 0,
-  //           tokenIncentivesIndex: '0',
-  //           emissionEndTimestamp: 0,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //       },
-  //     ]);
-  //   });
-  //   it('should work with no chainlinkRegistry address no quote ', async () => {
-  //     const instance = createValidInstance();
-  //     const result: ReserveIncentiveWithFeedsResponse[] =
-  //       await instance.getIncentivesDataWithPrice({
-  //         lendingPoolAddressProvider: mockValidEthereumAddress,
-  //       });
+      expect(result).toEqual([
+        {
+          underlyingAsset:
+            '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
+          aIncentiveData: {
+            tokenAddress: '0x6d0eeb7b37BF26E182EB9a8631DCF79e4EF43DDd',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: '2',
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 1,
+              },
+            ],
+          },
+          vIncentiveData: {
+            tokenAddress: '0xaD99ef885623E8520f631625b2675d6dAd3aaDC1',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: '2',
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 1,
+              },
+            ],
+          },
+          sIncentiveData: {
+            tokenAddress: '0xb2007801F8c9dB4241E12C81E9d83741d14d7227',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: '2',
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 1,
+              },
+            ],
+          },
+        },
+      ]);
+    });
+    it('should work with no feed twice', async () => {
+      const clInstance = new ChainlinkFeedsRegistry({
+        chainlinkFeedsRegistry,
+        provider: new providers.JsonRpcProvider(),
+      });
 
-  //     expect(result).toEqual([
-  //       {
-  //         underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  //         aIncentiveData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '43565143328112327495233486',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         vIncentiveData: {
-  //           tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '57970476598005880594044681',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         sIncentiveData: {
-  //           tokenAddress: '0x0000000000000000000000000000000000000000',
-  //           precision: 0,
-  //           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-  //           incentiveControllerAddress:
-  //             '0x0000000000000000000000000000000000000000',
-  //           rewardTokenDecimals: 0,
-  //           emissionPerSecond: '0',
-  //           incentivesLastUpdateTimestamp: 0,
-  //           tokenIncentivesIndex: '0',
-  //           emissionEndTimestamp: 0,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //       },
-  //       {
-  //         underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  //         aIncentiveData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '43565143328112327495233486',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         vIncentiveData: {
-  //           tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '57970476598005880594044681',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         sIncentiveData: {
-  //           tokenAddress: '0x0000000000000000000000000000000000000000',
-  //           precision: 0,
-  //           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-  //           incentiveControllerAddress:
-  //             '0x0000000000000000000000000000000000000000',
-  //           rewardTokenDecimals: 0,
-  //           emissionPerSecond: '0',
-  //           incentivesLastUpdateTimestamp: 0,
-  //           tokenIncentivesIndex: '0',
-  //           emissionEndTimestamp: 0,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //       },
-  //     ]);
-  //   });
-  //   it('should work with no chainlinkregistry address and quote ', async () => {
-  //     const instance = createValidInstance();
-  //     const result: ReserveIncentiveWithFeedsResponse[] =
-  //       await instance.getIncentivesDataWithPrice({
-  //         lendingPoolAddressProvider: mockValidEthereumAddress,
-  //         quote: Denominations.usd,
-  //       });
+      mocked(clInstance).getPriceFeed.mockReturnValue(Promise.reject());
+      jest
+        .spyOn(IUiIncentiveDataProviderV3__factory, 'connect')
+        .mockReturnValue({
+          getReservesIncentivesData: async () =>
+            Promise.resolve(getReservesIncentivesDataMock),
+        } as unknown as IUiIncentiveDataProviderV3);
+      const result = await instance.getIncentivesDataWithPriceLegacy({
+        lendingPoolAddressProvider,
+        chainlinkFeedsRegistry,
+        quote: Denominations.eth,
+      });
+      const result2 = await instance.getIncentivesDataWithPriceLegacy({
+        lendingPoolAddressProvider,
+        chainlinkFeedsRegistry,
+        quote: Denominations.eth,
+      });
 
-  //     expect(result).toEqual([
-  //       {
-  //         underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  //         aIncentiveData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '43565143328112327495233486',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         vIncentiveData: {
-  //           tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '57970476598005880594044681',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         sIncentiveData: {
-  //           tokenAddress: '0x0000000000000000000000000000000000000000',
-  //           precision: 0,
-  //           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-  //           incentiveControllerAddress:
-  //             '0x0000000000000000000000000000000000000000',
-  //           rewardTokenDecimals: 0,
-  //           emissionPerSecond: '0',
-  //           incentivesLastUpdateTimestamp: 0,
-  //           tokenIncentivesIndex: '0',
-  //           emissionEndTimestamp: 0,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //       },
-  //       {
-  //         underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  //         aIncentiveData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '43565143328112327495233486',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         vIncentiveData: {
-  //           tokenAddress: '0x531842cEbbdD378f8ee36D171d6cC9C4fcf475Ec',
-  //           precision: 18,
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f4',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           emissionPerSecond: '1880787037037037',
-  //           incentivesLastUpdateTimestamp: 1633175478,
-  //           tokenIncentivesIndex: '57970476598005880594044681',
-  //           emissionEndTimestamp: 1637573428,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //         sIncentiveData: {
-  //           tokenAddress: '0x0000000000000000000000000000000000000000',
-  //           precision: 0,
-  //           rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-  //           incentiveControllerAddress:
-  //             '0x0000000000000000000000000000000000000000',
-  //           rewardTokenDecimals: 0,
-  //           emissionPerSecond: '0',
-  //           incentivesLastUpdateTimestamp: 0,
-  //           tokenIncentivesIndex: '0',
-  //           emissionEndTimestamp: 0,
-  //           priceFeed: '0',
-  //           priceFeedTimestamp: 0,
-  //           priceFeedDecimals: 0,
-  //         },
-  //       },
-  //     ]);
-  //   });
-  // });
+      expect(clInstance.getPriceFeed).toBeCalled();
+
+      expect(result).toEqual([
+        {
+          underlyingAsset:
+            '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
+          aIncentiveData: {
+            tokenAddress: '0x6d0eeb7b37BF26E182EB9a8631DCF79e4EF43DDd',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+          vIncentiveData: {
+            tokenAddress: '0xaD99ef885623E8520f631625b2675d6dAd3aaDC1',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+          sIncentiveData: {
+            tokenAddress: '0xb2007801F8c9dB4241E12C81E9d83741d14d7227',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+        },
+      ]);
+      expect(result2).toEqual([
+        {
+          underlyingAsset:
+            '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
+          aIncentiveData: {
+            tokenAddress: '0x6d0eeb7b37BF26E182EB9a8631DCF79e4EF43DDd',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+          vIncentiveData: {
+            tokenAddress: '0xaD99ef885623E8520f631625b2675d6dAd3aaDC1',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+          sIncentiveData: {
+            tokenAddress: '0xb2007801F8c9dB4241E12C81E9d83741d14d7227',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+        },
+      ]);
+    });
+    it('should work with chainlinkRegistry address incorrect', async () => {
+      jest
+        .spyOn(IUiIncentiveDataProviderV3__factory, 'connect')
+        .mockReturnValue({
+          getReservesIncentivesData: async () =>
+            Promise.resolve(getReservesIncentivesDataMock),
+        } as unknown as IUiIncentiveDataProviderV3);
+      const result = await instance.getIncentivesDataWithPriceLegacy({
+        lendingPoolAddressProvider,
+        chainlinkFeedsRegistry,
+        quote: Denominations.usd,
+      });
+
+      expect(result).toEqual([
+        {
+          underlyingAsset:
+            '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
+          aIncentiveData: {
+            tokenAddress: '0x6d0eeb7b37BF26E182EB9a8631DCF79e4EF43DDd',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+          vIncentiveData: {
+            tokenAddress: '0xaD99ef885623E8520f631625b2675d6dAd3aaDC1',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+          sIncentiveData: {
+            tokenAddress: '0xb2007801F8c9dB4241E12C81E9d83741d14d7227',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+        },
+      ]);
+    });
+    it('should work with no chainlinkRegistry address no quote ', async () => {
+      jest
+        .spyOn(IUiIncentiveDataProviderV3__factory, 'connect')
+        .mockReturnValue({
+          getReservesIncentivesData: async () =>
+            Promise.resolve(getReservesIncentivesDataMock),
+        } as unknown as IUiIncentiveDataProviderV3);
+      const result = await instance.getIncentivesDataWithPriceLegacy({
+        lendingPoolAddressProvider,
+      });
+
+      expect(result).toEqual([
+        {
+          underlyingAsset:
+            '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
+          aIncentiveData: {
+            tokenAddress: '0x6d0eeb7b37BF26E182EB9a8631DCF79e4EF43DDd',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+          vIncentiveData: {
+            tokenAddress: '0xaD99ef885623E8520f631625b2675d6dAd3aaDC1',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+          sIncentiveData: {
+            tokenAddress: '0xb2007801F8c9dB4241E12C81E9d83741d14d7227',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+        },
+      ]);
+    });
+    it('should work with no chainlinkregistry address and quote ', async () => {
+      jest
+        .spyOn(IUiIncentiveDataProviderV3__factory, 'connect')
+        .mockReturnValue({
+          getReservesIncentivesData: async () =>
+            Promise.resolve(getReservesIncentivesDataMock),
+        } as unknown as IUiIncentiveDataProviderV3);
+      const result = await instance.getIncentivesDataWithPriceLegacy({
+        lendingPoolAddressProvider,
+        quote: Denominations.usd,
+      });
+
+      expect(result).toEqual([
+        {
+          underlyingAsset:
+            '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
+          aIncentiveData: {
+            tokenAddress: '0x6d0eeb7b37BF26E182EB9a8631DCF79e4EF43DDd',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+          vIncentiveData: {
+            tokenAddress: '0xaD99ef885623E8520f631625b2675d6dAd3aaDC1',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+          sIncentiveData: {
+            tokenAddress: '0xb2007801F8c9dB4241E12C81E9d83741d14d7227',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+        },
+      ]);
+    });
+  });
 });
