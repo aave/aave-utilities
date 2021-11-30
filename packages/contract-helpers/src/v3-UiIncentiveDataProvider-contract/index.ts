@@ -44,9 +44,9 @@ export interface UiIncentiveDataProviderInterface {
   getUserReservesIncentivesDataHumanized: (
     args: UserReservesIncentivesDataType,
   ) => Promise<UserReservesIncentivesDataHumanized[]>;
-  getIncentivesDataWithPrice: (
+  getIncentivesDataWithPriceLegacy: (
     args: GetIncentivesDataWithPriceType,
-  ) => Promise<ReserveIncentiveWithFeedsResponse[]>;
+  ) => Promise<ReservesIncentiveDataHumanized[]>;
 }
 export interface FeedResultSuccessful {
   rewardTokenAddress: string;
@@ -187,14 +187,14 @@ export class UiIncentiveDataProvider
     }));
   }
 
-  public async getIncentivesDataWithPrice({
+  public async getIncentivesDataWithPriceLegacy({
     lendingPoolAddressProvider,
     chainlinkFeedsRegistry,
     quote = Denominations.eth,
   }: GetIncentivesDataWithPriceType): Promise<
-    ReserveIncentiveWithFeedsResponse[]
+    ReservesIncentiveDataHumanized[]
   > {
-    const incentives: ReserveIncentiveDataHumanizedResponse[] =
+    const incentives: ReservesIncentiveDataHumanized[] =
       await this.getReservesIncentivesDataHumanized(lendingPoolAddressProvider);
     const feeds: FeedResultSuccessful[] = [];
 
@@ -202,7 +202,7 @@ export class UiIncentiveDataProvider
       if (!this._chainlinkFeedsRegistries[chainlinkFeedsRegistry]) {
         this._chainlinkFeedsRegistries[chainlinkFeedsRegistry] =
           new ChainlinkFeedsRegistry({
-            provider: this._context.provider,
+            provider: this.provider,
             chainlinkFeedsRegistry,
           });
       }
@@ -210,14 +210,14 @@ export class UiIncentiveDataProvider
       const allIncentiveRewardTokens: Set<string> = new Set();
 
       incentives.forEach(incentive => {
-        allIncentiveRewardTokens.add(
-          incentive.aIncentiveData.rewardTokenAddress,
+        incentive.aIncentiveData.rewardsTokenInformation.map(rewardInfo =>
+          allIncentiveRewardTokens.add(rewardInfo.rewardTokenAddress),
         );
-        allIncentiveRewardTokens.add(
-          incentive.vIncentiveData.rewardTokenAddress,
+        incentive.vIncentiveData.rewardsTokenInformation.map(rewardInfo =>
+          allIncentiveRewardTokens.add(rewardInfo.rewardTokenAddress),
         );
-        allIncentiveRewardTokens.add(
-          incentive.sIncentiveData.rewardTokenAddress,
+        incentive.sIncentiveData.rewardsTokenInformation.map(rewardInfo =>
+          allIncentiveRewardTokens.add(rewardInfo.rewardTokenAddress),
         );
       });
 
@@ -237,47 +237,65 @@ export class UiIncentiveDataProvider
       });
     }
 
-    return incentives.map(
-      (incentive: ReserveIncentiveDataHumanizedResponse) => {
-        const aFeed = feeds.find(
-          feed =>
-            feed.rewardTokenAddress ===
-            incentive.aIncentiveData.rewardTokenAddress,
-        );
-        const vFeed = feeds.find(
-          feed =>
-            feed.rewardTokenAddress ===
-            incentive.vIncentiveData.rewardTokenAddress,
-        );
-        const sFeed = feeds.find(
-          feed =>
-            feed.rewardTokenAddress ===
-            incentive.sIncentiveData.rewardTokenAddress,
-        );
-
-        return {
-          underlyingAsset: incentive.underlyingAsset,
-          aIncentiveData: {
-            ...incentive.aIncentiveData,
-            priceFeed: aFeed ? aFeed.answer : '0',
-            priceFeedTimestamp: aFeed ? aFeed.updatedAt : 0,
-            priceFeedDecimals: aFeed ? aFeed.decimals : 0,
-          },
-          vIncentiveData: {
-            ...incentive.vIncentiveData,
-            priceFeed: vFeed ? vFeed.answer : '0',
-            priceFeedTimestamp: vFeed ? vFeed.updatedAt : 0,
-            priceFeedDecimals: vFeed ? vFeed.decimals : 0,
-          },
-          sIncentiveData: {
-            ...incentive.sIncentiveData,
-            priceFeed: sFeed ? sFeed.answer : '0',
-            priceFeedTimestamp: sFeed ? sFeed.updatedAt : 0,
-            priceFeedDecimals: sFeed ? sFeed.decimals : 0,
-          },
-        };
-      },
-    );
+    return incentives.map((incentive: ReservesIncentiveDataHumanized) => {
+      return {
+        underlyingAsset: incentive.underlyingAsset,
+        aIncentiveData: {
+          ...incentive.aIncentiveData,
+          rewardsTokenInformation:
+            incentive.aIncentiveData.rewardsTokenInformation.map(
+              rewardTokenInfo => {
+                const feed = feeds.find(
+                  feed =>
+                    feed.rewardTokenAddress ===
+                    rewardTokenInfo.rewardTokenAddress,
+                );
+                return {
+                  ...rewardTokenInfo,
+                  rewardPriceFeed: feed ? feed.answer : '0',
+                  priceFeedDecimals: feed ? feed.decimals : 0,
+                };
+              },
+            ),
+        },
+        vIncentiveData: {
+          ...incentive.vIncentiveData,
+          rewardsTokenInformation:
+            incentive.vIncentiveData.rewardsTokenInformation.map(
+              rewardTokenInfo => {
+                const feed = feeds.find(
+                  feed =>
+                    feed.rewardTokenAddress ===
+                    rewardTokenInfo.rewardTokenAddress,
+                );
+                return {
+                  ...rewardTokenInfo,
+                  rewardPriceFeed: feed ? feed.answer : '0',
+                  priceFeedDecimals: feed ? feed.decimals : 0,
+                };
+              },
+            ),
+        },
+        sIncentiveData: {
+          ...incentive.sIncentiveData,
+          rewardsTokenInformation:
+            incentive.sIncentiveData.rewardsTokenInformation.map(
+              rewardTokenInfo => {
+                const feed = feeds.find(
+                  feed =>
+                    feed.rewardTokenAddress ===
+                    rewardTokenInfo.rewardTokenAddress,
+                );
+                return {
+                  ...rewardTokenInfo,
+                  rewardPriceFeed: feed ? feed.answer : '0',
+                  priceFeedDecimals: feed ? feed.decimals : 0,
+                };
+              },
+            ),
+        },
+      };
+    });
   }
 
   private readonly _getFeed = async (
