@@ -2,7 +2,7 @@ import { BigNumber } from 'ethers';
 
 // SmartContract response types
 
-export interface RewardInfo {
+export type RewardInfo = {
   rewardTokenSymbol: string;
   rewardTokenAddress: string;
   rewardOracleAddress: string;
@@ -14,7 +14,7 @@ export interface RewardInfo {
   rewardTokenDecimals: number;
   precision: number;
   priceFeedDecimals: number;
-}
+};
 
 export interface IncentiveData {
   tokenAddress: string;
@@ -23,12 +23,10 @@ export interface IncentiveData {
 }
 
 export interface ReservesIncentiveData {
-  0: Array<{
-    underlyingAsset: string;
-    aIncentiveData: IncentiveData[];
-    vIncentiveData: IncentiveData[];
-    sIncentiveData: IncentiveData[];
-  }>;
+  underlyingAsset: string;
+  aIncentiveData: IncentiveData;
+  vIncentiveData: IncentiveData;
+  sIncentiveData: IncentiveData;
 }
 
 export interface UserRewardInfo {
@@ -41,20 +39,16 @@ export interface UserRewardInfo {
   priceFeedDecimals: number;
   rewardTokenDecimals: number;
 }
-
 export interface UserIncentiveData {
   tokenAddress: string;
   incentiveControllerAddress: string;
   userRewardsInformation: UserRewardInfo[];
 }
-
 export interface UserReservesIncentivesData {
-  0: Array<{
-    underlyingAsset: string;
-    aTokenIncentivesUserData: UserIncentiveData[];
-    vTokenIncentivesUserData: UserIncentiveData[];
-    sTokenIncentivesUserData: UserIncentiveData[];
-  }>;
+  underlyingAsset: string;
+  aTokenIncentivesUserData: UserIncentiveData;
+  vTokenIncentivesUserData: UserIncentiveData;
+  sTokenIncentivesUserData: UserIncentiveData;
 }
 
 export interface FullReservesIncentiveDataResponse {
@@ -84,11 +78,11 @@ export interface IncentiveDataHumanized {
   rewardsTokenInformation: RewardInfoHumanized[];
 }
 
-export interface ReservesIncentiveData {
+export interface ReservesIncentiveDataHumanized {
   underlyingAsset: string;
-  aIncentiveData: IncentiveDataHumanized[];
-  vIncentiveData: IncentiveDataHumanized[];
-  sIncentiveData: IncentiveDataHumanized[];
+  aIncentiveData: IncentiveDataHumanized;
+  vIncentiveData: IncentiveDataHumanized;
+  sIncentiveData: IncentiveDataHumanized;
 }
 
 export interface UserRewardInfoHumanized {
@@ -102,20 +96,30 @@ export interface UserRewardInfoHumanized {
   rewardTokenDecimals: number;
 }
 
-export interface UserIncentiveData {
+export interface UserIncentiveDataHumanized {
   tokenAddress: string;
   incentiveControllerAddress: string;
-  userRewardsInformation: UserRewardInfo[];
+  userRewardsInformation: UserRewardInfoHumanized[];
 }
 
-export interface UserReservesIncentivesData {
-  0: Array<{
-    underlyingAsset: string;
-    aTokenIncentivesUserData: UserIncentiveData[];
-    vTokenIncentivesUserData: UserIncentiveData[];
-    sTokenIncentivesUserData: UserIncentiveData[];
-  }>;
+export interface UserReservesIncentivesDataHumanized {
+  underlyingAsset: string;
+  aTokenIncentivesUserData: UserIncentiveDataHumanized;
+  vTokenIncentivesUserData: UserIncentiveDataHumanized;
+  sTokenIncentivesUserData: UserIncentiveDataHumanized;
 }
+
+// Method types
+
+export type FullReservesIncentiveDataType = {
+  user: string;
+  lendingPoolAddressProvider: string;
+};
+
+export type UserReservesIncentivesDataType = {
+  user: string;
+  lendingPoolAddressProvider: string;
+};
 
 // export interface IncentiveDataHumanized {
 //   emissionPerSecond: string;
