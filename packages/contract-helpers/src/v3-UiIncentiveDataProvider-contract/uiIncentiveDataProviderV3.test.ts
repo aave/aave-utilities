@@ -1,14 +1,14 @@
-import { providers } from 'ethers';
+import { BigNumber, providers } from 'ethers';
 // import { mocked } from 'ts-jest/utils';
 // import { ChainlinkFeedsRegistry } from '../cl-feed-registry/index';
 // import { Denominations } from '../cl-feed-registry/types/ChainlinkFeedsRegistryTypes';
-// import {
-//   getReservesIncentivesDataMock,
-//   getUserIncentivesDataMock,
-// } from './_mocks';
-import { UiIncentiveDataProvider } from './index';
+import {
+  getReservesIncentivesDataMock,
+  getUserIncentivesDataMock,
+} from './_mocks';
 import { IUiIncentiveDataProviderV3 } from './typechain/IUiIncentiveDataProviderV3';
 import { IUiIncentiveDataProviderV3__factory } from './typechain/IUiIncentiveDataProviderV3__factory';
+import { UiIncentiveDataProvider } from './index';
 
 jest.mock('../cl-feed-registry/index', () => {
   const clInstance = { getPriceFeed: jest.fn() };
@@ -92,81 +92,353 @@ describe('UiIncentiveDataProvider', () => {
     });
   });
 
-  // describe('getReservesIncentivesData - to get 100% in coverage :( pointless test', () => {
-  //   it('should throw if lending pool address is not a valid ethereum address', async () => {
-  //     const instance = createValidInstance();
-  //     await expect(
-  //       instance.getReservesIncentivesData(mockInvalidEthereumAddress),
-  //     ).rejects.toThrow('Lending pool address provider is not valid');
-  //   });
-  //   it('should not throw', async () => {
-  //     const instance = createValidInstance();
-  //     await expect(
-  //       instance.getReservesIncentivesData(mockValidEthereumAddress),
-  //     ).resolves.not.toThrow();
-  //   });
-  // });
+  describe('getReservesIncentivesData - to get 100% in coverage :( pointless test', () => {
+    const instance = new UiIncentiveDataProvider({
+      uiIncentiveDataProviderAddress,
+      provider,
+    });
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('should throw if uiIncentiveDataProvider is not a valid ethereum address', async () => {
+      const instance = new UiIncentiveDataProvider({
+        uiIncentiveDataProviderAddress: 'asdf',
+        provider,
+      });
+      await expect(async () =>
+        instance.getReservesIncentivesData(lendingPoolAddressProvider),
+      ).rejects.toThrowError(
+        'UiIncentiveDataProviderAddress must be an eth valid address',
+      );
+    });
+    it('should throw if lending pool address is not a valid ethereum address', async () => {
+      const lendingPoolAddressProvider = 'asdf';
+      await expect(async () =>
+        instance.getReservesIncentivesData(lendingPoolAddressProvider),
+      ).rejects.toThrow(
+        `Address: ${lendingPoolAddressProvider} is not a valid ethereum Address`,
+      );
+    });
+    it('should not throw', async () => {
+      const spy = jest
+        .spyOn(IUiIncentiveDataProviderV3__factory, 'connect')
+        .mockReturnValue({
+          getReservesIncentivesData: async () =>
+            Promise.resolve(getReservesIncentivesDataMock),
+        } as unknown as IUiIncentiveDataProviderV3);
+      await instance.getReservesIncentivesData(lendingPoolAddressProvider);
+      expect(spy).toHaveBeenCalled();
+    });
+  });
 
-  // describe('getReservesIncentivesDataHumanized', () => {
-  //   it('Should throw error if token address is wrong', async () => {
-  //     const instance = createValidInstance();
-  //     await expect(
-  //       instance.getReservesIncentivesDataHumanized(mockInvalidEthereumAddress),
-  //     ).rejects.toThrow('Lending pool address provider is not valid');
-  //   });
-  // });
+  describe('getUserReserves', () => {
+    const instance = new UiIncentiveDataProvider({
+      uiIncentiveDataProviderAddress,
+      provider,
+    });
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('should throw if uiIncentiveDataProvider is not a valid ethereum address', async () => {
+      const instance = new UiIncentiveDataProvider({
+        uiIncentiveDataProviderAddress: 'asdf',
+        provider,
+      });
+      await expect(async () =>
+        instance.getUserReservesIncentivesData({
+          lendingPoolAddressProvider,
+          user,
+        }),
+      ).rejects.toThrowError(
+        'UiIncentiveDataProviderAddress must be an eth valid address',
+      );
+    });
+    it('should throw if lending pool address provider is not a valid ethereum address', async () => {
+      const lendingPoolAddressProvider = 'asdf';
+      await expect(async () =>
+        instance.getUserReservesIncentivesData({
+          lendingPoolAddressProvider,
+          user,
+        }),
+      ).rejects.toThrow(
+        `Address: ${lendingPoolAddressProvider} is not a valid ethereum Address`,
+      );
+    });
+    it('should throw if user is not a valid ethereum address', async () => {
+      const user = 'asdf';
+      await expect(async () =>
+        instance.getUserReservesIncentivesData({
+          lendingPoolAddressProvider,
+          user,
+        }),
+      ).rejects.toThrow(`Address: ${user} is not a valid ethereum Address`);
+    });
+    it('should not throw if user is a valid ethereum address', async () => {
+      const spy = jest
+        .spyOn(IUiIncentiveDataProviderV3__factory, 'connect')
+        .mockReturnValue({
+          getUserReservesIncentivesData: async () =>
+            Promise.resolve(getUserIncentivesDataMock),
+        } as unknown as IUiIncentiveDataProviderV3);
+      await instance.getUserReservesIncentivesData({
+        lendingPoolAddressProvider,
+        user,
+      });
+      expect(spy).toHaveBeenCalled();
+    });
+  });
 
-  // describe('getUserReservesIncentivesDataHumanized', () => {
-  //   it('Should throw error if token address is wrong', async () => {
-  //     const instance = createValidInstance();
-  //     await expect(
-  //       instance.getUserReservesIncentivesDataHumanized(
-  //         mockInvalidEthereumAddress,
-  //         mockInvalidEthereumAddress,
-  //       ),
-  //     ).rejects.toThrow('Lending pool address provider is not valid');
-  //   });
-  //   it('should work with finding only', async () => {
-  //     const instance = createValidInstance();
-  //     const response = await instance.getUserReservesIncentivesDataHumanized(
-  //       mockValidEthereumAddress,
-  //       mockValidEthereumAddress,
-  //     );
+  describe('getReservesIncentivesDataHumanized', () => {
+    const instance = new UiIncentiveDataProvider({
+      uiIncentiveDataProviderAddress,
+      provider,
+    });
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('should throw if uiIncentiveDataProvider is not a valid ethereum address', async () => {
+      const instance = new UiIncentiveDataProvider({
+        uiIncentiveDataProviderAddress: 'asdf',
+        provider,
+      });
+      await expect(async () =>
+        instance.getReservesIncentivesDataHumanized(lendingPoolAddressProvider),
+      ).rejects.toThrowError(
+        'UiIncentiveDataProviderAddress must be an eth valid address',
+      );
+    });
+    it('Expects to fail if lendingPoolAddressProvider not an eth address', async () => {
+      const lendingPoolAddressProvider = 'asdf';
+      await expect(async () =>
+        instance.getReservesIncentivesDataHumanized(lendingPoolAddressProvider),
+      ).rejects.toThrow(
+        `Address: ${lendingPoolAddressProvider} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to parse the incentives response to a human readable object', async () => {
+      const spy = jest
+        .spyOn(IUiIncentiveDataProviderV3__factory, 'connect')
+        .mockReturnValue({
+          getReservesIncentivesData: async () =>
+            Promise.resolve(getReservesIncentivesDataMock),
+        } as unknown as IUiIncentiveDataProviderV3);
+      const data = await instance.getReservesIncentivesDataHumanized(
+        lendingPoolAddressProvider,
+      );
+      expect(spy).toHaveBeenCalled();
+      expect(data).toEqual([
+        {
+          underlyingAsset:
+            '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
+          aIncentiveData: {
+            tokenAddress: '0x6d0eeb7b37BF26E182EB9a8631DCF79e4EF43DDd',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+          vIncentiveData: {
+            tokenAddress: '0xaD99ef885623E8520f631625b2675d6dAd3aaDC1',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                emissionPerSecond: BigNumber.from({
+                  _hex: '0x04464ecbc45ffe',
+                  _isBigNumber: true,
+                }).toString(),
+                incentivesLastUpdateTimestamp: BigNumber.from({
+                  _hex: '0x61a5167a',
+                  _isBigNumber: true,
+                }).toNumber(),
+                tokenIncentivesIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                emissionEndTimestamp: BigNumber.from({
+                  _hex: '0x638649fa',
+                  _isBigNumber: true,
+                }).toNumber(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardTokenDecimals: 18,
+                precision: 18,
+                priceFeedDecimals: 0,
+              },
+            ],
+          },
+          sIncentiveData: {
+            tokenAddress: '0xb2007801F8c9dB4241E12C81E9d83741d14d7227',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            rewardsTokenInformation: [],
+          },
+        },
+      ]);
+    });
+  });
 
-  //     expect(response).toEqual([
-  //       {
-  //         underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  //         aTokenIncentivesUserData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           tokenIncentivesUserIndex: '43565143328112327495233486',
-  //           userUnclaimedRewards: '1637573428',
-  //         },
-  //         vTokenIncentivesUserData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           tokenIncentivesUserIndex: '43565143328112327495233486',
-  //           userUnclaimedRewards: '1637573428',
-  //         },
-  //         sTokenIncentivesUserData: {
-  //           tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',
-  //           rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
-  //           incentiveControllerAddress:
-  //             '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
-  //           rewardTokenDecimals: 18,
-  //           tokenIncentivesUserIndex: '43565143328112327495233486',
-  //           userUnclaimedRewards: '1637573428',
-  //         },
-  //       },
-  //     ]);
-  //   });
-  // });
+  describe('getUserReservesIncentivesDataHumanized', () => {
+    const instance = new UiIncentiveDataProvider({
+      uiIncentiveDataProviderAddress,
+      provider,
+    });
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('should throw if uiIncentiveDataProvider is not a valid ethereum address', async () => {
+      const instance = new UiIncentiveDataProvider({
+        uiIncentiveDataProviderAddress: 'asdf',
+        provider,
+      });
+      await expect(async () =>
+        instance.getUserReservesIncentivesDataHumanized({
+          lendingPoolAddressProvider,
+          user,
+        }),
+      ).rejects.toThrowError(
+        'UiIncentiveDataProviderAddress must be an eth valid address',
+      );
+    });
+    it('Expects to fail if lendingPoolAddressProvider not an eth address', async () => {
+      const lendingPoolAddressProvider = 'asdf';
+      await expect(async () =>
+        instance.getUserReservesIncentivesDataHumanized({
+          lendingPoolAddressProvider,
+          user,
+        }),
+      ).rejects.toThrow(
+        `Address: ${lendingPoolAddressProvider} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail if user not an eth address', async () => {
+      const user = 'asdf';
+      await expect(async () =>
+        instance.getUserReservesIncentivesDataHumanized({
+          lendingPoolAddressProvider,
+          user,
+        }),
+      ).rejects.toThrow(`Address: ${user} is not a valid ethereum Address`);
+    });
+    it('should work with finding only', async () => {
+      const spy = jest
+        .spyOn(IUiIncentiveDataProviderV3__factory, 'connect')
+        .mockReturnValue({
+          getUserReservesIncentivesData: async () =>
+            Promise.resolve(getUserIncentivesDataMock),
+        } as unknown as IUiIncentiveDataProviderV3);
+      const response = await instance.getUserReservesIncentivesDataHumanized({
+        lendingPoolAddressProvider,
+        user,
+      });
+      expect(spy).toHaveBeenCalled();
+      expect(response).toEqual([
+        {
+          underlyingAsset:
+            '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
+          aTokenIncentivesUserData: {
+            tokenAddress: '0x6d0eeb7b37BF26E182EB9a8631DCF79e4EF43DDd',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            userRewardsInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                userUnclaimedRewards: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                tokenIncentivesUserIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                priceFeedDecimals: 0,
+                rewardTokenDecimals: 18,
+              },
+            ],
+          },
+          vTokenIncentivesUserData: {
+            tokenAddress: '0xaD99ef885623E8520f631625b2675d6dAd3aaDC1',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            userRewardsInformation: [
+              {
+                rewardTokenSymbol: 'REW',
+                rewardOracleAddress:
+                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
+                rewardTokenAddress:
+                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
+                userUnclaimedRewards: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                tokenIncentivesUserIndex: BigNumber.from({
+                  _hex: '0x00',
+                  _isBigNumber: true,
+                }).toString(),
+                rewardPriceFeed: BigNumber.from({
+                  _hex: '0x05f5e100',
+                  _isBigNumber: true,
+                }).toString(),
+                priceFeedDecimals: 0,
+                rewardTokenDecimals: 18,
+              },
+            ],
+          },
+          sTokenIncentivesUserData: {
+            tokenAddress: '0xb2007801F8c9dB4241E12C81E9d83741d14d7227',
+            incentiveControllerAddress:
+              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
+            userRewardsInformation: [],
+          },
+        },
+      ]);
+    });
+  });
 
   // describe('getIncentivesDataWithPrice', () => {
   //   it('Should throw error if token address is wrong', async () => {
@@ -1213,37 +1485,6 @@ describe('UiIncentiveDataProvider', () => {
   //         },
   //       },
   //     ]);
-  //   });
-  // });
-
-  // describe('getUserReserves', () => {
-  //   it('should throw if lending pool address is not a valid ethereum address', async () => {
-  //     const instance = createValidInstance();
-  //     await expect(
-  //       instance.getUserReservesIncentivesData(
-  //         mockValidEthereumAddress,
-  //         mockInvalidEthereumAddress,
-  //       ),
-  //     ).rejects.toThrow('Lending pool address provider is not valid');
-  //   });
-  //   it('should throw if user is not a valid ethereum address', async () => {
-  //     const instance = createValidInstance();
-  //     await expect(
-  //       instance.getUserReservesIncentivesData(
-  //         mockInvalidEthereumAddress,
-  //         mockValidEthereumAddress,
-  //       ),
-  //     ).rejects.toThrow('User address is not a valid ethereum address');
-  //   });
-
-  //   it('should not throw if user is a valid ethereum address', async () => {
-  //     const instance = createValidInstance();
-  //     await expect(
-  //       instance.getUserReservesIncentivesData(
-  //         mockValidEthereumAddress,
-  //         mockValidEthereumAddress,
-  //       ),
-  //     ).resolves.not.toThrow();
   //   });
   // });
 });
