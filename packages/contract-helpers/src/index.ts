@@ -10,6 +10,7 @@ export * from './cl-feed-registry';
 
 // services
 export * from './incentive-controller';
+export * from './incentive-controller-v2';
 export * from './erc20-contract';
 export * from './lendingPool-contract';
 export * from './faucet-contract';
