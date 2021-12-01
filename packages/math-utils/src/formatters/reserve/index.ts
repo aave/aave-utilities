@@ -8,10 +8,7 @@ import {
 import { RAY_DECIMALS, SECONDS_PER_YEAR } from '../../constants';
 import { LTV_PRECISION, RAY, rayPow } from '../../index';
 import { calculateRewardTokenPrice } from '../incentive';
-import {
-  calculateReserveIncentives,
-  CalculateReserveIncentivesResponse,
-} from '../incentive/calculate-reserve-incentives';
+import { calculateReserveIncentives } from '../incentive/calculate-reserve-incentives';
 import { ReserveIncentiveWithFeedsResponse } from '../incentive/types';
 import { nativeToUSD } from '../usd/native-to-usd';
 import { normalizedToUsd } from '../usd/normalized-to-usd';
@@ -372,24 +369,21 @@ export function formatReserveUSD({
 }
 
 export interface FormatReservesUSDRequest {
-  reserves: Array<ReserveDataWithPrice & { underlyingAsset: string }>;
   reserveIncentives?: ReserveIncentiveWithFeedsResponse[];
   currentTimestamp: number;
   marketRefPriceInUsd: string;
   marketRefCurrencyDecimals: number;
 }
 
-export type FormatReservesUSDResponse = Array<
-  FormatReserveUSDResponse & Partial<CalculateReserveIncentivesResponse>
->;
-
-export function formatReserves({
-  reserves,
-  currentTimestamp,
-  marketRefPriceInUsd,
-  marketRefCurrencyDecimals,
-  reserveIncentives,
-}: FormatReservesUSDRequest): FormatReservesUSDResponse {
+export function formatReserves<T extends ReserveDataWithPrice>(
+  reserves: Array<T & { underlyingAsset: string }>,
+  {
+    currentTimestamp,
+    marketRefPriceInUsd,
+    marketRefCurrencyDecimals,
+    reserveIncentives,
+  }: FormatReservesUSDRequest,
+) {
   return reserves.map(reserve => {
     const formattedReserve = formatReserveUSD({
       reserve,
@@ -403,7 +397,7 @@ export function formatReserves({
         reserveIncentive =>
           reserveIncentive.underlyingAsset === reserve.underlyingAsset,
       );
-      if (!reserveIncentive) return formattedReserve;
+      if (!reserveIncentive) return { ...reserve, formattedReserve };
       const incentive = calculateReserveIncentives({
         reserveIncentiveData: reserveIncentive,
         totalLiquidity: formattedReserve.totalLiquidity,
@@ -427,7 +421,7 @@ export function formatReserves({
           reserveIncentive.sIncentiveData.priceFeed,
         ),
       });
-      return { ...formattedReserve, ...incentive };
+      return { ...reserve, ...formattedReserve, ...incentive };
     }
 
     return formattedReserve;
