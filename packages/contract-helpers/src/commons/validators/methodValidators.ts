@@ -231,6 +231,29 @@ export function LPValidatorV3(
   };
 }
 
+export function UiIncentiveDataProviderValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    // @ts-expect-error todo: check why this ignore is needed
+    if (!utils.isAddress(this.uiIncentiveDataProviderAddress)) {
+      console.error(
+        `[UiIncentiveDataProviderValidator] You need to pass valid addresses`,
+      );
+      throw new Error(
+        'UiIncentiveDataProviderAddress must be an eth valid address',
+      );
+    }
+
+    isEthAddressValidator(target, propertyName, arguments);
+
+    return method.apply(this, arguments);
+  };
+}
+
 // export function LTAMigratorValidator(
 //   target: any,
 //   propertyName: string,
