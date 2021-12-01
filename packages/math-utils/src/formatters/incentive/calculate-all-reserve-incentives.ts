@@ -28,8 +28,11 @@ export interface CalculateAllReserveIncentivesRequest {
 
 // Calculate incentive token price from reserves data or priceFeed from UiIncentiveDataProvider
 
-function calculateRewardTokenPrice(
-  reserves: ReserveCalculationData[],
+export function calculateRewardTokenPrice(
+  reserves: Array<{
+    underlyingAsset: string;
+    priceInMarketReferenceCurrency: string;
+  }>,
   address: string,
   priceFeed: string,
 ): string {

@@ -13,7 +13,7 @@ export interface CalculateReserveIncentivesRequest {
   priceInMarketReferenceCurrency: string; // Can be priced in ETH or USD depending on market
 }
 
-interface ReserveIncentiveResponse {
+export interface ReserveIncentiveResponse {
   incentiveAPR: string;
   rewardTokenAddress: string;
 }
