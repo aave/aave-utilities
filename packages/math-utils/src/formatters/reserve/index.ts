@@ -424,6 +424,6 @@ export function formatReserves<T extends ReserveDataWithPrice>(
       return { ...reserve, ...formattedReserve, ...incentive };
     }
 
-    return formattedReserve;
+    return { ...formattedReserve, ...reserve };
   });
 }
