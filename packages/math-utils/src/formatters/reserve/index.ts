@@ -274,6 +274,8 @@ export interface FormatReserveUSDResponse extends FormatReserveResponse {
   totalStableDebtUSD: string;
   borrowCapUSD: string;
   supplyCapUSD: string;
+  priceInMarketReferenceCurrency: string;
+  // priceInUSD: string;
 }
 
 /**
@@ -331,6 +333,24 @@ export function formatReserveUSD({
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
       marketRefPriceInUsd,
     }),
+    // isolationModeTotalDebtUSD: nativeToUSD({
+    //   amount: computedFields.totalStableDebt,
+    //   currencyDecimals: reserve.decimals,
+    //   marketRefCurrencyDecimals,
+    //   priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+    //   marketRefPriceInUsd,
+    // }),
+    priceInMarketReferenceCurrency: normalize(
+      reserve.priceInMarketReferenceCurrency,
+      marketRefCurrencyDecimals,
+    ),
+    // priceInUSD: nativeToUSD({
+    //   amount: new BigNumber(1).shiftedBy(reserve.decimals),
+    //   currencyDecimals: reserve.decimals,
+    //   marketRefCurrencyDecimals,
+    //   priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+    //   marketRefPriceInUsd,
+    // }),
     // v3
     // caps are already in absolutes
     borrowCapUSD: normalizedToUsd(
@@ -343,6 +363,11 @@ export function formatReserveUSD({
       marketRefPriceInUsd,
       marketRefCurrencyDecimals,
     ).toString(),
+    // debtCeilingUSD: normalizedToUsd(
+    //   new BigNumber(reserve.debtCeiling),
+    //   marketRefPriceInUsd,
+    //   marketRefCurrencyDecimals,
+    // ).toString(),
   };
 }
 
