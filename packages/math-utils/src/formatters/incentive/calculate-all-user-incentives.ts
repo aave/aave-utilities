@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { BigNumber } from 'bignumber.js';
 import { valueToZDBigNumber } from '../../bignumber';
 import {
