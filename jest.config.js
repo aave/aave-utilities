@@ -25,6 +25,7 @@ module.exports = {
     'packages/contract-helpers/src/ui-pool-data-provider/typechain',
     'packages/contract-helpers/src/cl-feed-registry/typechain',
     'packages/contract-helpers/src/incentive-controller/typechain',
+    'packages/contract-helpers/src/incentive-controller-v2/typechain',
     'packages/contract-helpers/src/erc20-contract/typechain',
     'packages/contract-helpers/src/synthetix-contract/typechain',
     'packages/contract-helpers/src/baseDebtToken-contract/typechain',
