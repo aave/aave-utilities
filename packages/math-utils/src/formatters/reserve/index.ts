@@ -397,7 +397,7 @@ export function formatReserves<T extends ReserveDataWithPrice>(
         reserveIncentive =>
           reserveIncentive.underlyingAsset === reserve.underlyingAsset,
       );
-      if (!reserveIncentive) return { ...reserve, formattedReserve };
+      if (!reserveIncentive) return { ...reserve, ...formattedReserve };
       const incentive = calculateReserveIncentives({
         reserveIncentiveData: reserveIncentive,
         totalLiquidity: formattedReserve.totalLiquidity,
