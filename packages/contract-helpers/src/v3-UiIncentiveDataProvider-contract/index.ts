@@ -120,7 +120,7 @@ export class UiIncentiveDataProvider
       this.uiIncentiveDataProviderAddress,
     );
     console.log('---------------------------');
-    const test = uiIncentiveContract.getReservesIncentivesData(
+    const test = await uiIncentiveContract.getReservesIncentivesData(
       lendingPoolAddressProvider,
     );
 
