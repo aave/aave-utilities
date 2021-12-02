@@ -346,10 +346,10 @@ export class UiIncentiveDataProvider
             rewardTokenAddress: rawRewardInfo.rewardTokenAddress,
             rewardTokenDecimals: rawRewardInfo.rewardTokenDecimals,
             emissionPerSecond: rawRewardInfo.emissionPerSecond.toString(),
-            incentivesLastUpdateTimestamp: 0,
-            // rawRewardInfo.incentivesLastUpdateTimestamp.toNumber(),
+            incentivesLastUpdateTimestamp:
+              rawRewardInfo.incentivesLastUpdateTimestamp.toNumber(),
             tokenIncentivesIndex: rawRewardInfo.tokenIncentivesIndex.toString(),
-            emissionEndTimestamp: 0, // rawRewardInfo.emissionEndTimestamp.toNumber(),
+            emissionEndTimestamp: rawRewardInfo.emissionEndTimestamp.toNumber(),
             rewardTokenSymbol: rawRewardInfo.rewardTokenSymbol,
             rewardOracleAddress: rawRewardInfo.rewardOracleAddress,
             rewardPriceFeed: rawRewardInfo.rewardPriceFeed.toString(),
