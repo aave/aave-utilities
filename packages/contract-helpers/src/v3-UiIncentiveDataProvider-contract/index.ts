@@ -152,6 +152,7 @@ export class UiIncentiveDataProvider
     const response: ReservesIncentiveData[] =
       await this.getReservesIncentivesData(lendingPoolAddressProvider);
 
+    console.log('--------------> ', response);
     return response.map(r => ({
       underlyingAsset: r.underlyingAsset.toLowerCase(),
       aIncentiveData: this._formatIncentiveData(r.aIncentiveData),
