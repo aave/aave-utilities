@@ -370,7 +370,6 @@ export const allIncentivesReserves: ReserveCalculationData[] = [
     totalVariableDebt: '81689984341288838884434',
     totalStableDebt: '681322787738991248642',
     priceInMarketReferenceCurrency: '1000000000000000000',
-    marketReferenceCurrencyDecimals: 18,
     decimals: 18,
   },
   {
@@ -380,7 +379,6 @@ export const allIncentivesReserves: ReserveCalculationData[] = [
     totalVariableDebt: '905362631532314',
     totalStableDebt: '0',
     priceInMarketReferenceCurrency: '267145370000000',
-    marketReferenceCurrencyDecimals: 18,
     decimals: 6,
   },
   {
@@ -390,7 +388,6 @@ export const allIncentivesReserves: ReserveCalculationData[] = [
     totalVariableDebt: '404110132365797056457861',
     totalStableDebt: '0',
     priceInMarketReferenceCurrency: '3441563382242556',
-    marketReferenceCurrencyDecimals: 18,
     decimals: 18,
   },
 ];
@@ -403,7 +400,6 @@ const aaveReserve: ReserveCalculationData = {
   totalVariableDebt: '0',
   totalStableDebt: '0',
   priceInMarketReferenceCurrency: '78530386771994300',
-  marketReferenceCurrencyDecimals: 18,
   decimals: 18,
 };
 
