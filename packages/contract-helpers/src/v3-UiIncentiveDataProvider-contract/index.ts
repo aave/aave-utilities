@@ -119,10 +119,14 @@ export class UiIncentiveDataProvider
     const uiIncentiveContract = this.getContractInstance(
       this.uiIncentiveDataProviderAddress,
     );
-
-    return uiIncentiveContract.getReservesIncentivesData(
+    console.log('---------------------------');
+    const test = uiIncentiveContract.getReservesIncentivesData(
       lendingPoolAddressProvider,
     );
+
+    console.log('raw data: ', test);
+
+    return test;
   }
 
   /**
