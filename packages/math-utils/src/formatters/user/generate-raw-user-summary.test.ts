@@ -12,29 +12,29 @@ import {
 } from './user.mocks';
 
 describe('generateRawUserSummary', () => {
-  const marketRefPriceInUsd = 4569742419970000000000;
-  const marketRefCurrencyDecimals = 18;
+  const marketReferencePriceInUsd = 4569742419970000000000;
+  const marketReferenceCurrencyDecimals = 18;
   const currentTimestamp = 1629942229;
   const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
       userReserve: usdcUserReserveEthMarket,
-      marketRefPriceInUsd,
-      marketRefCurrencyDecimals: 18,
+      marketReferencePriceInUsd,
+      marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
     },
   );
 
   const rawETHSummary: UserReserveSummaryResponse = generateUserReserveSummary({
     userReserve: ethUserReserveEthMarket,
-    marketRefPriceInUsd,
-    marketRefCurrencyDecimals: 18,
+    marketReferencePriceInUsd,
+    marketReferenceCurrencyDecimals: 18,
     currentTimestamp,
   });
 
   const rawSummary: RawUserSummaryResponse = generateRawUserSummary({
     userReserves: [rawUSDCSummary, rawETHSummary],
-    marketRefPriceInUsd,
-    marketRefCurrencyDecimals,
+    marketReferencePriceInUsd,
+    marketReferenceCurrencyDecimals,
     userEmodeCategoryId: 0,
   });
 
@@ -44,8 +44,8 @@ describe('generateRawUserSummary', () => {
         ...usdcUserReserveEthMarket,
         scaledATokenBalance: '2528085146',
       },
-      marketRefPriceInUsd,
-      marketRefCurrencyDecimals: 18,
+      marketReferencePriceInUsd,
+      marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
     });
 
@@ -55,31 +55,31 @@ describe('generateRawUserSummary', () => {
         ...ethUserReserveEthMarket,
         scaledVariableDebt: '1961463562232346784',
       },
-      marketRefPriceInUsd,
-      marketRefCurrencyDecimals: 18,
+      marketReferencePriceInUsd,
+      marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
     });
 
   const rawSummaryCollateralChange: RawUserSummaryResponse =
     generateRawUserSummary({
       userReserves: [rawUSDCSummaryModified, rawETHSummary],
-      marketRefPriceInUsd,
-      marketRefCurrencyDecimals,
+      marketReferencePriceInUsd,
+      marketReferenceCurrencyDecimals,
       userEmodeCategoryId: 0,
     });
 
   const rawSummaryEMode: RawUserSummaryResponse = generateRawUserSummary({
     userReserves: [rawUSDCSummaryModified, rawETHSummary],
-    marketRefPriceInUsd,
-    marketRefCurrencyDecimals,
+    marketReferencePriceInUsd,
+    marketReferenceCurrencyDecimals,
     userEmodeCategoryId: 1,
   });
 
   const rawSummaryBorrowChange: RawUserSummaryResponse = generateRawUserSummary(
     {
       userReserves: [rawUSDCSummary, rawETHSummaryModified],
-      marketRefPriceInUsd,
-      marketRefCurrencyDecimals,
+      marketReferencePriceInUsd,
+      marketReferenceCurrencyDecimals,
       userEmodeCategoryId: 0,
     },
   );

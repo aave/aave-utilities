@@ -117,7 +117,7 @@ export const aUSDCReserveIncentiveData: ReservesIncentiveDataHumanized = {
         incentivesLastUpdateTimestamp: 0,
         tokenIncentivesIndex: '0',
         emissionEndTimestamp: 1637573428,
-        rewardTokenAddress: '0x4da27a545c0c5b758a6ba100e3a049001de870f5',
+        rewardTokenAddress: '0x4da27a545c0c5b758a6ba100e3a0490 01de870f5',
         rewardTokenDecimals: 18,
         precision: 18,
         rewardPriceFeed: '78530386771994300',

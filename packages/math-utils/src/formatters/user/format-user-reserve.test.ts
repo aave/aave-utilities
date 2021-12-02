@@ -7,20 +7,20 @@ import { usdcUserReserveEthMarket } from './user.mocks';
 import { ComputedUserReserve } from './index';
 
 describe('formatUserReserve', () => {
-  const marketRefPriceInUsd = 4569.74241997;
+  const marketReferencePriceInUsd = 4569.74241997;
   const currentTimestamp = 1629942229;
   const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
       userReserve: usdcUserReserveEthMarket,
-      marketRefPriceInUsd,
+      marketReferencePriceInUsd,
       currentTimestamp,
-      marketRefCurrencyDecimals: 18,
+      marketReferenceCurrencyDecimals: 18,
     },
   );
 
   const formattedReserve: ComputedUserReserve = formatUserReserve({
     reserve: rawUSDCSummary,
-    marketRefCurrencyDecimals: 18,
+    marketReferenceCurrencyDecimals: 18,
   });
 
   it('should format a user reserve ', () => {

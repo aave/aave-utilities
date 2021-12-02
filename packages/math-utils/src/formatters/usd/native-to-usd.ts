@@ -6,23 +6,23 @@ interface NativeToUSD {
   amount: BigNumber;
   currencyDecimals: number;
   priceInMarketReferenceCurrency: BigNumberValue;
-  marketRefCurrencyDecimals: number;
-  marketRefPriceInUsd: BigNumberValue;
+  marketReferenceCurrencyDecimals: number;
+  marketReferencePriceInUsd: BigNumberValue;
 }
 
 export function nativeToUSD({
   amount,
   currencyDecimals,
   priceInMarketReferenceCurrency,
-  marketRefCurrencyDecimals,
-  marketRefPriceInUsd,
+  marketReferenceCurrencyDecimals,
+  marketReferencePriceInUsd,
 }: NativeToUSD) {
   return amount
     .multipliedBy(priceInMarketReferenceCurrency)
-    .multipliedBy(marketRefPriceInUsd)
+    .multipliedBy(marketReferencePriceInUsd)
     .dividedBy(
       new BigNumber(1).shiftedBy(
-        currencyDecimals + marketRefCurrencyDecimals + USD_DECIMALS,
+        currencyDecimals + marketReferenceCurrencyDecimals + USD_DECIMALS,
       ),
     )
     .toString();

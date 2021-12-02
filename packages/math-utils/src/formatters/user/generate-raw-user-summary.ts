@@ -10,8 +10,8 @@ import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
 
 export interface RawUserSummaryRequest {
   userReserves: UserReserveSummaryResponse[];
-  marketRefPriceInUsd: BigNumberValue;
-  marketRefCurrencyDecimals: number;
+  marketReferencePriceInUsd: BigNumberValue;
+  marketReferenceCurrencyDecimals: number;
   userEmodeCategoryId: number;
 }
 
@@ -31,8 +31,8 @@ export interface RawUserSummaryResponse {
 
 export function generateRawUserSummary({
   userReserves,
-  marketRefPriceInUsd,
-  marketRefCurrencyDecimals,
+  marketReferencePriceInUsd,
+  marketReferenceCurrencyDecimals,
   userEmodeCategoryId,
 }: RawUserSummaryRequest): RawUserSummaryResponse {
   const {
@@ -54,18 +54,18 @@ export function generateRawUserSummary({
   return {
     totalLiquidityUSD: normalizedToUsd(
       totalLiquidityMarketReferenceCurrency,
-      marketRefPriceInUsd,
-      marketRefCurrencyDecimals,
+      marketReferencePriceInUsd,
+      marketReferenceCurrencyDecimals,
     ),
     totalCollateralUSD: normalizedToUsd(
       totalCollateralMarketReferenceCurrency,
-      marketRefPriceInUsd,
-      marketRefCurrencyDecimals,
+      marketReferencePriceInUsd,
+      marketReferenceCurrencyDecimals,
     ),
     totalBorrowsUSD: normalizedToUsd(
       totalBorrowsMarketReferenceCurrency,
-      marketRefPriceInUsd,
-      marketRefCurrencyDecimals,
+      marketReferencePriceInUsd,
+      marketReferenceCurrencyDecimals,
     ),
     totalLiquidityMarketReferenceCurrency,
     totalCollateralMarketReferenceCurrency,
@@ -73,8 +73,8 @@ export function generateRawUserSummary({
     availableBorrowsMarketReferenceCurrency,
     availableBorrowsUSD: normalizedToUsd(
       availableBorrowsMarketReferenceCurrency,
-      marketRefPriceInUsd,
-      marketRefCurrencyDecimals,
+      marketReferencePriceInUsd,
+      marketReferenceCurrencyDecimals,
     ),
     currentLoanToValue: currentLtv,
     currentLiquidationThreshold,

@@ -172,16 +172,16 @@ export const userReservesUsdMarket = [
 
 export const formatUserSummaryRequestEthMarket: FormatUserSummaryRequest = {
   rawUserReserves: userReservesEthMarket,
-  marketRefPriceInUsd: 456974241997,
-  marketRefCurrencyDecimals: 18,
+  marketReferencePriceInUsd: 456974241997,
+  marketReferenceCurrencyDecimals: 18,
   currentTimestamp: 1629942229,
   userEmodeCategoryId: 0,
 };
 
 export const formatUserSummaryRequestUsdMarket: FormatUserSummaryRequest = {
   rawUserReserves: userReservesUsdMarket,
-  marketRefPriceInUsd: 100000000,
-  marketRefCurrencyDecimals: 8,
+  marketReferencePriceInUsd: 100000000,
+  marketReferenceCurrencyDecimals: 8,
   currentTimestamp: 1629942229,
   userEmodeCategoryId: 0,
 };

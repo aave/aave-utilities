@@ -14,6 +14,7 @@ interface ReserveIncentiveResponse {
   incentiveAPR: string;
   rewardTokenAddress: string;
   rewardTokenSymbol: string;
+  rewardPriceFeed: string;
 }
 export interface CalculateReserveIncentivesResponse {
   underlyingAsset: string;
@@ -45,11 +46,12 @@ export function calculateReserveIncentives({
         incentiveAPR: aIncentivesAPR,
         rewardTokenAddress: reward.rewardTokenAddress,
         rewardTokenSymbol: reward.rewardTokenSymbol,
+        rewardPriceFeed: reward.rewardPriceFeed,
       };
       return aIncentiveData;
     });
   const vIncentivesData: ReserveIncentiveResponse[] =
-    reserveIncentiveData.aIncentiveData.rewardsTokenInformation.map(reward => {
+    reserveIncentiveData.vIncentiveData.rewardsTokenInformation.map(reward => {
       const vIncentivesAPR = calculateIncentiveAPR({
         emissionPerSecond: reward.emissionPerSecond,
         rewardTokenPriceInMarketReferenceCurrency: reward.rewardPriceFeed,
@@ -62,11 +64,12 @@ export function calculateReserveIncentives({
         incentiveAPR: vIncentivesAPR,
         rewardTokenAddress: reward.rewardTokenAddress,
         rewardTokenSymbol: reward.rewardTokenSymbol,
+        rewardPriceFeed: reward.rewardPriceFeed,
       };
       return vIncentiveData;
     });
   const sIncentivesData: ReserveIncentiveResponse[] =
-    reserveIncentiveData.aIncentiveData.rewardsTokenInformation.map(reward => {
+    reserveIncentiveData.sIncentiveData.rewardsTokenInformation.map(reward => {
       const sIncentivesAPR = calculateIncentiveAPR({
         emissionPerSecond: reward.emissionPerSecond,
         rewardTokenPriceInMarketReferenceCurrency: reward.rewardPriceFeed,
@@ -79,6 +82,7 @@ export function calculateReserveIncentives({
         incentiveAPR: sIncentivesAPR,
         rewardTokenAddress: reward.rewardTokenAddress,
         rewardTokenSymbol: reward.rewardTokenSymbol,
+        rewardPriceFeed: reward.rewardPriceFeed,
       };
       return sIncentiveData;
     });

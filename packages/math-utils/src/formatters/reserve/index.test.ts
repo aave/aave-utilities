@@ -81,8 +81,8 @@ describe('formatReserve', () => {
         priceInMarketReferenceCurrency: '323337881619534',
       },
       currentTimestamp: formatReserveRequestDAI.currentTimestamp,
-      marketRefPriceInUsd: '291464715827',
-      marketRefCurrencyDecimals: 18,
+      marketReferencePriceInUsd: '291464715827',
+      marketReferenceCurrencyDecimals: 18,
     });
 
     expect(reserve).toMatchSnapshot();

@@ -6,7 +6,7 @@ import {
   CalculateUserReserveIncentivesResponse,
 } from './calculate-user-reserve-incentives';
 import {
-  ReserveIncentiveWithFeedsResponse,
+  ReservesIncentiveDataHumanized,
   UserReserveCalculationData,
   UserReserveIncentiveDataHumanizedResponse,
 } from './types';
@@ -31,7 +31,7 @@ interface RewardCalculation {
 }
 
 export interface CalculateAllUserIncentivesRequest {
-  reserveIncentives: ReserveIncentiveWithFeedsResponse[]; // token incentive data, from UiIncentiveDataProvider
+  reserveIncentives: ReservesIncentiveDataHumanized[]; // token incentive data, from UiIncentiveDataProvider
   userReserveIncentives: UserReserveIncentiveDataHumanizedResponse[]; // user incentive data, from UiIncentiveDataProvider
   userReserves: UserReserveCalculationData[]; // deposit and borrow data for user assets
   currentTimestamp: number;
@@ -46,9 +46,9 @@ export function calculateAllUserIncentives({
   // calculate incentive per token
   const rewards = userReserveIncentives
     .map((userReserveIncentive: UserReserveIncentiveDataHumanizedResponse) => {
-      const reserve: ReserveIncentiveWithFeedsResponse | undefined =
+      const reserve: ReservesIncentiveDataHumanized | undefined =
         reserveIncentives.find(
-          (reserve: ReserveIncentiveWithFeedsResponse) =>
+          (reserve: ReservesIncentiveDataHumanized) =>
             reserve.underlyingAsset === userReserveIncentive.underlyingAsset,
         );
       const userReserve: UserReserveCalculationData | undefined =
