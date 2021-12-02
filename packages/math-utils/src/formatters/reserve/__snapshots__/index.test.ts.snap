@@ -77,6 +77,7 @@ Object {
   "isIsolated": false,
   "isolationModeTotalDebt": "0",
   "liquidityIndex": "1.00016444737961059057",
+  "priceInMarketReferenceCurrency": "0.000323337881619534",
   "reserveFactor": "0.1",
   "reserveLiquidationBonus": "0.05",
   "reserveLiquidationThreshold": "0.8",

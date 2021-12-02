@@ -25,6 +25,7 @@ module.exports = {
     'packages/contract-helpers/src/ui-pool-data-provider/typechain',
     'packages/contract-helpers/src/cl-feed-registry/typechain',
     'packages/contract-helpers/src/incentive-controller/typechain',
+    'packages/contract-helpers/src/incentive-controller-v2/typechain',
     'packages/contract-helpers/src/erc20-contract/typechain',
     'packages/contract-helpers/src/synthetix-contract/typechain',
     'packages/contract-helpers/src/baseDebtToken-contract/typechain',
@@ -38,6 +39,7 @@ module.exports = {
     'packages/contract-helpers/src/erc20-2612/typechain',
     'packages/contract-helpers/src/v3-pool-contract/typechain',
     'packages/contract-helpers/src/index.ts',
+    'packages/math-utils/src/formatters/reserve/index.ts', // TODO: remove
   ],
   modulePathIgnorePatterns: ['node_modules'],
   preset: 'ts-jest',
