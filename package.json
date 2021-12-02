@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@commitlint/cli": "^14.1.0",
-    "@commitlint/config-conventional": "^13.2.0",
+    "@commitlint/config-conventional": "^15.0.0",
     "@commitlint/config-lerna-scopes": "^14.0.0",
     "@types/jest": "^27.0.2",
     "@types/node": "^16.10.5",
