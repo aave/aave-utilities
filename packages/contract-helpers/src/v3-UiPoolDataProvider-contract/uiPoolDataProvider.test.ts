@@ -269,18 +269,20 @@ describe('UiPoolDataProvider', () => {
         mockValidEthereumAddress,
       );
 
-      expect(result).toEqual([
-        {
-          principalStableDebt: '0',
-          scaledATokenBalance: '0',
-          scaledVariableDebt: '0',
-          stableBorrowLastUpdateTimestamp: 0,
-          stableBorrowRate: '0',
-          underlyingAsset: '0xb597cd8d3217ea6477232f9217fa70837ff667af',
-          usageAsCollateralEnabledOnUser: false,
-          userEmodeCategoryId: 1,
-        },
-      ]);
+      expect(result).toEqual({
+        userReserves: [
+          {
+            principalStableDebt: '0',
+            scaledATokenBalance: '0',
+            scaledVariableDebt: '0',
+            stableBorrowLastUpdateTimestamp: 0,
+            stableBorrowRate: '0',
+            underlyingAsset: '0xb597cd8d3217ea6477232f9217fa70837ff667af',
+            usageAsCollateralEnabledOnUser: false,
+          },
+        ],
+        userEmodeCategoryId: 1,
+      });
     });
   });
 });

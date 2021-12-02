@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { BigNumberValue } from '../../bignumber';
+import { BigNumberValue, normalizeBN } from '../../bignumber';
 import {
   calculateAvailableBorrowsMarketReferenceCurrency,
   calculateHealthFactorFromBalances,
@@ -7,6 +7,7 @@ import {
 import { normalizedToUsd } from '../usd/normalized-to-usd';
 import { calculateUserReserveTotals } from './calculate-user-reserve-totals';
 import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
+import { RawReserveData } from './';
 
 export interface RawUserSummaryRequest {
   userReserves: UserReserveSummaryResponse[];
@@ -27,6 +28,8 @@ export interface RawUserSummaryResponse {
   currentLoanToValue: BigNumber;
   currentLiquidationThreshold: BigNumber;
   healthFactor: BigNumber;
+  isInIsolationMode: boolean;
+  isolatedReserve?: RawReserveData;
 }
 
 export function generateRawUserSummary({
@@ -41,9 +44,11 @@ export function generateRawUserSummary({
     totalCollateralMarketReferenceCurrency,
     currentLtv,
     currentLiquidationThreshold,
+    isInIsolationMode,
+    isolatedReserve,
   } = calculateUserReserveTotals({ userReserves, userEmodeCategoryId });
 
-  const availableBorrowsMarketReferenceCurrency =
+  const _availableBorrowsMarketReferenceCurrency =
     calculateAvailableBorrowsMarketReferenceCurrency({
       collateralBalanceMarketReferenceCurrency:
         totalCollateralMarketReferenceCurrency,
@@ -51,7 +56,23 @@ export function generateRawUserSummary({
       currentLtv,
     });
 
+  const availableBorrowsMarketReferenceCurrency =
+    isInIsolationMode && isolatedReserve
+      ? BigNumber.min(
+          normalizeBN(
+            new BigNumber(isolatedReserve.debtCeiling).minus(
+              isolatedReserve.isolationModeTotalDebt,
+            ),
+            isolatedReserve.debtCeilingDecimals -
+              marketReferenceCurrencyDecimals,
+          ),
+          _availableBorrowsMarketReferenceCurrency,
+        )
+      : _availableBorrowsMarketReferenceCurrency;
+
   return {
+    isInIsolationMode,
+    isolatedReserve,
     totalLiquidityUSD: normalizedToUsd(
       totalLiquidityMarketReferenceCurrency,
       marketReferencePriceInUsd,
