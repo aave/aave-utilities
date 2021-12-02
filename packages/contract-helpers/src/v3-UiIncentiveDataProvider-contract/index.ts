@@ -332,20 +332,30 @@ export class UiIncentiveDataProvider
       tokenAddress: data.tokenAddress,
       incentiveControllerAddress: data.incentiveControllerAddress,
       rewardsTokenInformation: data.rewardsTokenInformation.map(
-        (rawRewardInfo: RewardInfo) => ({
-          precision: rawRewardInfo.precision,
-          rewardTokenAddress: rawRewardInfo.rewardTokenAddress,
-          rewardTokenDecimals: rawRewardInfo.rewardTokenDecimals,
-          emissionPerSecond: rawRewardInfo.emissionPerSecond.toString(),
-          incentivesLastUpdateTimestamp:
-            rawRewardInfo.incentivesLastUpdateTimestamp.toNumber(),
-          tokenIncentivesIndex: rawRewardInfo.tokenIncentivesIndex.toString(),
-          emissionEndTimestamp: rawRewardInfo.emissionEndTimestamp.toNumber(),
-          rewardTokenSymbol: rawRewardInfo.rewardTokenSymbol,
-          rewardOracleAddress: rawRewardInfo.rewardOracleAddress,
-          rewardPriceFeed: rawRewardInfo.rewardPriceFeed.toString(),
-          priceFeedDecimals: rawRewardInfo.priceFeedDecimals,
-        }),
+        (rawRewardInfo: RewardInfo) => {
+          console.log(
+            'incentivesLastUpdateTimestamp: ',
+            rawRewardInfo.incentivesLastUpdateTimestamp,
+          );
+          console.log(
+            'emissionEndTimestamp',
+            rawRewardInfo.emissionEndTimestamp,
+          );
+          return {
+            precision: rawRewardInfo.precision,
+            rewardTokenAddress: rawRewardInfo.rewardTokenAddress,
+            rewardTokenDecimals: rawRewardInfo.rewardTokenDecimals,
+            emissionPerSecond: rawRewardInfo.emissionPerSecond.toString(),
+            incentivesLastUpdateTimestamp: 0,
+            // rawRewardInfo.incentivesLastUpdateTimestamp.toNumber(),
+            tokenIncentivesIndex: rawRewardInfo.tokenIncentivesIndex.toString(),
+            emissionEndTimestamp: 0, // rawRewardInfo.emissionEndTimestamp.toNumber(),
+            rewardTokenSymbol: rawRewardInfo.rewardTokenSymbol,
+            rewardOracleAddress: rawRewardInfo.rewardOracleAddress,
+            rewardPriceFeed: rawRewardInfo.rewardPriceFeed.toString(),
+            priceFeedDecimals: rawRewardInfo.priceFeedDecimals,
+          };
+        },
       ),
     };
   }
