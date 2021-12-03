@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.27.0 (2021-12-03)
+
+
+### Features
+
+* add xdai ([#211](https://github.com/@aave/aave-utilities/issues/211)) ([43ce27e](https://github.com/@aave/aave-utilities/commit/43ce27ed932ca2008ca0ac7894bc26b559bdefd8))
+
+
+
+
+
 ## 0.26.5 (2021-12-02)
 
 **Note:** Version bump only for package @aave/contract-helpers
