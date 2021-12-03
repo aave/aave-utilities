@@ -14,7 +14,6 @@ export interface ReserveIncentiveResponse {
   incentiveAPR: string;
   rewardTokenAddress: string;
   rewardTokenSymbol: string;
-  rewardPriceFeed: string;
 }
 export interface CalculateReserveIncentivesResponse {
   underlyingAsset: string;
@@ -23,7 +22,7 @@ export interface CalculateReserveIncentivesResponse {
   sIncentivesData: ReserveIncentiveResponse[];
 }
 
-// Calculate deposit, variableBorrow, and stableBorrow incentives APR for a reserve asset
+// Calculate supply, variableBorrow, and stableBorrow incentives APR for a reserve asset
 export function calculateReserveIncentives({
   reserveIncentiveData,
   totalLiquidity,
@@ -46,7 +45,6 @@ export function calculateReserveIncentives({
         incentiveAPR: aIncentivesAPR,
         rewardTokenAddress: reward.rewardTokenAddress,
         rewardTokenSymbol: reward.rewardTokenSymbol,
-        rewardPriceFeed: reward.rewardPriceFeed,
       };
       return aIncentiveData;
     });
@@ -64,7 +62,6 @@ export function calculateReserveIncentives({
         incentiveAPR: vIncentivesAPR,
         rewardTokenAddress: reward.rewardTokenAddress,
         rewardTokenSymbol: reward.rewardTokenSymbol,
-        rewardPriceFeed: reward.rewardPriceFeed,
       };
       return vIncentiveData;
     });
@@ -82,7 +79,6 @@ export function calculateReserveIncentives({
         incentiveAPR: sIncentivesAPR,
         rewardTokenAddress: reward.rewardTokenAddress,
         rewardTokenSymbol: reward.rewardTokenSymbol,
-        rewardPriceFeed: reward.rewardPriceFeed,
       };
       return sIncentiveData;
     });
