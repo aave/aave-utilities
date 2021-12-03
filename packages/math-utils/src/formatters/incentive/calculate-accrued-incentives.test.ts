@@ -80,4 +80,13 @@ describe('calculateAccruedIncentives', () => {
       normalize(stableDebtRewardsRequest.reserveIndex, 18),
     );
   });
+
+  it('should calculate zero rewards if totalSupply is 0', () => {
+    const zeroSupplyRequest: CalculateAccruedIncentivesRequest = {
+      ...stableDebtRewardsRequest,
+      totalSupply: new BigNumber('0'),
+    };
+    const result = calculateAccruedIncentives(zeroSupplyRequest);
+    expect(normalize(result, 18)).toBe('0');
+  });
 });

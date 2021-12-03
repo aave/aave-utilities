@@ -4,7 +4,7 @@ import {
   ReserveCalculationData,
   ReservesIncentiveDataHumanized,
   UserReserveCalculationData,
-  UserReserveIncentiveDataHumanizedResponse,
+  UserReservesIncentivesDataHumanized,
 } from './types';
 
 export const aETHReserveIncentiveData: ReservesIncentiveDataHumanized = {
@@ -192,119 +192,212 @@ export const aXSUSHIReserveIncentiveData: ReservesIncentiveDataHumanized = {
 
 // User Incentives
 
-export const aETHUserIncentiveData: UserReserveIncentiveDataHumanizedResponse =
-  {
-    underlyingAsset: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-    aTokenIncentivesUserData: {
-      tokenIncentivesUserIndex: '0',
-      userUnclaimedRewards: '43921819137644870',
-      tokenAddress: '0x000000000000000000000000000000000000000a',
-      rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-      incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
-      rewardTokenDecimals: 18,
-    },
-    vTokenIncentivesUserData: {
-      tokenIncentivesUserIndex: '24934844000963410',
-      userUnclaimedRewards: '43921819137644870',
-      tokenAddress: '0x000000000000000000000000000000000000000v',
-      rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-      incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
-      rewardTokenDecimals: 18,
-    },
-    sTokenIncentivesUserData: {
-      tokenIncentivesUserIndex: '0',
-      userUnclaimedRewards: '43921819137644870',
-      tokenAddress: '0x000000000000000000000000000000000000000s',
-      rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-      incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
-      rewardTokenDecimals: 18,
-    },
-  };
+export const aETHUserIncentiveData: UserReservesIncentivesDataHumanized = {
+  underlyingAsset: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  aTokenIncentivesUserData: {
+    tokenAddress: '0x000000000000000000000000000000000000000a',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
+    userRewardsInformation: [
+      {
+        tokenIncentivesUserIndex: '0',
+        userUnclaimedRewards: '43921819137644870',
+        rewardTokenAddress: '0x4da27a545c0c5b758a6ba100e3a049001de870f5',
+        rewardTokenDecimals: 18,
+        rewardPriceFeed: '0',
+        priceFeedDecimals: 8,
+        rewardOracleAddress: '0x0',
+        rewardTokenSymbol: 'StkAave',
+      },
+    ],
+  },
+  vTokenIncentivesUserData: {
+    tokenAddress: '0x000000000000000000000000000000000000000v',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
+    userRewardsInformation: [
+      {
+        tokenIncentivesUserIndex: '24934844000963410',
+        userUnclaimedRewards: '43921819137644870',
+        rewardTokenAddress: '0x4da27a545c0c5b758a6ba100e3a049001de870f5',
+        rewardTokenDecimals: 18,
+        rewardPriceFeed: '0',
+        priceFeedDecimals: 8,
+        rewardOracleAddress: '0x0',
+        rewardTokenSymbol: 'StkAave',
+      },
+    ],
+  },
+  sTokenIncentivesUserData: {
+    tokenAddress: '0x000000000000000000000000000000000000000s',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
+    userRewardsInformation: [
+      {
+        tokenIncentivesUserIndex: '0',
+        userUnclaimedRewards: '43921819137644870',
+        rewardTokenAddress: '0x4da27a545c0c5b758a6ba100e3a049001de870f5',
+        rewardTokenDecimals: 18,
+        rewardPriceFeed: '0',
+        priceFeedDecimals: 8,
+        rewardOracleAddress: '0x0',
+        rewardTokenSymbol: 'StkAave',
+      },
+    ],
+  },
+};
 
-export const aUSDCUserIncentiveData: UserReserveIncentiveDataHumanizedResponse =
+export const aUSDCUserIncentiveData: UserReservesIncentivesDataHumanized = {
+  underlyingAsset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  aTokenIncentivesUserData: {
+    tokenAddress: '0x000000000000000000000000000000000000000a',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
+    userRewardsInformation: [
+      {
+        tokenIncentivesUserIndex: '8399742855606485876888576',
+        userUnclaimedRewards: '43921819137644870',
+        rewardTokenAddress: '0x4da27a545c0c5b758a6ba100e3a049001de870f5',
+        rewardTokenDecimals: 18,
+        rewardPriceFeed: '0',
+        priceFeedDecimals: 8,
+        rewardOracleAddress: '0x0',
+        rewardTokenSymbol: 'StkAave',
+      },
+    ],
+  },
+  vTokenIncentivesUserData: {
+    tokenAddress: '0x000000000000000000000000000000000000000v',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
+    userRewardsInformation: [
+      {
+        tokenIncentivesUserIndex: '0',
+        userUnclaimedRewards: '43921819137644870',
+        rewardTokenAddress: '0x4da27a545c0c5b758a6ba100e3a049001de870f5',
+        rewardTokenDecimals: 18,
+        rewardPriceFeed: '0',
+        priceFeedDecimals: 8,
+        rewardOracleAddress: '0x0',
+        rewardTokenSymbol: 'StkAave',
+      },
+    ],
+  },
+  sTokenIncentivesUserData: {
+    tokenAddress: '0x000000000000000000000000000000000000000s',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
+    userRewardsInformation: [
+      {
+        tokenIncentivesUserIndex: '0',
+        userUnclaimedRewards: '43921819137644870',
+        rewardTokenAddress: '0x4da27a545c0c5b758a6ba100e3a049001de870f5',
+        rewardTokenDecimals: 18,
+        rewardPriceFeed: '0',
+        priceFeedDecimals: 8,
+        rewardOracleAddress: '0x0',
+        rewardTokenSymbol: 'StkAave',
+      },
+    ],
+  },
+};
+
+export const aXSUSHIUserIncentiveData: UserReservesIncentivesDataHumanized = {
+  underlyingAsset: '0x8798249c2e607446efb7ad49ec89dd1865ff4272',
+  aTokenIncentivesUserData: {
+    tokenAddress: '0x000000000000000000000000000000000000000a',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
+    userRewardsInformation: [
+      {
+        tokenIncentivesUserIndex: '0',
+        userUnclaimedRewards: '43921819137644870',
+        rewardTokenAddress: '0x4da27a545c0c5b758a6ba100e3a049001de870f5',
+        rewardTokenDecimals: 18,
+        rewardPriceFeed: '0',
+        priceFeedDecimals: 8,
+        rewardOracleAddress: '0x0',
+        rewardTokenSymbol: 'StkAave',
+      },
+    ],
+  },
+  vTokenIncentivesUserData: {
+    tokenAddress: '0x000000000000000000000000000000000000000v',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
+    userRewardsInformation: [
+      {
+        tokenIncentivesUserIndex: '0',
+        userUnclaimedRewards: '43921819137644870',
+        rewardTokenAddress: '0x4da27a545c0c5b758a6ba100e3a049001de870f5',
+        rewardTokenDecimals: 18,
+        rewardPriceFeed: '0',
+        priceFeedDecimals: 8,
+        rewardOracleAddress: '0x0',
+        rewardTokenSymbol: 'StkAave',
+      },
+    ],
+  },
+  sTokenIncentivesUserData: {
+    tokenAddress: '0x000000000000000000000000000000000000000s',
+    incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
+    userRewardsInformation: [
+      {
+        tokenIncentivesUserIndex: '0',
+        userUnclaimedRewards: '43921819137644870',
+        rewardTokenAddress: '0x4da27a545c0c5b758a6ba100e3a049001de870f5',
+        rewardTokenDecimals: 18,
+        rewardPriceFeed: '0',
+        priceFeedDecimals: 8,
+        rewardOracleAddress: '0x0',
+        rewardTokenSymbol: 'StkAave',
+      },
+    ],
+  },
+};
+
+export const aUSDCUserIncentiveDataMultiController: UserReservesIncentivesDataHumanized =
   {
     underlyingAsset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     aTokenIncentivesUserData: {
-      tokenIncentivesUserIndex: '8399742855606485876888576',
-      userUnclaimedRewards: '43921819137644870',
       tokenAddress: '0x000000000000000000000000000000000000000a',
-      rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-      incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
-      rewardTokenDecimals: 18,
-    },
-    vTokenIncentivesUserData: {
-      tokenIncentivesUserIndex: '0',
-      userUnclaimedRewards: '43921819137644870',
-      tokenAddress: '0x000000000000000000000000000000000000000v',
-      rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-      incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
-      rewardTokenDecimals: 18,
-    },
-    sTokenIncentivesUserData: {
-      tokenIncentivesUserIndex: '0',
-      userUnclaimedRewards: '43921819137644870',
-      tokenAddress: '0x000000000000000000000000000000000000000s',
-      rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-      incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
-      rewardTokenDecimals: 18,
-    },
-  };
-
-export const aXSUSHIUserIncentiveData: UserReserveIncentiveDataHumanizedResponse =
-  {
-    underlyingAsset: '0x8798249c2e607446efb7ad49ec89dd1865ff4272',
-    aTokenIncentivesUserData: {
-      tokenIncentivesUserIndex: '0',
-      userUnclaimedRewards: '43921819137644870',
-      tokenAddress: '0x000000000000000000000000000000000000000a',
-      rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-      incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
-      rewardTokenDecimals: 18,
-    },
-    vTokenIncentivesUserData: {
-      tokenIncentivesUserIndex: '0',
-      userUnclaimedRewards: '43921819137644870',
-      tokenAddress: '0x000000000000000000000000000000000000000v',
-      rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-      incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
-      rewardTokenDecimals: 18,
-    },
-    sTokenIncentivesUserData: {
-      tokenIncentivesUserIndex: '0',
-      userUnclaimedRewards: '43921819137644870',
-      tokenAddress: '0x000000000000000000000000000000000000000s',
-      rewardTokenAddress: '0x0000000000000000000000000000000000000000',
-      incentiveControllerAddress: '0x0000000000000000000000000000000000000000',
-      rewardTokenDecimals: 18,
-    },
-  };
-
-export const aUSDCUserIncentiveDataMultiController: UserReserveIncentiveDataHumanizedResponse =
-  {
-    underlyingAsset: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-    aTokenIncentivesUserData: {
-      tokenIncentivesUserIndex: '8399742855606485876888576',
-      userUnclaimedRewards: '43921819137644870',
-      tokenAddress: '0x000000000000000000000000000000000000000a',
-      rewardTokenAddress: '0x0000000000000000000000000000000000000000',
       incentiveControllerAddress: '0x0000000000000000000000000000000000000001',
-      rewardTokenDecimals: 18,
+      userRewardsInformation: [
+        {
+          tokenIncentivesUserIndex: '8399742855606485876888576',
+          userUnclaimedRewards: '43921819137644870',
+          rewardTokenAddress: '0x4da27a545c0c5b758a6ba100e3a049001de870f5',
+          rewardTokenDecimals: 18,
+          rewardPriceFeed: '0',
+          priceFeedDecimals: 8,
+          rewardOracleAddress: '0x0',
+          rewardTokenSymbol: 'StkAave',
+        },
+      ],
     },
     vTokenIncentivesUserData: {
-      tokenIncentivesUserIndex: '0',
-      userUnclaimedRewards: '43921819137644870',
       tokenAddress: '0x000000000000000000000000000000000000000v',
-      rewardTokenAddress: '0x0000000000000000000000000000000000000000',
       incentiveControllerAddress: '0x0000000000000000000000000000000000000002',
-      rewardTokenDecimals: 18,
+      userRewardsInformation: [
+        {
+          tokenIncentivesUserIndex: '0',
+          userUnclaimedRewards: '43921819137644870',
+          rewardTokenAddress: '0x4da27a545c0c5b758a6ba100e3a049001de870f5',
+          rewardTokenDecimals: 18,
+          rewardPriceFeed: '0',
+          priceFeedDecimals: 8,
+          rewardOracleAddress: '0x0',
+          rewardTokenSymbol: 'StkAave',
+        },
+      ],
     },
     sTokenIncentivesUserData: {
-      tokenIncentivesUserIndex: '0',
-      userUnclaimedRewards: '43921819137644870',
       tokenAddress: '0x000000000000000000000000000000000000000s',
-      rewardTokenAddress: '0x0000000000000000000000000000000000000000',
       incentiveControllerAddress: '0x0000000000000000000000000000000000000003',
-      rewardTokenDecimals: 18,
+      userRewardsInformation: [
+        {
+          tokenIncentivesUserIndex: '0',
+          userUnclaimedRewards: '43921819137644870',
+          rewardTokenAddress: '0x4da27a545c0c5b758a6ba100e3a049001de870f5',
+          rewardTokenDecimals: 18,
+          rewardPriceFeed: '0',
+          priceFeedDecimals: 8,
+          rewardOracleAddress: '0x0',
+          rewardTokenSymbol: 'StkAave',
+        },
+      ],
     },
   };
 
