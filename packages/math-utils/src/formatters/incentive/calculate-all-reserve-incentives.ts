@@ -43,6 +43,7 @@ export function calculateAllReserveIncentives({
     if (reserve) {
       const calculatedReserveIncentives: CalculateReserveIncentivesResponse =
         calculateReserveIncentives({
+          reserves,
           reserveIncentiveData: reserveIncentive,
           totalLiquidity: reserve.totalLiquidity,
           totalVariableDebt: reserve.totalVariableDebt,

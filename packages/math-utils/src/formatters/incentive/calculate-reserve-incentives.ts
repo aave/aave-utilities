@@ -1,7 +1,13 @@
+import BigNumber from 'bignumber.js';
+import { USD_DECIMALS } from '../../constants';
 import { calculateIncentiveAPR } from './calculate-incentive-apr';
-import { ReservesIncentiveDataHumanized } from './types';
+import {
+  ReservesIncentiveDataHumanized,
+  ReserveCalculationData,
+} from './types';
 
 export interface CalculateReserveIncentivesRequest {
+  reserves: ReserveCalculationData[];
   reserveIncentiveData: ReservesIncentiveDataHumanized;
   totalLiquidity: string;
   totalVariableDebt: string;
@@ -22,8 +28,42 @@ export interface CalculateReserveIncentivesResponse {
   sIncentivesData: ReserveIncentiveResponse[];
 }
 
+export function calculateRewardTokenPrice(
+  reserves: Array<{
+    underlyingAsset: string;
+    priceInMarketReferenceCurrency: string;
+  }>,
+  address: string,
+  priceFeed: string,
+  priceFeedDecimals: number,
+): string {
+  // For V3 incentives, all rewards will have attached price feed
+  if (Number(priceFeed) > 0) {
+    return new BigNumber(priceFeed)
+      .shiftedBy(-1 * (priceFeedDecimals - USD_DECIMALS))
+      .toString();
+  }
+
+  address = address.toLowerCase();
+  // For stkAave incentives, use Aave price feed
+  if (address.toLowerCase() === '0x4da27a545c0c5b758a6ba100e3a049001de870f5') {
+    address = '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9';
+  }
+
+  // For V2 incentives, reward price feed comes from the reserves
+  const rewardReserve = reserves.find(
+    reserve => reserve.underlyingAsset.toLowerCase() === address,
+  );
+  if (rewardReserve) {
+    return rewardReserve.priceInMarketReferenceCurrency;
+  }
+
+  return '0';
+}
+
 // Calculate supply, variableBorrow, and stableBorrow incentives APR for a reserve asset
 export function calculateReserveIncentives({
+  reserves,
   reserveIncentiveData,
   totalLiquidity,
   totalVariableDebt,
@@ -35,7 +75,12 @@ export function calculateReserveIncentives({
     reserveIncentiveData.aIncentiveData.rewardsTokenInformation.map(reward => {
       const aIncentivesAPR = calculateIncentiveAPR({
         emissionPerSecond: reward.emissionPerSecond,
-        rewardTokenPriceInMarketReferenceCurrency: reward.rewardPriceFeed,
+        rewardTokenPriceInMarketReferenceCurrency: calculateRewardTokenPrice(
+          reserves,
+          reward.rewardTokenAddress,
+          reward.rewardPriceFeed,
+          reward.priceFeedDecimals,
+        ),
         priceInMarketReferenceCurrency,
         totalTokenSupply: totalLiquidity,
         decimals,
@@ -52,7 +97,12 @@ export function calculateReserveIncentives({
     reserveIncentiveData.vIncentiveData.rewardsTokenInformation.map(reward => {
       const vIncentivesAPR = calculateIncentiveAPR({
         emissionPerSecond: reward.emissionPerSecond,
-        rewardTokenPriceInMarketReferenceCurrency: reward.rewardPriceFeed,
+        rewardTokenPriceInMarketReferenceCurrency: calculateRewardTokenPrice(
+          reserves,
+          reward.rewardTokenAddress,
+          reward.rewardPriceFeed,
+          reward.priceFeedDecimals,
+        ),
         priceInMarketReferenceCurrency,
         totalTokenSupply: totalVariableDebt,
         decimals,
@@ -69,7 +119,12 @@ export function calculateReserveIncentives({
     reserveIncentiveData.sIncentiveData.rewardsTokenInformation.map(reward => {
       const sIncentivesAPR = calculateIncentiveAPR({
         emissionPerSecond: reward.emissionPerSecond,
-        rewardTokenPriceInMarketReferenceCurrency: reward.rewardPriceFeed,
+        rewardTokenPriceInMarketReferenceCurrency: calculateRewardTokenPrice(
+          reserves,
+          reward.rewardTokenAddress,
+          reward.rewardPriceFeed,
+          reward.priceFeedDecimals,
+        ),
         priceInMarketReferenceCurrency,
         totalTokenSupply: totalStableDebt,
         decimals,

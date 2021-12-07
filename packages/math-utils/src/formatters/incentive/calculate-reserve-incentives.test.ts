@@ -1,6 +1,7 @@
 import { calculateReserveDebt } from '../reserve/calculate-reserve-debt';
 import { formatReserveRequestWMATIC } from '../reserve/reserve.mocks';
 import { calculateReserveIncentives } from './calculate-reserve-incentives';
+import { allIncentivesReservesWithRewardReserve } from './incentive.mocks';
 import { ReservesIncentiveDataHumanized } from './types';
 
 describe('calculateReserveIncentives', () => {
@@ -31,7 +32,7 @@ describe('calculateReserveIncentives', () => {
               rewardTokenDecimals: 18,
               precision: 18,
               rewardPriceFeed: '498035657442060',
-              priceFeedDecimals: 18,
+              priceFeedDecimals: 8,
               rewardOracleAddress: '0x0',
               rewardTokenSymbol: 'StkAave',
             },
@@ -51,7 +52,7 @@ describe('calculateReserveIncentives', () => {
               rewardTokenDecimals: 18,
               precision: 18,
               rewardPriceFeed: '500000000000000',
-              priceFeedDecimals: 18,
+              priceFeedDecimals: 8,
               rewardOracleAddress: '0x0',
               rewardTokenSymbol: 'StkAave',
             },
@@ -71,7 +72,7 @@ describe('calculateReserveIncentives', () => {
               rewardTokenDecimals: 18,
               precision: 18,
               rewardPriceFeed: '498035657442060',
-              priceFeedDecimals: 18,
+              priceFeedDecimals: 8,
               rewardOracleAddress: '0x0',
               rewardTokenSymbol: 'StkAave',
             },
@@ -80,6 +81,7 @@ describe('calculateReserveIncentives', () => {
       };
 
       const result = calculateReserveIncentives({
+        reserves: allIncentivesReservesWithRewardReserve,
         reserveIncentiveData,
         totalLiquidity: totalLiquidity.toString(),
         totalVariableDebt:
@@ -88,9 +90,6 @@ describe('calculateReserveIncentives', () => {
         decimals: 18,
         priceInMarketReferenceCurrency: '498035657442060',
       });
-      console.log(calculateReserveDebtResult.totalVariableDebt.toString());
-      console.log(calculateReserveDebtResult.totalStableDebt.toString());
-      console.log(result);
       expect(result.aIncentivesData[0].incentiveAPR).toBe(
         '0.03459120784662872218',
       );
@@ -124,7 +123,7 @@ describe('calculateReserveIncentives', () => {
               rewardTokenDecimals: 18,
               precision: 18,
               rewardPriceFeed: '94170917437245430',
-              priceFeedDecimals: 18,
+              priceFeedDecimals: 8,
               rewardOracleAddress: '0x0',
               rewardTokenSymbol: 'StkAave',
             },
@@ -144,7 +143,7 @@ describe('calculateReserveIncentives', () => {
               rewardTokenDecimals: 18,
               precision: 18,
               rewardPriceFeed: '94170917437245430',
-              priceFeedDecimals: 18,
+              priceFeedDecimals: 8,
               rewardOracleAddress: '0x0',
               rewardTokenSymbol: 'StkAave',
             },
@@ -164,7 +163,7 @@ describe('calculateReserveIncentives', () => {
               rewardTokenDecimals: 0,
               precision: 0,
               rewardPriceFeed: '94170917437245430',
-              priceFeedDecimals: 18,
+              priceFeedDecimals: 8,
               rewardOracleAddress: '0x0',
               rewardTokenSymbol: 'StkAave',
             },
@@ -173,6 +172,7 @@ describe('calculateReserveIncentives', () => {
       };
 
       const result = calculateReserveIncentives({
+        reserves: allIncentivesReservesWithRewardReserve,
         reserveIncentiveData: reserveIncentiveUSDC,
         totalLiquidity: '4689276757732258',
         totalVariableDebt: '3891257648076622',
@@ -207,8 +207,8 @@ describe('calculateReserveIncentives', () => {
               rewardTokenAddress: '0x4da27a545c0c5B758a6BA100e3a049001de870f5',
               rewardTokenDecimals: 18,
               precision: 18,
-              rewardPriceFeed: '94170917437245430',
-              priceFeedDecimals: 18,
+              rewardPriceFeed: '78530386771994300',
+              priceFeedDecimals: 8,
               rewardOracleAddress: '0x0',
               rewardTokenSymbol: 'StkAave',
             },
@@ -228,7 +228,7 @@ describe('calculateReserveIncentives', () => {
               rewardTokenDecimals: 18,
               precision: 18,
               rewardPriceFeed: '94170917437245430',
-              priceFeedDecimals: 18,
+              priceFeedDecimals: 8,
               rewardOracleAddress: '0x0',
               rewardTokenSymbol: 'StkAave',
             },
@@ -248,7 +248,7 @@ describe('calculateReserveIncentives', () => {
               rewardTokenDecimals: 0,
               precision: 0,
               rewardPriceFeed: '94170917437245430',
-              priceFeedDecimals: 18,
+              priceFeedDecimals: 8,
               rewardOracleAddress: '0x0',
               rewardTokenSymbol: 'StkAave',
             },
@@ -256,6 +256,7 @@ describe('calculateReserveIncentives', () => {
         },
       };
       const result = calculateReserveIncentives({
+        reserves: allIncentivesReservesWithRewardReserve,
         reserveIncentiveData: reserveIncentiveDAI,
         totalLiquidity: '1937317748307449835437672174',
         totalVariableDebt: '1440029626743923505023111127',
@@ -264,9 +265,114 @@ describe('calculateReserveIncentives', () => {
         decimals: 18,
       });
 
+      const resultWithoutPrice = calculateReserveIncentives({
+        reserves: allIncentivesReservesWithRewardReserve,
+        reserveIncentiveData: {
+          ...reserveIncentiveDAI,
+          aIncentiveData: {
+            tokenAddress: '0x028171bCA77440897B824Ca71D1c56caC55b68A3',
+            incentiveControllerAddress:
+              '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
+            rewardsTokenInformation: [
+              {
+                emissionPerSecond: '2314814814814814',
+                incentivesLastUpdateTimestamp: 1632885146,
+                tokenIncentivesIndex: '19549435160115',
+                emissionEndTimestamp: 1637573428,
+                rewardTokenAddress:
+                  '0x4da27a545c0c5b758a6ba100e3a049001de870f5',
+                rewardTokenDecimals: 18,
+                precision: 18,
+                rewardPriceFeed: '0',
+                priceFeedDecimals: 18,
+                rewardOracleAddress: '0x0',
+                rewardTokenSymbol: 'StkAave',
+              },
+            ],
+          },
+        },
+        totalLiquidity: '1937317748307449835437672174',
+        totalVariableDebt: '1440029626743923505023111127',
+        totalStableDebt: '9751179387008545009745124',
+        priceInMarketReferenceCurrency: '350862937422119',
+        decimals: 18,
+      });
+
+      const resultWithFeedDecimalChange = calculateReserveIncentives({
+        reserves: allIncentivesReservesWithRewardReserve,
+        reserveIncentiveData: {
+          ...reserveIncentiveDAI,
+          aIncentiveData: {
+            tokenAddress: '0x028171bCA77440897B824Ca71D1c56caC55b68A3',
+            incentiveControllerAddress:
+              '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
+            rewardsTokenInformation: [
+              {
+                emissionPerSecond: '2314814814814814',
+                incentivesLastUpdateTimestamp: 1632885146,
+                tokenIncentivesIndex: '19549435160115',
+                emissionEndTimestamp: 1637573428,
+                rewardTokenAddress:
+                  '0x4da27a545c0c5b758a6ba100e3a049001de870f5',
+                rewardTokenDecimals: 18,
+                precision: 18,
+                rewardPriceFeed: '785303867719943000000000000',
+                priceFeedDecimals: 18,
+                rewardOracleAddress: '0x0',
+                rewardTokenSymbol: 'StkAave',
+              },
+            ],
+          },
+        },
+        totalLiquidity: '1937317748307449835437672174',
+        totalVariableDebt: '1440029626743923505023111127',
+        totalStableDebt: '9751179387008545009745124',
+        priceInMarketReferenceCurrency: '350862937422119',
+        decimals: 18,
+      });
+
+      const resultWithZeroPrice = calculateReserveIncentives({
+        reserves: allIncentivesReservesWithRewardReserve,
+        reserveIncentiveData: {
+          ...reserveIncentiveDAI,
+          aIncentiveData: {
+            tokenAddress: '0x028171bCA77440897B824Ca71D1c56caC55b68A3',
+            incentiveControllerAddress:
+              '0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5',
+            rewardsTokenInformation: [
+              {
+                emissionPerSecond: '2314814814814814',
+                incentivesLastUpdateTimestamp: 1632885146,
+                tokenIncentivesIndex: '19549435160115',
+                emissionEndTimestamp: 1637573428,
+                rewardTokenAddress: '0x0',
+                rewardTokenDecimals: 18,
+                precision: 18,
+                rewardPriceFeed: '0',
+                priceFeedDecimals: 18,
+                rewardOracleAddress: '0x0',
+                rewardTokenSymbol: 'StkAave',
+              },
+            ],
+          },
+        },
+        totalLiquidity: '1937317748307449835437672174',
+        totalVariableDebt: '1440029626743923505023111127',
+        totalStableDebt: '9751179387008545009745124',
+        priceInMarketReferenceCurrency: '350862937422119',
+        decimals: 18,
+      });
+
       expect(result.aIncentivesData[0].incentiveAPR).toBe(
-        '0.01011349605576554151',
+        '0.00843377954139148126',
       );
+      expect(resultWithoutPrice.aIncentivesData[0].incentiveAPR).toBe(
+        '0.00843377954139148126',
+      );
+      expect(resultWithFeedDecimalChange.aIncentivesData[0].incentiveAPR).toBe(
+        '0.00843377954139148126',
+      );
+      expect(resultWithZeroPrice.aIncentivesData[0].incentiveAPR).toBe('0');
       expect(result.vIncentivesData[0].incentiveAPR).toBe(
         '0.01360600854482013582',
       );

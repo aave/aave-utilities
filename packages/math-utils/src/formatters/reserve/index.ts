@@ -398,6 +398,7 @@ export function formatReserves<T extends ReserveDataWithPrice>(
       );
       if (!reserveIncentive) return { ...reserve, ...formattedReserve };
       const incentive = calculateReserveIncentives({
+        reserves: [],
         reserveIncentiveData: reserveIncentive,
         totalLiquidity: formattedReserve.totalLiquidity,
         totalVariableDebt: formattedReserve.totalVariableDebt,
