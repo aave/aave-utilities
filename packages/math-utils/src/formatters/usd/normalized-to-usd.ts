@@ -3,10 +3,10 @@ import { BigNumberValue } from '../../bignumber';
 
 export function normalizedToUsd(
   value: BigNumber,
-  marketRefPriceInUsd: BigNumberValue,
-  marketRefCurrencyDecimals: number,
+  marketReferencePriceInUsd: BigNumberValue,
+  marketReferenceCurrencyDecimals: number,
 ): BigNumber {
   return value
-    .multipliedBy(marketRefPriceInUsd)
-    .shiftedBy(marketRefCurrencyDecimals * -1);
+    .multipliedBy(marketReferencePriceInUsd)
+    .shiftedBy(marketReferenceCurrencyDecimals * -1);
 }

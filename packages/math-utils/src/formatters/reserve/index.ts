@@ -7,9 +7,8 @@ import {
 } from '../../bignumber';
 import { RAY_DECIMALS, SECONDS_PER_YEAR } from '../../constants';
 import { LTV_PRECISION, RAY, rayPow } from '../../index';
-import { calculateRewardTokenPrice } from '../incentive';
 import { calculateReserveIncentives } from '../incentive/calculate-reserve-incentives';
-import { ReserveIncentiveWithFeedsResponse } from '../incentive/types';
+import { ReservesIncentiveDataHumanized } from '../incentive/types';
 import { nativeToUSD } from '../usd/native-to-usd';
 import { normalizedToUsd } from '../usd/normalized-to-usd';
 import { calculateReserveDebt } from './calculate-reserve-debt';
@@ -259,8 +258,8 @@ export type ReserveDataWithPrice = ReserveData & {
 export interface FormatReserveUSDRequest {
   reserve: ReserveDataWithPrice;
   currentTimestamp: number;
-  marketRefPriceInUsd: string;
-  marketRefCurrencyDecimals: number;
+  marketReferencePriceInUsd: string;
+  marketReferenceCurrencyDecimals: number;
 }
 
 export interface FormatReserveUSDResponse extends FormatReserveResponse {
@@ -282,8 +281,8 @@ export interface FormatReserveUSDResponse extends FormatReserveResponse {
 export function formatReserveUSD({
   reserve,
   currentTimestamp,
-  marketRefPriceInUsd,
-  marketRefCurrencyDecimals,
+  marketReferencePriceInUsd,
+  marketReferenceCurrencyDecimals,
 }: FormatReserveUSDRequest): FormatReserveUSDResponse {
   const computedFields = getComputedReserveFields({
     reserve,
@@ -298,89 +297,89 @@ export function formatReserveUSD({
     totalLiquidityUSD: nativeToUSD({
       amount: computedFields.totalLiquidity,
       currencyDecimals: reserve.decimals,
-      marketRefCurrencyDecimals,
+      marketReferenceCurrencyDecimals,
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-      marketRefPriceInUsd,
+      marketReferencePriceInUsd,
     }),
     availableLiquidityUSD: nativeToUSD({
       amount: computedFields.availableLiquidity,
       currencyDecimals: reserve.decimals,
-      marketRefCurrencyDecimals,
+      marketReferenceCurrencyDecimals,
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-      marketRefPriceInUsd,
+      marketReferencePriceInUsd,
     }),
     totalDebtUSD: nativeToUSD({
       amount: computedFields.totalDebt,
       currencyDecimals: reserve.decimals,
-      marketRefCurrencyDecimals,
+      marketReferenceCurrencyDecimals,
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-      marketRefPriceInUsd,
+      marketReferencePriceInUsd,
     }),
     totalVariableDebtUSD: nativeToUSD({
       amount: computedFields.totalVariableDebt,
       currencyDecimals: reserve.decimals,
-      marketRefCurrencyDecimals,
+      marketReferenceCurrencyDecimals,
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-      marketRefPriceInUsd,
+      marketReferencePriceInUsd,
     }),
     totalStableDebtUSD: nativeToUSD({
       amount: computedFields.totalStableDebt,
       currencyDecimals: reserve.decimals,
-      marketRefCurrencyDecimals,
+      marketReferenceCurrencyDecimals,
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-      marketRefPriceInUsd,
+      marketReferencePriceInUsd,
     }),
     // isolationModeTotalDebtUSD: nativeToUSD({
     //   amount: computedFields.totalStableDebt,
     //   currencyDecimals: reserve.decimals,
-    //   marketRefCurrencyDecimals,
+    //   marketReferenceCurrencyDecimals,
     //   priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-    //   marketRefPriceInUsd,
+    //   marketReferencePriceInUsd,
     // }),
     priceInMarketReferenceCurrency: normalize(
       reserve.priceInMarketReferenceCurrency,
-      marketRefCurrencyDecimals,
+      marketReferenceCurrencyDecimals,
     ),
     // priceInUSD: nativeToUSD({
     //   amount: new BigNumber(1).shiftedBy(reserve.decimals),
     //   currencyDecimals: reserve.decimals,
-    //   marketRefCurrencyDecimals,
+    //   marketReferenceCurrencyDecimals,
     //   priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-    //   marketRefPriceInUsd,
+    //   marketReferencePriceInUsd,
     // }),
     // v3
     // caps are already in absolutes
     borrowCapUSD: normalizedToUsd(
       new BigNumber(reserve.borrowCap),
-      marketRefPriceInUsd,
-      marketRefCurrencyDecimals,
+      marketReferencePriceInUsd,
+      marketReferenceCurrencyDecimals,
     ).toString(),
     supplyCapUSD: normalizedToUsd(
       new BigNumber(reserve.supplyCap),
-      marketRefPriceInUsd,
-      marketRefCurrencyDecimals,
+      marketReferencePriceInUsd,
+      marketReferenceCurrencyDecimals,
     ).toString(),
     // debtCeilingUSD: normalizedToUsd(
     //   new BigNumber(reserve.debtCeiling),
-    //   marketRefPriceInUsd,
-    //   marketRefCurrencyDecimals,
+    //   marketReferencePriceInUsd,
+    //   marketReferenceCurrencyDecimals,
     // ).toString(),
   };
 }
 
 export interface FormatReservesUSDRequest {
-  reserveIncentives?: ReserveIncentiveWithFeedsResponse[];
+  reserveIncentives?: ReservesIncentiveDataHumanized[];
   currentTimestamp: number;
-  marketRefPriceInUsd: string;
-  marketRefCurrencyDecimals: number;
+  marketReferencePriceInUsd: string;
+  marketReferenceCurrencyDecimals: number;
 }
 
 export function formatReserves<T extends ReserveDataWithPrice>(
   reserves: Array<T & { underlyingAsset: string }>,
   {
     currentTimestamp,
-    marketRefPriceInUsd,
-    marketRefCurrencyDecimals,
+    marketReferencePriceInUsd,
+    marketReferenceCurrencyDecimals,
     reserveIncentives,
   }: FormatReservesUSDRequest,
 ) {
@@ -388,8 +387,8 @@ export function formatReserves<T extends ReserveDataWithPrice>(
     const formattedReserve = formatReserveUSD({
       reserve,
       currentTimestamp,
-      marketRefPriceInUsd,
-      marketRefCurrencyDecimals,
+      marketReferencePriceInUsd,
+      marketReferenceCurrencyDecimals,
     });
 
     if (reserveIncentives) {
@@ -399,27 +398,14 @@ export function formatReserves<T extends ReserveDataWithPrice>(
       );
       if (!reserveIncentive) return { ...reserve, ...formattedReserve };
       const incentive = calculateReserveIncentives({
+        reserves: [],
         reserveIncentiveData: reserveIncentive,
         totalLiquidity: formattedReserve.totalLiquidity,
         totalVariableDebt: formattedReserve.totalVariableDebt,
         totalStableDebt: formattedReserve.totalStableDebt,
         priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
         decimals: reserve.decimals,
-        aRewardTokenPriceInMarketReferenceCurrency: calculateRewardTokenPrice(
-          reserves,
-          reserveIncentive.aIncentiveData.rewardTokenAddress.toLowerCase(),
-          reserveIncentive.aIncentiveData.priceFeed,
-        ),
-        vRewardTokenPriceInMarketReferenceCurrency: calculateRewardTokenPrice(
-          reserves,
-          reserveIncentive.vIncentiveData.rewardTokenAddress.toLowerCase(),
-          reserveIncentive.vIncentiveData.priceFeed,
-        ),
-        sRewardTokenPriceInMarketReferenceCurrency: calculateRewardTokenPrice(
-          reserves,
-          reserveIncentive.sIncentiveData.rewardTokenAddress.toLowerCase(),
-          reserveIncentive.sIncentiveData.priceFeed,
-        ),
+        marketReferenceCurrencyDecimals: 8,
       });
       return { ...reserve, ...formattedReserve, ...incentive };
     }

@@ -9,21 +9,21 @@ import {
 } from './user.mocks';
 
 describe('calculateUserReserveTotals', () => {
-  const marketRefPriceInUsd = 309519442156873;
+  const marketReferencePriceInUsd = 309519442156873;
   const currentTimestamp = 1629942229;
   const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
       userReserve: usdcUserReserveEthMarket,
-      marketRefPriceInUsd,
-      marketRefCurrencyDecimals: 18,
+      marketReferencePriceInUsd,
+      marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
     },
   );
 
   const rawETHSummary: UserReserveSummaryResponse = generateUserReserveSummary({
     userReserve: ethUserReserveEthMarket,
-    marketRefPriceInUsd,
-    marketRefCurrencyDecimals: 18,
+    marketReferencePriceInUsd,
+    marketReferenceCurrencyDecimals: 18,
     currentTimestamp,
   });
 
@@ -64,8 +64,8 @@ describe('calculateUserReserveTotals', () => {
           ...usdcUserReserveEthMarket,
           usageAsCollateralEnabledOnUser: false,
         },
-        marketRefPriceInUsd,
-        marketRefCurrencyDecimals: 18,
+        marketReferencePriceInUsd,
+        marketReferenceCurrencyDecimals: 18,
         currentTimestamp,
       });
     const rawETHSummary: UserReserveSummaryResponse =
@@ -74,8 +74,8 @@ describe('calculateUserReserveTotals', () => {
           ...ethUserReserveEthMarket,
           usageAsCollateralEnabledOnUser: false,
         },
-        marketRefPriceInUsd,
-        marketRefCurrencyDecimals: 18,
+        marketReferencePriceInUsd,
+        marketReferenceCurrencyDecimals: 18,
         currentTimestamp,
       });
     const userReserveTotals = calculateUserReserveTotals({

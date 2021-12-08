@@ -11,7 +11,7 @@ import { ComputedUserReserve } from './index';
 
 export interface FormatUserReserveRequest {
   reserve: UserReserveSummaryResponse;
-  marketRefCurrencyDecimals: number;
+  marketReferenceCurrencyDecimals: number;
 }
 
 export interface FormatUserReserveResponse {
@@ -20,7 +20,7 @@ export interface FormatUserReserveResponse {
 
 export function formatUserReserve({
   reserve: _reserve,
-  marketRefCurrencyDecimals,
+  marketReferenceCurrencyDecimals,
 }: FormatUserReserveRequest): ComputedUserReserve {
   const { userReserve } = _reserve;
   const { reserve } = userReserve;
@@ -51,25 +51,25 @@ export function formatUserReserve({
     underlyingBalance: normalize(_reserve.underlyingBalance, reserveDecimals),
     underlyingBalanceMarketReferenceCurrency: normalize(
       _reserve.underlyingBalanceMarketReferenceCurrency,
-      marketRefCurrencyDecimals,
+      marketReferenceCurrencyDecimals,
     ),
     underlyingBalanceUSD: _reserve.underlyingBalanceUSD.toString(),
     stableBorrows: normalizeWithReserve(_reserve.stableBorrows),
     stableBorrowsMarketReferenceCurrency: normalize(
       _reserve.stableBorrowsMarketReferenceCurrency,
-      marketRefCurrencyDecimals,
+      marketReferenceCurrencyDecimals,
     ),
     stableBorrowsUSD: _reserve.stableBorrowsUSD.toString(),
     variableBorrows: normalizeWithReserve(_reserve.variableBorrows),
     variableBorrowsMarketReferenceCurrency: normalize(
       _reserve.variableBorrowsMarketReferenceCurrency,
-      marketRefCurrencyDecimals,
+      marketReferenceCurrencyDecimals,
     ),
     variableBorrowsUSD: _reserve.variableBorrowsUSD.toString(),
     totalBorrows: normalizeWithReserve(_reserve.totalBorrows),
     totalBorrowsMarketReferenceCurrency: normalize(
       _reserve.totalBorrowsMarketReferenceCurrency,
-      marketRefCurrencyDecimals,
+      marketReferenceCurrencyDecimals,
     ),
     totalBorrowsUSD: _reserve.totalBorrowsUSD.toString(),
     totalLiquidity: normalizeWithReserve(_reserve.totalLiquidity),
