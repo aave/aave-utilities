@@ -10,6 +10,7 @@ describe('calculateAllReserveIncentives', () => {
     const result = calculateAllReserveIncentives({
       reserveIncentives,
       reserves: allIncentivesReservesWithRewardReserve,
+      marketReferenceCurrencyDecimals: 8,
     });
     expect(
       result['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'].aIncentives[0]
@@ -52,6 +53,7 @@ describe('calculateAllReserveIncentives', () => {
     const result = calculateAllReserveIncentives({
       reserveIncentives,
       reserves: allIncentivesReserves,
+      marketReferenceCurrencyDecimals: 8,
     });
     expect(
       result['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'].aIncentives[0]
@@ -95,6 +97,7 @@ describe('calculateAllReserveIncentives', () => {
     const result = calculateAllReserveIncentives({
       reserveIncentives,
       reserves: [],
+      marketReferenceCurrencyDecimals: 8,
     });
     expect(result['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2']).toBe(
       undefined,

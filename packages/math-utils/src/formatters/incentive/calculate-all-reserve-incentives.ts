@@ -25,11 +25,13 @@ interface ReserveIncentive {
 export interface CalculateAllReserveIncentivesRequest {
   reserveIncentives: ReservesIncentiveDataHumanized[];
   reserves: ReserveCalculationData[];
+  marketReferenceCurrencyDecimals: number;
 }
 
 export function calculateAllReserveIncentives({
   reserveIncentives,
   reserves,
+  marketReferenceCurrencyDecimals,
 }: CalculateAllReserveIncentivesRequest): ReserveIncentiveDict {
   const reserveDict: ReserveIncentiveDict = {};
   // calculate incentive per reserve token
@@ -51,6 +53,7 @@ export function calculateAllReserveIncentives({
           priceInMarketReferenceCurrency:
             reserve.priceInMarketReferenceCurrency,
           decimals: reserve.decimals,
+          marketReferenceCurrencyDecimals,
         });
       reserveDict[calculatedReserveIncentives.underlyingAsset] = {
         aIncentives: calculatedReserveIncentives.aIncentivesData,

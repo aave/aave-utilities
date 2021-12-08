@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-import { USD_DECIMALS } from '../../constants';
 import { calculateIncentiveAPR } from './calculate-incentive-apr';
 import {
   ReservesIncentiveDataHumanized,
@@ -14,6 +13,7 @@ export interface CalculateReserveIncentivesRequest {
   totalStableDebt: string;
   decimals: number;
   priceInMarketReferenceCurrency: string; // Can be priced in ETH or USD depending on market
+  marketReferenceCurrencyDecimals: number;
 }
 
 export interface ReserveIncentiveResponse {
@@ -36,11 +36,13 @@ export function calculateRewardTokenPrice(
   address: string,
   priceFeed: string,
   priceFeedDecimals: number,
+  marketReferenceCurrencyDecimals: number,
 ): string {
   // For V3 incentives, all rewards will have attached price feed
+  // This shift is to ensure that the decimals of the reward token price feed will match the decimals of the reserve token price
   if (Number(priceFeed) > 0) {
     return new BigNumber(priceFeed)
-      .shiftedBy(-1 * (priceFeedDecimals - USD_DECIMALS))
+      .shiftedBy(-1 * (priceFeedDecimals - marketReferenceCurrencyDecimals))
       .toString();
   }
 
@@ -70,6 +72,7 @@ export function calculateReserveIncentives({
   totalStableDebt,
   decimals,
   priceInMarketReferenceCurrency,
+  marketReferenceCurrencyDecimals,
 }: CalculateReserveIncentivesRequest): CalculateReserveIncentivesResponse {
   const aIncentivesData: ReserveIncentiveResponse[] =
     reserveIncentiveData.aIncentiveData.rewardsTokenInformation.map(reward => {
@@ -80,6 +83,7 @@ export function calculateReserveIncentives({
           reward.rewardTokenAddress,
           reward.rewardPriceFeed,
           reward.priceFeedDecimals,
+          marketReferenceCurrencyDecimals,
         ),
         priceInMarketReferenceCurrency,
         totalTokenSupply: totalLiquidity,
@@ -102,6 +106,7 @@ export function calculateReserveIncentives({
           reward.rewardTokenAddress,
           reward.rewardPriceFeed,
           reward.priceFeedDecimals,
+          marketReferenceCurrencyDecimals,
         ),
         priceInMarketReferenceCurrency,
         totalTokenSupply: totalVariableDebt,
@@ -124,6 +129,7 @@ export function calculateReserveIncentives({
           reward.rewardTokenAddress,
           reward.rewardPriceFeed,
           reward.priceFeedDecimals,
+          marketReferenceCurrencyDecimals,
         ),
         priceInMarketReferenceCurrency,
         totalTokenSupply: totalStableDebt,

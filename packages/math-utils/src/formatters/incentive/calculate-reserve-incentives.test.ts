@@ -89,6 +89,7 @@ describe('calculateReserveIncentives', () => {
         totalStableDebt: calculateReserveDebtResult.totalStableDebt.toString(),
         decimals: 18,
         priceInMarketReferenceCurrency: '498035657442060',
+        marketReferenceCurrencyDecimals: 8,
       });
       expect(result.aIncentivesData[0].incentiveAPR).toBe(
         '0.03459120784662872218',
@@ -179,6 +180,7 @@ describe('calculateReserveIncentives', () => {
         totalStableDebt: '41801112749722',
         priceInMarketReferenceCurrency: '347780307856538',
         decimals: 6,
+        marketReferenceCurrencyDecimals: 8,
       });
 
       expect(result.aIncentivesData[0].incentiveAPR).toBe(
@@ -263,6 +265,7 @@ describe('calculateReserveIncentives', () => {
         totalStableDebt: '9751179387008545009745124',
         priceInMarketReferenceCurrency: '350862937422119',
         decimals: 18,
+        marketReferenceCurrencyDecimals: 8,
       });
 
       const resultWithoutPrice = calculateReserveIncentives({
@@ -296,6 +299,7 @@ describe('calculateReserveIncentives', () => {
         totalStableDebt: '9751179387008545009745124',
         priceInMarketReferenceCurrency: '350862937422119',
         decimals: 18,
+        marketReferenceCurrencyDecimals: 8,
       });
 
       const resultWithFeedDecimalChange = calculateReserveIncentives({
@@ -329,6 +333,7 @@ describe('calculateReserveIncentives', () => {
         totalStableDebt: '9751179387008545009745124',
         priceInMarketReferenceCurrency: '350862937422119',
         decimals: 18,
+        marketReferenceCurrencyDecimals: 8,
       });
 
       const resultWithZeroPrice = calculateReserveIncentives({
@@ -361,6 +366,7 @@ describe('calculateReserveIncentives', () => {
         totalStableDebt: '9751179387008545009745124',
         priceInMarketReferenceCurrency: '350862937422119',
         decimals: 18,
+        marketReferenceCurrencyDecimals: 8,
       });
 
       expect(result.aIncentivesData[0].incentiveAPR).toBe(
