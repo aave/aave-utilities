@@ -7,7 +7,10 @@ import {
 } from '../../bignumber';
 import { RAY_DECIMALS, SECONDS_PER_YEAR } from '../../constants';
 import { LTV_PRECISION, RAY, rayPow } from '../../index';
-import { calculateReserveIncentives } from '../incentive/calculate-reserve-incentives';
+import {
+  calculateReserveIncentives,
+  CalculateReserveIncentivesResponse,
+} from '../incentive/calculate-reserve-incentives';
 import { ReservesIncentiveDataHumanized } from '../incentive/types';
 import { nativeToUSD } from '../usd/native-to-usd';
 import { normalizedToUsd } from '../usd/normalized-to-usd';
@@ -403,10 +406,10 @@ export function formatReservesAndIncentives<T extends ReserveDataWithPrice>({
   marketReferencePriceInUsd,
   marketReferenceCurrencyDecimals,
   reserveIncentives,
-}: FormatReservesAndIncentivesUSDRequest<T>) {
-  const formattedReserves = formatReserves<
-    ReserveDataWithPrice & { underlyingAsset: string }
-  >({
+}: FormatReservesAndIncentivesUSDRequest<T>): Array<
+  FormatReserveUSDResponse & T & Partial<CalculateReserveIncentivesResponse>
+> {
+  const formattedReserves = formatReserves<T & { underlyingAsset: string }>({
     reserves,
     currentTimestamp,
     marketReferenceCurrencyDecimals,
