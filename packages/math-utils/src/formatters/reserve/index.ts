@@ -405,7 +405,7 @@ export function formatReserves<T extends ReserveDataWithPrice>(
         totalStableDebt: formattedReserve.totalStableDebt,
         priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
         decimals: reserve.decimals,
-        marketReferenceCurrencyDecimals: 8,
+        marketReferenceCurrencyDecimals,
       });
       return { ...reserve, ...formattedReserve, ...incentive };
     }
