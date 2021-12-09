@@ -367,22 +367,19 @@ export function formatReserveUSD({
   };
 }
 
-export interface FormatReservesUSDRequest {
-  reserveIncentives?: ReservesIncentiveDataHumanized[];
+export interface FormatReservesUSDRequest<T extends ReserveDataWithPrice> {
+  reserves: T[];
   currentTimestamp: number;
   marketReferencePriceInUsd: string;
   marketReferenceCurrencyDecimals: number;
 }
 
-export function formatReserves<T extends ReserveDataWithPrice>(
-  reserves: Array<T & { underlyingAsset: string }>,
-  {
-    currentTimestamp,
-    marketReferencePriceInUsd,
-    marketReferenceCurrencyDecimals,
-    reserveIncentives,
-  }: FormatReservesUSDRequest,
-) {
+export function formatReserves<T extends ReserveDataWithPrice>({
+  reserves,
+  currentTimestamp,
+  marketReferencePriceInUsd,
+  marketReferenceCurrencyDecimals,
+}: FormatReservesUSDRequest<T>) {
   return reserves.map(reserve => {
     const formattedReserve = formatReserveUSD({
       reserve,
@@ -390,26 +387,47 @@ export function formatReserves<T extends ReserveDataWithPrice>(
       marketReferencePriceInUsd,
       marketReferenceCurrencyDecimals,
     });
-
-    if (reserveIncentives) {
-      const reserveIncentive = reserveIncentives.find(
-        reserveIncentive =>
-          reserveIncentive.underlyingAsset === reserve.underlyingAsset,
-      );
-      if (!reserveIncentive) return { ...reserve, ...formattedReserve };
-      const incentive = calculateReserveIncentives({
-        reserves: [],
-        reserveIncentiveData: reserveIncentive,
-        totalLiquidity: formattedReserve.totalLiquidity,
-        totalVariableDebt: formattedReserve.totalVariableDebt,
-        totalStableDebt: formattedReserve.totalStableDebt,
-        priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-        decimals: reserve.decimals,
-        marketReferenceCurrencyDecimals,
-      });
-      return { ...reserve, ...formattedReserve, ...incentive };
-    }
-
     return { ...reserve, ...formattedReserve };
+  });
+}
+
+export interface FormatReservesAndIncentivesUSDRequest<
+  T extends ReserveDataWithPrice,
+> extends FormatReservesUSDRequest<T & { underlyingAsset: string }> {
+  reserveIncentives: ReservesIncentiveDataHumanized[];
+}
+
+export function formatReservesAndIncentives<T extends ReserveDataWithPrice>({
+  reserves,
+  currentTimestamp,
+  marketReferencePriceInUsd,
+  marketReferenceCurrencyDecimals,
+  reserveIncentives,
+}: FormatReservesAndIncentivesUSDRequest<T>) {
+  const formattedReserves = formatReserves<
+    ReserveDataWithPrice & { underlyingAsset: string }
+  >({
+    reserves,
+    currentTimestamp,
+    marketReferenceCurrencyDecimals,
+    marketReferencePriceInUsd,
+  });
+  return formattedReserves.map(reserve => {
+    const reserveIncentive = reserveIncentives.find(
+      reserveIncentive =>
+        reserveIncentive.underlyingAsset === reserve.underlyingAsset,
+    );
+    if (!reserveIncentive) return reserve;
+    const incentive = calculateReserveIncentives({
+      reserves: [],
+      reserveIncentiveData: reserveIncentive,
+      totalLiquidity: reserve.totalLiquidity,
+      totalVariableDebt: reserve.totalVariableDebt,
+      totalStableDebt: reserve.totalStableDebt,
+      priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+      decimals: reserve.decimals,
+      marketReferenceCurrencyDecimals,
+    });
+    return { ...reserve, ...incentive };
   });
 }
