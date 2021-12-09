@@ -18,7 +18,7 @@
     "ethers": "~5.4.7"
   },
   "devDependencies": {
-    "ethers": "5.4.7",
+    "ethers": "5.5.2",
     "reflect-metadata": "^0.1.13"
   },
   "main": "./dist/cjs/index.js",
