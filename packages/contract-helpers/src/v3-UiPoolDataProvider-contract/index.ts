@@ -52,7 +52,10 @@ export interface UiPoolDataProviderInterface {
   getUserReservesHumanized: (
     lendingPoolAddressProvider: string,
     user: string,
-  ) => Promise<UserReserveDataHumanized[]>;
+  ) => Promise<{
+    userReserves: UserReserveDataHumanized[];
+    userEmodeCategoryId: number;
+  }>;
 }
 
 export class UiPoolDataProvider implements UiPoolDataProviderInterface {
@@ -209,21 +212,26 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
   public async getUserReservesHumanized(
     lendingPoolAddressProvider: string,
     user: string,
-  ): Promise<UserReserveDataHumanized[]> {
+  ): Promise<{
+    userReserves: UserReserveDataHumanized[];
+    userEmodeCategoryId: number;
+  }> {
     const { 0: userReservesRaw, 1: userEmodeCategoryId }: UserReserveData =
       await this.getUserReservesData(lendingPoolAddressProvider, user);
 
-    return userReservesRaw.map(userReserveRaw => ({
-      underlyingAsset: userReserveRaw.underlyingAsset.toLowerCase(),
-      scaledATokenBalance: userReserveRaw.scaledATokenBalance.toString(),
-      usageAsCollateralEnabledOnUser:
-        userReserveRaw.usageAsCollateralEnabledOnUser,
-      stableBorrowRate: userReserveRaw.stableBorrowRate.toString(),
-      scaledVariableDebt: userReserveRaw.scaledVariableDebt.toString(),
-      principalStableDebt: userReserveRaw.principalStableDebt.toString(),
-      stableBorrowLastUpdateTimestamp:
-        userReserveRaw.stableBorrowLastUpdateTimestamp.toNumber(),
+    return {
+      userReserves: userReservesRaw.map(userReserveRaw => ({
+        underlyingAsset: userReserveRaw.underlyingAsset.toLowerCase(),
+        scaledATokenBalance: userReserveRaw.scaledATokenBalance.toString(),
+        usageAsCollateralEnabledOnUser:
+          userReserveRaw.usageAsCollateralEnabledOnUser,
+        stableBorrowRate: userReserveRaw.stableBorrowRate.toString(),
+        scaledVariableDebt: userReserveRaw.scaledVariableDebt.toString(),
+        principalStableDebt: userReserveRaw.principalStableDebt.toString(),
+        stableBorrowLastUpdateTimestamp:
+          userReserveRaw.stableBorrowLastUpdateTimestamp.toNumber(),
+      })),
       userEmodeCategoryId,
-    }));
+    };
   }
 }

@@ -144,5 +144,4 @@ export interface UserReserveDataHumanized {
   scaledVariableDebt: string;
   principalStableDebt: string;
   stableBorrowLastUpdateTimestamp: number;
-  userEmodeCategoryId: number;
 }

@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { valueToBigNumber, valueToZDBigNumber } from '../../bignumber';
 import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
+import { RawReserveData } from './';
 
 interface UserReserveTotalsRequest {
   userReserves: UserReserveSummaryResponse[];
@@ -13,6 +14,8 @@ interface UserReserveTotalsResponse {
   totalCollateralMarketReferenceCurrency: BigNumber;
   currentLtv: BigNumber;
   currentLiquidationThreshold: BigNumber;
+  isInIsolationMode: boolean;
+  isolatedReserve?: RawReserveData;
 }
 
 export function calculateUserReserveTotals({
@@ -24,6 +27,8 @@ export function calculateUserReserveTotals({
   let totalBorrowsMarketReferenceCurrency = valueToZDBigNumber('0');
   let currentLtv = valueToBigNumber('0');
   let currentLiquidationThreshold = valueToBigNumber('0');
+  let isInIsolationMode = false;
+  let isolatedReserve: RawReserveData | undefined;
 
   userReserves.forEach(userReserveSummary => {
     totalLiquidityMarketReferenceCurrency =
@@ -38,6 +43,11 @@ export function calculateUserReserveTotals({
       userReserveSummary.userReserve.reserve.usageAsCollateralEnabled &&
       userReserveSummary.userReserve.usageAsCollateralEnabledOnUser
     ) {
+      if (userReserveSummary.userReserve.reserve.debtCeiling !== '0') {
+        isolatedReserve = userReserveSummary.userReserve.reserve;
+        isInIsolationMode = true;
+      }
+
       totalCollateralMarketReferenceCurrency =
         totalCollateralMarketReferenceCurrency.plus(
           userReserveSummary.underlyingBalanceMarketReferenceCurrency,
@@ -96,5 +106,7 @@ export function calculateUserReserveTotals({
     totalCollateralMarketReferenceCurrency,
     currentLtv,
     currentLiquidationThreshold,
+    isInIsolationMode,
+    isolatedReserve,
   };
 }
