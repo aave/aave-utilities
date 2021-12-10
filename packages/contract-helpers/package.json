@@ -15,10 +15,10 @@
     "prepublishOnly": "yarn build"
   },
   "peerDependencies": {
-    "ethers": "~5.4.7"
+    "ethers": "~5.x.x"
   },
   "devDependencies": {
-    "ethers": "5.4.7",
+    "ethers": "5.5.2",
     "reflect-metadata": "^0.1.13"
   },
   "main": "./dist/cjs/index.js",
