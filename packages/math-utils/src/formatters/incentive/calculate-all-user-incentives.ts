@@ -5,14 +5,14 @@ import {
 } from './calculate-user-reserve-incentives';
 import {
   ReservesIncentiveDataHumanized,
-  UserReserveCalculationData,
   UserReservesIncentivesDataHumanized,
+  UserReserveCalculationData,
 } from './types';
 
 // Indexed by reward token address
 export type UserIncentiveDict = Record<string, UserIncentiveData>;
 
-interface UserIncentiveData {
+export interface UserIncentiveData {
   incentiveControllerAddress: string;
   rewardTokenSymbol: string;
   rewardPriceFeed: string;
@@ -23,35 +23,36 @@ interface UserIncentiveData {
 
 export interface CalculateAllUserIncentivesRequest {
   reserveIncentives: ReservesIncentiveDataHumanized[]; // token incentive data, from UiIncentiveDataProvider
-  userReserveIncentives: UserReservesIncentivesDataHumanized[]; // user incentive data, from UiIncentiveDataProvider
+  userIncentives: UserReservesIncentivesDataHumanized[]; // user incentive data, from UiIncentiveDataProvider
   userReserves: UserReserveCalculationData[]; // deposit and borrow data for user assets
   currentTimestamp: number;
 }
 
 export function calculateAllUserIncentives({
   reserveIncentives,
-  userReserveIncentives,
+  userIncentives,
   userReserves,
   currentTimestamp,
 }: CalculateAllUserIncentivesRequest): UserIncentiveDict {
   // calculate incentive per token
-  const allRewards = userReserveIncentives
-    .map((userReserveIncentive: UserReservesIncentivesDataHumanized) => {
+  const allRewards = userIncentives
+    .map((userIncentive: UserReservesIncentivesDataHumanized) => {
       const reserve: ReservesIncentiveDataHumanized | undefined =
         reserveIncentives.find(
           (reserve: ReservesIncentiveDataHumanized) =>
-            reserve.underlyingAsset === userReserveIncentive.underlyingAsset,
+            reserve.underlyingAsset === userIncentive.underlyingAsset,
         );
       const userReserve: UserReserveCalculationData | undefined =
         userReserves.find(
-          (reserve: UserReserveCalculationData) =>
-            reserve.underlyingAsset === userReserveIncentive.underlyingAsset,
+          (userReserve: UserReserveCalculationData) =>
+            userReserve.reserve.underlyingAsset ===
+            userIncentive.underlyingAsset,
         );
       if (reserve) {
         const reserveRewards: UserReserveIncentive[] =
           calculateUserReserveIncentives({
             reserveIncentives: reserve,
-            userReserveIncentives: userReserveIncentive,
+            userIncentives: userIncentive,
             userReserveData: userReserve,
             currentTimestamp,
           });

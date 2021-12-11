@@ -5,7 +5,7 @@ import {
 } from './calculate-all-user-incentives';
 import {
   reserveIncentives,
-  userReserveIncentives,
+  userIncentives,
   reserveIncentivesMissingUSDC,
   userReserves,
 } from './incentive.mocks';
@@ -13,7 +13,7 @@ import {
 describe('calculateAllUserIncentives', () => {
   const allUserIncentivesRequest: CalculateAllUserIncentivesRequest = {
     reserveIncentives,
-    userReserveIncentives,
+    userIncentives,
     userReserves,
     currentTimestamp: 1631587561,
   };
@@ -28,7 +28,7 @@ describe('calculateAllUserIncentives', () => {
   const totalUserIncentivesMissingDataRequest: CalculateAllUserIncentivesRequest =
     {
       reserveIncentives: reserveIncentivesMissingUSDC,
-      userReserveIncentives,
+      userIncentives,
       userReserves,
       currentTimestamp: 1631587561,
     };
@@ -45,7 +45,7 @@ describe('calculateAllUserIncentives', () => {
   const totalUserIncentivesWithoutUserReserves: CalculateAllUserIncentivesRequest =
     {
       reserveIncentives,
-      userReserveIncentives,
+      userIncentives,
       userReserves: [],
       currentTimestamp: 1631587561,
     };
