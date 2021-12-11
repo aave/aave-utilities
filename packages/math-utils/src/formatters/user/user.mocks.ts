@@ -1,4 +1,12 @@
-import { FormatUserSummaryRequest, RawUserReserveData } from './index';
+import {
+  reserveIncentives,
+  userIncentives,
+} from '../incentive/incentive.mocks';
+import {
+  FormatUserSummaryAndIncentivesRequest,
+  FormatUserSummaryRequest,
+  RawUserReserveData,
+} from './index';
 
 export const usdcUserReserveEthMarket: RawUserReserveData = {
   scaledATokenBalance: '2328085146',
@@ -265,3 +273,14 @@ export const formatUserSummaryRequestUsdMarket: FormatUserSummaryRequest = {
   currentTimestamp: 1629942229,
   userEmodeCategoryId: 0,
 };
+
+export const formatUserSummaryAndIncentivesRequest: FormatUserSummaryAndIncentivesRequest =
+  {
+    rawUserReserves: userReservesUsdMarket,
+    marketReferencePriceInUsd: 100000000,
+    marketReferenceCurrencyDecimals: 8,
+    currentTimestamp: 1629942229,
+    userEmodeCategoryId: 0,
+    reserveIncentives,
+    userIncentives,
+  };

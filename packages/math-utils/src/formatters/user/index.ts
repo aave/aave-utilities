@@ -1,5 +1,10 @@
 import { BigNumberValue, normalize } from '../../bignumber';
 import { LTV_PRECISION, USD_DECIMALS } from '../../constants';
+import { calculateAllUserIncentives, UserIncentiveDict } from '../incentive';
+import {
+  ReservesIncentiveDataHumanized,
+  UserReservesIncentivesDataHumanized,
+} from '../incentive/types';
 import { FormatReserveUSDResponse } from '../reserve';
 import { formatUserReserve } from './format-user-reserve';
 import { generateRawUserSummary } from './generate-raw-user-summary';
@@ -94,6 +99,34 @@ export interface FormatUserSummaryResponse {
   isolatedReserve?: ReserveDataComputed;
 }
 
+export interface FormatUserSummaryAndIncentivesRequest {
+  rawUserReserves: RawUserReserveData[];
+  marketReferencePriceInUsd: BigNumberValue;
+  marketReferenceCurrencyDecimals: number;
+  currentTimestamp: number;
+  userEmodeCategoryId: number;
+  reserveIncentives: ReservesIncentiveDataHumanized[];
+  userIncentives: UserReservesIncentivesDataHumanized[];
+}
+
+export interface FormatUserSummaryAndIncentivesResponse {
+  userReservesData: ComputedUserReserve[];
+  totalLiquidityMarketReferenceCurrency: string;
+  totalLiquidityUSD: string;
+  totalCollateralMarketReferenceCurrency: string;
+  totalCollateralUSD: string;
+  totalBorrowsMarketReferenceCurrency: string;
+  totalBorrowsUSD: string;
+  availableBorrowsMarketReferenceCurrency: string;
+  availableBorrowsUSD: string;
+  currentLoanToValue: string;
+  currentLiquidationThreshold: string;
+  healthFactor: string;
+  isInIsolationMode: boolean;
+  isolatedReserve?: ReserveDataComputed;
+  calculatedUserIncentives: UserIncentiveDict;
+}
+
 export function formatUserSummary({
   currentTimestamp,
   marketReferencePriceInUsd,
@@ -159,5 +192,83 @@ export function formatUserSummary({
     healthFactor: userData.healthFactor.toFixed(),
     isInIsolationMode: userData.isInIsolationMode,
     isolatedReserve: userData.isolatedReserve,
+  };
+}
+
+export function formatUserSummaryAndIncentives({
+  currentTimestamp,
+  marketReferencePriceInUsd,
+  marketReferenceCurrencyDecimals,
+  rawUserReserves,
+  userEmodeCategoryId,
+  reserveIncentives,
+  userIncentives,
+}: FormatUserSummaryAndIncentivesRequest): FormatUserSummaryAndIncentivesResponse {
+  const humanizedMarketRefPriceInUsd = normalize(
+    marketReferencePriceInUsd,
+    USD_DECIMALS,
+  );
+  const computedUserReserves: UserReserveSummaryResponse[] =
+    rawUserReserves.map(userReserve =>
+      generateUserReserveSummary({
+        userReserve,
+        marketReferencePriceInUsd: humanizedMarketRefPriceInUsd,
+        marketReferenceCurrencyDecimals,
+        currentTimestamp,
+      }),
+    );
+
+  const formattedUserReserves = computedUserReserves.map(computedUserReserve =>
+    formatUserReserve({
+      reserve: computedUserReserve,
+      marketReferenceCurrencyDecimals,
+    }),
+  );
+
+  const userData = generateRawUserSummary({
+    userReserves: computedUserReserves,
+    marketReferencePriceInUsd: humanizedMarketRefPriceInUsd,
+    marketReferenceCurrencyDecimals,
+    userEmodeCategoryId,
+  });
+
+  const calculatedUserIncentives = calculateAllUserIncentives({
+    reserveIncentives,
+    userIncentives,
+    userReserves: rawUserReserves,
+    currentTimestamp,
+  });
+
+  return {
+    userReservesData: formattedUserReserves,
+    totalLiquidityMarketReferenceCurrency: normalize(
+      userData.totalLiquidityMarketReferenceCurrency,
+      marketReferenceCurrencyDecimals,
+    ),
+    totalLiquidityUSD: userData.totalLiquidityUSD.toString(),
+    totalCollateralMarketReferenceCurrency: normalize(
+      userData.totalCollateralMarketReferenceCurrency,
+      marketReferenceCurrencyDecimals,
+    ),
+    totalCollateralUSD: userData.totalCollateralUSD.toString(),
+    totalBorrowsMarketReferenceCurrency: normalize(
+      userData.totalBorrowsMarketReferenceCurrency,
+      marketReferenceCurrencyDecimals,
+    ),
+    totalBorrowsUSD: userData.totalBorrowsUSD.toString(),
+    availableBorrowsMarketReferenceCurrency: normalize(
+      userData.availableBorrowsMarketReferenceCurrency,
+      marketReferenceCurrencyDecimals,
+    ),
+    availableBorrowsUSD: userData.availableBorrowsUSD.toString(),
+    currentLoanToValue: normalize(userData.currentLoanToValue, LTV_PRECISION),
+    currentLiquidationThreshold: normalize(
+      userData.currentLiquidationThreshold,
+      LTV_PRECISION,
+    ),
+    healthFactor: userData.healthFactor.toFixed(),
+    isInIsolationMode: userData.isInIsolationMode,
+    isolatedReserve: userData.isolatedReserve,
+    calculatedUserIncentives,
   };
 }
