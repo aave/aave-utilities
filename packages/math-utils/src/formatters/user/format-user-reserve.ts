@@ -72,9 +72,11 @@ export function formatUserReserve({
       marketReferenceCurrencyDecimals,
     ),
     totalBorrowsUSD: _reserve.totalBorrowsUSD.toString(),
-    totalLiquidity: normalizeWithReserve(_reserve.totalLiquidity),
-    totalStableDebt: normalizeWithReserve(_reserve.totalStableDebt),
-    totalVariableDebt: normalizeWithReserve(_reserve.totalVariableDebt),
+    totalLiquidity: normalizeWithReserve(userReserve.reserve.totalLiquidity),
+    totalStableDebt: normalizeWithReserve(userReserve.reserve.totalStableDebt),
+    totalVariableDebt: normalizeWithReserve(
+      userReserve.reserve.totalVariableDebt,
+    ),
     stableBorrowAPR: normalize(userReserve.stableBorrowRate, RAY_DECIMALS),
     stableBorrowAPY: normalize(exactStableBorrowRate, RAY_DECIMALS),
   };

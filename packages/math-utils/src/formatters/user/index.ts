@@ -1,5 +1,6 @@
 import { BigNumberValue, normalize } from '../../bignumber';
 import { LTV_PRECISION, USD_DECIMALS } from '../../constants';
+import { FormatReserveUSDResponse } from '../reserve';
 import { formatUserReserve } from './format-user-reserve';
 import { generateRawUserSummary } from './generate-raw-user-summary';
 import {
@@ -34,13 +35,12 @@ export interface RawReserveData {
   debtCeilingDecimals: number;
   isolationModeTotalDebt: string;
   eModeCategoryId: number;
-  eModeLtv: number;
-  eModeLiquidationThreshold: number;
-  eModeLiquidationBonus: number;
 }
 
+export type ReserveData = RawReserveData & FormatReserveUSDResponse;
+
 export interface RawUserReserveData {
-  reserve: RawReserveData;
+  reserve: ReserveData;
   scaledATokenBalance: string;
   usageAsCollateralEnabledOnUser: boolean;
   stableBorrowRate: string;
@@ -91,7 +91,7 @@ export interface FormatUserSummaryResponse {
   currentLiquidationThreshold: string;
   healthFactor: string;
   isInIsolationMode: boolean;
-  isolatedReserve?: RawReserveData;
+  isolatedReserve?: ReserveData;
 }
 
 export function formatUserSummary({

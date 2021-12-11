@@ -6,8 +6,7 @@ import {
   getCompoundedBalance,
   getCompoundedStableBalance,
 } from '../../pool-math';
-import { calculateSupplies } from './calculate-supplies';
-import { RawUserReserveData } from './index';
+import { RawUserReserveData, ReserveData } from './index';
 
 export interface UserReserveSummaryRequest {
   userReserve: RawUserReserveData;
@@ -30,9 +29,6 @@ export interface UserReserveSummaryResponse {
   totalBorrows: BigNumber;
   totalBorrowsMarketReferenceCurrency: BigNumber;
   totalBorrowsUSD: BigNumber;
-  totalLiquidity: BigNumber;
-  totalStableDebt: BigNumber;
-  totalVariableDebt: BigNumber;
 }
 
 export function generateUserReserveSummary({
@@ -41,7 +37,7 @@ export function generateUserReserveSummary({
   marketReferenceCurrencyDecimals,
   currentTimestamp,
 }: UserReserveSummaryRequest): UserReserveSummaryResponse {
-  const poolReserve = userReserve.reserve;
+  const poolReserve: ReserveData = userReserve.reserve;
   const { priceInMarketReferenceCurrency, decimals } = poolReserve;
   const underlyingBalance = getLinearBalance({
     balance: userReserve.scaledATokenBalance,
@@ -98,22 +94,6 @@ export function generateUserReserveSummary({
     marketReferencePriceInUsd,
   });
 
-  const { totalLiquidity, totalStableDebt, totalVariableDebt } =
-    calculateSupplies({
-      reserve: {
-        totalScaledVariableDebt: poolReserve.totalScaledVariableDebt,
-        variableBorrowIndex: poolReserve.variableBorrowIndex,
-        variableBorrowRate: poolReserve.variableBorrowRate,
-        totalPrincipalStableDebt: poolReserve.totalPrincipalStableDebt,
-        averageStableRate: poolReserve.averageStableRate,
-        availableLiquidity: poolReserve.availableLiquidity,
-        stableDebtLastUpdateTimestamp:
-          poolReserve.stableDebtLastUpdateTimestamp,
-        lastUpdateTimestamp: poolReserve.lastUpdateTimestamp,
-      },
-      currentTimestamp,
-    });
-
   return {
     userReserve,
     underlyingBalance,
@@ -131,8 +111,5 @@ export function generateUserReserveSummary({
         stableBorrowsMarketReferenceCurrency,
       ),
     totalBorrowsUSD: variableBorrowsUSD.plus(stableBorrowsUSD),
-    totalLiquidity,
-    totalStableDebt,
-    totalVariableDebt,
   };
 }
