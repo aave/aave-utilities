@@ -5,7 +5,6 @@ import {
   ReservesIncentiveDataHumanized,
   UserReservesIncentivesDataHumanized,
 } from '../incentive/types';
-import { FormatReserveUSDResponse } from '../reserve';
 import { formatUserReserve } from './format-user-reserve';
 import { generateRawUserSummary } from './generate-raw-user-summary';
 import {
@@ -13,7 +12,7 @@ import {
   UserReserveSummaryResponse,
 } from './generate-user-reserve-summary';
 
-export interface RawReserveData {
+export interface ReserveDataComputed {
   decimals: number;
   reserveFactor: string;
   baseLTVasCollateral: string;
@@ -40,9 +39,14 @@ export interface RawReserveData {
   debtCeilingDecimals: number;
   isolationModeTotalDebt: string;
   eModeCategoryId: number;
+  eModeLtv: string;
+  eModeLiquidationThreshold: string;
+  eModeLiquidationBonus: string;
+  totalStableDebt: string;
+  totalVariableDebt: string;
+  totalDebt: string;
+  totalLiquidity: string;
 }
-
-export type ReserveDataComputed = RawReserveData & FormatReserveUSDResponse;
 
 export interface RawUserReserveData {
   reserve: ReserveDataComputed;
