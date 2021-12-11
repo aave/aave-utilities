@@ -37,10 +37,10 @@ export interface RawReserveData {
   eModeCategoryId: number;
 }
 
-export type ReserveData = RawReserveData & FormatReserveUSDResponse;
+export type ReserveDataComputed = RawReserveData & FormatReserveUSDResponse;
 
 export interface RawUserReserveData {
-  reserve: ReserveData;
+  reserve: ReserveDataComputed;
   scaledATokenBalance: string;
   usageAsCollateralEnabledOnUser: boolean;
   stableBorrowRate: string;
@@ -91,7 +91,7 @@ export interface FormatUserSummaryResponse {
   currentLiquidationThreshold: string;
   healthFactor: string;
   isInIsolationMode: boolean;
-  isolatedReserve?: ReserveData;
+  isolatedReserve?: ReserveDataComputed;
 }
 
 export function formatUserSummary({
