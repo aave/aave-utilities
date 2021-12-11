@@ -39,8 +39,5 @@ describe('generateUserReserveSummary', () => {
     expect(rawSummary.totalBorrowsUSD.toFixed()).toEqual(
       '52.645188204926088393345997',
     );
-    expect(rawSummary.totalLiquidity.toFixed()).toEqual('5735355757091039');
-    expect(rawSummary.totalStableDebt.toFixed()).toEqual('47382349631778');
-    expect(rawSummary.totalVariableDebt.toFixed()).toEqual('5129957324438749');
   });
 });
