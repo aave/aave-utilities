@@ -48,7 +48,7 @@ export interface ReserveDataComputed {
   totalLiquidity: string;
 }
 
-export interface RawUserReserveData {
+export interface UserReserveData {
   reserve: ReserveDataComputed;
   scaledATokenBalance: string;
   usageAsCollateralEnabledOnUser: boolean;
@@ -58,7 +58,7 @@ export interface RawUserReserveData {
   stableBorrowLastUpdateTimestamp: number;
 }
 
-export interface ComputedUserReserve extends RawUserReserveData {
+export interface ComputedUserReserve extends UserReserveData {
   underlyingBalance: string;
   underlyingBalanceMarketReferenceCurrency: string;
   underlyingBalanceUSD: string;
@@ -79,7 +79,7 @@ export interface ComputedUserReserve extends RawUserReserveData {
 }
 
 export interface FormatUserSummaryRequest {
-  rawUserReserves: RawUserReserveData[];
+  userReserves: UserReserveData[];
   marketReferencePriceInUsd: BigNumberValue;
   marketReferenceCurrencyDecimals: number;
   currentTimestamp: number;
@@ -104,7 +104,7 @@ export interface FormatUserSummaryResponse {
 }
 
 export interface FormatUserSummaryAndIncentivesRequest {
-  rawUserReserves: RawUserReserveData[];
+  userReserves: UserReserveData[];
   marketReferencePriceInUsd: BigNumberValue;
   marketReferenceCurrencyDecimals: number;
   currentTimestamp: number;
@@ -135,22 +135,22 @@ export function formatUserSummary({
   currentTimestamp,
   marketReferencePriceInUsd,
   marketReferenceCurrencyDecimals,
-  rawUserReserves,
+  userReserves,
   userEmodeCategoryId,
 }: FormatUserSummaryRequest): FormatUserSummaryResponse {
   const humanizedMarketRefPriceInUsd = normalize(
     marketReferencePriceInUsd,
     USD_DECIMALS,
   );
-  const computedUserReserves: UserReserveSummaryResponse[] =
-    rawUserReserves.map(userReserve =>
+  const computedUserReserves: UserReserveSummaryResponse[] = userReserves.map(
+    userReserve =>
       generateUserReserveSummary({
         userReserve,
         marketReferencePriceInUsd: humanizedMarketRefPriceInUsd,
         marketReferenceCurrencyDecimals,
         currentTimestamp,
       }),
-    );
+  );
 
   const formattedUserReserves = computedUserReserves.map(computedUserReserve =>
     formatUserReserve({
@@ -203,7 +203,7 @@ export function formatUserSummaryAndIncentives({
   currentTimestamp,
   marketReferencePriceInUsd,
   marketReferenceCurrencyDecimals,
-  rawUserReserves,
+  userReserves,
   userEmodeCategoryId,
   reserveIncentives,
   userIncentives,
@@ -212,15 +212,15 @@ export function formatUserSummaryAndIncentives({
     marketReferencePriceInUsd,
     USD_DECIMALS,
   );
-  const computedUserReserves: UserReserveSummaryResponse[] =
-    rawUserReserves.map(userReserve =>
+  const computedUserReserves: UserReserveSummaryResponse[] = userReserves.map(
+    userReserve =>
       generateUserReserveSummary({
         userReserve,
         marketReferencePriceInUsd: humanizedMarketRefPriceInUsd,
         marketReferenceCurrencyDecimals,
         currentTimestamp,
       }),
-    );
+  );
 
   const formattedUserReserves = computedUserReserves.map(computedUserReserve =>
     formatUserReserve({
@@ -239,7 +239,7 @@ export function formatUserSummaryAndIncentives({
   const calculatedUserIncentives = calculateAllUserIncentives({
     reserveIncentives,
     userIncentives,
-    userReserves: rawUserReserves,
+    userReserves,
     currentTimestamp,
   });
 

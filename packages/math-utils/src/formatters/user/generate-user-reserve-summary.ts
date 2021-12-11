@@ -6,17 +6,17 @@ import {
   getCompoundedBalance,
   getCompoundedStableBalance,
 } from '../../pool-math';
-import { RawUserReserveData, ReserveDataComputed } from './index';
+import { UserReserveData, ReserveDataComputed } from './index';
 
 export interface UserReserveSummaryRequest {
-  userReserve: RawUserReserveData;
+  userReserve: UserReserveData;
   marketReferencePriceInUsd: BigNumberValue;
   marketReferenceCurrencyDecimals: number;
   currentTimestamp: number;
 }
 
 export interface UserReserveSummaryResponse {
-  userReserve: RawUserReserveData;
+  userReserve: UserReserveData;
   underlyingBalance: BigNumber;
   underlyingBalanceMarketReferenceCurrency: BigNumber;
   underlyingBalanceUSD: BigNumber;

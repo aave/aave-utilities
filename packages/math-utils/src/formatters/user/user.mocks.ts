@@ -1,3 +1,4 @@
+import { UserReserveData } from 'math-utils/src';
 import {
   reserveIncentives,
   userIncentives,
@@ -5,10 +6,9 @@ import {
 import {
   FormatUserSummaryAndIncentivesRequest,
   FormatUserSummaryRequest,
-  RawUserReserveData,
 } from './index';
 
-export const usdcUserReserveEthMarket: RawUserReserveData = {
+export const usdcUserReserveEthMarket: UserReserveData = {
   scaledATokenBalance: '2328085146',
   usageAsCollateralEnabledOnUser: true,
   scaledVariableDebt: '48856783',
@@ -52,7 +52,7 @@ export const usdcUserReserveEthMarket: RawUserReserveData = {
   },
 };
 
-export const ethUserReserveEthMarket: RawUserReserveData = {
+export const ethUserReserveEthMarket: UserReserveData = {
   scaledATokenBalance: '11199353924118371338',
   usageAsCollateralEnabledOnUser: true,
   scaledVariableDebt: '1761463562232346784',
@@ -96,7 +96,7 @@ export const ethUserReserveEthMarket: RawUserReserveData = {
   },
 };
 
-export const usdcUserReserveUsdMarket: RawUserReserveData = {
+export const usdcUserReserveUsdMarket: UserReserveData = {
   scaledATokenBalance: '2328085146',
   usageAsCollateralEnabledOnUser: true,
   scaledVariableDebt: '996253',
@@ -140,7 +140,7 @@ export const usdcUserReserveUsdMarket: RawUserReserveData = {
   },
 };
 
-export const avaxUserReserveUsdMarket: RawUserReserveData = {
+export const avaxUserReserveUsdMarket: UserReserveData = {
   scaledATokenBalance: '99353924118371338',
   usageAsCollateralEnabledOnUser: true,
   scaledVariableDebt: '1761463562232346784',
@@ -195,7 +195,7 @@ export const userReservesUsdMarket = [
 ];
 
 export const formatUserSummaryRequestEthMarket: FormatUserSummaryRequest = {
-  rawUserReserves: userReservesEthMarket,
+  userReserves: userReservesEthMarket,
   marketReferencePriceInUsd: 456974241997,
   marketReferenceCurrencyDecimals: 18,
   currentTimestamp: 1629942229,
@@ -203,7 +203,7 @@ export const formatUserSummaryRequestEthMarket: FormatUserSummaryRequest = {
 };
 
 export const formatUserSummaryRequestUsdMarket: FormatUserSummaryRequest = {
-  rawUserReserves: userReservesUsdMarket,
+  userReserves: userReservesUsdMarket,
   marketReferencePriceInUsd: 100000000,
   marketReferenceCurrencyDecimals: 8,
   currentTimestamp: 1629942229,
@@ -212,7 +212,7 @@ export const formatUserSummaryRequestUsdMarket: FormatUserSummaryRequest = {
 
 export const formatUserSummaryAndIncentivesRequest: FormatUserSummaryAndIncentivesRequest =
   {
-    rawUserReserves: userReservesUsdMarket,
+    userReserves: userReservesUsdMarket,
     marketReferencePriceInUsd: 100000000,
     marketReferenceCurrencyDecimals: 8,
     currentTimestamp: 1629942229,
