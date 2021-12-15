@@ -5051,7 +5051,6 @@ describe('Pool', () => {
       expect(decoded[0]).toEqual(reserve);
       expect(decoded[1]).toEqual(constants.MaxUint256);
       expect(decoded[2]).toEqual(BigNumber.from(1));
-      expect(decoded[3]).toEqual(onBehalfOf);
 
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
