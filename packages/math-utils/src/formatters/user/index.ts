@@ -3,8 +3,10 @@ import { LTV_PRECISION, USD_DECIMALS } from '../../constants';
 import { calculateAllUserIncentives, UserIncentiveDict } from '../incentive';
 import {
   ReservesIncentiveDataHumanized,
+  UserReserveCalculationData,
   UserReservesIncentivesDataHumanized,
 } from '../incentive/types';
+import { calculateSupplies } from './calculate-supplies';
 import { formatUserReserve } from './format-user-reserve';
 import { generateRawUserSummary } from './generate-raw-user-summary';
 import {
@@ -12,7 +14,7 @@ import {
   UserReserveSummaryResponse,
 } from './generate-user-reserve-summary';
 
-export interface ReserveDataComputed {
+export interface RawReserveData {
   decimals: number;
   reserveFactor: string;
   baseLTVasCollateral: string;
@@ -39,17 +41,13 @@ export interface ReserveDataComputed {
   debtCeilingDecimals: number;
   isolationModeTotalDebt: string;
   eModeCategoryId: number;
-  eModeLtv: string;
-  eModeLiquidationThreshold: string;
-  eModeLiquidationBonus: string;
-  totalStableDebt: string;
-  totalVariableDebt: string;
-  totalDebt: string;
-  totalLiquidity: string;
+  eModeLtv: number;
+  eModeLiquidationThreshold: number;
+  eModeLiquidationBonus: number;
 }
 
 export interface UserReserveData {
-  reserve: ReserveDataComputed;
+  reserve: RawReserveData;
   scaledATokenBalance: string;
   usageAsCollateralEnabledOnUser: boolean;
   stableBorrowRate: string;
@@ -71,9 +69,6 @@ export interface ComputedUserReserve extends UserReserveData {
   totalBorrows: string;
   totalBorrowsMarketReferenceCurrency: string;
   totalBorrowsUSD: string;
-  totalLiquidity: string;
-  totalStableDebt: string;
-  totalVariableDebt: string;
   stableBorrowAPY: string;
   stableBorrowAPR: string;
 }
@@ -100,7 +95,7 @@ export interface FormatUserSummaryResponse {
   currentLiquidationThreshold: string;
   healthFactor: string;
   isInIsolationMode: boolean;
-  isolatedReserve?: ReserveDataComputed;
+  isolatedReserve?: RawReserveData;
 }
 
 export interface FormatUserSummaryAndIncentivesRequest {
@@ -127,7 +122,7 @@ export interface FormatUserSummaryAndIncentivesResponse {
   currentLiquidationThreshold: string;
   healthFactor: string;
   isInIsolationMode: boolean;
-  isolatedReserve?: ReserveDataComputed;
+  isolatedReserve?: RawReserveData;
   calculatedUserIncentives: UserIncentiveDict;
 }
 
@@ -236,10 +231,41 @@ export function formatUserSummaryAndIncentives({
     userEmodeCategoryId,
   });
 
+  // In the future, refactor the userReserves input to optionally include this totalLiquidity field
+  const calculatedUserReserves: UserReserveCalculationData[] = userReserves.map(
+    userReserve => {
+      const { totalLiquidity } = calculateSupplies({
+        reserve: {
+          totalScaledVariableDebt: userReserve.reserve.totalScaledVariableDebt,
+          variableBorrowIndex: userReserve.reserve.variableBorrowIndex,
+          variableBorrowRate: userReserve.reserve.variableBorrowRate,
+          totalPrincipalStableDebt:
+            userReserve.reserve.totalPrincipalStableDebt,
+          averageStableRate: userReserve.reserve.averageStableRate,
+          availableLiquidity: userReserve.reserve.availableLiquidity,
+          stableDebtLastUpdateTimestamp:
+            userReserve.reserve.stableDebtLastUpdateTimestamp,
+          lastUpdateTimestamp: userReserve.reserve.lastUpdateTimestamp,
+        },
+        currentTimestamp,
+      });
+      return {
+        ...userReserve,
+        reserve: {
+          ...userReserve.reserve,
+          totalLiquidity: normalize(
+            totalLiquidity,
+            userReserve.reserve.decimals,
+          ),
+        },
+      };
+    },
+  );
+
   const calculatedUserIncentives = calculateAllUserIncentives({
     reserveIncentives,
     userIncentives,
-    userReserves,
+    userReserves: calculatedUserReserves,
     currentTimestamp,
   });
 

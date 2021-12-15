@@ -7,7 +7,7 @@ import {
 import { normalizedToUsd } from '../usd/normalized-to-usd';
 import { calculateUserReserveTotals } from './calculate-user-reserve-totals';
 import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
-import { ReserveDataComputed } from './index';
+import { RawReserveData } from './index';
 
 export interface RawUserSummaryRequest {
   userReserves: UserReserveSummaryResponse[];
@@ -29,7 +29,7 @@ export interface RawUserSummaryResponse {
   currentLiquidationThreshold: BigNumber;
   healthFactor: BigNumber;
   isInIsolationMode: boolean;
-  isolatedReserve?: ReserveDataComputed;
+  isolatedReserve?: RawReserveData;
 }
 
 export function generateRawUserSummary({
