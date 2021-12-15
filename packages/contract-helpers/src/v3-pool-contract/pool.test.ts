@@ -5044,7 +5044,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'uint256', 'uint256', 'address'],
+        ['address', 'uint256', 'uint256'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
@@ -5089,7 +5089,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'uint256', 'uint256', 'address'],
+        ['address', 'uint256', 'uint256'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
