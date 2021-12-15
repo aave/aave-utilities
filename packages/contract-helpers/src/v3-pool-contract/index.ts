@@ -62,7 +62,7 @@ import {
   LPWithdrawParamsType,
 } from './lendingPoolTypes';
 import { IPool } from './typechain/IPool';
-import { IPoolFactory } from './typechain/IPoolFactory';
+import { IPool__factory } from './typechain/IPool__factory';
 
 export interface PoolInterface {
   deposit: (
@@ -170,7 +170,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     provider: providers.Provider,
     lendingPoolConfig?: LendingPoolMarketConfigV3,
   ) {
-    super(provider, IPoolFactory);
+    super(provider, IPool__factory);
 
     const {
       POOL,
@@ -1271,9 +1271,8 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
   public async repayWithATokens(
     @isEthAddress('user')
     @isEthAddress('reserve')
-    @isEthAddress('onBehalfOf')
     @isPositiveOrMinusOneAmount('amount')
-    { user, amount, reserve, rateMode, onBehalfOf }: LPRepayWithATokensType,
+    { user, amount, reserve, rateMode }: LPRepayWithATokensType,
   ): Promise<EthereumTransactionTypeExtended[]> {
     if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
       throw new Error(
@@ -1312,7 +1311,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           reserve,
           convertedAmount,
           numericRateMode,
-          onBehalfOf ?? user,
         ),
       from: user,
       value: getTxValue(reserve, convertedAmount),
