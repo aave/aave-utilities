@@ -253,10 +253,7 @@ export function formatUserSummaryAndIncentives({
         ...userReserve,
         reserve: {
           ...userReserve.reserve,
-          totalLiquidity: normalize(
-            totalLiquidity,
-            userReserve.reserve.decimals,
-          ),
+          totalLiquidity: totalLiquidity.toString(),
         },
       };
     },
