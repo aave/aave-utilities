@@ -10,7 +10,6 @@ Object {
   "eModeLtv": "0.8",
   "isIsolated": false,
   "isolationModeTotalDebt": "0",
-  "liquidityIndex": "1.00016444737961059057",
   "reserveFactor": "0.1",
   "reserveLiquidationBonus": "0.05",
   "reserveLiquidationThreshold": "0.8",
@@ -28,7 +27,6 @@ Object {
   "utilizationRate": "0.77137486776056791364",
   "variableBorrowAPR": "0.03856874338802839568",
   "variableBorrowAPY": "0.03932217240517564451",
-  "variableBorrowIndex": "1.00023285443371120965",
 }
 `;
 
@@ -42,7 +40,6 @@ Object {
   "eModeLtv": "0.6",
   "isIsolated": true,
   "isolationModeTotalDebt": "100",
-  "liquidityIndex": "1.00920114827430421106",
   "reserveFactor": "0.2",
   "reserveLiquidationBonus": "0.1",
   "reserveLiquidationThreshold": "0.65",
@@ -60,7 +57,6 @@ Object {
   "utilizationRate": "0.16694528866828649738",
   "variableBorrowAPR": "0.03341338737105765182",
   "variableBorrowAPY": "0.03397788428671542517",
-  "variableBorrowIndex": "1.02739968325035004938",
 }
 `;
 
@@ -76,7 +72,6 @@ Object {
   "eModeLtv": "0.8",
   "isIsolated": false,
   "isolationModeTotalDebt": "0",
-  "liquidityIndex": "1.00016444737961059057",
   "priceInMarketReferenceCurrency": "0.000323337881619534",
   "reserveFactor": "0.1",
   "reserveLiquidationBonus": "0.05",
@@ -100,6 +95,5 @@ Object {
   "utilizationRate": "0",
   "variableBorrowAPR": "0.03856874338802839568",
   "variableBorrowAPY": "0.03932217240517564451",
-  "variableBorrowIndex": "1.00023285443371120965",
 }
 `;
