@@ -89,6 +89,7 @@ export interface FormatUserSummaryResponse {
   totalCollateralUSD: string;
   totalBorrowsMarketReferenceCurrency: string;
   totalBorrowsUSD: string;
+  netWorthUSD: string;
   availableBorrowsMarketReferenceCurrency: string;
   availableBorrowsUSD: string;
   currentLoanToValue: string;
@@ -108,22 +109,8 @@ export interface FormatUserSummaryAndIncentivesRequest {
   userIncentives: UserReservesIncentivesDataHumanized[];
 }
 
-export interface FormatUserSummaryAndIncentivesResponse {
-  userReservesData: ComputedUserReserve[];
-  totalLiquidityMarketReferenceCurrency: string;
-  totalLiquidityUSD: string;
-  totalCollateralMarketReferenceCurrency: string;
-  totalCollateralUSD: string;
-  totalBorrowsMarketReferenceCurrency: string;
-  totalBorrowsUSD: string;
-  netWorthUSD: string;
-  availableBorrowsMarketReferenceCurrency: string;
-  availableBorrowsUSD: string;
-  currentLoanToValue: string;
-  currentLiquidationThreshold: string;
-  healthFactor: string;
-  isInIsolationMode: boolean;
-  isolatedReserve?: RawReserveData;
+export interface FormatUserSummaryAndIncentivesResponse
+  extends FormatUserSummaryResponse {
   calculatedUserIncentives: UserIncentiveDict;
 }
 
@@ -179,6 +166,9 @@ export function formatUserSummary({
       marketReferenceCurrencyDecimals,
     ),
     totalBorrowsUSD: userData.totalBorrowsUSD.toString(),
+    netWorthUSD: userData.totalLiquidityUSD
+      .minus(userData.totalBorrowsUSD)
+      .toString(),
     availableBorrowsMarketReferenceCurrency: normalize(
       userData.availableBorrowsMarketReferenceCurrency,
       marketReferenceCurrencyDecimals,
@@ -204,31 +194,11 @@ export function formatUserSummaryAndIncentives({
   reserveIncentives,
   userIncentives,
 }: FormatUserSummaryAndIncentivesRequest): FormatUserSummaryAndIncentivesResponse {
-  const humanizedMarketRefPriceInUsd = normalize(
+  const formattedUserSummary = formatUserSummary({
+    currentTimestamp,
     marketReferencePriceInUsd,
-    USD_DECIMALS,
-  );
-  const computedUserReserves: UserReserveSummaryResponse[] = userReserves.map(
-    userReserve =>
-      generateUserReserveSummary({
-        userReserve,
-        marketReferencePriceInUsd: humanizedMarketRefPriceInUsd,
-        marketReferenceCurrencyDecimals,
-        currentTimestamp,
-      }),
-  );
-
-  const formattedUserReserves = computedUserReserves.map(computedUserReserve =>
-    formatUserReserve({
-      reserve: computedUserReserve,
-      marketReferenceCurrencyDecimals,
-    }),
-  );
-
-  const userData = generateRawUserSummary({
-    userReserves: computedUserReserves,
-    marketReferencePriceInUsd: humanizedMarketRefPriceInUsd,
     marketReferenceCurrencyDecimals,
+    userReserves,
     userEmodeCategoryId,
   });
 
@@ -268,38 +238,7 @@ export function formatUserSummaryAndIncentives({
   });
 
   return {
-    userReservesData: formattedUserReserves,
-    totalLiquidityMarketReferenceCurrency: normalize(
-      userData.totalLiquidityMarketReferenceCurrency,
-      marketReferenceCurrencyDecimals,
-    ),
-    totalLiquidityUSD: userData.totalLiquidityUSD.toString(),
-    totalCollateralMarketReferenceCurrency: normalize(
-      userData.totalCollateralMarketReferenceCurrency,
-      marketReferenceCurrencyDecimals,
-    ),
-    totalCollateralUSD: userData.totalCollateralUSD.toString(),
-    totalBorrowsMarketReferenceCurrency: normalize(
-      userData.totalBorrowsMarketReferenceCurrency,
-      marketReferenceCurrencyDecimals,
-    ),
-    totalBorrowsUSD: userData.totalBorrowsUSD.toString(),
-    netWorthUSD: userData.totalLiquidityUSD
-      .minus(userData.totalBorrowsUSD)
-      .toString(),
-    availableBorrowsMarketReferenceCurrency: normalize(
-      userData.availableBorrowsMarketReferenceCurrency,
-      marketReferenceCurrencyDecimals,
-    ),
-    availableBorrowsUSD: userData.availableBorrowsUSD.toString(),
-    currentLoanToValue: normalize(userData.currentLoanToValue, LTV_PRECISION),
-    currentLiquidationThreshold: normalize(
-      userData.currentLiquidationThreshold,
-      LTV_PRECISION,
-    ),
-    healthFactor: userData.healthFactor.toFixed(),
-    isInIsolationMode: userData.isInIsolationMode,
-    isolatedReserve: userData.isolatedReserve,
+    ...formattedUserSummary,
     calculatedUserIncentives,
   };
 }
