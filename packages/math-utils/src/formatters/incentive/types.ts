@@ -51,14 +51,16 @@ export interface UserRewardInfoHumanized {
 }
 
 export interface UserReserveCalculationData {
-  underlyingAsset: string;
-  totalLiquidity: string;
-  liquidityIndex: string;
-  totalScaledVariableDebt: string;
-  totalPrincipalStableDebt: string;
   scaledATokenBalance: string;
   scaledVariableDebt: string;
   principalStableDebt: string;
+  reserve: {
+    underlyingAsset: string;
+    totalLiquidity: string;
+    liquidityIndex: string;
+    totalScaledVariableDebt: string;
+    totalPrincipalStableDebt: string;
+  };
 }
 
 export interface ReserveCalculationData {

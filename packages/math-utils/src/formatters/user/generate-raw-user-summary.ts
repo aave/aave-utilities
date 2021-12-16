@@ -7,7 +7,7 @@ import {
 import { normalizedToUsd } from '../usd/normalized-to-usd';
 import { calculateUserReserveTotals } from './calculate-user-reserve-totals';
 import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
-import { RawReserveData } from './';
+import { RawReserveData } from './index';
 
 export interface RawUserSummaryRequest {
   userReserves: UserReserveSummaryResponse[];

@@ -20,7 +20,7 @@ describe('calculateUserReserveIncentives', () => {
   const userETHReserveIncentiveRequest: CalculateUserReserveIncentivesRequest =
     {
       reserveIncentives: aETHReserveIncentiveData,
-      userReserveIncentives: aETHUserIncentiveData,
+      userIncentives: aETHUserIncentiveData,
       userReserveData: aETHReserve,
       currentTimestamp: 1631587561,
     };
@@ -28,7 +28,7 @@ describe('calculateUserReserveIncentives', () => {
   const userUSDCReserveIncentiveRequest: CalculateUserReserveIncentivesRequest =
     {
       reserveIncentives: aUSDCReserveIncentiveData,
-      userReserveIncentives: aUSDCUserIncentiveData,
+      userIncentives: aUSDCUserIncentiveData,
       userReserveData: aUSDCReserve,
       currentTimestamp: 1631587561,
     };
@@ -36,7 +36,7 @@ describe('calculateUserReserveIncentives', () => {
   const userXSUSHIReserveIncentiveRequest: CalculateUserReserveIncentivesRequest =
     {
       reserveIncentives: aXSUSHIReserveIncentiveData,
-      userReserveIncentives: aXSUSHIUserIncentiveData,
+      userIncentives: aXSUSHIUserIncentiveData,
       userReserveData: aXSUSHIReserve,
       currentTimestamp: 1631587561,
     };

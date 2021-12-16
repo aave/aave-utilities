@@ -2,8 +2,14 @@ import BigNumber from 'bignumber.js';
 import {
   formatUserSummaryRequestEthMarket,
   formatUserSummaryRequestUsdMarket,
+  formatUserSummaryAndIncentivesRequest,
 } from './user.mocks';
-import { formatUserSummary, FormatUserSummaryRequest } from './index';
+import {
+  formatUserSummary,
+  formatUserSummaryAndIncentives,
+  FormatUserSummaryAndIncentivesRequest,
+  FormatUserSummaryRequest,
+} from './index';
 
 describe('formatUserSummaryETHMarket', () => {
   const request: FormatUserSummaryRequest = formatUserSummaryRequestEthMarket;
@@ -140,5 +146,19 @@ describe('formatUserSummaryUSDMarket', () => {
         first.totalCollateralMarketReferenceCurrency,
       ),
     ).toEqual(true);
+  });
+});
+
+describe('formatUserSummaryAndIncentives', () => {
+  const request: FormatUserSummaryAndIncentivesRequest =
+    formatUserSummaryAndIncentivesRequest;
+
+  it('should calculate correct user incentives', () => {
+    const summary = formatUserSummaryAndIncentives(request);
+    expect(
+      summary.calculatedUserIncentives[
+        '0x4da27a545c0c5b758a6ba100e3a049001de870f5'
+      ].claimableRewards.toString(),
+    ).toEqual('43921819137644870');
   });
 });

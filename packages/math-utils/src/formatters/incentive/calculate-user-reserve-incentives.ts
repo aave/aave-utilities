@@ -4,13 +4,13 @@ import { rayDiv } from '../../ray.math';
 import { calculateAccruedIncentives } from './calculate-accrued-incentives';
 import {
   ReservesIncentiveDataHumanized,
-  UserReserveCalculationData,
   UserReservesIncentivesDataHumanized,
+  UserReserveCalculationData,
 } from './types';
 
 export interface CalculateUserReserveIncentivesRequest {
   reserveIncentives: ReservesIncentiveDataHumanized; // token incentive data, from UiIncentiveDataProvider
-  userReserveIncentives: UserReservesIncentivesDataHumanized; // user incentive data, from UiIncentiveDataProvider
+  userIncentives: UserReservesIncentivesDataHumanized; // user incentive data, from UiIncentiveDataProvider
   currentTimestamp: number;
   userReserveData?: UserReserveCalculationData; // optional to account for case that user no longer has the supply or borrow position but still has unclaimed rewards
 }
@@ -29,13 +29,13 @@ export interface UserReserveIncentive {
 // Calculate user supply and borrow incentives for an individual reserve asset
 export function calculateUserReserveIncentives({
   reserveIncentives,
-  userReserveIncentives,
+  userIncentives,
   currentTimestamp,
   userReserveData,
 }: CalculateUserReserveIncentivesRequest): UserReserveIncentive[] {
   const calculatedUserIncentives: UserReserveIncentive[] = [];
   // Compute incentive data for each reward linked to supply of this reserve
-  userReserveIncentives.aTokenIncentivesUserData.userRewardsInformation.forEach(
+  userIncentives.aTokenIncentivesUserData.userRewardsInformation.forEach(
     userReserveIncentive => {
       const reserveIncentive =
         reserveIncentives.aIncentiveData.rewardsTokenInformation.find(
@@ -63,8 +63,8 @@ export function calculateUserReserveIncentives({
                 reserveIncentive.emissionPerSecond,
               ),
               totalSupply: rayDiv(
-                new BigNumber(userReserveData.totalLiquidity),
-                new BigNumber(userReserveData.liquidityIndex),
+                new BigNumber(userReserveData.reserve.totalLiquidity),
+                new BigNumber(userReserveData.reserve.liquidityIndex),
               ),
               currentTimestamp,
               emissionEndTimestamp: reserveIncentive.emissionEndTimestamp,
@@ -72,11 +72,9 @@ export function calculateUserReserveIncentives({
           : new BigNumber('0');
 
         calculatedUserIncentives.push({
-          tokenAddress:
-            userReserveIncentives.aTokenIncentivesUserData.tokenAddress,
+          tokenAddress: userIncentives.aTokenIncentivesUserData.tokenAddress,
           incentiveController:
-            userReserveIncentives.aTokenIncentivesUserData
-              .incentiveControllerAddress,
+            userIncentives.aTokenIncentivesUserData.incentiveControllerAddress,
           rewardTokenAddress: userReserveIncentive.rewardTokenAddress,
           rewardTokenDecimals: userReserveIncentive.rewardTokenDecimals,
           accruedRewards,
@@ -93,7 +91,7 @@ export function calculateUserReserveIncentives({
     },
   );
   // Compute incentive data for each reward linked to variable borrows of this reserve
-  userReserveIncentives.vTokenIncentivesUserData.userRewardsInformation.forEach(
+  userIncentives.vTokenIncentivesUserData.userRewardsInformation.forEach(
     userReserveIncentive => {
       const reserveIncentive =
         reserveIncentives.vIncentiveData.rewardsTokenInformation.find(
@@ -121,18 +119,16 @@ export function calculateUserReserveIncentives({
                 reserveIncentive.emissionPerSecond,
               ),
               totalSupply: new BigNumber(
-                userReserveData.totalScaledVariableDebt,
+                userReserveData.reserve.totalScaledVariableDebt,
               ),
               currentTimestamp,
               emissionEndTimestamp: reserveIncentive.emissionEndTimestamp,
             })
           : new BigNumber('0');
         calculatedUserIncentives.push({
-          tokenAddress:
-            userReserveIncentives.vTokenIncentivesUserData.tokenAddress,
+          tokenAddress: userIncentives.vTokenIncentivesUserData.tokenAddress,
           incentiveController:
-            userReserveIncentives.vTokenIncentivesUserData
-              .incentiveControllerAddress,
+            userIncentives.vTokenIncentivesUserData.incentiveControllerAddress,
           rewardTokenAddress: userReserveIncentive.rewardTokenAddress,
           rewardTokenDecimals: userReserveIncentive.rewardTokenDecimals,
           accruedRewards,
@@ -149,7 +145,7 @@ export function calculateUserReserveIncentives({
     },
   );
   // Compute incentive data for each reward linked to stable borrows of this reserve
-  userReserveIncentives.sTokenIncentivesUserData.userRewardsInformation.forEach(
+  userIncentives.sTokenIncentivesUserData.userRewardsInformation.forEach(
     userReserveIncentive => {
       const reserveIncentive =
         reserveIncentives.sIncentiveData.rewardsTokenInformation.find(
@@ -177,18 +173,16 @@ export function calculateUserReserveIncentives({
                 reserveIncentive.emissionPerSecond,
               ),
               totalSupply: new BigNumber(
-                userReserveData.totalPrincipalStableDebt,
+                userReserveData.reserve.totalPrincipalStableDebt,
               ),
               currentTimestamp,
               emissionEndTimestamp: reserveIncentive.emissionEndTimestamp,
             })
           : new BigNumber('0');
         calculatedUserIncentives.push({
-          tokenAddress:
-            userReserveIncentives.sTokenIncentivesUserData.tokenAddress,
+          tokenAddress: userIncentives.sTokenIncentivesUserData.tokenAddress,
           incentiveController:
-            userReserveIncentives.sTokenIncentivesUserData
-              .incentiveControllerAddress,
+            userIncentives.sTokenIncentivesUserData.incentiveControllerAddress,
           rewardTokenAddress: userReserveIncentive.rewardTokenAddress,
           rewardTokenDecimals: userReserveIncentive.rewardTokenDecimals,
           accruedRewards,

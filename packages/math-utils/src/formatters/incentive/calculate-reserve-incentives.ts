@@ -1,12 +1,12 @@
 import { normalize } from '../../bignumber';
 import { calculateIncentiveAPR } from './calculate-incentive-apr';
-import {
-  ReservesIncentiveDataHumanized,
-  ReserveCalculationData,
-} from './types';
+import { ReservesIncentiveDataHumanized } from './types';
 
 export interface CalculateReserveIncentivesRequest {
-  reserves: ReserveCalculationData[];
+  reserves: Array<{
+    underlyingAsset: string;
+    priceInMarketReferenceCurrency: string;
+  }>;
   reserveIncentiveData: ReservesIncentiveDataHumanized;
   totalLiquidity: string;
   totalVariableDebt: string;
