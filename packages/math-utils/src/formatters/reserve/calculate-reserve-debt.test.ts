@@ -9,22 +9,7 @@ describe('calculateReserveDebt', () => {
   describe('WMATIC', () => {
     it('should calculate reserve debt', () => {
       const result = calculateReserveDebt(
-        {
-          totalScaledVariableDebt:
-            formatReserveRequestWMATIC.reserve.totalScaledVariableDebt,
-          variableBorrowIndex:
-            formatReserveRequestWMATIC.reserve.variableBorrowIndex,
-          totalPrincipalStableDebt:
-            formatReserveRequestWMATIC.reserve.totalPrincipalStableDebt,
-          variableBorrowRate:
-            formatReserveRequestWMATIC.reserve.variableBorrowRate,
-          lastUpdateTimestamp:
-            formatReserveRequestWMATIC.reserve.lastUpdateTimestamp,
-          averageStableRate:
-            formatReserveRequestWMATIC.reserve.averageStableRate,
-          stableDebtLastUpdateTimestamp:
-            formatReserveRequestWMATIC.reserve.stableDebtLastUpdateTimestamp,
-        },
+        formatReserveRequestWMATIC.reserve,
         formatReserveRequestWMATIC.currentTimestamp,
       );
 
@@ -39,21 +24,7 @@ describe('calculateReserveDebt', () => {
   describe('DAI', () => {
     it('should calculate reserve debt', () => {
       const result = calculateReserveDebt(
-        {
-          totalScaledVariableDebt:
-            formatReserveRequestDAI.reserve.totalScaledVariableDebt,
-          variableBorrowIndex:
-            formatReserveRequestDAI.reserve.variableBorrowIndex,
-          totalPrincipalStableDebt:
-            formatReserveRequestDAI.reserve.totalPrincipalStableDebt,
-          variableBorrowRate:
-            formatReserveRequestDAI.reserve.variableBorrowRate,
-          lastUpdateTimestamp:
-            formatReserveRequestDAI.reserve.lastUpdateTimestamp,
-          averageStableRate: formatReserveRequestDAI.reserve.averageStableRate,
-          stableDebtLastUpdateTimestamp:
-            formatReserveRequestDAI.reserve.stableDebtLastUpdateTimestamp,
-        },
+        formatReserveRequestDAI.reserve,
         formatReserveRequestWMATIC.currentTimestamp,
       );
 

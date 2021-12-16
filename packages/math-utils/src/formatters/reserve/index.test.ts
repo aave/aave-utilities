@@ -67,6 +67,7 @@ describe('formatReserve', () => {
           totalDebt: new BigNumber('0'),
           totalVariableDebt: new BigNumber('0'),
           totalStableDebt: new BigNumber('0'),
+          totalLiquidity: new BigNumber('0'),
         };
       });
 
