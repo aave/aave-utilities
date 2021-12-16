@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.27.2 (2021-12-16)
+
+
+### Bug Fixes
+
+* use correct rate for compounding ([#229](https://github.com/@aave/aave-utilities/issues/229)) ([a34b171](https://github.com/@aave/aave-utilities/commit/a34b1713e3fd3858b68cf07d1a251e27f51c8e55))
+
+
+
+
+
 ## 0.27.1 (2021-12-09)
 
 **Note:** Version bump only for package @aave/contract-helpers
