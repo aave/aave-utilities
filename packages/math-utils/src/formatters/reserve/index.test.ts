@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-import * as calculateReserveInstance from './calculate-reserve-debt';
 import {
   formatReserveRequestDAI,
   formatReserveRequestWMATIC,
@@ -54,24 +53,15 @@ describe('formatReserve', () => {
   });
 
   it('should return utilizationRate 0 when totalLiquidity == 0', () => {
-    const request: FormatReserveRequest = formatReserveRequestWMATIC;
-    request.reserve = {
-      ...request.reserve,
-      availableLiquidity: '0',
-    };
-
-    jest
-      .spyOn(calculateReserveInstance, 'calculateReserveDebt')
-      .mockImplementation(() => {
-        return {
-          totalDebt: new BigNumber('0'),
-          totalVariableDebt: new BigNumber('0'),
-          totalStableDebt: new BigNumber('0'),
-          totalLiquidity: new BigNumber('0'),
-        };
-      });
-
-    const result = formatReserve(request);
+    const result = formatReserve({
+      reserve: {
+        ...formatReserveRequestWMATIC.reserve,
+        availableLiquidity: '0',
+        totalScaledVariableDebt: '0',
+        totalPrincipalStableDebt: '0',
+      },
+      currentTimestamp: formatReserveRequestWMATIC.currentTimestamp,
+    });
     expect(result.utilizationRate).toEqual('0');
   });
 

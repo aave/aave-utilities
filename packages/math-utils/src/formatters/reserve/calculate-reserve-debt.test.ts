@@ -1,38 +1,38 @@
 import BigNumber from 'bignumber.js';
+import { ReserveMock } from '../../mocks';
 import { calculateReserveDebt } from './calculate-reserve-debt';
-import {
-  formatReserveRequestDAI,
-  formatReserveRequestWMATIC,
-} from './reserve.mocks';
 
 describe('calculateReserveDebt', () => {
-  describe('WMATIC', () => {
-    it('should calculate reserve debt', () => {
-      const result = calculateReserveDebt(
-        formatReserveRequestWMATIC.reserve,
-        formatReserveRequestWMATIC.currentTimestamp,
-      );
+  it('should calculate reserve debt when there is non', () => {
+    const reserve = new ReserveMock();
+    const result = calculateReserveDebt(
+      reserve.reserve,
+      reserve.reserve.lastUpdateTimestamp,
+    );
 
-      expect(result).toEqual({
-        totalDebt: new BigNumber('30186360792775159242526245'),
-        totalStableDebt: new BigNumber('0'),
-        totalVariableDebt: new BigNumber('30186360792775159242526245'),
-      });
+    expect(result).toEqual({
+      totalDebt: new BigNumber('0'),
+      totalLiquidity: new BigNumber('0'),
+      totalStableDebt: new BigNumber('0'),
+      totalVariableDebt: new BigNumber('0'),
     });
   });
 
-  describe('DAI', () => {
-    it('should calculate reserve debt', () => {
-      const result = calculateReserveDebt(
-        formatReserveRequestDAI.reserve,
-        formatReserveRequestWMATIC.currentTimestamp,
-      );
+  it('should calculate reserve debt', () => {
+    const reserve = new ReserveMock()
+      .addLiquidity(100)
+      .addVariableDebt(100)
+      .addStableDebt(100);
+    const result = calculateReserveDebt(
+      reserve.reserve,
+      reserve.reserve.lastUpdateTimestamp,
+    );
 
-      expect(result).toEqual({
-        totalDebt: new BigNumber('104546724902523987620455'),
-        totalStableDebt: new BigNumber('500764298282678588'),
-        totalVariableDebt: new BigNumber('104546224138225704941867'),
-      });
+    expect(result).toEqual({
+      totalDebt: new BigNumber('200000000000000000000'),
+      totalLiquidity: new BigNumber('300000000000000000000'),
+      totalStableDebt: new BigNumber('100000000000000000000'),
+      totalVariableDebt: new BigNumber('100000000000000000000'),
     });
   });
 });
