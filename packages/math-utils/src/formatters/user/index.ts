@@ -116,6 +116,7 @@ export interface FormatUserSummaryAndIncentivesResponse {
   totalCollateralUSD: string;
   totalBorrowsMarketReferenceCurrency: string;
   totalBorrowsUSD: string;
+  netWorthUSD: string;
   availableBorrowsMarketReferenceCurrency: string;
   availableBorrowsUSD: string;
   currentLoanToValue: string;
@@ -283,6 +284,9 @@ export function formatUserSummaryAndIncentives({
       marketReferenceCurrencyDecimals,
     ),
     totalBorrowsUSD: userData.totalBorrowsUSD.toString(),
+    netWorthUSD: userData.totalLiquidityUSD
+      .minus(userData.totalBorrowsUSD)
+      .toString(),
     availableBorrowsMarketReferenceCurrency: normalize(
       userData.availableBorrowsMarketReferenceCurrency,
       marketReferenceCurrencyDecimals,
