@@ -99,12 +99,8 @@ export interface FormatUserSummaryResponse {
   isolatedReserve?: RawReserveData;
 }
 
-export interface FormatUserSummaryAndIncentivesRequest {
-  userReserves: UserReserveData[];
-  marketReferencePriceInUsd: BigNumberValue;
-  marketReferenceCurrencyDecimals: number;
-  currentTimestamp: number;
-  userEmodeCategoryId: number;
+export interface FormatUserSummaryAndIncentivesRequest
+  extends FormatUserSummaryRequest {
   reserveIncentives: ReservesIncentiveDataHumanized[];
   userIncentives: UserReservesIncentivesDataHumanized[];
 }
