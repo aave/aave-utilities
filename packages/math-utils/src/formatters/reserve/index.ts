@@ -424,15 +424,9 @@ export function formatReservesAndIncentives<T extends ReserveDataWithPrice>({
     const incentive = calculateReserveIncentives({
       reserves,
       reserveIncentiveData: reserveIncentive,
-      totalLiquidity: valueToZDBigNumber(reserve.totalLiquidity)
-        .shiftedBy(reserve.decimals)
-        .toString(),
-      totalVariableDebt: valueToZDBigNumber(reserve.totalVariableDebt)
-        .shiftedBy(reserve.decimals)
-        .toString(),
-      totalStableDebt: valueToZDBigNumber(reserve.totalStableDebt)
-        .shiftedBy(reserve.decimals)
-        .toString(),
+      totalLiquidity: reserve.totalLiquidity,
+      totalVariableDebt: reserve.totalVariableDebt,
+      totalStableDebt: reserve.totalStableDebt,
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
       decimals: reserve.decimals,
       marketReferenceCurrencyDecimals,
