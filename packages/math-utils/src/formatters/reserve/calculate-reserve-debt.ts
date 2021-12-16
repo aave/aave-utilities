@@ -6,6 +6,7 @@ export interface CalculateReserveDebtRequest {
   totalScaledVariableDebt: string;
   variableBorrowIndex: string;
   totalPrincipalStableDebt: string;
+  availableLiquidity: string;
   variableBorrowRate: string;
   lastUpdateTimestamp: number;
   averageStableRate: string;
@@ -16,6 +17,7 @@ export interface CalculateReserveDebtResponse {
   totalVariableDebt: BigNumber;
   totalStableDebt: BigNumber;
   totalDebt: BigNumber;
+  totalLiquidity: BigNumber;
 }
 
 export function calculateReserveDebt(
@@ -25,11 +27,13 @@ export function calculateReserveDebt(
   const timestamp = currentTimestamp;
   const totalVariableDebt = getTotalVariableDebt(reserveDebt, timestamp);
   const totalStableDebt = getTotalStableDebt(reserveDebt, timestamp);
-
+  const totalDebt = totalVariableDebt.plus(totalStableDebt);
+  const totalLiquidity = totalDebt.plus(reserveDebt.availableLiquidity);
   return {
     totalVariableDebt,
     totalStableDebt,
-    totalDebt: totalVariableDebt.plus(totalStableDebt),
+    totalDebt,
+    totalLiquidity,
   };
 }
 

@@ -1,13 +1,13 @@
 import BigNumber from 'bignumber.js';
 import { normalize, valueToZDBigNumber } from '../../bignumber';
-import { calculateSupplies, SuppliesRequest } from '../user/calculate-supplies';
+import { calculateReserveDebt } from '../reserve/calculate-reserve-debt';
 import {
   calculateAccruedIncentives,
   CalculateAccruedIncentivesRequest,
 } from './calculate-accrued-incentives';
 
 describe('calculateAccruedIncentives', () => {
-  const reserveSuppliesInput: SuppliesRequest = {
+  const reserveSuppliesInput = {
     reserve: {
       totalScaledVariableDebt: '4790920796601146',
       variableBorrowIndex: '1070766170735867540788710974',
@@ -21,7 +21,10 @@ describe('calculateAccruedIncentives', () => {
     currentTimestamp: 1629942075,
   };
   const { totalLiquidity, totalVariableDebt, totalStableDebt } =
-    calculateSupplies(reserveSuppliesInput);
+    calculateReserveDebt(
+      reserveSuppliesInput.reserve,
+      reserveSuppliesInput.currentTimestamp,
+    );
 
   const depositRewardsRequest: CalculateAccruedIncentivesRequest = {
     principalUserBalance: new BigNumber('2441092440'),

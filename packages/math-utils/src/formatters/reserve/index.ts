@@ -103,9 +103,8 @@ function getComputedReserveFields({
   reserve,
   currentTimestamp,
 }: FormatReserveRequest): GetComputedReserveFieldsResponse {
-  const { totalDebt, totalStableDebt, totalVariableDebt } =
+  const { totalDebt, totalStableDebt, totalVariableDebt, totalLiquidity } =
     calculateReserveDebt(reserve, currentTimestamp);
-  const totalLiquidity = totalDebt.plus(reserve.availableLiquidity);
   const utilizationRate = totalLiquidity.eq(0)
     ? '0'
     : valueToBigNumber(totalDebt).dividedBy(totalLiquidity).toFixed();

@@ -201,12 +201,9 @@ export function formatUserSummaryAndIncentives({
   // In the future, refactor the userReserves input to optionally include this totalLiquidity field
   const calculatedUserReserves: UserReserveCalculationData[] = userReserves.map(
     userReserve => {
-      const { totalDebt } = calculateReserveDebt(
+      const { totalLiquidity } = calculateReserveDebt(
         userReserve.reserve,
         currentTimestamp,
-      );
-      const totalLiquidity = totalDebt.plus(
-        userReserve.reserve.availableLiquidity,
       );
       return {
         ...userReserve,
