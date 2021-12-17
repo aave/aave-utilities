@@ -19,7 +19,7 @@ export class ReserveMock {
       reserveLiquidationThreshold: '0',
       reserveLiquidationBonus: '0',
       variableBorrowIndex: RAY.toString(),
-      variableBorrowRate: '0',
+      variableBorrowRate: RAY.multipliedBy(3).toString(),
       availableLiquidity: '0',
       stableBorrowRate: '0',
       liquidityRate: '0',
