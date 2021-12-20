@@ -1,43 +1,61 @@
+import { UserReserveMock } from '../../mocks';
 import {
   generateUserReserveSummary,
   UserReserveSummaryResponse,
 } from './generate-user-reserve-summary';
-import { usdcUserReserveEthMarket } from './user.mocks';
 
 describe('generateUserReserveSummary', () => {
+  // 1 reserve token = 10 marketReferenceCurrency tokens = 100 USD
+  const usdcUserMock = new UserReserveMock({ decimals: 6 })
+    .supply(200)
+    .variableBorrow(50)
+    .stableBorrow(50);
+  const { decimals } = usdcUserMock.userReserve.reserve;
+  const marketReferenceCurrencyDecimals = 18;
   const rawSummary: UserReserveSummaryResponse = generateUserReserveSummary({
-    userReserve: usdcUserReserveEthMarket,
-    marketReferencePriceInUsd: 4569.74241997,
-    marketReferenceCurrencyDecimals: 18,
-    currentTimestamp: 1629942229,
+    userReserve: usdcUserMock.userReserve,
+    marketReferencePriceInUsd: 10,
+    marketReferenceCurrencyDecimals,
+    currentTimestamp: 1,
   });
 
   it('should generate a summary for an individual user reserve', () => {
-    expect(rawSummary.underlyingBalance.toFixed()).toEqual('2441092444');
+    // Computed totals will be in BigNumber units, so expected values are normalized
+    expect(rawSummary.underlyingBalance.shiftedBy(-decimals).toFixed()).toEqual(
+      '200',
+    );
     expect(
-      rawSummary.underlyingBalanceMarketReferenceCurrency.toFixed(),
-    ).toEqual('537565709595797680');
-    expect(rawSummary.underlyingBalanceUSD.toFixed()).toEqual(
-      '2456.5368266611907407457116696',
+      rawSummary.underlyingBalanceMarketReferenceCurrency
+        .shiftedBy(-marketReferenceCurrencyDecimals)
+        .toFixed(),
+    ).toEqual('2000');
+    expect(rawSummary.underlyingBalanceUSD.toFixed()).toEqual('20000');
+    expect(rawSummary.variableBorrows.shiftedBy(-decimals).toFixed()).toEqual(
+      '50',
     );
-    expect(rawSummary.variableBorrows.toFixed()).toEqual('52314205');
-    expect(rawSummary.variableBorrowsMarketReferenceCurrency.toFixed()).toEqual(
-      '11520384163200100',
+    expect(
+      rawSummary.variableBorrowsMarketReferenceCurrency
+        .shiftedBy(-marketReferenceCurrencyDecimals)
+        .toFixed(),
+    ).toEqual('500');
+    expect(rawSummary.variableBorrowsUSD.toFixed()).toEqual('5000');
+    expect(rawSummary.stableBorrows.shiftedBy(-decimals).toFixed()).toEqual(
+      '50',
     );
-    expect(rawSummary.variableBorrowsUSD.toFixed()).toEqual(
-      '52.645188204926088393345997',
+    expect(
+      rawSummary.stableBorrowsMarketReferenceCurrency
+        .shiftedBy(-marketReferenceCurrencyDecimals)
+        .toFixed(),
+    ).toEqual('500');
+    expect(rawSummary.stableBorrowsUSD.toFixed()).toEqual('5000');
+    expect(rawSummary.totalBorrows.shiftedBy(-decimals).toFixed()).toEqual(
+      '100',
     );
-    expect(rawSummary.stableBorrows.toFixed()).toEqual('0');
-    expect(rawSummary.stableBorrowsMarketReferenceCurrency.toFixed()).toEqual(
-      '0',
-    );
-    expect(rawSummary.stableBorrowsUSD.toFixed()).toEqual('0');
-    expect(rawSummary.totalBorrows.toFixed()).toEqual('52314205');
-    expect(rawSummary.totalBorrowsMarketReferenceCurrency.toFixed()).toEqual(
-      '11520384163200100',
-    );
-    expect(rawSummary.totalBorrowsUSD.toFixed()).toEqual(
-      '52.645188204926088393345997',
-    );
+    expect(
+      rawSummary.totalBorrowsMarketReferenceCurrency
+        .shiftedBy(-marketReferenceCurrencyDecimals)
+        .toFixed(),
+    ).toEqual('1000');
+    expect(rawSummary.totalBorrowsUSD.toFixed()).toEqual('10000');
   });
 });
