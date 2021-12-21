@@ -1,4 +1,8 @@
 import BigNumber from 'bignumber.js';
+import {
+  ReservesIncentiveDataHumanized,
+  UserReservesIncentivesDataHumanized,
+} from './formatters/incentive';
 import { ReserveData } from './formatters/reserve';
 import { UserReserveData } from './formatters/user';
 import { RAY } from './ray.math';
@@ -83,7 +87,7 @@ export class UserReserveMock {
         id: '0',
         symbol: '0',
         usageAsCollateralEnabled: true,
-        underlyingAsset: '0',
+        underlyingAsset: '0x0000000000000000000000000000000000000000',
         name: '',
         eModeCategoryId: 1,
       },
@@ -95,6 +99,10 @@ export class UserReserveMock {
       .shiftedBy(this.config.decimals)
       .plus(this.userReserve.scaledATokenBalance)
       .toString();
+    this.userReserve.reserve.availableLiquidity = new BigNumber(amount)
+      .shiftedBy(this.config.decimals)
+      .plus(this.userReserve.reserve.availableLiquidity)
+      .toString();
     return this;
   }
 
@@ -102,6 +110,10 @@ export class UserReserveMock {
     this.userReserve.scaledVariableDebt = new BigNumber(amount)
       .shiftedBy(this.config.decimals)
       .plus(this.userReserve.scaledVariableDebt)
+      .toString();
+    this.userReserve.reserve.totalScaledVariableDebt = new BigNumber(amount)
+      .shiftedBy(this.config.decimals)
+      .plus(this.userReserve.reserve.totalScaledVariableDebt)
       .toString();
     return this;
   }
@@ -111,6 +123,141 @@ export class UserReserveMock {
       .shiftedBy(this.config.decimals)
       .plus(this.userReserve.principalStableDebt)
       .toString();
+    this.userReserve.reserve.totalPrincipalStableDebt = new BigNumber(amount)
+      .shiftedBy(this.config.decimals)
+      .plus(this.userReserve.reserve.totalPrincipalStableDebt)
+      .toString();
     return this;
+  }
+}
+
+export class ReserveIncentiveMock {
+  public reserveIncentive: ReservesIncentiveDataHumanized;
+
+  constructor() {
+    this.reserveIncentive = {
+      underlyingAsset: '0x0000000000000000000000000000000000000000',
+      aIncentiveData: {
+        tokenAddress: '0x0000000000000000000000000000000000000000',
+        incentiveControllerAddress:
+          '0x0000000000000000000000000000000000000000',
+        rewardsTokenInformation: [
+          {
+            rewardTokenSymbol: 'Test',
+            emissionPerSecond: (10 ** 18).toString(), // 1
+            incentivesLastUpdateTimestamp: 1,
+            tokenIncentivesIndex: RAY.toString(),
+            emissionEndTimestamp: 1,
+            rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+            rewardTokenDecimals: 18,
+            precision: 18,
+            rewardPriceFeed: (10 ** 9).toString(), // 10
+            priceFeedDecimals: 8,
+            rewardOracleAddress: '0x0000000000000000000000000000000000000000',
+          },
+        ],
+      },
+      vIncentiveData: {
+        tokenAddress: '0x0000000000000000000000000000000000000000',
+        incentiveControllerAddress:
+          '0x0000000000000000000000000000000000000000',
+        rewardsTokenInformation: [
+          {
+            rewardTokenSymbol: 'Test',
+            emissionPerSecond: (10 ** 18).toString(), // 1
+            incentivesLastUpdateTimestamp: 1,
+            tokenIncentivesIndex: RAY.toString(),
+            emissionEndTimestamp: 1,
+            rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+            rewardTokenDecimals: 18,
+            precision: 18,
+            rewardPriceFeed: (10 ** 9).toString(), // 10
+            priceFeedDecimals: 8,
+            rewardOracleAddress: '0x0000000000000000000000000000000000000000',
+          },
+        ],
+      },
+      sIncentiveData: {
+        tokenAddress: '0x0000000000000000000000000000000000000000',
+        incentiveControllerAddress:
+          '0x0000000000000000000000000000000000000000',
+        rewardsTokenInformation: [
+          {
+            rewardTokenSymbol: 'Test',
+            emissionPerSecond: '0',
+            incentivesLastUpdateTimestamp: 1,
+            tokenIncentivesIndex: '0',
+            emissionEndTimestamp: 1,
+            rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+            rewardTokenDecimals: 18,
+            precision: 18,
+            rewardPriceFeed: '0',
+            priceFeedDecimals: 8,
+            rewardOracleAddress: '0x0000000000000000000000000000000000000000',
+          },
+        ],
+      },
+    };
+  }
+}
+
+export class UserIncentiveMock {
+  public userIncentive: UserReservesIncentivesDataHumanized;
+
+  constructor() {
+    this.userIncentive = {
+      underlyingAsset: '0x0000000000000000000000000000000000000000',
+      aTokenIncentivesUserData: {
+        tokenAddress: '0x0000000000000000000000000000000000000000',
+        incentiveControllerAddress:
+          '0x0000000000000000000000000000000000000000',
+        userRewardsInformation: [
+          {
+            tokenIncentivesUserIndex: '0',
+            userUnclaimedRewards: '1',
+            rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+            rewardTokenDecimals: 18,
+            rewardPriceFeed: (10 ** 19).toString(), // 10
+            priceFeedDecimals: 8,
+            rewardOracleAddress: '0x0',
+            rewardTokenSymbol: 'Test',
+          },
+        ],
+      },
+      vTokenIncentivesUserData: {
+        tokenAddress: '0x0000000000000000000000000000000000000000',
+        incentiveControllerAddress:
+          '0x0000000000000000000000000000000000000000',
+        userRewardsInformation: [
+          {
+            tokenIncentivesUserIndex: '0',
+            userUnclaimedRewards: '1',
+            rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+            rewardTokenDecimals: 18,
+            rewardPriceFeed: (10 ** 19).toString(), // 10
+            priceFeedDecimals: 8,
+            rewardOracleAddress: '0x0',
+            rewardTokenSymbol: 'Test',
+          },
+        ],
+      },
+      sTokenIncentivesUserData: {
+        tokenAddress: '0x0000000000000000000000000000000000000000',
+        incentiveControllerAddress:
+          '0x0000000000000000000000000000000000000000',
+        userRewardsInformation: [
+          {
+            tokenIncentivesUserIndex: '0',
+            userUnclaimedRewards: '1',
+            rewardTokenAddress: '0x0000000000000000000000000000000000000000',
+            rewardTokenDecimals: 18,
+            rewardPriceFeed: (10 ** 19).toString(), // 10
+            priceFeedDecimals: 8,
+            rewardOracleAddress: '0x0',
+            rewardTokenSymbol: 'Test',
+          },
+        ],
+      },
+    };
   }
 }
