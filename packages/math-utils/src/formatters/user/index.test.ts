@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { UserReserveMock } from '../../mocks';
 import {
-  reserveIncentives,
-  userIncentives,
-} from '../incentive/incentive.mocks';
+  ReserveIncentiveMock,
+  UserIncentiveMock,
+  UserReserveMock,
+} from '../../mocks';
 import {
   formatUserSummary,
   formatUserSummaryAndIncentives,
@@ -119,15 +119,11 @@ describe('formatUserSummaryETHMarket', () => {
 });
 
 describe('formatUserSummaryAndIncentives', () => {
-  const ethUserMock = new UserReserveMock({ decimals: 18 })
-    .supply(200)
-    .variableBorrow(50)
-    .stableBorrow(50);
-  const usdcUserMock = new UserReserveMock({ decimals: 6 })
-    .supply(200)
-    .variableBorrow(50)
-    .stableBorrow(50);
-  const marketReferencePriceInUsd = 10 ** 18;
+  const ethUserMock = new UserReserveMock({ decimals: 18 }).stableBorrow(50);
+  const usdcUserMock = new UserReserveMock({ decimals: 6 }).stableBorrow(100);
+  const reserveIncentiveMock = new ReserveIncentiveMock();
+  const userIncentiveMock = new UserIncentiveMock();
+  const marketReferencePriceInUsd = '10';
   const marketReferenceCurrencyDecimals = 18;
   const request: FormatUserSummaryAndIncentivesRequest = {
     userReserves: [ethUserMock.userReserve, usdcUserMock.userReserve],
@@ -135,16 +131,16 @@ describe('formatUserSummaryAndIncentives', () => {
     marketReferenceCurrencyDecimals,
     currentTimestamp: 1,
     userEmodeCategoryId: 0,
-    reserveIncentives,
-    userIncentives,
+    reserveIncentives: [reserveIncentiveMock.reserveIncentive],
+    userIncentives: [userIncentiveMock.userIncentive],
   };
 
   it('should calculate correct user incentives', () => {
     const summary = formatUserSummaryAndIncentives(request);
     expect(
       summary.calculatedUserIncentives[
-        '0x4da27a545c0c5b758a6ba100e3a049001de870f5'
+        '0x0000000000000000000000000000000000000000'
       ].claimableRewards.toString(),
-    ).toEqual('43921819137644870');
+    ).toEqual('1');
   });
 });
