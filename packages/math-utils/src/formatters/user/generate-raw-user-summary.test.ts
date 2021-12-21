@@ -1,3 +1,5 @@
+import { normalize } from '../../bignumber';
+import { UserReserveMock } from '../../mocks';
 import {
   generateRawUserSummary,
   RawUserSummaryResponse,
@@ -6,18 +8,19 @@ import {
   generateUserReserveSummary,
   UserReserveSummaryResponse,
 } from './generate-user-reserve-summary';
-import {
-  usdcUserReserveEthMarket,
-  ethUserReserveEthMarket,
-} from './user.mocks';
 
 describe('generateRawUserSummary', () => {
-  const marketReferencePriceInUsd = 4569742419970000000000;
+  // 1 reserve token = 10 marketReferenceCurrency tokens = 100 USD
+  const marketReferencePriceInUsd = 10 ** 19;
   const marketReferenceCurrencyDecimals = 18;
-  const currentTimestamp = 1629942229;
+  const currentTimestamp = 1;
+  const usdcUserMock = new UserReserveMock({ decimals: 6 })
+    .supply(200)
+    .variableBorrow(100);
+  const ethUserMock = new UserReserveMock().supply(200).variableBorrow(100);
   const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
-      userReserve: usdcUserReserveEthMarket,
+      userReserve: usdcUserMock.userReserve,
       marketReferencePriceInUsd,
       marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
@@ -25,7 +28,9 @@ describe('generateRawUserSummary', () => {
   );
 
   const rawETHSummary: UserReserveSummaryResponse = generateUserReserveSummary({
-    userReserve: ethUserReserveEthMarket,
+    userReserve: {
+      ...ethUserMock.userReserve,
+    },
     marketReferencePriceInUsd,
     marketReferenceCurrencyDecimals: 18,
     currentTimestamp,
@@ -41,8 +46,10 @@ describe('generateRawUserSummary', () => {
   const rawUSDCSummaryModified: UserReserveSummaryResponse =
     generateUserReserveSummary({
       userReserve: {
-        ...usdcUserReserveEthMarket,
-        scaledATokenBalance: '2528085146',
+        ...usdcUserMock.userReserve,
+        scaledATokenBalance: (
+          Number(usdcUserMock.userReserve.scaledATokenBalance) * 2
+        ).toString(),
       },
       marketReferencePriceInUsd,
       marketReferenceCurrencyDecimals: 18,
@@ -52,8 +59,14 @@ describe('generateRawUserSummary', () => {
   const rawETHSummaryModified: UserReserveSummaryResponse =
     generateUserReserveSummary({
       userReserve: {
-        ...ethUserReserveEthMarket,
-        scaledVariableDebt: '1961463562232346784',
+        ...ethUserMock.userReserve,
+        scaledVariableDebt: (
+          Number(ethUserMock.userReserve.scaledVariableDebt) * 2
+        ).toString(),
+        reserve: {
+          ...ethUserMock.userReserve.reserve,
+          debtCeiling: '100000000000000000000000000',
+        },
       },
       marketReferencePriceInUsd,
       marketReferenceCurrencyDecimals: 18,
@@ -69,7 +82,7 @@ describe('generateRawUserSummary', () => {
     });
 
   const rawSummaryEMode: RawUserSummaryResponse = generateRawUserSummary({
-    userReserves: [rawUSDCSummaryModified, rawETHSummary],
+    userReserves: [rawUSDCSummary, rawETHSummary],
     marketReferencePriceInUsd,
     marketReferenceCurrencyDecimals,
     userEmodeCategoryId: 1,
@@ -85,60 +98,74 @@ describe('generateRawUserSummary', () => {
   );
 
   it('should generate the correct user summary ', () => {
-    expect(rawSummary.totalLiquidityUSD.toFixed()).toEqual(
-      '54014134467060019918378.57882414',
-    );
-    expect(rawSummary.totalCollateralUSD.toFixed()).toEqual(
-      '54014134467060019918378.57882414',
-    );
-    expect(rawSummary.totalBorrowsUSD.toFixed()).toEqual(
-      '8173307332267414106707.56312459',
-    );
-    expect(rawSummary.totalLiquidityMarketReferenceCurrency.toFixed()).toEqual(
-      '11819951652201573862',
-    );
-    expect(rawSummary.totalCollateralMarketReferenceCurrency.toFixed()).toEqual(
-      '11819951652201573862',
-    );
-    expect(rawSummary.totalBorrowsMarketReferenceCurrency.toFixed()).toEqual(
-      '1788570685417553847',
-    );
+    // Computed totals will be in BigNumber units, so expected values are normalized
     expect(
-      rawSummary.availableBorrowsMarketReferenceCurrency.toFixed(),
-    ).toEqual('7667390636343705242.6');
-    expect(rawSummary.availableBorrowsUSD.toFixed()).toEqual(
-      '35038000241380601827995.299934722',
-    );
-    expect(rawSummary.currentLoanToValue.toFixed()).toEqual('8000');
-    expect(rawSummary.currentLiquidationThreshold.toFixed()).toEqual(
-      '8261.3698796199320993174',
-    );
-    expect(rawSummary.healthFactor.toFixed()).toEqual('5.45961047859090456897');
+      normalize(rawSummary.totalLiquidityUSD, marketReferenceCurrencyDecimals),
+    ).toEqual('40000');
+    expect(
+      normalize(rawSummary.totalCollateralUSD, marketReferenceCurrencyDecimals),
+    ).toEqual('40000');
+    expect(
+      normalize(rawSummary.totalBorrowsUSD, marketReferenceCurrencyDecimals),
+    ).toEqual('20000');
+    expect(
+      normalize(
+        rawSummary.totalLiquidityMarketReferenceCurrency,
+        marketReferenceCurrencyDecimals,
+      ),
+    ).toEqual('4000');
+    expect(
+      normalize(
+        rawSummary.totalCollateralMarketReferenceCurrency,
+        marketReferenceCurrencyDecimals,
+      ),
+    ).toEqual('4000');
+    expect(
+      normalize(
+        rawSummary.totalBorrowsMarketReferenceCurrency,
+        marketReferenceCurrencyDecimals,
+      ),
+    ).toEqual('2000');
+    expect(
+      normalize(
+        rawSummary.availableBorrowsMarketReferenceCurrency,
+        marketReferenceCurrencyDecimals,
+      ),
+    ).toEqual('0');
+    expect(
+      normalize(
+        rawSummary.availableBorrowsUSD,
+        marketReferenceCurrencyDecimals,
+      ),
+    ).toEqual('0');
+    expect(rawSummary.currentLoanToValue.toFixed()).toEqual('5000');
+    expect(rawSummary.currentLiquidationThreshold.toFixed()).toEqual('6000');
+    expect(rawSummary.healthFactor.toFixed()).toEqual('1.2');
   });
 
   it('should generate the correct user summary for user in stablecoin eMode', () => {
     expect(
-      rawSummaryEMode.availableBorrowsMarketReferenceCurrency.toFixed(),
-    ).toEqual('7791897378081827219.600001210930471611908706');
-    expect(rawSummaryEMode.availableBorrowsUSD.toFixed()).toEqual(
-      '35606963980673547155174.32614905234375921707682715125882',
-    );
-    expect(rawSummaryEMode.currentLoanToValue.toFixed()).toEqual(
-      '8073.79152019652014451513',
-    );
+      normalize(
+        rawSummaryEMode.availableBorrowsMarketReferenceCurrency,
+        marketReferenceCurrencyDecimals,
+      ),
+    ).toEqual('400');
+    expect(
+      normalize(
+        rawSummaryEMode.availableBorrowsUSD,
+        marketReferenceCurrencyDecimals,
+      ),
+    ).toEqual('4000');
+    expect(rawSummaryEMode.currentLoanToValue.toFixed()).toEqual('6000');
     expect(rawSummaryEMode.currentLiquidationThreshold.toFixed()).toEqual(
-      '8321.33180285663613969796',
+      '7000',
     );
-    expect(rawSummaryEMode.healthFactor.toFixed()).toEqual(
-      '5.52072262248282959279',
-    );
+    expect(rawSummaryEMode.healthFactor.toFixed()).toEqual('1.4');
   });
 
   it('should increase health factor on collateral increase', () => {
     expect(
-      rawSummary.currentLiquidationThreshold.lt(
-        rawSummaryCollateralChange.currentLiquidationThreshold,
-      ),
+      rawSummary.healthFactor.lt(rawSummaryCollateralChange.healthFactor),
     ).toEqual(true);
 
     expect(

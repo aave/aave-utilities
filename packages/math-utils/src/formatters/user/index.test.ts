@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js';
 import {
-  formatUserSummaryRequestEthMarket,
-  formatUserSummaryRequestUsdMarket,
-  formatUserSummaryAndIncentivesRequest,
-} from './user.mocks';
+  ReserveIncentiveMock,
+  UserIncentiveMock,
+  UserReserveMock,
+} from '../../mocks';
 import {
   formatUserSummary,
   formatUserSummaryAndIncentives,
@@ -12,48 +12,48 @@ import {
 } from './index';
 
 describe('formatUserSummaryETHMarket', () => {
-  const request: FormatUserSummaryRequest = formatUserSummaryRequestEthMarket;
+  const ethUserMock = new UserReserveMock({ decimals: 18 })
+    .supply(200)
+    .variableBorrow(50)
+    .stableBorrow(50);
+  const usdcUserMock = new UserReserveMock({ decimals: 6 })
+    .supply(200)
+    .variableBorrow(50)
+    .stableBorrow(50);
+  const marketReferencePriceInUsd = 10 ** 9; // 10
+  const marketReferenceCurrencyDecimals = 18;
+  const request: FormatUserSummaryRequest = {
+    userReserves: [ethUserMock.userReserve, usdcUserMock.userReserve],
+    marketReferencePriceInUsd,
+    marketReferenceCurrencyDecimals,
+    currentTimestamp: 1,
+    userEmodeCategoryId: 0,
+  };
 
   it('should return the correct response', () => {
     const result = formatUserSummary(request);
-    expect(result.totalLiquidityMarketReferenceCurrency).toEqual(
-      '11.819951652201573862',
-    );
-    expect(result.totalLiquidityUSD).toEqual(
-      '54014.13446706001991837857882414',
-    );
-    expect(result.totalCollateralMarketReferenceCurrency).toEqual(
-      '11.819951652201573862',
-    );
-    expect(result.totalCollateralUSD).toEqual(
-      '54014.13446706001991837857882414',
-    );
-    expect(result.totalBorrowsMarketReferenceCurrency).toEqual(
-      '1.788570685417553847',
-    );
-    expect(result.totalBorrowsUSD).toEqual('8173.30733226741410670756312459');
-    expect(result.availableBorrowsMarketReferenceCurrency).toEqual(
-      '7.6673906363437052426',
-    );
-    expect(result.availableBorrowsUSD).toEqual(
-      '35038.000241380601827995299934722',
-    );
-    expect(result.currentLoanToValue).toEqual('0.8');
-    expect(result.currentLiquidationThreshold).toEqual(
-      '0.82613698796199320993',
-    );
-    expect(result.healthFactor).toEqual('5.45961047859090456897');
+    expect(result.totalLiquidityMarketReferenceCurrency).toEqual('4000');
+    expect(result.totalLiquidityUSD).toEqual('40000');
+    expect(result.totalCollateralMarketReferenceCurrency).toEqual('4000');
+    expect(result.totalCollateralUSD).toEqual('40000');
+    expect(result.totalBorrowsMarketReferenceCurrency).toEqual('2000');
+    expect(result.totalBorrowsUSD).toEqual('20000');
+    expect(result.availableBorrowsMarketReferenceCurrency).toEqual('0');
+    expect(result.availableBorrowsUSD).toEqual('0');
+    expect(result.currentLoanToValue).toEqual('0.5');
+    expect(result.currentLiquidationThreshold).toEqual('0.6');
+    expect(result.healthFactor).toEqual('1.2');
   });
 
   it('should increase debt over time', () => {
     const first = formatUserSummary({
       ...request,
-      currentTimestamp: 1629942229,
+      currentTimestamp: 1,
     });
 
     const second = formatUserSummary({
       ...request,
-      currentTimestamp: 1629942230,
+      currentTimestamp: 2,
     });
 
     expect(
@@ -66,12 +66,12 @@ describe('formatUserSummaryETHMarket', () => {
   it('should increase collateral over time', () => {
     const first = formatUserSummary({
       ...request,
-      currentTimestamp: 1629942229,
+      currentTimestamp: 1,
     });
 
     const second = formatUserSummary({
       ...request,
-      currentTimestamp: 1629942230,
+      currentTimestamp: 2000,
     });
 
     expect(
@@ -80,47 +80,16 @@ describe('formatUserSummaryETHMarket', () => {
       ),
     ).toEqual(true);
   });
-});
-
-describe('formatUserSummaryUSDMarket', () => {
-  const request: FormatUserSummaryRequest = formatUserSummaryRequestUsdMarket;
-
-  it('should return the correct response', () => {
-    const result = formatUserSummary(request);
-    expect(result.totalLiquidityMarketReferenceCurrency).toEqual(
-      '2329.87871599398791011829',
-    );
-    expect(result.totalLiquidityUSD).toEqual('2329.8787159939879101182865552');
-    expect(result.totalCollateralMarketReferenceCurrency).toEqual(
-      '2329.87871599398791011829',
-    );
-    expect(result.totalCollateralUSD).toEqual('2329.8787159939879101182865552');
-    expect(result.totalBorrowsMarketReferenceCurrency).toEqual(
-      '136.59840744218485653285',
-    );
-    expect(result.totalBorrowsUSD).toEqual('136.5984074421848565328528872');
-    expect(result.availableBorrowsMarketReferenceCurrency).toEqual(
-      '1608.89187451612787352629',
-    );
-    expect(result.availableBorrowsUSD).toEqual(
-      '1608.8918745161278735262906658797738315243058169099632',
-    );
-    expect(result.currentLoanToValue).toEqual('0.74917645711598356275');
-    expect(result.currentLiquidationThreshold).toEqual(
-      '0.79950587426959013765',
-    );
-    expect(result.healthFactor).toEqual('13.63670158864254157094');
-  });
 
   it('should increase debt over time', () => {
     const first = formatUserSummary({
       ...request,
-      currentTimestamp: 1629942229,
+      currentTimestamp: 1,
     });
 
     const second = formatUserSummary({
       ...request,
-      currentTimestamp: 1629942230,
+      currentTimestamp: 2,
     });
 
     expect(
@@ -133,12 +102,12 @@ describe('formatUserSummaryUSDMarket', () => {
   it('should increase collateral over time', () => {
     const first = formatUserSummary({
       ...request,
-      currentTimestamp: 1629942229,
+      currentTimestamp: 1,
     });
 
     const second = formatUserSummary({
       ...request,
-      currentTimestamp: 1629942230,
+      currentTimestamp: 2,
     });
 
     expect(
@@ -150,15 +119,28 @@ describe('formatUserSummaryUSDMarket', () => {
 });
 
 describe('formatUserSummaryAndIncentives', () => {
-  const request: FormatUserSummaryAndIncentivesRequest =
-    formatUserSummaryAndIncentivesRequest;
+  const ethUserMock = new UserReserveMock({ decimals: 18 }).stableBorrow(50);
+  const usdcUserMock = new UserReserveMock({ decimals: 6 }).stableBorrow(100);
+  const reserveIncentiveMock = new ReserveIncentiveMock();
+  const userIncentiveMock = new UserIncentiveMock();
+  const marketReferencePriceInUsd = '10';
+  const marketReferenceCurrencyDecimals = 18;
+  const request: FormatUserSummaryAndIncentivesRequest = {
+    userReserves: [ethUserMock.userReserve, usdcUserMock.userReserve],
+    marketReferencePriceInUsd,
+    marketReferenceCurrencyDecimals,
+    currentTimestamp: 1,
+    userEmodeCategoryId: 0,
+    reserveIncentives: [reserveIncentiveMock.reserveIncentive],
+    userIncentives: [userIncentiveMock.userIncentive],
+  };
 
   it('should calculate correct user incentives', () => {
     const summary = formatUserSummaryAndIncentives(request);
     expect(
       summary.calculatedUserIncentives[
-        '0x4da27a545c0c5b758a6ba100e3a049001de870f5'
+        '0x0000000000000000000000000000000000000000'
       ].claimableRewards.toString(),
-    ).toEqual('43921819137644870');
+    ).toEqual('1');
   });
 });
