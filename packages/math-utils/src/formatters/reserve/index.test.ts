@@ -1,90 +1,66 @@
 import BigNumber from 'bignumber.js';
-import * as calculateReserveInstance from './calculate-reserve-debt';
-import {
-  formatReserveRequestDAI,
-  formatReserveRequestWMATIC,
-} from './reserve.mocks';
-import { formatReserve, FormatReserveRequest, formatReserveUSD } from './index';
+import { normalize } from '../../bignumber';
+import { ReserveMock } from '../../mocks';
+import { formatReserve, formatReserveUSD } from './index';
 
 describe('formatReserve', () => {
-  describe('WMATIC', () => {
-    const request: FormatReserveRequest = formatReserveRequestWMATIC;
+  it('should accrue over time', () => {
+    const reserve = new ReserveMock().addVariableDebt(100);
 
-    it('should return the correct response', () => {
-      const result = formatReserve(request);
-      expect(result).toMatchSnapshot();
+    const first = formatReserve({
+      reserve: reserve.reserve,
+      currentTimestamp: reserve.reserve.lastUpdateTimestamp,
     });
 
-    it('should increase over time', () => {
-      const first = formatReserve({
-        ...request,
-        currentTimestamp: request.reserve.lastUpdateTimestamp + 1,
-      });
-
-      const second = formatReserve({
-        ...request,
-        currentTimestamp: request.reserve.lastUpdateTimestamp + 1,
-      });
-
-      expect(new BigNumber(second.totalDebt).gte(first.totalDebt)).toBe(true);
+    const second = formatReserve({
+      reserve: reserve.reserve,
+      currentTimestamp:
+        reserve.reserve.lastUpdateTimestamp + 60 * 60 * 24 * 350,
     });
+
+    expect(new BigNumber(second.totalDebt).gt(first.totalDebt)).toBe(true);
   });
 
-  describe('DAI', () => {
-    const request: FormatReserveRequest = formatReserveRequestDAI;
-
-    it('should return the correct response', () => {
-      const result = formatReserve(request);
-      expect(result).toMatchSnapshot();
+  it('should properly calculate utilization', () => {
+    const reserve = new ReserveMock();
+    // no liquidity
+    const zeroLiquidity = formatReserve({
+      reserve: reserve.reserve,
+      currentTimestamp: reserve.reserve.lastUpdateTimestamp,
     });
+    expect(zeroLiquidity.utilizationRate).toEqual('0');
 
-    it('should increase over time', () => {
-      const first = formatReserve({
-        ...request,
-        currentTimestamp: request.reserve.lastUpdateTimestamp + 1,
-      });
-
-      const second = formatReserve({
-        ...request,
-        currentTimestamp: request.reserve.lastUpdateTimestamp + 1,
-      });
-
-      expect(new BigNumber(second.totalDebt).gte(first.totalDebt)).toBe(true);
+    // no borrows
+    reserve.addLiquidity(100);
+    const onlyLiquidity = formatReserve({
+      reserve: reserve.reserve,
+      currentTimestamp: reserve.reserve.lastUpdateTimestamp,
     });
-  });
+    expect(onlyLiquidity.utilizationRate).toEqual('0');
 
-  it('should return utilizationRate 0 when totalLiquidity == 0', () => {
-    const request: FormatReserveRequest = formatReserveRequestWMATIC;
-    request.reserve = {
-      ...request.reserve,
-      availableLiquidity: '0',
-    };
-
-    jest
-      .spyOn(calculateReserveInstance, 'calculateReserveDebt')
-      .mockImplementation(() => {
-        return {
-          totalDebt: new BigNumber('0'),
-          totalVariableDebt: new BigNumber('0'),
-          totalStableDebt: new BigNumber('0'),
-        };
-      });
-
-    const result = formatReserve(request);
-    expect(result.utilizationRate).toEqual('0');
+    // borrows
+    reserve.addVariableDebt(100);
+    const fiftyPercent = formatReserve({
+      reserve: reserve.reserve,
+      currentTimestamp: reserve.reserve.lastUpdateTimestamp,
+    });
+    expect(fiftyPercent.utilizationRate).toEqual('0.5');
   });
 
   it('should calculate usd values', () => {
-    const reserve = formatReserveUSD({
+    // 100 liquidity with a marketPrice of 2, should be 200
+    const reserve = new ReserveMock().addLiquidity(100);
+
+    const formattedReserve = formatReserveUSD({
       reserve: {
-        ...formatReserveRequestDAI.reserve,
-        priceInMarketReferenceCurrency: '323337881619534',
+        ...reserve.reserve,
+        priceInMarketReferenceCurrency: normalize(2, -8), // 2
       },
-      currentTimestamp: formatReserveRequestDAI.currentTimestamp,
-      marketReferencePriceInUsd: '291464715827',
-      marketReferenceCurrencyDecimals: 18,
+      currentTimestamp: reserve.reserve.lastUpdateTimestamp,
+      marketReferencePriceInUsd: normalize(1, -8), // 1
+      marketReferenceCurrencyDecimals: 8,
     });
 
-    expect(reserve).toMatchSnapshot();
+    expect(formattedReserve.availableLiquidityUSD).toBe('200');
   });
 });

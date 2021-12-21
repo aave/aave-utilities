@@ -1,71 +1,113 @@
 import BigNumber from 'bignumber.js';
-import { normalize, valueToZDBigNumber } from '../../bignumber';
-import { calculateSupplies, SuppliesRequest } from '../user/calculate-supplies';
+import { normalize } from '../../bignumber';
+import {
+  ReserveIncentiveMock,
+  ReserveMock,
+  UserIncentiveMock,
+  UserReserveMock,
+} from '../../mocks';
+
+import { calculateReserveDebt } from '../reserve/calculate-reserve-debt';
 import {
   calculateAccruedIncentives,
   CalculateAccruedIncentivesRequest,
 } from './calculate-accrued-incentives';
 
 describe('calculateAccruedIncentives', () => {
-  const reserveSuppliesInput: SuppliesRequest = {
-    reserve: {
-      totalScaledVariableDebt: '4790920796601146',
-      variableBorrowIndex: '1070766170735867540788710974',
-      variableBorrowRate: '56235456575090775514594900',
-      totalPrincipalStableDebt: '47382324949680',
-      averageStableRate: '106672256721053059345703064',
-      availableLiquidity: '558016083020512',
-      stableDebtLastUpdateTimestamp: 1629942075,
-      lastUpdateTimestamp: 1629942075,
-    },
-    currentTimestamp: 1629942075,
-  };
+  const reserveMock = new ReserveMock()
+    .addLiquidity(100)
+    .addVariableDebt(200)
+    .addStableDebt(300);
+  const userMock = new UserReserveMock()
+    .supply(100)
+    .variableBorrow(200)
+    .stableBorrow(300);
+  const reserveIncentiveMock = new ReserveIncentiveMock();
+  const userIncentiveMock = new UserIncentiveMock();
+  const currentTimestamp = 1;
+
   const { totalLiquidity, totalVariableDebt, totalStableDebt } =
-    calculateSupplies(reserveSuppliesInput);
+    calculateReserveDebt(reserveMock.reserve, currentTimestamp);
 
   const depositRewardsRequest: CalculateAccruedIncentivesRequest = {
-    principalUserBalance: new BigNumber('2441092440'),
-    reserveIndex: valueToZDBigNumber('14677148010356546110472348'),
-    userIndex: valueToZDBigNumber('8399742855606485876888576'),
+    principalUserBalance: new BigNumber(
+      userMock.userReserve.scaledATokenBalance,
+    ),
+    reserveIndex: new BigNumber(
+      reserveIncentiveMock.reserveIncentive.aIncentiveData.rewardsTokenInformation[0].tokenIncentivesIndex,
+    ),
+    userIndex: new BigNumber(
+      userIncentiveMock.userIncentive.aTokenIncentivesUserData.userRewardsInformation[0].tokenIncentivesUserIndex,
+    ),
     precision: 18,
-    reserveIndexTimestamp: 1629942075,
-    emissionPerSecond: valueToZDBigNumber('4629629629629629'),
+    reserveIndexTimestamp:
+      reserveIncentiveMock.reserveIncentive.aIncentiveData
+        .rewardsTokenInformation[0].incentivesLastUpdateTimestamp,
+    emissionPerSecond: new BigNumber(
+      reserveIncentiveMock.reserveIncentive.aIncentiveData.rewardsTokenInformation[0].emissionPerSecond,
+    ),
     totalSupply: totalLiquidity,
-    currentTimestamp: 1629942229,
-    emissionEndTimestamp: 1637573428,
+    currentTimestamp,
+    emissionEndTimestamp:
+      reserveIncentiveMock.reserveIncentive.aIncentiveData
+        .rewardsTokenInformation[0].emissionEndTimestamp,
   };
 
   const variableDebtRewardsRequest: CalculateAccruedIncentivesRequest = {
-    principalUserBalance: new BigNumber('52314205'),
-    reserveIndex: valueToZDBigNumber('19667478596034441389278095'),
-    userIndex: valueToZDBigNumber('0'),
+    principalUserBalance: new BigNumber(
+      userMock.userReserve.scaledVariableDebt,
+    ),
+    reserveIndex: new BigNumber(
+      reserveIncentiveMock.reserveIncentive.vIncentiveData.rewardsTokenInformation[0].tokenIncentivesIndex,
+    ),
+    userIndex: new BigNumber(
+      userIncentiveMock.userIncentive.vTokenIncentivesUserData.userRewardsInformation[0].tokenIncentivesUserIndex,
+    ),
     precision: 18,
-    reserveIndexTimestamp: 1629942075,
-    emissionPerSecond: valueToZDBigNumber('4629629629629629'),
+    reserveIndexTimestamp:
+      reserveIncentiveMock.reserveIncentive.vIncentiveData
+        .rewardsTokenInformation[0].incentivesLastUpdateTimestamp,
+    emissionPerSecond: new BigNumber(
+      reserveIncentiveMock.reserveIncentive.vIncentiveData.rewardsTokenInformation[0].emissionPerSecond,
+    ),
     totalSupply: totalVariableDebt,
-    currentTimestamp: 1629942229,
-    emissionEndTimestamp: 1637573428,
+    currentTimestamp,
+    emissionEndTimestamp:
+      reserveIncentiveMock.reserveIncentive.vIncentiveData
+        .rewardsTokenInformation[0].emissionEndTimestamp,
   };
 
   const stableDebtRewardsRequest: CalculateAccruedIncentivesRequest = {
-    principalUserBalance: new BigNumber('0'),
-    reserveIndex: valueToZDBigNumber('0'),
-    userIndex: valueToZDBigNumber('0'),
+    principalUserBalance: new BigNumber(
+      userMock.userReserve.principalStableDebt,
+    ),
+    reserveIndex: new BigNumber(
+      reserveIncentiveMock.reserveIncentive.sIncentiveData.rewardsTokenInformation[0].tokenIncentivesIndex,
+    ),
+    userIndex: new BigNumber(
+      userIncentiveMock.userIncentive.sTokenIncentivesUserData.userRewardsInformation[0].tokenIncentivesUserIndex,
+    ),
     precision: 18,
-    reserveIndexTimestamp: 1629942075,
-    emissionPerSecond: valueToZDBigNumber('0'),
+    reserveIndexTimestamp:
+      reserveIncentiveMock.reserveIncentive.sIncentiveData
+        .rewardsTokenInformation[0].incentivesLastUpdateTimestamp,
+    emissionPerSecond: new BigNumber(
+      reserveIncentiveMock.reserveIncentive.sIncentiveData.rewardsTokenInformation[0].emissionPerSecond,
+    ),
     totalSupply: totalStableDebt,
-    currentTimestamp: 1629942229,
-    emissionEndTimestamp: 1637573428,
+    currentTimestamp,
+    emissionEndTimestamp:
+      reserveIncentiveMock.reserveIncentive.sIncentiveData
+        .rewardsTokenInformation[0].emissionEndTimestamp,
   };
 
   it('should calculate the correct deposit rewards', () => {
     const result = calculateAccruedIncentives(depositRewardsRequest);
-    expect(normalize(result, 18)).toBe('0.01532402971873275309');
+    expect(normalize(result, 18)).toBe('100000000000');
   });
   it('should calculate the correct variable debt rewards', () => {
     const result = calculateAccruedIncentives(variableDebtRewardsRequest);
-    expect(normalize(result, 18)).toBe('0.0010288957777515011');
+    expect(normalize(result, 18)).toBe('200000000000');
   });
   it('should calculate the correct stable debt rewards', () => {
     const result = calculateAccruedIncentives(stableDebtRewardsRequest);
@@ -74,7 +116,6 @@ describe('calculateAccruedIncentives', () => {
   it('should default to reserveIndex if rewards emission is 0', () => {
     const result = calculateAccruedIncentives({
       ...stableDebtRewardsRequest,
-      emissionEndTimestamp: 1,
     });
     expect(normalize(result, 18)).toBe(
       normalize(stableDebtRewardsRequest.reserveIndex, 18),
@@ -85,6 +126,16 @@ describe('calculateAccruedIncentives', () => {
     const zeroSupplyRequest: CalculateAccruedIncentivesRequest = {
       ...stableDebtRewardsRequest,
       totalSupply: new BigNumber('0'),
+    };
+    const result = calculateAccruedIncentives(zeroSupplyRequest);
+    expect(normalize(result, 18)).toBe('0');
+  });
+
+  it('should use emissionPerSecond and compute zero rewards', () => {
+    const zeroSupplyRequest: CalculateAccruedIncentivesRequest = {
+      ...stableDebtRewardsRequest,
+      reserveIndexTimestamp: -1,
+      currentTimestamp: 100,
     };
     const result = calculateAccruedIncentives(zeroSupplyRequest);
     expect(normalize(result, 18)).toBe('0');

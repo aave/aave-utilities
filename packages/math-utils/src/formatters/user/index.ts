@@ -6,7 +6,7 @@ import {
   UserReserveCalculationData,
   UserReservesIncentivesDataHumanized,
 } from '../incentive/types';
-import { calculateSupplies } from './calculate-supplies';
+import { calculateReserveDebt } from '../reserve/calculate-reserve-debt';
 import { formatUserReserve } from './format-user-reserve';
 import { generateRawUserSummary } from './generate-raw-user-summary';
 import {
@@ -201,21 +201,10 @@ export function formatUserSummaryAndIncentives({
   // In the future, refactor the userReserves input to optionally include this totalLiquidity field
   const calculatedUserReserves: UserReserveCalculationData[] = userReserves.map(
     userReserve => {
-      const { totalLiquidity } = calculateSupplies({
-        reserve: {
-          totalScaledVariableDebt: userReserve.reserve.totalScaledVariableDebt,
-          variableBorrowIndex: userReserve.reserve.variableBorrowIndex,
-          variableBorrowRate: userReserve.reserve.variableBorrowRate,
-          totalPrincipalStableDebt:
-            userReserve.reserve.totalPrincipalStableDebt,
-          averageStableRate: userReserve.reserve.averageStableRate,
-          availableLiquidity: userReserve.reserve.availableLiquidity,
-          stableDebtLastUpdateTimestamp:
-            userReserve.reserve.stableDebtLastUpdateTimestamp,
-          lastUpdateTimestamp: userReserve.reserve.lastUpdateTimestamp,
-        },
+      const { totalLiquidity } = calculateReserveDebt(
+        userReserve.reserve,
         currentTimestamp,
-      });
+      );
       return {
         ...userReserve,
         reserve: {

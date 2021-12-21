@@ -20,12 +20,10 @@ export interface FormatReserveResponse {
   reserveFactor: string;
   baseLTVasCollateral: string;
   eModeLtv: string;
-  liquidityIndex: string;
   reserveLiquidationThreshold: string;
   eModeLiquidationThreshold: string;
   reserveLiquidationBonus: string;
   eModeLiquidationBonus: string;
-  variableBorrowIndex: string;
   /** @description min(unborrowedLiquidity, availableLiquidity) */
   availableLiquidity: string;
   /** @description totalLiquidity - totalDebt */
@@ -105,9 +103,8 @@ function getComputedReserveFields({
   reserve,
   currentTimestamp,
 }: FormatReserveRequest): GetComputedReserveFieldsResponse {
-  const { totalDebt, totalStableDebt, totalVariableDebt } =
+  const { totalDebt, totalStableDebt, totalVariableDebt, totalLiquidity } =
     calculateReserveDebt(reserve, currentTimestamp);
-  const totalLiquidity = totalDebt.plus(reserve.availableLiquidity);
   const utilizationRate = totalLiquidity.eq(0)
     ? '0'
     : valueToBigNumber(totalDebt).dividedBy(totalLiquidity).toFixed();
@@ -215,7 +212,6 @@ function formatEnhancedReserve({
     variableBorrowAPR: normalize(reserve.variableBorrowRate, RAY_DECIMALS),
     stableBorrowAPY: normalize(reserve.stableBorrowAPY, RAY_DECIMALS),
     stableBorrowAPR: normalize(reserve.stableBorrowRate, RAY_DECIMALS),
-    liquidityIndex: normalize(reserve.liquidityIndex, RAY_DECIMALS),
     reserveLiquidationThreshold: normalize(
       reserve.reserveLiquidationThreshold,
       4,
@@ -229,7 +225,6 @@ function formatEnhancedReserve({
     totalPrincipalStableDebt: normalizeWithReserve(
       reserve.totalPrincipalStableDebt,
     ),
-    variableBorrowIndex: normalize(reserve.variableBorrowIndex, RAY_DECIMALS),
     debtCeiling: isIsolated
       ? normalize(reserve.debtCeiling, reserve.debtCeilingDecimals)
       : '0',
