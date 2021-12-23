@@ -409,8 +409,9 @@ interface IPoolInterface extends ethers.utils.Interface {
 
   events: {
     'BackUnbacked(address,address,uint256,uint256)': EventFragment;
-    'Borrow(address,address,address,uint256,uint256,uint256,uint16)': EventFragment;
+    'Borrow(address,address,address,uint256,uint8,uint256,uint16)': EventFragment;
     'FlashLoan(address,address,address,uint256,uint256,uint16)': EventFragment;
+    'IsolationModeTotalDebtUpdated(address,uint256)': EventFragment;
     'LiquidationCall(address,address,address,uint256,uint256,address,bool)': EventFragment;
     'MintUnbacked(address,address,address,uint256,uint16)': EventFragment;
     'MintedToTreasury(address,uint256)': EventFragment;
@@ -420,7 +421,7 @@ interface IPoolInterface extends ethers.utils.Interface {
     'ReserveUsedAsCollateralDisabled(address,address)': EventFragment;
     'ReserveUsedAsCollateralEnabled(address,address)': EventFragment;
     'Supply(address,address,address,uint256,uint16)': EventFragment;
-    'Swap(address,address,uint256)': EventFragment;
+    'SwapBorrowRateMode(address,address,uint8)': EventFragment;
     'UserEModeSet(address,uint8)': EventFragment;
     'Withdraw(address,address,address,uint256)': EventFragment;
   };
@@ -428,6 +429,9 @@ interface IPoolInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'BackUnbacked'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Borrow'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'FlashLoan'): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: 'IsolationModeTotalDebtUpdated',
+  ): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'LiquidationCall'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'MintUnbacked'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'MintedToTreasury'): EventFragment;
@@ -441,7 +445,7 @@ interface IPoolInterface extends ethers.utils.Interface {
     nameOrSignatureOrTopic: 'ReserveUsedAsCollateralEnabled',
   ): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Supply'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Swap'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'SwapBorrowRateMode'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'UserEModeSet'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Withdraw'): EventFragment;
 }
@@ -456,12 +460,12 @@ export type BackUnbackedEvent = TypedEvent<
 >;
 
 export type BorrowEvent = TypedEvent<
-  [string, string, string, BigNumber, BigNumber, BigNumber, number] & {
+  [string, string, string, BigNumber, number, BigNumber, number] & {
     reserve: string;
     user: string;
     onBehalfOf: string;
     amount: BigNumber;
-    borrowRateMode: BigNumber;
+    interestRateMode: number;
     borrowRate: BigNumber;
     referral: number;
   }
@@ -476,6 +480,10 @@ export type FlashLoanEvent = TypedEvent<
     premium: BigNumber;
     referralCode: number;
   }
+>;
+
+export type IsolationModeTotalDebtUpdatedEvent = TypedEvent<
+  [string, BigNumber] & { asset: string; totalDebt: BigNumber }
 >;
 
 export type LiquidationCallEvent = TypedEvent<
@@ -547,11 +555,11 @@ export type SupplyEvent = TypedEvent<
   }
 >;
 
-export type SwapEvent = TypedEvent<
-  [string, string, BigNumber] & {
+export type SwapBorrowRateModeEvent = TypedEvent<
+  [string, string, number] & {
     reserve: string;
     user: string;
-    rateMode: BigNumber;
+    interestRateMode: number;
   }
 >;
 
@@ -683,7 +691,7 @@ export class IPool extends BaseContract {
       receiverAddress: string,
       assets: string[],
       amounts: BigNumberish[],
-      modes: BigNumberish[],
+      interestRateModes: BigNumberish[],
       onBehalfOf: string,
       params: BytesLike,
       referralCode: BigNumberish,
@@ -833,7 +841,7 @@ export class IPool extends BaseContract {
     repay(
       asset: string,
       amount: BigNumberish,
-      rateMode: BigNumberish,
+      interestRateMode: BigNumberish,
       onBehalfOf: string,
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
@@ -841,14 +849,14 @@ export class IPool extends BaseContract {
     repayWithATokens(
       asset: string,
       amount: BigNumberish,
-      rateMode: BigNumberish,
+      interestRateMode: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
 
     repayWithPermit(
       asset: string,
       amount: BigNumberish,
-      rateMode: BigNumberish,
+      interestRateMode: BigNumberish,
       onBehalfOf: string,
       deadline: BigNumberish,
       permitV: BigNumberish,
@@ -902,7 +910,7 @@ export class IPool extends BaseContract {
 
     swapBorrowRateMode(
       asset: string,
-      rateMode: BigNumberish,
+      interestRateMode: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
 
@@ -994,7 +1002,7 @@ export class IPool extends BaseContract {
     receiverAddress: string,
     assets: string[],
     amounts: BigNumberish[],
-    modes: BigNumberish[],
+    interestRateModes: BigNumberish[],
     onBehalfOf: string,
     params: BytesLike,
     referralCode: BigNumberish,
@@ -1140,7 +1148,7 @@ export class IPool extends BaseContract {
   repay(
     asset: string,
     amount: BigNumberish,
-    rateMode: BigNumberish,
+    interestRateMode: BigNumberish,
     onBehalfOf: string,
     overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
@@ -1148,14 +1156,14 @@ export class IPool extends BaseContract {
   repayWithATokens(
     asset: string,
     amount: BigNumberish,
-    rateMode: BigNumberish,
+    interestRateMode: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
 
   repayWithPermit(
     asset: string,
     amount: BigNumberish,
-    rateMode: BigNumberish,
+    interestRateMode: BigNumberish,
     onBehalfOf: string,
     deadline: BigNumberish,
     permitV: BigNumberish,
@@ -1209,7 +1217,7 @@ export class IPool extends BaseContract {
 
   swapBorrowRateMode(
     asset: string,
-    rateMode: BigNumberish,
+    interestRateMode: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
 
@@ -1300,7 +1308,7 @@ export class IPool extends BaseContract {
       receiverAddress: string,
       assets: string[],
       amounts: BigNumberish[],
-      modes: BigNumberish[],
+      interestRateModes: BigNumberish[],
       onBehalfOf: string,
       params: BytesLike,
       referralCode: BigNumberish,
@@ -1443,7 +1451,7 @@ export class IPool extends BaseContract {
     repay(
       asset: string,
       amount: BigNumberish,
-      rateMode: BigNumberish,
+      interestRateMode: BigNumberish,
       onBehalfOf: string,
       overrides?: CallOverrides,
     ): Promise<BigNumber>;
@@ -1451,14 +1459,14 @@ export class IPool extends BaseContract {
     repayWithATokens(
       asset: string,
       amount: BigNumberish,
-      rateMode: BigNumberish,
+      interestRateMode: BigNumberish,
       overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
     repayWithPermit(
       asset: string,
       amount: BigNumberish,
-      rateMode: BigNumberish,
+      interestRateMode: BigNumberish,
       onBehalfOf: string,
       deadline: BigNumberish,
       permitV: BigNumberish,
@@ -1512,7 +1520,7 @@ export class IPool extends BaseContract {
 
     swapBorrowRateMode(
       asset: string,
-      rateMode: BigNumberish,
+      interestRateMode: BigNumberish,
       overrides?: CallOverrides,
     ): Promise<void>;
 
@@ -1556,22 +1564,22 @@ export class IPool extends BaseContract {
       { reserve: string; backer: string; amount: BigNumber; fee: BigNumber }
     >;
 
-    'Borrow(address,address,address,uint256,uint256,uint256,uint16)'(
+    'Borrow(address,address,address,uint256,uint8,uint256,uint16)'(
       reserve?: string | null,
       user?: null,
       onBehalfOf?: string | null,
       amount?: null,
-      borrowRateMode?: null,
+      interestRateMode?: null,
       borrowRate?: null,
       referral?: BigNumberish | null,
     ): TypedEventFilter<
-      [string, string, string, BigNumber, BigNumber, BigNumber, number],
+      [string, string, string, BigNumber, number, BigNumber, number],
       {
         reserve: string;
         user: string;
         onBehalfOf: string;
         amount: BigNumber;
-        borrowRateMode: BigNumber;
+        interestRateMode: number;
         borrowRate: BigNumber;
         referral: number;
       }
@@ -1582,17 +1590,17 @@ export class IPool extends BaseContract {
       user?: null,
       onBehalfOf?: string | null,
       amount?: null,
-      borrowRateMode?: null,
+      interestRateMode?: null,
       borrowRate?: null,
       referral?: BigNumberish | null,
     ): TypedEventFilter<
-      [string, string, string, BigNumber, BigNumber, BigNumber, number],
+      [string, string, string, BigNumber, number, BigNumber, number],
       {
         reserve: string;
         user: string;
         onBehalfOf: string;
         amount: BigNumber;
-        borrowRateMode: BigNumber;
+        interestRateMode: number;
         borrowRate: BigNumber;
         referral: number;
       }
@@ -1634,6 +1642,22 @@ export class IPool extends BaseContract {
         premium: BigNumber;
         referralCode: number;
       }
+    >;
+
+    'IsolationModeTotalDebtUpdated(address,uint256)'(
+      asset?: string | null,
+      totalDebt?: null,
+    ): TypedEventFilter<
+      [string, BigNumber],
+      { asset: string; totalDebt: BigNumber }
+    >;
+
+    IsolationModeTotalDebtUpdated(
+      asset?: string | null,
+      totalDebt?: null,
+    ): TypedEventFilter<
+      [string, BigNumber],
+      { asset: string; totalDebt: BigNumber }
     >;
 
     'LiquidationCall(address,address,address,uint256,uint256,address,bool)'(
@@ -1864,22 +1888,22 @@ export class IPool extends BaseContract {
       }
     >;
 
-    'Swap(address,address,uint256)'(
+    'SwapBorrowRateMode(address,address,uint8)'(
       reserve?: string | null,
       user?: string | null,
-      rateMode?: null,
+      interestRateMode?: null,
     ): TypedEventFilter<
-      [string, string, BigNumber],
-      { reserve: string; user: string; rateMode: BigNumber }
+      [string, string, number],
+      { reserve: string; user: string; interestRateMode: number }
     >;
 
-    Swap(
+    SwapBorrowRateMode(
       reserve?: string | null,
       user?: string | null,
-      rateMode?: null,
+      interestRateMode?: null,
     ): TypedEventFilter<
-      [string, string, BigNumber],
-      { reserve: string; user: string; rateMode: BigNumber }
+      [string, string, number],
+      { reserve: string; user: string; interestRateMode: number }
     >;
 
     'UserEModeSet(address,uint8)'(
@@ -1985,7 +2009,7 @@ export class IPool extends BaseContract {
       receiverAddress: string,
       assets: string[],
       amounts: BigNumberish[],
-      modes: BigNumberish[],
+      interestRateModes: BigNumberish[],
       onBehalfOf: string,
       params: BytesLike,
       referralCode: BigNumberish,
@@ -2080,7 +2104,7 @@ export class IPool extends BaseContract {
     repay(
       asset: string,
       amount: BigNumberish,
-      rateMode: BigNumberish,
+      interestRateMode: BigNumberish,
       onBehalfOf: string,
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
@@ -2088,14 +2112,14 @@ export class IPool extends BaseContract {
     repayWithATokens(
       asset: string,
       amount: BigNumberish,
-      rateMode: BigNumberish,
+      interestRateMode: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
 
     repayWithPermit(
       asset: string,
       amount: BigNumberish,
-      rateMode: BigNumberish,
+      interestRateMode: BigNumberish,
       onBehalfOf: string,
       deadline: BigNumberish,
       permitV: BigNumberish,
@@ -2149,7 +2173,7 @@ export class IPool extends BaseContract {
 
     swapBorrowRateMode(
       asset: string,
-      rateMode: BigNumberish,
+      interestRateMode: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
 
@@ -2252,7 +2276,7 @@ export class IPool extends BaseContract {
       receiverAddress: string,
       assets: string[],
       amounts: BigNumberish[],
-      modes: BigNumberish[],
+      interestRateModes: BigNumberish[],
       onBehalfOf: string,
       params: BytesLike,
       referralCode: BigNumberish,
@@ -2350,7 +2374,7 @@ export class IPool extends BaseContract {
     repay(
       asset: string,
       amount: BigNumberish,
-      rateMode: BigNumberish,
+      interestRateMode: BigNumberish,
       onBehalfOf: string,
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
@@ -2358,14 +2382,14 @@ export class IPool extends BaseContract {
     repayWithATokens(
       asset: string,
       amount: BigNumberish,
-      rateMode: BigNumberish,
+      interestRateMode: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
 
     repayWithPermit(
       asset: string,
       amount: BigNumberish,
-      rateMode: BigNumberish,
+      interestRateMode: BigNumberish,
       onBehalfOf: string,
       deadline: BigNumberish,
       permitV: BigNumberish,
@@ -2419,7 +2443,7 @@ export class IPool extends BaseContract {
 
     swapBorrowRateMode(
       asset: string,
-      rateMode: BigNumberish,
+      interestRateMode: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
 
