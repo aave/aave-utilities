@@ -3,7 +3,7 @@
 
 import { Contract, Signer, utils } from 'ethers';
 import { Provider } from '@ethersproject/providers';
-import type { IPool, IPoolInterface } from '../IPool';
+import type { IPool, IPoolInterface } from './IPool';
 
 const _abi = [
   {
