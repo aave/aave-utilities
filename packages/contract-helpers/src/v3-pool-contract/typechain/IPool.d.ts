@@ -410,7 +410,7 @@ interface IPoolInterface extends ethers.utils.Interface {
   events: {
     'BackUnbacked(address,address,uint256,uint256)': EventFragment;
     'Borrow(address,address,address,uint256,uint8,uint256,uint16)': EventFragment;
-    'FlashLoan(address,address,address,uint256,uint256,uint16)': EventFragment;
+    'FlashLoan(address,address,address,uint256,uint8,uint256,uint16)': EventFragment;
     'IsolationModeTotalDebtUpdated(address,uint256)': EventFragment;
     'LiquidationCall(address,address,address,uint256,uint256,address,bool)': EventFragment;
     'MintUnbacked(address,address,address,uint256,uint16)': EventFragment;
@@ -472,11 +472,12 @@ export type BorrowEvent = TypedEvent<
 >;
 
 export type FlashLoanEvent = TypedEvent<
-  [string, string, string, BigNumber, BigNumber, number] & {
+  [string, string, string, BigNumber, number, BigNumber, number] & {
     target: string;
     initiator: string;
     asset: string;
     amount: BigNumber;
+    interestRateMode: number;
     premium: BigNumber;
     referralCode: number;
   }
@@ -1606,20 +1607,22 @@ export class IPool extends BaseContract {
       }
     >;
 
-    'FlashLoan(address,address,address,uint256,uint256,uint16)'(
+    'FlashLoan(address,address,address,uint256,uint8,uint256,uint16)'(
       target?: string | null,
       initiator?: string | null,
       asset?: string | null,
       amount?: null,
+      interestRateMode?: null,
       premium?: null,
       referralCode?: null,
     ): TypedEventFilter<
-      [string, string, string, BigNumber, BigNumber, number],
+      [string, string, string, BigNumber, number, BigNumber, number],
       {
         target: string;
         initiator: string;
         asset: string;
         amount: BigNumber;
+        interestRateMode: number;
         premium: BigNumber;
         referralCode: number;
       }
@@ -1630,15 +1633,17 @@ export class IPool extends BaseContract {
       initiator?: string | null,
       asset?: string | null,
       amount?: null,
+      interestRateMode?: null,
       premium?: null,
       referralCode?: null,
     ): TypedEventFilter<
-      [string, string, string, BigNumber, BigNumber, number],
+      [string, string, string, BigNumber, number, BigNumber, number],
       {
         target: string;
         initiator: string;
         asset: string;
         amount: BigNumber;
+        interestRateMode: number;
         premium: BigNumber;
         referralCode: number;
       }

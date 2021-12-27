@@ -1293,18 +1293,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         ? constants.MaxUint256.toString()
         : valueToWei(amount, decimals);
 
-    if (amount !== '-1') {
-      const fundsAvailable: boolean =
-        await this.synthetixService.synthetixValidation({
-          user,
-          reserve,
-          amount: convertedAmount,
-        });
-      if (!fundsAvailable) {
-        throw new Error('Not enough funds to execute operation');
-      }
-    }
-
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>
         populateTransaction.repayWithATokens(

@@ -115,6 +115,12 @@ const _abi = [
       },
       {
         indexed: false,
+        internalType: 'enum DataTypes.InterestRateMode',
+        name: 'interestRateMode',
+        type: 'uint8',
+      },
+      {
+        indexed: false,
         internalType: 'uint256',
         name: 'premium',
         type: 'uint256',
