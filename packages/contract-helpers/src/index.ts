@@ -19,6 +19,7 @@ export * from './governance-contract';
 export * from './governance-contract/types';
 export * from './governance-power-delegation-contract';
 export * from './v3-pool-contract';
+export * from './synthetix-contract';
 
 // commons
 export * from './commons/types';
