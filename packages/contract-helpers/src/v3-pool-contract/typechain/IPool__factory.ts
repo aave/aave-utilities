@@ -66,9 +66,9 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'borrowRateMode',
-        type: 'uint256',
+        internalType: 'enum DataTypes.InterestRateMode',
+        name: 'interestRateMode',
+        type: 'uint8',
       },
       {
         indexed: false,
@@ -115,6 +115,12 @@ const _abi = [
       },
       {
         indexed: false,
+        internalType: 'enum DataTypes.InterestRateMode',
+        name: 'interestRateMode',
+        type: 'uint8',
+      },
+      {
+        indexed: false,
         internalType: 'uint256',
         name: 'premium',
         type: 'uint256',
@@ -127,6 +133,25 @@ const _abi = [
       },
     ],
     name: 'FlashLoan',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'asset',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'totalDebt',
+        type: 'uint256',
+      },
+    ],
+    name: 'IsolationModeTotalDebtUpdated',
     type: 'event',
   },
   {
@@ -425,12 +450,12 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'rateMode',
-        type: 'uint256',
+        internalType: 'enum DataTypes.InterestRateMode',
+        name: 'interestRateMode',
+        type: 'uint8',
       },
     ],
-    name: 'Swap',
+    name: 'SwapBorrowRateMode',
     type: 'event',
   },
   {
@@ -760,7 +785,7 @@ const _abi = [
       },
       {
         internalType: 'uint256[]',
-        name: 'modes',
+        name: 'interestRateModes',
         type: 'uint256[]',
       },
       {
@@ -1271,7 +1296,7 @@ const _abi = [
       },
       {
         internalType: 'uint256',
-        name: 'rateMode',
+        name: 'interestRateMode',
         type: 'uint256',
       },
       {
@@ -1305,7 +1330,7 @@ const _abi = [
       },
       {
         internalType: 'uint256',
-        name: 'rateMode',
+        name: 'interestRateMode',
         type: 'uint256',
       },
     ],
@@ -1334,7 +1359,7 @@ const _abi = [
       },
       {
         internalType: 'uint256',
-        name: 'rateMode',
+        name: 'interestRateMode',
         type: 'uint256',
       },
       {
@@ -1526,7 +1551,7 @@ const _abi = [
       },
       {
         internalType: 'uint256',
-        name: 'rateMode',
+        name: 'interestRateMode',
         type: 'uint256',
       },
     ],

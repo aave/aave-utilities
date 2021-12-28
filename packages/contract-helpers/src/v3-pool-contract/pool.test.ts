@@ -5058,14 +5058,11 @@ describe('Pool', () => {
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
     });
-    it('Expects the tx object passing all params with with specific amount and synthetix repayment with valid amount and rate variable', async () => {
+    it('Expects the tx object passing all params with with specific amount and rate variable', async () => {
       const poolInstance = new Pool(provider, config);
       const decimalsSpy = jest
         .spyOn(poolInstance.erc20Service, 'decimalsOf')
         .mockReturnValueOnce(Promise.resolve(decimals));
-      const synthetixSpy = jest
-        .spyOn(poolInstance.synthetixService, 'synthetixValidation')
-        .mockReturnValue(Promise.resolve(true));
 
       const rateMode = InterestRate.Variable;
       const reapyTxObj = await poolInstance.repayWithATokens({
@@ -5075,7 +5072,6 @@ describe('Pool', () => {
         rateMode,
       });
 
-      expect(synthetixSpy).toHaveBeenCalled();
       expect(decimalsSpy).toHaveBeenCalled();
 
       expect(reapyTxObj.length).toEqual(1);
@@ -5102,28 +5098,6 @@ describe('Pool', () => {
       expect(gasPrice).not.toBeNull();
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
-    });
-    it('Expects to fail passing all params with with specific amount and synthetix repayment but not valid amount', async () => {
-      const poolInstance = new Pool(provider, config);
-      const decimalsSpy = jest
-        .spyOn(poolInstance.erc20Service, 'decimalsOf')
-        .mockReturnValueOnce(Promise.resolve(decimals));
-
-      const synthetixSpy = jest
-        .spyOn(poolInstance.synthetixService, 'synthetixValidation')
-        .mockReturnValue(Promise.resolve(false));
-
-      await expect(async () =>
-        poolInstance.repayWithATokens({
-          user,
-          reserve,
-          amount,
-          rateMode,
-        }),
-      ).rejects.toThrowError('Not enough funds to execute operation');
-
-      expect(decimalsSpy).toHaveBeenCalled();
-      expect(synthetixSpy).toHaveBeenCalled();
     });
     it('Expects to fail when PoolAddress not provided', async () => {
       const poolInstance = new Pool(provider);
