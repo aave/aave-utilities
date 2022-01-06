@@ -12,6 +12,7 @@ import {
 describe('generateRawUserSummary', () => {
   // 1 reserve token = 10 marketReferenceCurrency tokens = 100 USD
   const marketReferencePriceInUsd = 10 ** 19;
+  const marketReferencePriceInUsdNormalized = 10;
   const marketReferenceCurrencyDecimals = 18;
   const currentTimestamp = 1;
   const usdcUserMock = new UserReserveMock({ decimals: 6 })
@@ -21,7 +22,7 @@ describe('generateRawUserSummary', () => {
   const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
       userReserve: usdcUserMock.userReserve,
-      marketReferencePriceInUsd,
+      marketReferencePriceInUsdNormalized,
       marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
     },
@@ -31,7 +32,7 @@ describe('generateRawUserSummary', () => {
     userReserve: {
       ...ethUserMock.userReserve,
     },
-    marketReferencePriceInUsd,
+    marketReferencePriceInUsdNormalized,
     marketReferenceCurrencyDecimals: 18,
     currentTimestamp,
   });
@@ -51,7 +52,7 @@ describe('generateRawUserSummary', () => {
           Number(usdcUserMock.userReserve.scaledATokenBalance) * 2
         ).toString(),
       },
-      marketReferencePriceInUsd,
+      marketReferencePriceInUsdNormalized,
       marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
     });
@@ -68,7 +69,7 @@ describe('generateRawUserSummary', () => {
           debtCeiling: '100000000000000000000000000',
         },
       },
-      marketReferencePriceInUsd,
+      marketReferencePriceInUsdNormalized,
       marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
     });

@@ -1,4 +1,3 @@
-import { USD_DECIMALS } from './constants';
 import {
   getLinearBalance,
   calculateCompoundedInterest,
@@ -209,13 +208,13 @@ describe('pool math', () => {
       priceInMarketReferenceCurrency: 10 ** 18, // 1
       marketReferenceCurrencyDecimals: 18,
       decimals: 18,
-      marketReferencePriceInUsd: 250000000,
+      marketReferencePriceInUsdNormalized: 2.5,
     };
     const { marketReferenceCurrencyBalance, usdBalance } =
       getMarketReferenceCurrencyAndUsdBalance(balanceRequest);
     expect(marketReferenceCurrencyBalance.toNumber()).toEqual(
       10 * 10 ** balanceRequest.marketReferenceCurrencyDecimals,
     );
-    expect(usdBalance.toNumber()).toEqual(25 * 10 ** USD_DECIMALS);
+    expect(usdBalance.toNumber()).toEqual(25);
   });
 });

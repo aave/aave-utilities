@@ -10,13 +10,13 @@ describe('calculateUserReserveTotals', () => {
   const usdcReserveMock = new UserReserveMock({ decimals: 6 })
     .supply(200)
     .variableBorrow(100);
-  const marketReferencePriceInUsd = 10;
+  const marketReferencePriceInUsdNormalized = 10;
   const marketReferenceCurrencyDecimals = 18;
   const currentTimestamp = 1;
   const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
       userReserve: usdcReserveMock.userReserve,
-      marketReferencePriceInUsd,
+      marketReferencePriceInUsdNormalized,
       marketReferenceCurrencyDecimals,
       currentTimestamp,
     },
@@ -33,7 +33,7 @@ describe('calculateUserReserveTotals', () => {
         debtCeiling: '1',
       },
     },
-    marketReferencePriceInUsd,
+    marketReferencePriceInUsdNormalized,
     marketReferenceCurrencyDecimals,
     currentTimestamp,
   });
@@ -80,7 +80,7 @@ describe('calculateUserReserveTotals', () => {
           ...usdcReserveMock.userReserve,
           usageAsCollateralEnabledOnUser: false,
         },
-        marketReferencePriceInUsd,
+        marketReferencePriceInUsdNormalized,
         marketReferenceCurrencyDecimals,
         currentTimestamp,
       });
@@ -90,7 +90,7 @@ describe('calculateUserReserveTotals', () => {
           ...ethReserveMock.userReserve,
           usageAsCollateralEnabledOnUser: false,
         },
-        marketReferencePriceInUsd,
+        marketReferencePriceInUsdNormalized,
         marketReferenceCurrencyDecimals,
         currentTimestamp,
       });
