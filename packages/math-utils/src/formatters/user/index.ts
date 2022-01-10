@@ -117,7 +117,7 @@ export function formatUserSummary({
   userReserves,
   userEmodeCategoryId,
 }: FormatUserSummaryRequest): FormatUserSummaryResponse {
-  const humanizedMarketRefPriceInUsd = normalize(
+  const normalizedMarketRefPriceInUsd = normalize(
     marketReferencePriceInUsd,
     USD_DECIMALS,
   );
@@ -125,7 +125,7 @@ export function formatUserSummary({
     userReserve =>
       generateUserReserveSummary({
         userReserve,
-        marketReferencePriceInUsd: humanizedMarketRefPriceInUsd,
+        marketReferencePriceInUsdNormalized: normalizedMarketRefPriceInUsd,
         marketReferenceCurrencyDecimals,
         currentTimestamp,
       }),
@@ -140,7 +140,7 @@ export function formatUserSummary({
 
   const userData = generateRawUserSummary({
     userReserves: computedUserReserves,
-    marketReferencePriceInUsd: humanizedMarketRefPriceInUsd,
+    marketReferencePriceInUsd: normalizedMarketRefPriceInUsd,
     marketReferenceCurrencyDecimals,
     userEmodeCategoryId,
   });

@@ -1,13 +1,12 @@
 import BigNumber from 'bignumber.js';
 import { BigNumberValue } from '../../bignumber';
-import { USD_DECIMALS } from '../../constants';
 
 interface NativeToUSD {
   amount: BigNumber;
   currencyDecimals: number;
   priceInMarketReferenceCurrency: BigNumberValue;
   marketReferenceCurrencyDecimals: number;
-  marketReferencePriceInUsd: BigNumberValue;
+  normalizedMarketReferencePriceInUsd: BigNumberValue;
 }
 
 export function nativeToUSD({
@@ -15,14 +14,14 @@ export function nativeToUSD({
   currencyDecimals,
   priceInMarketReferenceCurrency,
   marketReferenceCurrencyDecimals,
-  marketReferencePriceInUsd,
+  normalizedMarketReferencePriceInUsd,
 }: NativeToUSD) {
   return amount
     .multipliedBy(priceInMarketReferenceCurrency)
-    .multipliedBy(marketReferencePriceInUsd)
+    .multipliedBy(normalizedMarketReferencePriceInUsd)
     .dividedBy(
       new BigNumber(1).shiftedBy(
-        currencyDecimals + marketReferenceCurrencyDecimals + USD_DECIMALS,
+        currencyDecimals + marketReferenceCurrencyDecimals,
       ),
     )
     .toString();

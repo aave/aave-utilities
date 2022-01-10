@@ -2,10 +2,11 @@ import BigNumber from 'bignumber.js';
 import {
   BigNumberValue,
   normalize,
+  normalizeBN,
   valueToBigNumber,
   valueToZDBigNumber,
 } from '../../bignumber';
-import { RAY_DECIMALS, SECONDS_PER_YEAR } from '../../constants';
+import { RAY_DECIMALS, SECONDS_PER_YEAR, USD_DECIMALS } from '../../constants';
 import { LTV_PRECISION, RAY, rayPow } from '../../index';
 import {
   calculateReserveIncentives,
@@ -24,9 +25,9 @@ export interface FormatReserveResponse {
   eModeLiquidationThreshold: string;
   reserveLiquidationBonus: string;
   eModeLiquidationBonus: string;
-  /** @description min(unborrowedLiquidity, availableLiquidity) */
+  /** @description the liquidity that is available. In case of borrow capped reserves that might be less then unborrowedLiquidity. */
   availableLiquidity: string;
-  /** @description totalLiquidity - totalDebt */
+  /** @description the liquidity that is not borrowed out */
   unborrowedLiquidity: string;
   supplyAPY: string;
   supplyAPR: string;
@@ -41,8 +42,9 @@ export interface FormatReserveResponse {
   totalVariableDebt: string;
   totalDebt: string;
   totalLiquidity: string;
-  debtCeiling: string;
-  isolationModeTotalDebt: string;
+  debtCeilingUSD: string;
+  availableDebtCeilingUSD: string;
+  isolationModeTotalDebtUSD: string;
   isIsolated: boolean;
 }
 
@@ -194,6 +196,14 @@ function formatEnhancedReserve({
     normalize(n, reserve.decimals);
 
   const isIsolated = reserve.debtCeiling !== '0';
+  const availableDebtCeilingUSD = isIsolated
+    ? normalize(
+        valueToBigNumber(reserve.debtCeiling).minus(
+          reserve.isolationModeTotalDebt,
+        ),
+        reserve.debtCeilingDecimals,
+      )
+    : '0';
 
   return {
     totalVariableDebt: normalizeWithReserve(reserve.totalVariableDebt),
@@ -225,12 +235,13 @@ function formatEnhancedReserve({
     totalPrincipalStableDebt: normalizeWithReserve(
       reserve.totalPrincipalStableDebt,
     ),
-    debtCeiling: isIsolated
+    debtCeilingUSD: isIsolated
       ? normalize(reserve.debtCeiling, reserve.debtCeilingDecimals)
       : '0',
-    isolationModeTotalDebt: isIsolated
+    isolationModeTotalDebtUSD: isIsolated
       ? normalize(reserve.isolationModeTotalDebt, reserve.debtCeilingDecimals)
       : '0',
+    availableDebtCeilingUSD,
     isIsolated,
   };
 }
@@ -282,6 +293,11 @@ export function formatReserveUSD({
   marketReferencePriceInUsd,
   marketReferenceCurrencyDecimals,
 }: FormatReserveUSDRequest): FormatReserveUSDResponse {
+  const normalizedMarketReferencePriceInUsd = normalizeBN(
+    marketReferencePriceInUsd,
+    USD_DECIMALS,
+  );
+
   const computedFields = getComputedReserveFields({
     reserve,
     currentTimestamp,
@@ -297,35 +313,35 @@ export function formatReserveUSD({
       currencyDecimals: reserve.decimals,
       marketReferenceCurrencyDecimals,
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-      marketReferencePriceInUsd,
+      normalizedMarketReferencePriceInUsd,
     }),
     availableLiquidityUSD: nativeToUSD({
       amount: computedFields.availableLiquidity,
       currencyDecimals: reserve.decimals,
       marketReferenceCurrencyDecimals,
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-      marketReferencePriceInUsd,
+      normalizedMarketReferencePriceInUsd,
     }),
     totalDebtUSD: nativeToUSD({
       amount: computedFields.totalDebt,
       currencyDecimals: reserve.decimals,
       marketReferenceCurrencyDecimals,
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-      marketReferencePriceInUsd,
+      normalizedMarketReferencePriceInUsd,
     }),
     totalVariableDebtUSD: nativeToUSD({
       amount: computedFields.totalVariableDebt,
       currencyDecimals: reserve.decimals,
       marketReferenceCurrencyDecimals,
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-      marketReferencePriceInUsd,
+      normalizedMarketReferencePriceInUsd,
     }),
     totalStableDebtUSD: nativeToUSD({
       amount: computedFields.totalStableDebt,
       currencyDecimals: reserve.decimals,
       marketReferenceCurrencyDecimals,
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-      marketReferencePriceInUsd,
+      normalizedMarketReferencePriceInUsd,
     }),
     // isolationModeTotalDebtUSD: nativeToUSD({
     //   amount: computedFields.totalStableDebt,

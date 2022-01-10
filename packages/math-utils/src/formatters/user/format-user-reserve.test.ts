@@ -9,7 +9,7 @@ import { ComputedUserReserve } from './index';
 
 describe('formatUserReserve', () => {
   // 1 reserve token = 10 marketReferenceCurrency tokens = 100 USD
-  const marketReferencePriceInUsd = 10;
+  const marketReferencePriceInUsdNormalized = 10;
   const marketReferenceCurrencyDecimals = 18;
   const currentTimestamp = 1;
   const usdcUserMock = new UserReserveMock({ decimals: 6 })
@@ -19,7 +19,7 @@ describe('formatUserReserve', () => {
   const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
       userReserve: usdcUserMock.userReserve,
-      marketReferencePriceInUsd,
+      marketReferencePriceInUsdNormalized,
       currentTimestamp,
       marketReferenceCurrencyDecimals,
     },

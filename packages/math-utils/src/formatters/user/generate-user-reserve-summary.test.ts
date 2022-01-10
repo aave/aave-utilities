@@ -14,7 +14,7 @@ describe('generateUserReserveSummary', () => {
   const marketReferenceCurrencyDecimals = 18;
   const rawSummary: UserReserveSummaryResponse = generateUserReserveSummary({
     userReserve: usdcUserMock.userReserve,
-    marketReferencePriceInUsd: 10,
+    marketReferencePriceInUsdNormalized: 10,
     marketReferenceCurrencyDecimals,
     currentTimestamp: 1,
   });
