@@ -25,9 +25,9 @@ export interface FormatReserveResponse {
   eModeLiquidationThreshold: string;
   reserveLiquidationBonus: string;
   eModeLiquidationBonus: string;
-  /** @description min(unborrowedLiquidity, availableLiquidity) */
+  /** @description the liquidity that is available. In case of borrow capped reserves that might be less then unborrowedLiquidity. */
   availableLiquidity: string;
-  /** @description totalLiquidity - totalDebt */
+  /** @description the liquidity that is not borrowed out */
   unborrowedLiquidity: string;
   supplyAPY: string;
   supplyAPR: string;
@@ -42,8 +42,9 @@ export interface FormatReserveResponse {
   totalVariableDebt: string;
   totalDebt: string;
   totalLiquidity: string;
-  debtCeiling: string;
-  isolationModeTotalDebt: string;
+  debtCeilingUSD: string;
+  availableDebtCeilingUSD: string;
+  isolationModeTotalDebtUSD: string;
   isIsolated: boolean;
 }
 
@@ -195,6 +196,14 @@ function formatEnhancedReserve({
     normalize(n, reserve.decimals);
 
   const isIsolated = reserve.debtCeiling !== '0';
+  const availableDebtCeilingUSD = isIsolated
+    ? normalize(
+        valueToBigNumber(reserve.debtCeiling).minus(
+          reserve.isolationModeTotalDebt,
+        ),
+        reserve.debtCeilingDecimals,
+      )
+    : '0';
 
   return {
     totalVariableDebt: normalizeWithReserve(reserve.totalVariableDebt),
@@ -226,12 +235,13 @@ function formatEnhancedReserve({
     totalPrincipalStableDebt: normalizeWithReserve(
       reserve.totalPrincipalStableDebt,
     ),
-    debtCeiling: isIsolated
+    debtCeilingUSD: isIsolated
       ? normalize(reserve.debtCeiling, reserve.debtCeilingDecimals)
       : '0',
-    isolationModeTotalDebt: isIsolated
+    isolationModeTotalDebtUSD: isIsolated
       ? normalize(reserve.isolationModeTotalDebt, reserve.debtCeilingDecimals)
       : '0',
+    availableDebtCeilingUSD,
     isIsolated,
   };
 }
