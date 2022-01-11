@@ -46,6 +46,7 @@ export interface FormatReserveResponse {
   availableDebtCeilingUSD: string;
   isolationModeTotalDebtUSD: string;
   isIsolated: boolean;
+  decimals: number;
 }
 
 export interface FormatReserveRequest {
@@ -229,6 +230,7 @@ function formatEnhancedReserve({
     eModeLiquidationThreshold: normalize(reserve.eModeLiquidationThreshold, 4),
     reserveLiquidationBonus: reserve.reserveLiquidationBonus,
     eModeLiquidationBonus: reserve.eModeLiquidationBonus,
+    decimals: reserve.decimals,
     totalScaledVariableDebt: normalizeWithReserve(
       reserve.totalScaledVariableDebt,
     ),
