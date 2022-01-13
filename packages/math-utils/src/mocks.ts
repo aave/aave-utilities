@@ -3,12 +3,16 @@ import {
   ReservesIncentiveDataHumanized,
   UserReservesIncentivesDataHumanized,
 } from './formatters/incentive';
-import { ReserveData } from './formatters/reserve';
+import { ReserveData, formatReserves } from './formatters/reserve';
 import { UserReserveData } from './formatters/user';
 import { RAY } from './ray.math';
 
 export class ReserveMock {
-  public reserve: ReserveData;
+  public reserve: ReserveData & {
+    priceInMarketReferenceCurrency: string;
+    eModeCategoryId: number;
+    usageAsCollateralEnabled: boolean;
+  };
 
   private readonly config: { decimals: number };
 
@@ -39,6 +43,9 @@ export class ReserveMock {
       eModeLtv: 6000, // 60%
       eModeLiquidationThreshold: 7000, // 70%
       eModeLiquidationBonus: 0,
+      priceInMarketReferenceCurrency: (10 ** 19).toString(), // 10
+      eModeCategoryId: 1,
+      usageAsCollateralEnabled: true,
     };
   }
 
@@ -71,9 +78,27 @@ export class UserReserveMock {
   public userReserve: UserReserveData;
   private readonly config: { decimals: number };
 
-  constructor(config: { decimals: number } = { decimals: 18 }) {
+  constructor(
+    config: {
+      decimals: number;
+      marketReferenceCurrencyDecimals: number;
+      marketReferencePriceInUsd: string;
+      currentTimestamp: number;
+    } = {
+      decimals: 18,
+      marketReferenceCurrencyDecimals: 8,
+      marketReferencePriceInUsd: '100000000',
+      currentTimestamp: 1,
+    },
+  ) {
     this.config = config;
     const reserveMock = new ReserveMock({ decimals: config.decimals });
+    const formattedReserves = formatReserves({
+      reserves: [reserveMock.reserve],
+      currentTimestamp: config.currentTimestamp,
+      marketReferenceCurrencyDecimals: config.marketReferenceCurrencyDecimals,
+      marketReferencePriceInUsd: config.marketReferencePriceInUsd,
+    });
     this.userReserve = {
       scaledATokenBalance: '0',
       usageAsCollateralEnabledOnUser: true,
@@ -81,16 +106,7 @@ export class UserReserveMock {
       scaledVariableDebt: '0',
       principalStableDebt: '0',
       stableBorrowLastUpdateTimestamp: 1,
-      reserve: {
-        ...reserveMock.reserve,
-        priceInMarketReferenceCurrency: (10 ** 19).toString(), // 10
-        id: '0',
-        symbol: '0',
-        usageAsCollateralEnabled: true,
-        underlyingAsset: '0x0000000000000000000000000000000000000000',
-        name: '',
-        eModeCategoryId: 1,
-      },
+      reserve: formattedReserves[0],
     };
   }
 
@@ -100,7 +116,6 @@ export class UserReserveMock {
       .plus(this.userReserve.scaledATokenBalance)
       .toString();
     this.userReserve.reserve.availableLiquidity = new BigNumber(amount)
-      .shiftedBy(this.config.decimals)
       .plus(this.userReserve.reserve.availableLiquidity)
       .toString();
     return this;
@@ -112,7 +127,6 @@ export class UserReserveMock {
       .plus(this.userReserve.scaledVariableDebt)
       .toString();
     this.userReserve.reserve.totalScaledVariableDebt = new BigNumber(amount)
-      .shiftedBy(this.config.decimals)
       .plus(this.userReserve.reserve.totalScaledVariableDebt)
       .toString();
     return this;
@@ -124,7 +138,6 @@ export class UserReserveMock {
       .plus(this.userReserve.principalStableDebt)
       .toString();
     this.userReserve.reserve.totalPrincipalStableDebt = new BigNumber(amount)
-      .shiftedBy(this.config.decimals)
       .plus(this.userReserve.reserve.totalPrincipalStableDebt)
       .toString();
     return this;

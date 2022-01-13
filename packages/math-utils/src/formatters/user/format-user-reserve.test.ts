@@ -1,3 +1,4 @@
+import { normalize } from '../..';
 import { UserReserveMock } from '../../mocks';
 import { formatUserReserve } from './format-user-reserve';
 import {
@@ -12,7 +13,15 @@ describe('formatUserReserve', () => {
   const marketReferencePriceInUsdNormalized = 10;
   const marketReferenceCurrencyDecimals = 18;
   const currentTimestamp = 1;
-  const usdcUserMock = new UserReserveMock({ decimals: 6 })
+  const usdcUserMock = new UserReserveMock({
+    decimals: 6,
+    marketReferenceCurrencyDecimals,
+    marketReferencePriceInUsd: normalize(
+      marketReferencePriceInUsdNormalized,
+      -18,
+    ),
+    currentTimestamp,
+  })
     .supply(500)
     .variableBorrow(100)
     .stableBorrow(100);

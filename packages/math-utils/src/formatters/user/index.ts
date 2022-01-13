@@ -1,12 +1,11 @@
 import { BigNumberValue, normalize } from '../../bignumber';
-import { LTV_PRECISION, USD_DECIMALS } from '../../constants';
+import { LTV_PRECISION } from '../../constants';
 import { calculateAllUserIncentives, UserIncentiveDict } from '../incentive';
 import {
   ReservesIncentiveDataHumanized,
-  UserReserveCalculationData,
   UserReservesIncentivesDataHumanized,
 } from '../incentive/types';
-import { calculateReserveDebt } from '../reserve/calculate-reserve-debt';
+import { MinimalFormatReservesAndIncentivesResponse } from '../reserve';
 import { formatUserReserve } from './format-user-reserve';
 import { generateRawUserSummary } from './generate-raw-user-summary';
 import {
@@ -14,40 +13,8 @@ import {
   UserReserveSummaryResponse,
 } from './generate-user-reserve-summary';
 
-export interface RawReserveData {
-  decimals: number;
-  reserveFactor: string;
-  baseLTVasCollateral: string;
-  averageStableRate: string;
-  stableDebtLastUpdateTimestamp: number;
-  liquidityIndex: string;
-  reserveLiquidationThreshold: string;
-  reserveLiquidationBonus: string;
-  variableBorrowIndex: string;
-  variableBorrowRate: string;
-  availableLiquidity: string;
-  stableBorrowRate: string;
-  liquidityRate: string;
-  totalPrincipalStableDebt: string;
-  totalScaledVariableDebt: string;
-  lastUpdateTimestamp: number;
-  priceInMarketReferenceCurrency: string;
-  id: string;
-  symbol: string;
-  usageAsCollateralEnabled: boolean;
-  underlyingAsset: string;
-  name: string;
-  debtCeiling: string;
-  debtCeilingDecimals: number;
-  isolationModeTotalDebt: string;
-  eModeCategoryId: number;
-  eModeLtv: number;
-  eModeLiquidationThreshold: number;
-  eModeLiquidationBonus: number;
-}
-
 export interface UserReserveData {
-  reserve: RawReserveData;
+  reserve: MinimalFormatReservesAndIncentivesResponse;
   scaledATokenBalance: string;
   usageAsCollateralEnabledOnUser: boolean;
   stableBorrowRate: string;
@@ -96,7 +63,7 @@ export interface FormatUserSummaryResponse {
   currentLiquidationThreshold: string;
   healthFactor: string;
   isInIsolationMode: boolean;
-  isolatedReserve?: RawReserveData;
+  isolatedReserve?: MinimalFormatReservesAndIncentivesResponse;
 }
 
 export interface FormatUserSummaryAndIncentivesRequest
@@ -117,15 +84,11 @@ export function formatUserSummary({
   userReserves,
   userEmodeCategoryId,
 }: FormatUserSummaryRequest): FormatUserSummaryResponse {
-  const normalizedMarketRefPriceInUsd = normalize(
-    marketReferencePriceInUsd,
-    USD_DECIMALS,
-  );
   const computedUserReserves: UserReserveSummaryResponse[] = userReserves.map(
     userReserve =>
       generateUserReserveSummary({
         userReserve,
-        marketReferencePriceInUsdNormalized: normalizedMarketRefPriceInUsd,
+        marketReferencePriceInUsdNormalized: marketReferencePriceInUsd,
         marketReferenceCurrencyDecimals,
         currentTimestamp,
       }),
@@ -140,7 +103,7 @@ export function formatUserSummary({
 
   const userData = generateRawUserSummary({
     userReserves: computedUserReserves,
-    marketReferencePriceInUsd: normalizedMarketRefPriceInUsd,
+    marketReferencePriceInUsd,
     marketReferenceCurrencyDecimals,
     userEmodeCategoryId,
   });
@@ -198,27 +161,10 @@ export function formatUserSummaryAndIncentives({
     userEmodeCategoryId,
   });
 
-  // In the future, refactor the userReserves input to optionally include this totalLiquidity field
-  const calculatedUserReserves: UserReserveCalculationData[] = userReserves.map(
-    userReserve => {
-      const { totalLiquidity } = calculateReserveDebt(
-        userReserve.reserve,
-        currentTimestamp,
-      );
-      return {
-        ...userReserve,
-        reserve: {
-          ...userReserve.reserve,
-          totalLiquidity: totalLiquidity.toString(),
-        },
-      };
-    },
-  );
-
   const calculatedUserIncentives = calculateAllUserIncentives({
     reserveIncentives,
     userIncentives,
-    userReserves: calculatedUserReserves,
+    userReserves,
     currentTimestamp,
   });
 

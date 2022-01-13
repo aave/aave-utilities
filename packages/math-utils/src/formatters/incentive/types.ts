@@ -1,3 +1,5 @@
+import { MinimalFormatReservesAndIncentivesResponse } from '../reserve';
+
 // From UiIncentiveDatProvider
 export interface ReservesIncentiveDataHumanized {
   underlyingAsset: string;
@@ -54,13 +56,7 @@ export interface UserReserveCalculationData {
   scaledATokenBalance: string;
   scaledVariableDebt: string;
   principalStableDebt: string;
-  reserve: {
-    underlyingAsset: string;
-    totalLiquidity: string;
-    liquidityIndex: string;
-    totalScaledVariableDebt: string;
-    totalPrincipalStableDebt: string;
-  };
+  reserve: MinimalFormatReservesAndIncentivesResponse;
 }
 
 export interface ReserveCalculationData {

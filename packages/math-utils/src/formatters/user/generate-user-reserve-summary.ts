@@ -6,7 +6,8 @@ import {
   getCompoundedBalance,
   getCompoundedStableBalance,
 } from '../../pool-math';
-import { UserReserveData, RawReserveData } from './index';
+import { MinimalFormatReservesAndIncentivesResponse } from '../reserve';
+import { UserReserveData } from './index';
 
 export interface UserReserveSummaryRequest {
   userReserve: UserReserveData;
@@ -37,7 +38,8 @@ export function generateUserReserveSummary({
   marketReferenceCurrencyDecimals,
   currentTimestamp,
 }: UserReserveSummaryRequest): UserReserveSummaryResponse {
-  const poolReserve: RawReserveData = userReserve.reserve;
+  const poolReserve: MinimalFormatReservesAndIncentivesResponse =
+    userReserve.reserve;
   const { priceInMarketReferenceCurrency, decimals } = poolReserve;
   const underlyingBalance = getLinearBalance({
     balance: userReserve.scaledATokenBalance,

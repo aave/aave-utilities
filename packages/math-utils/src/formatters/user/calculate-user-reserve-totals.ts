@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { valueToBigNumber, valueToZDBigNumber } from '../../bignumber';
+import { MinimalFormatReservesAndIncentivesResponse } from '../reserve';
 import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
-import { RawReserveData } from './index';
 
 interface UserReserveTotalsRequest {
   userReserves: UserReserveSummaryResponse[];
@@ -15,7 +15,7 @@ interface UserReserveTotalsResponse {
   currentLtv: BigNumber;
   currentLiquidationThreshold: BigNumber;
   isInIsolationMode: boolean;
-  isolatedReserve?: RawReserveData;
+  isolatedReserve?: MinimalFormatReservesAndIncentivesResponse;
 }
 
 export function calculateUserReserveTotals({
@@ -28,7 +28,7 @@ export function calculateUserReserveTotals({
   let currentLtv = valueToBigNumber('0');
   let currentLiquidationThreshold = valueToBigNumber('0');
   let isInIsolationMode = false;
-  let isolatedReserve: RawReserveData | undefined;
+  let isolatedReserve: MinimalFormatReservesAndIncentivesResponse | undefined;
 
   userReserves.forEach(userReserveSummary => {
     totalLiquidityMarketReferenceCurrency =

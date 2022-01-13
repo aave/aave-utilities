@@ -413,6 +413,14 @@ export interface FormatReservesAndIncentivesUSDRequest<
   reserveIncentives: ReservesIncentiveDataHumanized[];
 }
 
+export type MinimalFormatReservesAndIncentivesResponse =
+  FormatReserveUSDResponse &
+    ReserveDataWithPrice &
+    Partial<CalculateReserveIncentivesResponse> & {
+      usageAsCollateralEnabled: boolean;
+      eModeCategoryId: number;
+    };
+
 export function formatReservesAndIncentives<T extends ReserveDataWithPrice>({
   reserves,
   currentTimestamp,
