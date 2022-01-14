@@ -41,7 +41,7 @@ module.exports = {
     'packages/contract-helpers/src/faucet-contract/typechain',
     'packages/contract-helpers/src/repayWithCollateralAdapter-contract/typechain',
     'packages/contract-helpers/src/index.ts',
-    'packages/math-utils/src/formatters/reserve/index.ts', // TODO: remove
+    'packages/data/src/formatters/reserve/index.ts', // TODO: remove
   ],
   modulePathIgnorePatterns: ['node_modules'],
   preset: 'ts-jest',

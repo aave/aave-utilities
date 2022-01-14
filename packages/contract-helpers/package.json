@@ -4,7 +4,7 @@
   "license": "MIT",
   "description": "",
   "scripts": {
-    "clean": "cd ../.. && npx rimraf packages/contract-helpers/dist packages/math-utils/*.log*",
+    "clean": "cd ../.. && npx rimraf packages/contract-helpers/dist packages/data/*.log*",
     "lint": "cd ../.. && eslint packages/contract-helpers/src/**/*.ts",
     "check-types": "yarn build -- --noEmit",
     "prebuild": "npm run clean",

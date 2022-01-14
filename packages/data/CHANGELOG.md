@@ -5,110 +5,78 @@ All notable changes to this project will be documented in this file. See
 
 ## 0.27.1 (2021-12-09)
 
-**Note:** Version bump only for package @aave/math-utils
-
-
-
-
+**Note:** Version bump only for package @aave/data
 
 # 0.27.0 (2021-12-03)
 
-
 ### Features
 
-* add xdai ([#211](https://github.com/@aave/aave-utilities/issues/211)) ([43ce27e](https://github.com/@aave/aave-utilities/commit/43ce27ed932ca2008ca0ac7894bc26b559bdefd8))
-
-
-
-
+- add xdai ([#211](https://github.com/@aave/aave-utilities/issues/211))
+  ([43ce27e](https://github.com/@aave/aave-utilities/commit/43ce27ed932ca2008ca0ac7894bc26b559bdefd8))
 
 ## 0.26.5 (2021-12-02)
 
-**Note:** Version bump only for package @aave/math-utils
-
-
-
-
+**Note:** Version bump only for package @aave/data
 
 ## 0.26.4 (2021-12-02)
 
-**Note:** Version bump only for package @aave/math-utils
-
-
-
-
+**Note:** Version bump only for package @aave/data
 
 ## 0.26.3 (2021-12-02)
 
-**Note:** Version bump only for package @aave/math-utils
-
-
-
-
+**Note:** Version bump only for package @aave/data
 
 ## 0.26.2 (2021-11-22)
 
-
 ### Bug Fixes
 
-* drop fetch options ([#193](https://github.com/@aave/aave-utilities/issues/193)) ([f6d0cf9](https://github.com/@aave/aave-utilities/commit/f6d0cf9edb7ffdea43a3ac2bbd505cea3d24710c))
-
-
-
-
+- drop fetch options
+  ([#193](https://github.com/@aave/aave-utilities/issues/193))
+  ([f6d0cf9](https://github.com/@aave/aave-utilities/commit/f6d0cf9edb7ffdea43a3ac2bbd505cea3d24710c))
 
 ## 0.26.1 (2021-11-21)
 
-
 ### Bug Fixes
 
-* drop ipfs fetching ([#186](https://github.com/@aave/aave-utilities/issues/186)) ([cffb69e](https://github.com/@aave/aave-utilities/commit/cffb69eae36279b9946c0815dea04c36a9a9f1e5))
-
-
-
-
+- drop ipfs fetching
+  ([#186](https://github.com/@aave/aave-utilities/issues/186))
+  ([cffb69e](https://github.com/@aave/aave-utilities/commit/cffb69eae36279b9946c0815dea04c36a9a9f1e5))
 
 # 0.26.0 (2021-11-19)
 
-
 ### Features
 
-* make gateway configurable ([#185](https://github.com/@aave/aave-utilities/issues/185)) ([b0b63a7](https://github.com/@aave/aave-utilities/commit/b0b63a7832cdeb282f4ba244be84ae40342a06d0))
-
-
-
-
+- make gateway configurable
+  ([#185](https://github.com/@aave/aave-utilities/issues/185))
+  ([b0b63a7](https://github.com/@aave/aave-utilities/commit/b0b63a7832cdeb282f4ba244be84ae40342a06d0))
 
 ## 0.25.8 (2021-11-18)
 
-
 ### Bug Fixes
 
-* dont encode encoded hashes ([#183](https://github.com/@aave/aave-utilities/issues/183)) ([90e001b](https://github.com/@aave/aave-utilities/commit/90e001bb13ced072ea1532d767e9ed0678e13430))
-
-
-
-
+- dont encode encoded hashes
+  ([#183](https://github.com/@aave/aave-utilities/issues/183))
+  ([90e001b](https://github.com/@aave/aave-utilities/commit/90e001bb13ced072ea1532d767e9ed0678e13430))
 
 ## 0.25.7 (2021-11-16)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 ## 0.25.6 (2021-11-16)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 ## 0.25.5 (2021-11-16)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 ## 0.25.4 (2021-11-15)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 ## 0.25.3 (2021-11-15)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 ## 0.25.2 (2021-11-12)
 
@@ -232,7 +200,7 @@ All notable changes to this project will be documented in this file. See
 
 ## 0.20.2 (2021-10-27)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 ## 0.20.1 (2021-10-26)
 
@@ -276,7 +244,7 @@ All notable changes to this project will be documented in this file. See
 
 ## 0.17.1 (2021-10-26)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 # 0.17.0 (2021-10-25)
 
@@ -288,7 +256,7 @@ All notable changes to this project will be documented in this file. See
 
 ## 0.16.1 (2021-10-25)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 # 0.16.0 (2021-10-22)
 
@@ -308,7 +276,7 @@ All notable changes to this project will be documented in this file. See
 
 ## 0.15.3 (2021-10-14)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 ## 0.15.2 (2021-10-14)
 
@@ -319,7 +287,7 @@ All notable changes to this project will be documented in this file. See
 
 ## 0.15.1 (2021-10-14)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 # 0.15.0 (2021-10-13)
 
@@ -355,15 +323,15 @@ All notable changes to this project will be documented in this file. See
 
 ## 0.12.3 (2021-10-07)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 ## 0.12.2 (2021-10-06)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 ## 0.12.1 (2021-10-06)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 # Change Log
 
@@ -408,7 +376,7 @@ All notable changes to this project will be documented in this file. See
 
 ## 0.8.2 (2021-09-30)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 ## 0.8.1 (2021-09-30)
 
@@ -452,7 +420,7 @@ All notable changes to this project will be documented in this file. See
 
 ## 0.6.1 (2021-09-27)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 # 0.6.0 (2021-09-23)
 
@@ -492,11 +460,11 @@ All notable changes to this project will be documented in this file. See
 
 ## 0.2.2 (2021-09-22)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 ## 0.2.1 (2021-09-22)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 # Change Log
 
@@ -513,7 +481,7 @@ All notable changes to this project will be documented in this file. See
 
 ## 0.1.11 (2021-09-17)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 ## 0.1.10 (2021-09-15)
 
@@ -538,7 +506,7 @@ All notable changes to this project will be documented in this file. See
 
 ## 0.1.7 (2021-09-15)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 ## 0.1.6 (2021-09-15)
 
@@ -551,19 +519,19 @@ All notable changes to this project will be documented in this file. See
 
 ## 0.1.5 (2021-09-15)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 ## 0.1.4 (2021-09-14)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 ## 0.1.3 (2021-09-14)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 ## 0.1.2 (2021-09-14)
 
-**Note:** Version bump only for package @aave/math-utils
+**Note:** Version bump only for package @aave/data
 
 ## 0.1.1 (2021-09-08)
 

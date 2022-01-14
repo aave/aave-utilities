@@ -7,8 +7,8 @@ available to you in the project root. You can run each of them with
 `npm run <script-name>`.
 
 If you want to limit the scope of a script to a particular package, add the
-`--scope` option to the command (e.g.,
-`npm run clean -- --scope=@aave/math-utils`). See [run options][].
+`--scope` option to the command (e.g., `npm run clean -- --scope=@aave/data`).
+See [run options][].
 
 You can also run [Lerna commands](https://lerna.js.org/#commands) in this
 project. It is recommended that you use
@@ -96,7 +96,7 @@ package name
 
 ```json
 "scripts": {
-    "clean": "cd ../.. && npx rimraf packages/YOUR_PACKAGE_NAME/dist packages/math-utils/*.log*",
+    "clean": "cd ../.. && npx rimraf packages/YOUR_PACKAGE_NAME/dist packages/data/*.log*",
     "lint": "cd ../.. && eslint packages/YOUR_PACKAGE_NAME/src/**/*.ts",
     "check-types": "yarn build -- --noEmit",
     "prebuild": "yarn clean",

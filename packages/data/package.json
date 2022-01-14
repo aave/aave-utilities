@@ -1,16 +1,16 @@
 {
-  "name": "@aave/math-utils",
+  "name": "@aave/data",
   "version": "0.27.1",
   "license": "MIT",
   "description": "",
   "scripts": {
-    "clean": "cd ../.. && npx rimraf packages/math-utils/dist packages/math-utils/*.log*",
-    "lint": "cd ../.. && eslint packages/math-utils/src/**/*.ts",
+    "clean": "cd ../.. && npx rimraf packages/data/dist packages/data/*.log*",
+    "lint": "cd ../.. && eslint packages/data/src/**/*.ts",
     "check-types": "npm run build -- --noEmit",
     "prebuild": "npm run clean",
-    "build": "cd ../.. && tsc -p packages/math-utils/tsconfig.json && npx tsc -p packages/math-utils/tsconfig.json --module commonjs --outDir ./packages/math-utils/dist/cjs",
-    "test": "cd ../.. && yarn test packages/math-utils",
-    "cover": "cd ../.. && yarn cover packages/math-utils",
+    "build": "cd ../.. && tsc -p packages/data/tsconfig.json && npx tsc -p packages/data/tsconfig.json --module commonjs --outDir ./packages/data/dist/cjs",
+    "test": "cd ../.. && yarn test packages/data",
+    "cover": "cd ../.. && yarn cover packages/data",
     "commit": "cd ../.. && yarn commit",
     "prepublishOnly": "yarn build"
   },
