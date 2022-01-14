@@ -32,15 +32,15 @@ export interface UiIncentiveDataProviderInterface {
     lendingPoolAddressProvider: string,
   ) => Promise<ReserveIncentiveDataResponse[]>;
   getUserReservesIncentivesData: (
-    user: string,
     lendingPoolAddressProvider: string,
+    user: string,
   ) => Promise<UserReserveIncentiveDataResponse[]>;
   getReservesIncentivesDataHumanized: (
     lendingPoolAddressProvider: string,
   ) => Promise<ReserveIncentiveDataHumanizedResponse[]>;
   getUserReservesIncentivesDataHumanized: (
-    user: string,
     lendingPoolAddressProvider: string,
+    user: string,
   ) => Promise<UserReserveIncentiveDataHumanizedResponse[]>;
   getIncentivesDataWithPrice: (
     args: GetIncentivesDataWithPriceType,
