@@ -360,10 +360,10 @@ describe('UiIncentiveDataProvider', () => {
         provider,
       });
       await expect(async () =>
-        instance.getUserReservesIncentivesDataHumanized({
+        instance.getUserReservesIncentivesDataHumanized(
           lendingPoolAddressProvider,
           user,
-        }),
+        ),
       ).rejects.toThrowError(
         'UiIncentiveDataProviderAddress must be an eth valid address',
       );
@@ -371,10 +371,10 @@ describe('UiIncentiveDataProvider', () => {
     it('Expects to fail if lendingPoolAddressProvider not an eth address', async () => {
       const lendingPoolAddressProvider = 'asdf';
       await expect(async () =>
-        instance.getUserReservesIncentivesDataHumanized({
+        instance.getUserReservesIncentivesDataHumanized(
           lendingPoolAddressProvider,
           user,
-        }),
+        ),
       ).rejects.toThrow(
         `Address: ${lendingPoolAddressProvider} is not a valid ethereum Address`,
       );
@@ -382,10 +382,10 @@ describe('UiIncentiveDataProvider', () => {
     it('Expects to fail if user not an eth address', async () => {
       const user = 'asdf';
       await expect(async () =>
-        instance.getUserReservesIncentivesDataHumanized({
+        instance.getUserReservesIncentivesDataHumanized(
           lendingPoolAddressProvider,
           user,
-        }),
+        ),
       ).rejects.toThrow(`Address: ${user} is not a valid ethereum Address`);
     });
     it('should work with finding only', async () => {
@@ -395,10 +395,10 @@ describe('UiIncentiveDataProvider', () => {
           getUserReservesIncentivesData: async () =>
             Promise.resolve(getUserIncentivesDataMock),
         } as unknown as IUiIncentiveDataProviderV3);
-      const response = await instance.getUserReservesIncentivesDataHumanized({
+      const response = await instance.getUserReservesIncentivesDataHumanized(
         lendingPoolAddressProvider,
         user,
-      });
+      );
       expect(spy).toHaveBeenCalled();
       expect(response).toEqual([
         {

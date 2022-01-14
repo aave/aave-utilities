@@ -42,7 +42,8 @@ export interface UiIncentiveDataProviderInterface {
     lendingPoolAddressProvider: string,
   ) => Promise<ReservesIncentiveDataHumanized[]>;
   getUserReservesIncentivesDataHumanized: (
-    args: UserReservesIncentivesDataType,
+    lendingPoolAddressProvider: string,
+    user: string,
   ) => Promise<UserReservesIncentivesDataHumanized[]>;
   getIncentivesDataWithPriceLegacy: (
     args: GetIncentivesDataWithPriceType,
@@ -162,9 +163,8 @@ export class UiIncentiveDataProvider
 
   @UiIncentiveDataProviderValidator
   public async getUserReservesIncentivesDataHumanized(
-    @isEthAddress('user')
-    @isEthAddress('lendingPoolAddressProvider')
-    { user, lendingPoolAddressProvider }: UserReservesIncentivesDataType,
+    @isEthAddress() lendingPoolAddressProvider: string,
+    @isEthAddress() user: string,
   ): Promise<UserReservesIncentivesDataHumanized[]> {
     const response: UserReservesIncentivesData[] =
       await this.getUserReservesIncentivesData({
