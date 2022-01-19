@@ -26,11 +26,11 @@ Aave utilities are available as npm packages,
 
 ```sh
 // with npm
-npm install --save ethers // peer dependency
+npm install --save ethers
 npm install @aave/contract-helpers @aave/math-utils
 
 // with yarn
-yarn add --dev ethers // peer dependency
+yarn add --dev ethers
 yarn add @aave/contract-helpers @aave/math-utils
 ```
 
@@ -75,15 +75,12 @@ yarn add @aave/contract-helpers @aave/math-utils
       - [liquidationCall](#liquidationCall)
       - [swapCollateral](#swapCollateral)
       - [repayWithCollateral](#repayWithCollateral)
-    - d. [Flashloans](#flashloans)
-      - [V2](#flashloans-v2)
-      - [V3](#flashloans-v3)
-    - e. [Staking](#staking)
+    - d. [Staking](#staking)
       - [stake](#stake)
       - [redeem](#redeem)
       - [cooldown](#cooldown)
       - [claimRewards](#claimRewards)
-    - f. [Governance V2](#governancev2)
+    - e. [Governance V2](#governancev2)
       - [Governance](#governance)
       - [create](#create)
       - [cancel](#cancel)
@@ -93,7 +90,7 @@ yarn add @aave/contract-helpers @aave/math-utils
       - [GovernanceDelegation](#governanceDelegation)
       - [delegate](#delegate)
       - [delegateByType](#delegateByType)
-    - g. [Faucets](#faucets)
+    - f. [Faucets](#faucets)
       - [mint](#mint)
 
 <br />
@@ -305,7 +302,7 @@ liquidationThreshold, usageAsCollateral, etc.) and current status (rates,
 liquidity, utilization, etc.)
 
 There are two formatter functions, one with incentives data and one without.
-Both of these functions take input data from the
+Both require input data from the
 [fetching protocol data](#fetching-protocol-data) section
 
 ### formatReserves
@@ -533,7 +530,6 @@ To send a transaction from this object:
 import { BigNumber } from 'ethers';
 
 // initialize provider
-// tx of type EthereumTransactionTypeExtended
 
 const extendedTxData = await tx.unsignedData();
 const { from, ...txData } = extendedTxData;
@@ -590,6 +586,11 @@ const txs: EthereumTransactionTypeExtended[] = await pool.supply({
 
 ### signERC20Approval
 
+This method is used to generate the raw signature data to be signed by the user.
+Once generated, a function is called to trigger a signature request from the
+users wallet. This signature can be passed a parameter to `supplyWithPermit` or
+`repayWithPermit` in place of an approval transaction
+
 <details>
   <summary>Sample Code</summary>
 
@@ -606,7 +607,7 @@ const pool = new Pool(provider, {
 - @param `reserve` The ethereum address of the reserve 
 - @param `amount` The amount to be deposited 
 */
-const dataToSignPromise: string = await pool.signERC20Approval({
+const dataToSign: string = await pool.signERC20Approval({
   user,
   reserve,
   amount,
@@ -644,7 +645,7 @@ const pool = new Pool(provider, {
 - @param `user` The ethereum address that will make the deposit 
 - @param `reserve` The ethereum address of the reserve 
 - @param `amount` The amount to be deposited 
-- @param `signature` Signature approving Pool to spend user funds, from signERC20Approval()
+- @param `signature` Signature approving Pool to spend user funds, received from signing output data of signERC20Approval()
 - @param @optional `onBehalfOf` The ethereum address for which user is depositing. It will default to the user address
 */
 const txs: EthereumTransactionTypeExtended[] = await pool.supplyWithPermit({
