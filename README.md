@@ -299,24 +299,19 @@ Examples of hooks for fetching data with these queries are located
 
 ## Reserve Data
 
-Formatted reserve data is an array of tokens in the Aave market, including
-supply, borrow rates, configuration,
+Formatted reserve data is an array of tokens in the Aave market, containing
+realtime, human-readable data above asset configuration (maxLtv,
+liquidationThreshold, usageAsCollateral, etc.) and current status (rates,
+liquidity, utilization, etc.)
+
+There are two formatter functions, one with incentives data and one without.
+Both of these functions take input data from the
+[fetching protocol data](#fetching-protocol-data) section
 
 ### formatReserves
 
-Description
-
-<details>
-  <summary>Parameters</summary>
-
-```ts
-- @param `reserves` //Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.reservesArray`
-- @param `currentTimestamp` //Current UNIX timestamp in seconds
-- @param `marketReferencePriceInUsd` //Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.baseCurrencyData.marketReferencePriceInUsd`
-- @param `marketReferenceCurrencyDecimals` //Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.baseCurrencyData.marketReferenceCurrencyDecimals`
-```
-
-</details>
+formatReserves returns an array of formatted configuration and status data for
+each reserve in an Aave market
 
 <details>
   <summary>Sample Code</summary>
@@ -331,6 +326,12 @@ const baseCurrencyData = reserves.baseCurrencyData;
 
 const currentTimestamp = Math.round(new Date().getTime() / 1000);
 
+/*
+- @param `reserves` Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.reservesArray`
+- @param `currentTimestamp` Current UNIX timestamp in seconds
+- @param `marketReferencePriceInUsd` Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.baseCurrencyData.marketReferencePriceInUsd`
+- @param `marketReferenceCurrencyDecimals` Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.baseCurrencyData.marketReferenceCurrencyDecimals`
+*/
 const formattedPoolReserves = formatReserves({
   reserves: reservesArray,
   currentTimestamp,
@@ -346,18 +347,9 @@ const formattedPoolReserves = formatReserves({
 
 ### formatReservesAndIncentives
 
-<details>
-  <summary>Parameters</summary>
-
-```ts
-- @param `reserves` //Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.reservesArray`
-- @param `currentTimestamp` //Current UNIX timestamp in seconds, Math.floor(Date.now() / 1000)
-- @param `marketReferencePriceInUsd` //Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.baseCurrencyData.marketReferencePriceInUsd`
-- @param `marketReferenceCurrencyDecimals` //Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.baseCurrencyData.marketReferenceCurrencyDecimals`
-- @param `reserveIncentives` //Input from [Fetching Protocol Data](#fetching-protocol-data), `reserveIncentives`
-```
-
-</details>
+formatReservesAndIncentives returns an array of formatted configuration and
+status data plus an object with supply, variable borrow, and stable borrow
+incentives for each reserve in an Aave market
 
 <details>
   <summary>Sample Code</summary>
@@ -372,6 +364,13 @@ const baseCurrencyData = reserves.baseCurrencyData;
 
 const currentTimestamp = Math.round(new Date().getTime() / 1000);
 
+/*
+- @param `reserves` Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.reservesArray`
+- @param `currentTimestamp` Current UNIX timestamp in seconds, Math.floor(Date.now() / 1000)
+- @param `marketReferencePriceInUsd` Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.baseCurrencyData.marketReferencePriceInUsd`
+- @param `marketReferenceCurrencyDecimals` Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.baseCurrencyData.marketReferenceCurrencyDecimals`
+- @param `reserveIncentives` Input from [Fetching Protocol Data](#fetching-protocol-data), `reserveIncentives`
+*/
 const formattedPoolReserves = formatReservesAndIncentives({
   reserves: reservesArray,
   currentTimestamp,
@@ -388,26 +387,15 @@ const formattedPoolReserves = formatReservesAndIncentives({
 
 ## User Data
 
-Description
+Formatted user data is an object containing cumulative metrics (healthFactor,
+totalLiquidity, totalBorrows, etc.) and an array of formatted reserve data plus
+user holdings (aTokens, debtTokens) for each reserve in an Aave market
 
 ### formatUserSummary
 
 Returns formatted summary of Aave user portfolio including: array of holdings,
 total liquidity, total collateral, total borrows, liquidation threshold, health
-factor, and available borrowing power.
-
-<details>
-  <summary>Parameters</summary>
-
-```ts
-- @param `currentTimestamp` //Current UNIX timestamp in seconds, Math.floor(Date.now() / 1000)
-- @param `marketReferencePriceInUsd` //Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.baseCurrencyData.marketReferencePriceInUsd`
-- @param `marketReferenceCurrencyDecimals` //Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.baseCurrencyData.marketReferenceCurrencyDecimals`
-- @param `userReserves` //Input from [Fetching Protocol Data](#fetching-protocol-data), combination of `userReserves.userReserves` and `reserves.reservesArray`
-- @param `userEmodeCategoryId` //Input from [Fetching Protocol Data](#fetching-protocol-data), `userReserves.userEmodeCategoryId`
-```
-
-</details>
+factor, and available borrowing power
 
 <details>
   <summary>Sample Code</summary>
@@ -441,6 +429,13 @@ if (userReservesArray && reservesArray.length) {
   });
 }
 
+/*
+- @param `currentTimestamp` Current UNIX timestamp in seconds, Math.floor(Date.now() / 1000)
+- @param `marketReferencePriceInUsd` Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.baseCurrencyData.marketReferencePriceInUsd`
+- @param `marketReferenceCurrencyDecimals` Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.baseCurrencyData.marketReferenceCurrencyDecimals`
+- @param `userReserves` Input from [Fetching Protocol Data](#fetching-protocol-data), combination of `userReserves.userReserves` and `reserves.reservesArray`
+- @param `userEmodeCategoryId` Input from [Fetching Protocol Data](#fetching-protocol-data), `userReserves.userEmodeCategoryId`
+*/
 const userSummary = formatUserSummaryAndIncentives({
   currentTimestamp,
   marketReferencePriceInUsd: baseCurrencyData.marketReferenceCurrencyPriceInUsd,
@@ -460,21 +455,6 @@ const userSummary = formatUserSummaryAndIncentives({
 Returns formatted summary of Aave user portfolio including: array of holdings,
 total liquidity, total collateral, total borrows, liquidation threshold, health
 factor, available borrowing power, and dictionary of claimable incentives
-
-<details>
-  <summary>Parameters</summary>
-
-```ts
-- @param `currentTimestamp` //Current UNIX timestamp in seconds, Math.floor(Date.now() / 1000)
-- @param `marketReferencePriceInUsd` //Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.baseCurrencyData.marketReferencePriceInUsd`
-- @param `marketReferenceCurrencyDecimals` //Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.baseCurrencyData.marketReferenceCurrencyDecimals`
-- @param `userReserves` //Input from [Fetching Protocol Data](#fetching-protocol-data), combination of `userReserves.userReserves` and `reserves.reservesArray`
-- @param `userEmodeCategoryId` //Input from [Fetching Protocol Data](#fetching-protocol-data), `userReserves.userEmodeCategoryId`
-- @param `reserveIncentives` //Input from [Fetching Protocol Data](#fetching-protocol-data), `reserveIncentives`
-- @param `userIncentives` //Input from [Fetching Protocol Data](#fetching-protocol-data), `userIncentives`
-```
-
-</details>
 
 <details>
   <summary>Sample Code</summary>
@@ -506,6 +486,15 @@ if (userReservesArray && reservesArray.length) {
   });
 }
 
+/*
+- @param `currentTimestamp` Current UNIX timestamp in seconds, Math.floor(Date.now() / 1000)
+- @param `marketReferencePriceInUsd` Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.baseCurrencyData.marketReferencePriceInUsd`
+- @param `marketReferenceCurrencyDecimals` Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.baseCurrencyData.marketReferenceCurrencyDecimals`
+- @param `userReserves` Input from [Fetching Protocol Data](#fetching-protocol-data), combination of `userReserves.userReserves` and `reserves.reservesArray`
+- @param `userEmodeCategoryId` Input from [Fetching Protocol Data](#fetching-protocol-data), `userReserves.userEmodeCategoryId`
+- @param `reserveIncentives` Input from [Fetching Protocol Data](#fetching-protocol-data), `reserveIncentives`
+- @param `userIncentives` Input from [Fetching Protocol Data](#fetching-protocol-data), `userIncentives`
+*/
 const userSummary = formatUserSummaryAndIncentives({
   currentTimestamp,
   marketReferencePriceInUsd: baseCurrencyData.marketReferenceCurrencyPriceInUsd,
