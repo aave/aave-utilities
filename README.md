@@ -26,8 +26,11 @@ Aave utilities are available as npm packages,
 
 ```sh
 // with npm
+npm install --save ethers // peer dependency
 npm install @aave/contract-helpers @aave/math-utils
+
 // with yarn
+yarn add --dev ethers // peer dependency
 yarn add @aave/contract-helpers @aave/math-utils
 ```
 
@@ -52,15 +55,15 @@ yarn add @aave/contract-helpers @aave/math-utils
       - [supply](#supply)
       - [signERC20Approval](#signERC20Approval)
       - [supplyWithPermit](#supply-with-permit)
-      - [borrow](#borrow-v3)
-      - [repay](#repay-v3)
+      - [borrow](<#borrow-(v3)>)
+      - [repay](<#repay-(v3)>)
       - [repayWithATokens](#repayWithATokens)
-      - [withdraw](#withdraw-v3)
-      - [swapBorrowRateMode](#swapBorrowRateMode-v3)
-      - [setUsageAsCollateral](#setUsageAsCollateral-v3)
-      - [liquidationCall](#liquidationCall-v3)
-      - [swapCollateral](#swapCollateral-v3)
-      - [repayWithCollateral](#repayWithCollateral-v3)
+      - [withdraw](<#withdraw-(v3)>)
+      - [swapBorrowRateMode](<#swapBorrowRateMode-(v3)>)
+      - [setUsageAsCollateral](<#setUsageAsCollateral-(v3)>)
+      - [liquidationCall](<#liquidationCall-(v3)>)
+      - [swapCollateral](<#swapCollateral-(v3)>)
+      - [repayWithCollateral](<#repayWithCollateral-(v3)>)
       - [setUserEMode](#setUserEMode)
     - c. [Lending Pool V2](#lending-pool-v2)
       - [deposit](#deposit)
@@ -554,6 +557,577 @@ const txResponse = await signer.sendTransaction({
 
 ## Pool V3
 
+Transaction methods to perform actions on the V3 Pool contract
+
+### supply
+
+Formerly `deposit`, supply the underlying asset into the Pool reserve. For every
+token that is supplied, a corresponding amount of aTokens is minted
+
+<details>
+  <summary>Sample Code</summary>
+
+```ts
+import { Pool } from '@aave/contract-helpers';
+
+const pool = new Pool(provider, {
+  POOL: poolAddress,
+  WETH_GATEWAY: wethGatewayAddress,
+});
+
+/*
+- @param `user` The ethereum address that will make the deposit 
+- @param `reserve` The ethereum address of the reserve 
+- @param `amount` The amount to be deposited 
+- @param @optional `onBehalfOf` The ethereum address for which user is depositing. It will default to the user address
+*/
+const txs: EthereumTransactionTypeExtended[] = await pool.supply({
+  user,
+  reserve,
+  amount,
+  onBehalfOf,
+});
+
+// If the user has not appoved the pool contract to spend their tokens, txs will also contain two transactions: approve and supply. These approval and supply transactions can be submitted just as in V2,OR you can skip the first approval transaction with a gasless signature by using signERC20Approval -> supplyWithPermit which are documented below
+
+// If there is no approval transaction, then supply() can called without the need for an approval or signature
+
+// Submit the transaction(s) as shown in Transaction Methods header
+```
+
+</details>
+
+<br />
+
+### signERC20Approval
+
+<details>
+  <summary>Sample Code</summary>
+
+```ts
+import { Pool } from '@aave/contract-helpers';
+
+const pool = new Pool(provider, {
+  POOL: poolAddress,
+  WETH_GATEWAY: wethGatewayAddress,
+});
+
+/*
+- @param `user` The ethereum address that will make the deposit 
+- @param `reserve` The ethereum address of the reserve 
+- @param `amount` The amount to be deposited 
+*/
+const dataToSignPromise: string = await pool.signERC20Approval({
+  user,
+  reserve,
+  amount,
+});
+
+const signature = await provider.send('eth_signTypedData_v4', [
+  currentAccount,
+  dataToSign,
+]);
+
+// This signature can now be passed into the supplyWithPermit() function below
+```
+
+</details>
+
+<br />
+
+### supplyWithPermit
+
+Same underlying method as `supply` but uses a signature based approval passed as
+a paramter.
+
+<details>
+  <summary>Sample Code</summary>
+
+```ts
+import { Pool } from '@aave/contract-helpers';
+
+const pool = new Pool(provider, {
+  POOL: poolAddress,
+  WETH_GATEWAY: wethGatewayAddress,
+});
+
+/*
+- @param `user` The ethereum address that will make the deposit 
+- @param `reserve` The ethereum address of the reserve 
+- @param `amount` The amount to be deposited 
+- @param `signature` Signature approving Pool to spend user funds, from signERC20Approval()
+- @param @optional `onBehalfOf` The ethereum address for which user is depositing. It will default to the user address
+*/
+const txs: EthereumTransactionTypeExtended[] = await pool.supplyWithPermit({
+  user,
+  reserve,
+  amount,
+  signature,
+  onBehalfOf,
+});
+
+// Submit transaction[0] as shown in Transaction Methods header
+```
+
+</details>
+
+<br />
+
+### borrow (V3)
+
+Borrow an `amount` of `reserve` asset.
+
+User must have a collaterised position (i.e. aTokens in their wallet)
+
+<details>
+  <summary>Sample Code</summary>
+
+```ts
+import { Pool, InterestRate } from '@aave/contract-helpers';
+
+const pool = new Pool(provider, {
+  POOL: poolAddress,
+  WETH_GATEWAY: wethGatewayAddress,
+});
+
+/*
+- @param `user` The ethereum address that repays 
+- @param `reserve` The ethereum address of the reserve on which the user borrowed 
+- @param `amount` The amount to repay, or (-1) if the user wants to repay everything 
+- @param `interestRateMode` // Whether the borrow will incur a stable (InterestRate.Stable) or variable (InterestRate.Variable) interest rate
+- @param @optional `onBehalfOf` The ethereum address for which user is repaying. It will default to the user address
+*/
+const txs: EthereumTransactionTypeExtended[] = lendingPool.repay({
+  user,
+  reserve,
+  amount,
+  interestRateMode,
+  onBehalfOf,
+});
+
+// Submit transaction[0] as shown in Transaction Methods header
+```
+
+</details>
+
+<br />
+
+### repay (V3)
+
+Repays a borrow on the specific reserve, for the specified amount (or for the
+whole amount, if (-1) is specified). the target user is defined by `onBehalfOf`.
+If there is no repayment on behalf of another account, `onBehalfOf` must be
+equal to `user`
+
+If the Pool is not approved to spend `user` funds, an approval transaction will
+also be returned
+
+<details>
+  <summary>Sample Code</summary>
+
+```ts
+import { Pool } from '@aave/contract-helpers';
+
+const pool = new Pool(provider, {
+  POOL: poolAddress,
+  WETH_GATEWAY: wethGatewayAddress,
+});
+
+/*
+- @param `user` The ethereum address that will make the deposit 
+- @param `reserve` The ethereum address of the reserve 
+- @param `amount` The amount to be deposited 
+- @param `interestRateMode` // Whether stable (InterestRate.Stable) or variable (InterestRate.Variable) debt will be repaid
+- @param @optional `onBehalfOf` The ethereum address for which user is depositing. It will default to the user address
+*/
+const txs: EthereumTransactionTypeExtended[] = await pool.repay({
+  user,
+  reserve,
+  amount,
+  interestRateMode,
+  onBehalfOf,
+});
+
+// If the user has not appoved the pool contract to spend their tokens, txs will also contain two transactions: approve and repay. This approval transaction can be submitted just as in V2, OR you approve with a gasless signature by using signERC20Approval -> supplyWithPermit which are documented below
+
+// If there is no approval transaction, then repay() can called without the need for an approval or signature
+
+// Submit transaction(s) as shown in Transaction Methods header
+```
+
+</details>
+
+<br />
+
+### repayWithPermit
+
+Same underlying method as `repay` but uses a signature based approval passed as
+a paramter.
+
+<details>
+  <summary>Sample Code</summary>
+
+```ts
+import { Pool } from '@aave/contract-helpers';
+
+const pool = new Pool(provider, {
+  POOL: poolAddress,
+  WETH_GATEWAY: wethGatewayAddress,
+});
+
+/*
+- @param `user` The ethereum address that will make the deposit 
+- @param `reserve` The ethereum address of the reserve 
+- @param `amount` The amount to be deposited 
+- @param `signature` Signature approving Pool to spend user funds, from signERC20Approval()
+- @param @optional `onBehalfOf` The ethereum address for which user is depositing. It will default to the user address
+*/
+const txs: EthereumTransactionTypeExtended[] = await pool.supplyWithPermit({
+  user,
+  reserve,
+  amount,
+  signature,
+  onBehalfOf,
+});
+
+// Submit transaction[0] as shown in Transaction Methods header
+```
+
+</details>
+
+<br />
+
+### repayWithATokens
+
+Repays a borrow on the specific reserve, for the specified amount, deducting
+funds from a users aToken balance instead of the underlying balance. To repay
+the max debt amount or max aToken balance without dust (whichever is lowest),
+set the amount to -1
+
+There is no need for an approval or signature when repaying with aTokens
+
+<details>
+  <summary>Sample Code</summary>
+
+```ts
+import { Pool, InterestRate } from '@aave/contract-helpers';
+
+const pool = new Pool(provider, {
+  POOL: poolAddress,
+  WETH_GATEWAY: wethGatewayAddress,
+});
+
+/*
+- @param `user` The ethereum address that will make the deposit 
+- @param `amount` The amount to be deposited, -1 to repay max aToken balance or max debt balance without dust (whichever is lowest)
+- @param `reserve` The ethereum address of the reserve 
+- @param `rateMode` The debt type to repay, stable (InterestRate.Stable) or variable (InterestRate.Variable)
+*/
+const txs: EthereumTransactionTypeExtended[] = await pool.repayWithATokens({
+  user,
+  amount,
+  reserve,
+  reateMode,
+});
+
+// Submit transaction[0] as shown in Transaction Methods header
+```
+
+</details>
+
+<br />
+
+### withdraw (V3)
+
+Withdraws the underlying asset of an aToken asset.
+
+<details>
+  <summary>Sample Code</summary>
+
+```ts
+import { Pool } from '@aave/contract-helpers';
+
+const pool = new Pool(provider, {
+  POOL: poolAddress,
+  WETH_GATEWAY: wethGatewayAddress,
+});
+
+/*
+- @param `user` The ethereum address that will make the deposit 
+- @param `reserve` The ethereum address of the reserve 
+- @param `amount` The amount to be deposited 
+- @param `aTokenAddress` The aToken to redeem for underlying asset
+- @param @optional `onBehalfOf` The ethereum address for which user is depositing. It will default to the user address
+*/
+const txs: EthereumTransactionTypeExtended[] = await pool.withdraw({
+  user,
+  reserve,
+  amount,
+  aTokenAddress,
+  onBehalfOf,
+});
+
+// Submit transaction[0] as shown in Transaction Methods header
+```
+
+</details>
+
+<br />
+
+### swapBorrowRateMode (V3)
+
+Borrowers can use this function to swap between stable and variable borrow rate
+modes
+
+<details>
+  <summary>Sample Code</summary>
+
+```ts
+import { Pool, InterestRate } from '@aave/contract-helpers';
+
+const pool = new Pool(provider, {
+  POOL: poolAddress,
+  WETH_GATEWAY: wethGatewayAddress,
+});
+
+/*
+- @param `user` The ethereum address that will make the deposit 
+- @param `reserve` The ethereum address of the reserve 
+- @param `interestRateMode` The rate mode to swap to, stable (InterestRate.Stable) or variable (InterestRate.Variable) 
+*/
+const txs: EthereumTransactionTypeExtended[] = await pool.swapBorrowRateMode({
+  user,
+  reserve,
+  amount,
+  onBehalfOf,
+});
+
+// Submit transaction[0] as shown in Transaction Methods header
+```
+
+</details>
+
+<br />
+
+### setUsageAsCollateral (V3)
+
+Allows depositors to enable or disable a specific deposit as collateral
+
+<details>
+  <summary>Sample Code</summary>
+
+```ts
+import { Pool } from '@aave/contract-helpers';
+
+const pool = new Pool(provider, {
+  POOL: poolAddress,
+  WETH_GATEWAY: wethGatewayAddress,
+});
+
+/*
+- @param `user` The ethereum address that will make the deposit 
+- @param `reserve` The ethereum address of the reserve 
+- @param `usageAsCollateral` Boolean, true if the user wants to use the deposit as collateral, false otherwise
+*/
+const txs: EthereumTransactionTypeExtended[] = await pool.setUsageAsCollateral({
+  user,
+  reserve,
+  usageAsCollateral,
+});
+
+// Submit transaction[0] as shown in Transaction Methods header
+```
+
+</details>
+
+<br />
+
+### liquidationCall (V3)
+
+Users can invoke this function to liquidate an undercollateralized position
+
+<details>
+  <summary>Sample Code</summary>
+
+```ts
+import { Pool } from '@aave/contract-helpers';
+
+const pool = new Pool(provider, {
+  POOL: poolAddress,
+  WETH_GATEWAY: wethGatewayAddress,
+});
+
+/*
+- @param `liquidator` The ethereum address that will liquidate the position 
+- @param `liquidatedUser` The address of the borrower 
+- @param `debtReserve` The ethereum address of the principal reserve 
+- @param `collateralReserve` The address of the collateral to liquidated 
+- @param `purchaseAmount` The amount of principal that the liquidator wants to repay 
+- @param @optional `getAToken` Boolean to indicate if the user wants to receive the aToken instead of the asset. Defaults to false
+*/
+const txs: EthereumTransactionTypeExtended[] = lendingPool.liquidationCall({
+  liquidator,
+  liquidatedUser,
+  debtReserve,
+  collateralReserve,
+  purchaseAmount,
+  getAToken,
+});
+
+// Submit transaction(s) as shown in Transaction Methods header
+```
+
+</details>
+
+<br />
+
+### swapCollateral (V3)
+
+Utilizes flashloan to swap to a different collateral asset
+
+<details>
+  <summary>Sample Code</summary>
+
+```ts
+import { Pool } from '@aave/contract-helpers';
+
+const pool = new Pool(provider, {
+  POOL: poolAddress,
+  SWAP_COLLATERAL_ADAPTER: swapCollateralAdapterAddress,
+  WETH_GATEWAY: wethGatewayAddress,
+});
+
+/*
+- @param `user` The ethereum address that will liquidate the position 
+- @param @optional `flash` If the transaction will be executed through a flasloan(true) or will be done directly through the adapters(false). Defaults to false 
+- @param `fromAsset` The ethereum address of the asset you want to swap 
+- @param `fromAToken` The ethereum address of the aToken of the asset you want to swap 
+- @param `toAsset` The ethereum address of the asset you want to swap to (get) 
+- @param `fromAmount` The amount you want to swap 
+- @param `toAmount` The amount you want to get after the swap 
+- @param `maxSlippage` The max slippage that the user accepts in the swap 
+- @param @optional `permitSignature` A permit signature of the tx. Only needed when previously signed (Not needed at the moment). 
+- @param `swapAll` Bool indicating if the user wants to swap all the current collateral 
+- @param @optional `onBehalfOf` The ethereum address for which user is swaping. It will default to the user address 
+- @param @optional `referralCode` Integrators are assigned a referral code and can potentially receive rewards. It defaults to 0 (no referrer) 
+- @param @optional `useEthPath` Boolean to indicate if the swap will use an ETH path. Defaults to false
+*/
+const txs: EthereumTransactionTypeExtended[] = await lendingPool.swapCollateral(
+  {
+    user,
+    flash,
+    fromAsset,
+    fromAToken,
+    toAsset,
+    fromAmount,
+    toAmount,
+    maxSlippage,
+    permitSignature,
+    swapAll,
+    onBehalfOf,
+    referralCode,
+    useEthPath,
+  },
+);
+
+// Submit transaction(s) as shown in Transaction Methods header
+```
+
+</details>
+
+<br />
+
+### repayWithCollateral (V3)
+
+Allows a borrower to repay the open debt with their collateral
+
+<details>
+  <summary>Sample Code</summary>
+
+```ts
+import { Pool } from '@aave/contract-helpers';
+
+const pool = new Pool(provider, {
+  POOL: poolAddress,
+  REPAY_WITH_COLLATERAL_ADAPTER: repayWithCollateralAddress,
+  WETH_GATEWAY: wethGatewayAddress,
+});
+
+/*
+- @param `user` The ethereum address that will liquidate the position 
+- @param `fromAsset` The ethereum address of the asset you want to repay with (collateral) 
+- @param `fromAToken` The ethereum address of the aToken of the asset you want to repay with (collateral) 
+- @param `assetToRepay` The ethereum address of the asset you want to repay 
+- @param `repayWithAmount` The amount of collateral you want to repay the debt with 
+- @param `repayAmount` The amount of debt you want to repay 
+- @param `permitSignature` A permit signature of the tx. Optional
+- @param @optional `repayAllDebt` Bool indicating if the user wants to repay all current debt. Defaults to false 
+- @param `rateMode` //Enum indicating the type of the interest rate of the collateral
+- @param @optional `onBehalfOf` The ethereum address for which user is swaping. It will default to the user address 
+- @param @optional `referralCode` Integrators are assigned a referral code and can potentially receive rewards. It defaults to 0 (no referrer) 
+- @param @optional `flash` If the transaction will be executed through a flasloan(true) or will be done directly through the adapters(false). Defaults to false 
+- @param @optional `useEthPath` Boolean to indicate if the swap will use an ETH path. Defaults to false
+*/
+const txs: EthereumTransactionTypeExtended[] =
+  await lendingPool.repayWithCollateral({
+    user,
+    fromAsset,
+    fromAToken,
+    assetToRepay,
+    repayWithAmount,
+    repayAmount,
+    permitSignature,
+    repayAllDebt,
+    rateMode,
+    onBehalfOf,
+    referralCode,
+    flash,
+    useEthPath,
+  });
+
+// Submit transaction(s) as shown in Transaction Methods header
+```
+
+</details>
+
+<br />
+
+### setUserEMode
+
+Function to enable eMode on a user account IF conditions are met:
+
+To enable, pass `categoryId` of desired eMode (1 = stablecoins), can only be
+enabled if a users currently borrowed assests are ALL within this eMode category
+To disable, pass `categoryId` of 0, can only be disabled if new LTV will not
+leave user undercollateralized
+
+<details>
+  <summary>Sample Code</summary>
+
+```ts
+import { Pool } from '@aave/contract-helpers';
+
+const pool = new Pool(provider, {
+  POOL: poolAddress,
+  WETH_GATEWAY: wethGatewayAddress,
+});
+
+/*
+- @param `user` The ethereum address that will make the deposit 
+- @param `categoryId` number representing the eMode to switch to, 0 = disable, 1 = stablecoins
+*/
+const txs: EthereumTransactionTypeExtended[] = await pool.setUserEMode({
+  user,
+  categoryId,
+});
+
+// Submit transaction[0] as shown in Transaction Methods header
+```
+
+</details>
+
+<br />
+
 ## Lending Pool V2
 
 Object that contains all the necessary methods to create Aave V2 lending pool
@@ -572,8 +1146,6 @@ import { LendingPool } from '@aave/contract-helpers';
 
 const lendingPool = new LendingPool(provider, {
   LENDING_POOL: lendingPoolAddress,
-  REPAY_WITH_COLLATERAL_ADAPTER: repayWithCollateralAddress,
-  SWAP_COLLATERAL_ADAPTER: swapCollateralAdapterAddress,
   WETH_GATEWAY: wethGatewayAddress,
 });
 
@@ -583,7 +1155,12 @@ const lendingPool = new LendingPool(provider, {
 - @param `amount` The amount to be deposited 
 - @param @optional `onBehalfOf` The ethereum address for which user is depositing. It will default to the user address
 */
-const txs = await lendingPool.deposit({ user, reserve, amount, onBehalfOf });
+const txs: EthereumTransactionTypeExtended[] = await lendingPool.deposit({
+  user,
+  reserve,
+  amount,
+  onBehalfOf,
+});
 
 // Submit transaction(s) as shown in Transaction Methods header
 ```
@@ -608,20 +1185,18 @@ import { LendingPool, InterestRate } from '@aave/contract-helpers';
 
 const lendingPool = new LendingPool(provider, {
   LENDING_POOL: lendingPoolAddress,
-  REPAY_WITH_COLLATERAL_ADAPTER: repayWithCollateralAddress,
-  SWAP_COLLATERAL_ADAPTER: swapCollateralAdapterAddress,
   WETH_GATEWAY: wethGatewayAddress,
 });
 
 /*
-- @param `user` //The ethereum address that will receive the borrowed amount 
-- @param `reserve` //The ethereum address of the reserve asset 
-- @param `amount` //The amount to be borrowed, in human readable units (e.g. 2.5 ETH) 
-- @param `interestRateMode`//Whether the borrow will incur a stable or variable interest rate (1 | 2) 
-- @param @optional `debtTokenAddress` //The ethereum address of the debt token of the asset you want to borrow. Only needed if the reserve is ETH mock address 
-- @param @optional `onBehalfOf` //The ethereum address for which user is borrowing. It will default to the user address 
+- @param `user` The ethereum address that will receive the borrowed amount 
+- @param `reserve` The ethereum address of the reserve asset 
+- @param `amount` The amount to be borrowed, in human readable units (e.g. 2.5 ETH) 
+- @param `interestRateMode`//Whether the borrow will incur a stable (InterestRate.Stable) or variable (InterestRate.Variable) interest rate
+- @param @optional `debtTokenAddress` The ethereum address of the debt token of the asset you want to borrow. Only needed if the reserve is ETH mock address 
+- @param @optional `onBehalfOf` The ethereum address for which user is borrowing. It will default to the user address 
 */
-const txs = await lendingPool.borrow({
+const txs: EthereumTransactionTypeExtended[] = await lendingPool.borrow({
   user,
   reserve,
   amount,
@@ -655,19 +1230,17 @@ import { LendingPool, InterestRate } from '@aave/contract-helpers';
 
 const lendingPool = new LendingPool(provider, {
   LENDING_POOL: lendingPoolAddress,
-  REPAY_WITH_COLLATERAL_ADAPTER: repayWithCollateralAddress,
-  SWAP_COLLATERAL_ADAPTER: swapCollateralAdapterAddress,
   WETH_GATEWAY: wethGatewayAddress,
 });
 
 /*
-- @param `user` //The ethereum address that repays 
-- @param `reserve` //The ethereum address of the reserve on which the user borrowed 
-- @param `amount` //The amount to repay, or (-1) if the user wants to repay everything 
-- @param `interestRateMode` //Whether the borrow will incur a stable or variable interest rate (1 | 2)
-- @param @optional `onBehalfOf` //The ethereum address for which user is repaying. It will default to the user address
+- @param `user` The ethereum address that repays 
+- @param `reserve` The ethereum address of the reserve on which the user borrowed 
+- @param `amount` The amount to repay, or (-1) if the user wants to repay everything 
+- @param `interestRateMode` // Whether stable (InterestRate.Stable) or variable (InterestRate.Variable) debt will be repaid
+- @param @optional `onBehalfOf` The ethereum address for which user is repaying. It will default to the user address
 */
-const txs = lendingPool.repay({
+const txs: EthereumTransactionTypeExtended[] = lendingPool.repay({
   user,
   reserve,
   amount,
@@ -694,19 +1267,17 @@ import { LendingPool } from '@aave/contract-helpers';
 
 const lendingPool = new LendingPool(provider, {
   LENDING_POOL: lendingPoolAddress,
-  REPAY_WITH_COLLATERAL_ADAPTER: repayWithCollateralAddress,
-  SWAP_COLLATERAL_ADAPTER: swapCollateralAdapterAddress,
   WETH_GATEWAY: wethGatewayAddress,
 });
 
 /*
-- @param `user` //The ethereum address that will receive the aTokens 
-- @param `reserve` //The ethereum address of the reserve asset 
-- @param `amount` //The amount of aToken being redeemed 
-- @param @optional `aTokenAddress` //The ethereum address of the aToken. Only needed if the reserve is ETH mock address 
-- @param @optional `onBehalfOf` //The amount of aToken being redeemed. It will default to the user address
+- @param `user` The ethereum address that will receive the aTokens 
+- @param `reserve` The ethereum address of the reserve asset 
+- @param `amount` The amount of aToken being redeemed 
+- @param @optional `aTokenAddress` The ethereum address of the aToken. Only needed if the reserve is ETH mock address 
+- @param @optional `onBehalfOf` The amount of aToken being redeemed. It will default to the user address
 */
-const txs = lendingPool.withdraw({
+const txs: EthereumTransactionTypeExtended[] = lendingPool.withdraw({
   user,
   reserve,
   amount,
@@ -734,17 +1305,18 @@ import { LendingPool, InterestRate } from '@aave/contract-helpers';
 
 const lendingPool = new LendingPool(provider, {
   LENDING_POOL: lendingPoolAddress,
-  REPAY_WITH_COLLATERAL_ADAPTER: repayWithCollateralAddress,
-  SWAP_COLLATERAL_ADAPTER: swapCollateralAdapterAddress,
-  WETH_GATEWAY: wethGatewayAddress,
 });
 
 /*
-- @param `user` //The ethereum address that wants to swap rate modes 
-- @param `reserve` //The address of the reserve on which the user borrowed 
-- @param `interestRateMode` //Whether the borrow will incur a stable or variable interest rate (1 | 2)
+- @param `user` The ethereum address that wants to swap rate modes 
+- @param `reserve` The address of the reserve on which the user borrowed 
+- @param `interestRateMode` //Whether the borrow will incur a stable (InterestRate.Stable) or variable (InterestRate.Variable) interest rate
 */
-const txs = lendingPool.swapBorrowRateMode({ user, reserve, interestRateMode });
+const txs: EthereumTransactionTypeExtended[] = lendingPool.swapBorrowRateMode({
+  user,
+  reserve,
+  interestRateMode,
+});
 // Submit transaction(s) as shown in Transaction Methods header
 ```
 
@@ -754,7 +1326,7 @@ const txs = lendingPool.swapBorrowRateMode({ user, reserve, interestRateMode });
 
 ### setUsageAsCollateral
 
-Allows depositors to enable or disable a specific deposit as collateral.
+Allows depositors to enable or disable a specific deposit as collateral
 
 <details>
   <summary>Sample Code</summary>
@@ -764,21 +1336,20 @@ import { LendingPool, InterestRate } from '@aave/contract-helpers';
 
 const lendingPool = new LendingPool(provider, {
   LENDING_POOL: lendingPoolAddress,
-  REPAY_WITH_COLLATERAL_ADAPTER: repayWithCollateralAddress,
-  SWAP_COLLATERAL_ADAPTER: swapCollateralAdapterAddress,
-  WETH_GATEWAY: wethGatewayAddress,
 });
 
 /*
-- @param `user` //The ethereum address that enables or disables the deposit as collateral 
-- @param `reserve` //The ethereum address of the reserve 
-- @param `useAsCollateral` //True if the user wants to use the deposit as collateral, false otherwise.
+- @param `user` The ethereum address that enables or disables the deposit as collateral 
+- @param `reserve` The ethereum address of the reserve 
+- @param `useAsCollateral` Boolean, true if the user wants to use the deposit as collateral, false otherwise
 */
-const txs = lendingPool.setUsageAsCollateral({
-  user,
-  reserve,
-  usageAsCollateral,
-});
+const txs: EthereumTransactionTypeExtended[] = lendingPool.setUsageAsCollateral(
+  {
+    user,
+    reserve,
+    usageAsCollateral,
+  },
+);
 // Submit transaction(s) as shown in Transaction Methods header
 ```
 
@@ -800,20 +1371,18 @@ import { LendingPool } from '@aave/contract-helpers';
 
 const lendingPool = new LendingPool(provider, {
   LENDING_POOL: lendingPoolAddress,
-  REPAY_WITH_COLLATERAL_ADAPTER: repayWithCollateralAddress,
-  SWAP_COLLATERAL_ADAPTER: swapCollateralAdapterAddress,
   WETH_GATEWAY: wethGatewayAddress,
 });
 
 /*
-- @param `liquidator` //The ethereum address that will liquidate the position 
-- @param `liquidatedUser` //The address of the borrower 
-- @param `debtReserve` //The ethereum address of the principal reserve 
-- @param `collateralReserve` //The address of the collateral to liquidated 
-- @param `purchaseAmount` //The amount of principal that the liquidator wants to repay 
-- @param @optional `getAToken` //Boolean to indicate if the user wants to receive the aToken instead of the asset. Defaults to false
+- @param `liquidator` The ethereum address that will liquidate the position 
+- @param `liquidatedUser` The address of the borrower 
+- @param `debtReserve` The ethereum address of the principal reserve 
+- @param `collateralReserve` The address of the collateral to liquidated 
+- @param `purchaseAmount` The amount of principal that the liquidator wants to repay 
+- @param @optional `getAToken` Boolean to indicate if the user wants to receive the aToken instead of the asset. Defaults to false
 */
-const txs = lendingPool.liquidationCall({
+const txs: EthereumTransactionTypeExtended[] = lendingPool.liquidationCall({
   liquidator,
   liquidatedUser,
   debtReserve,
@@ -821,6 +1390,7 @@ const txs = lendingPool.liquidationCall({
   purchaseAmount,
   getAToken,
 });
+
 // Submit transaction(s) as shown in Transaction Methods header
 ```
 
@@ -844,41 +1414,43 @@ import {
 
 const lendingPool = new LendingPool(provider, {
   LENDING_POOL: lendingPoolAddress,
-  REPAY_WITH_COLLATERAL_ADAPTER: repayWithCollateralAddress,
   SWAP_COLLATERAL_ADAPTER: swapCollateralAdapterAddress,
   WETH_GATEWAY: wethGatewayAddress,
 });
 
 /*
-- @param `user` //The ethereum address that will liquidate the position 
-- @param @optional `flash` //If the transaction will be executed through a flasloan(true) or will be done directly through the adapters(false). Defaults to false 
-- @param `fromAsset` //The ethereum address of the asset you want to swap 
-- @param `fromAToken` //The ethereum address of the aToken of the asset you want to swap 
-- @param `toAsset` //The ethereum address of the asset you want to swap to (get) 
-- @param `fromAmount` //The amount you want to swap 
-- @param `toAmount` //The amount you want to get after the swap 
-- @param `maxSlippage` //The max slippage that the user accepts in the swap 
-- @param @optional `permitSignature` //A permit signature of the tx. Only needed when previously signed (Not needed at the moment). 
-- @param `swapAll` //Bool indicating if the user wants to swap all the current collateral 
-- @param @optional `onBehalfOf` //The ethereum address for which user is swaping. It will default to the user address 
-- @param @optional `referralCode` //Integrators are assigned a referral code and can potentially receive rewards. It defaults to 0 (no referrer) 
-- @param @optional `useEthPath` //Boolean to indicate if the swap will use an ETH path. Defaults to false
+- @param `user` The ethereum address that will liquidate the position 
+- @param @optional `flash` If the transaction will be executed through a flasloan(true) or will be done directly through the adapters(false). Defaults to false 
+- @param `fromAsset` The ethereum address of the asset you want to swap 
+- @param `fromAToken` The ethereum address of the aToken of the asset you want to swap 
+- @param `toAsset` The ethereum address of the asset you want to swap to (get) 
+- @param `fromAmount` The amount you want to swap 
+- @param `toAmount` The amount you want to get after the swap 
+- @param `maxSlippage` The max slippage that the user accepts in the swap 
+- @param @optional `permitSignature` A permit signature of the tx. Only needed when previously signed (Not needed at the moment). 
+- @param `swapAll` Bool indicating if the user wants to swap all the current collateral 
+- @param @optional `onBehalfOf` The ethereum address for which user is swaping. It will default to the user address 
+- @param @optional `referralCode` Integrators are assigned a referral code and can potentially receive rewards. It defaults to 0 (no referrer) 
+- @param @optional `useEthPath` Boolean to indicate if the swap will use an ETH path. Defaults to false
 */
-const txs = await lendingPool.swapCollateral({
-  user,
-  flash,
-  fromAsset,
-  fromAToken,
-  toAsset,
-  fromAmount,
-  toAmount,
-  maxSlippage,
-  permitSignature,
-  swapAll,
-  onBehalfOf,
-  referralCode,
-  useEthPath,
-});
+const txs: EthereumTransactionTypeExtended[] = await lendingPool.swapCollateral(
+  {
+    user,
+    flash,
+    fromAsset,
+    fromAToken,
+    toAsset,
+    fromAmount,
+    toAmount,
+    maxSlippage,
+    permitSignature,
+    swapAll,
+    onBehalfOf,
+    referralCode,
+    useEthPath,
+  },
+);
+
 // Submit transaction(s) as shown in Transaction Methods header
 ```
 
@@ -888,7 +1460,7 @@ const txs = await lendingPool.swapCollateral({
 
 ### repayWithCollateral
 
-Allows a borrower to repay the open debt with the borrower collateral
+Allows a borrower to repay the open debt with their collateral
 
 <details>
   <summary>Sample Code</summary>
@@ -903,40 +1475,41 @@ import {
 const lendingPool = new LendingPool(provider, {
   LENDING_POOL: lendingPoolAddress,
   REPAY_WITH_COLLATERAL_ADAPTER: repayWithCollateralAddress,
-  SWAP_COLLATERAL_ADAPTER: swapCollateralAdapterAddress,
   WETH_GATEWAY: wethGatewayAddress,
 });
 
 /*
-- @param `user` //The ethereum address that will liquidate the position 
-- @param `fromAsset` //The ethereum address of the asset you want to repay with (collateral) 
-- @param `fromAToken` //The ethereum address of the aToken of the asset you want to repay with (collateral) 
-- @param `assetToRepay` //The ethereum address of the asset you want to repay 
-- @param `repayWithAmount` //The amount of collateral you want to repay the debt with 
-- @param `repayAmount` //The amount of debt you want to repay 
-- @param `permitSignature` //A permit signature of the tx. Optional
-- @param @optional `repayAllDebt` //Bool indicating if the user wants to repay all current debt. Defaults to false 
+- @param `user` The ethereum address that will liquidate the position 
+- @param `fromAsset` The ethereum address of the asset you want to repay with (collateral) 
+- @param `fromAToken` The ethereum address of the aToken of the asset you want to repay with (collateral) 
+- @param `assetToRepay` The ethereum address of the asset you want to repay 
+- @param `repayWithAmount` The amount of collateral you want to repay the debt with 
+- @param `repayAmount` The amount of debt you want to repay 
+- @param `permitSignature` A permit signature of the tx. Optional
+- @param @optional `repayAllDebt` Bool indicating if the user wants to repay all current debt. Defaults to false 
 - @param `rateMode` //Enum indicating the type of the interest rate of the collateral
-- @param @optional `onBehalfOf` //The ethereum address for which user is swaping. It will default to the user address 
-- @param @optional `referralCode` //Integrators are assigned a referral code and can potentially receive rewards. It defaults to 0 (no referrer) 
-- @param @optional `flash` //If the transaction will be executed through a flasloan(true) or will be done directly through the adapters(false). Defaults to false 
-- @param @optional `useEthPath` //Boolean to indicate if the swap will use an ETH path. Defaults to false
+- @param @optional `onBehalfOf` The ethereum address for which user is swaping. It will default to the user address 
+- @param @optional `referralCode` Integrators are assigned a referral code and can potentially receive rewards. It defaults to 0 (no referrer) 
+- @param @optional `flash` If the transaction will be executed through a flasloan(true) or will be done directly through the adapters(false). Defaults to false 
+- @param @optional `useEthPath` Boolean to indicate if the swap will use an ETH path. Defaults to false
 */
-const txs = await lendingPool.repayWithCollateral({
-  user,
-  fromAsset,
-  fromAToken,
-  assetToRepay,
-  repayWithAmount,
-  repayAmount,
-  permitSignature,
-  repayAllDebt,
-  rateMode,
-  onBehalfOf,
-  referralCode,
-  flash,
-  useEthPath,
-});
+const txs: EthereumTransactionTypeExtended[] =
+  await lendingPool.repayWithCollateral({
+    user,
+    fromAsset,
+    fromAToken,
+    assetToRepay,
+    repayWithAmount,
+    repayAmount,
+    permitSignature,
+    repayAllDebt,
+    rateMode,
+    onBehalfOf,
+    referralCode,
+    flash,
+    useEthPath,
+  });
+
 // Submit transaction(s) as shown in Transaction Methods header
 ```
 
