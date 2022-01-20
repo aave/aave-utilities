@@ -57,6 +57,7 @@ yarn add @aave/contract-helpers @aave/math-utils
       - [supplyWithPermit](#supply-with-permit)
       - [borrow](<#borrow-(v3)>)
       - [repay](<#repay-(v3)>)
+      - [repayWithPermit](#repayWithPermit)
       - [repayWithATokens](#repayWithATokens)
       - [withdraw](<#withdraw-(v3)>)
       - [swapBorrowRateMode](<#swapBorrowRateMode-(v3)>)
@@ -81,13 +82,11 @@ yarn add @aave/contract-helpers @aave/math-utils
       - [cooldown](#cooldown)
       - [claimRewards](#claimRewards)
     - e. [Governance V2](#governancev2)
-      - [Governance](#governance)
       - [create](#create)
       - [cancel](#cancel)
       - [queue](#queue)
       - [execute](#execute)
       - [submitVote](#submitVote)
-      - [GovernanceDelegation](#governanceDelegation)
       - [delegate](#delegate)
       - [delegateByType](#delegateByType)
     - f. [Faucets](#faucets)
@@ -1511,6 +1510,126 @@ const txs: EthereumTransactionTypeExtended[] =
 
 Example of how to use functions of the Aave governance service
 
+```
+import {
+  TxBuilderV2,
+  AaveGovernanceV2Interface,
+  GovernanceDelegationTokenInterface,
+} from '@aave/protocol-js';
+
+const httpProvider = new Web3.providers.HttpProvider(
+   process.env.ETHEREUM_URL ||
+   "https://kovan.infura.io/v3/<project_id>"
+);
+const txBuilder = new TxBuilderV2(Network.main, httpProvider);
+const gov2 = txBuilder.aaveGovernanceV2Service;
+const powerDelegation = txBuilder.governanceDelegationTokenService;
+```
+
+### create
+
+Creates a Proposal (needs to be validated by the Proposal Validator)
+
+```ts
+import { AaveGovernanceService } from '@aave/contract-helpers';
+
+const governanceService = new AaveGovernanceService(rpcProvider, {
+  GOVERNANCE_ADDRESS: aaveGovernanceV2Address,
+  GOVERNANCE_HELPER_ADDRESS: aaveGovernanceV2HelperAddress,
+  ipfsGateway: IPFS_ENDPOINT,
+});
+
+/*
+- @param `user` The ethereum address that will create the proposal
+- @param `targets` list of contracts called by proposal's associated transactions
+- @param `values` list of value in wei for each propoposal's associated transaction
+- @param `signatures` list of function signatures (can be empty) to be used when created the callData
+- @param `calldatas` list of calldatas: if associated signature empty, calldata ready, else calldata is arguments
+- @param `withDelegatecalls` boolean, true = transaction delegatecalls the taget, else calls the target
+- @param `ipfsHash` IPFS hash of the proposal
+- @param `executor` The ExecutorWithTimelock contract that will execute the proposal: ExecutorType.Short or ExecutorType.Long
+*/
+const tx = governanceService.create({
+  user,
+  targets,
+  values,
+  signatures,
+  calldatas,
+  withDelegatecalls,
+  ipfsHash,
+  executor,
+});
+
+// Submit transaction as shown in Transaction Methods header
+```
+
+### cancel
+
+Cancels a Proposal. Callable by the guardian with relaxed conditions, or by
+anybody if the conditions of cancellation on the executor are fulfilled
+
+```ts
+import { AaveGovernanceService } from '@aave/contract-helpers';
+
+const governanceService = new AaveGovernanceService(rpcProvider, {
+  GOVERNANCE_ADDRESS: aaveGovernanceV2Address,
+  GOVERNANCE_HELPER_ADDRESS: aaveGovernanceV2HelperAddress,
+  ipfsGateway: IPFS_ENDPOINT,
+});
+
+/*
+- @param `user` The ethereum address that will create the proposal
+- @param `proposalId` Id of the proposal we want to queue
+*/
+const tx = governanceService.cancel({ user, proposalId });
+
+// Submit transaction as shown in Transaction Methods header
+```
+
+### queue
+
+Queue the proposal (If Proposal Succeeded)
+
+```ts
+import { AaveGovernanceService } from '@aave/contract-helpers';
+
+const governanceService = new AaveGovernanceService(rpcProvider, {
+  GOVERNANCE_ADDRESS: aaveGovernanceV2Address,
+  GOVERNANCE_HELPER_ADDRESS: aaveGovernanceV2HelperAddress,
+  ipfsGateway: IPFS_ENDPOINT,
+});
+
+/*
+- @param `user` The ethereum address that will create the proposal
+- @param `proposalId` Id of the proposal we want to queue
+*/
+const tx = governanceService.queue({ user, proposalId });
+
+// Submit transaction as shown in Transaction Methods header
+```
+
+### execute
+
+Execute the proposal (If Proposal Queued)
+
+```ts
+import { AaveGovernanceService } from '@aave/contract-helpers';
+
+const governanceService = new AaveGovernanceService(rpcProvider, {
+  GOVERNANCE_ADDRESS: aaveGovernanceV2Address,
+  GOVERNANCE_HELPER_ADDRESS: aaveGovernanceV2HelperAddress,
+  ipfsGateway: IPFS_ENDPOINT,
+});
+
+/*
+- @param `user` The ethereum address that will create the proposal
+- @param `proposalId` Id of the proposal we want to execute
+*/
+const tx = governanceService.execute({ user, proposalId });
+
+// Submit transaction as shown in Transaction Methods header
+```
+
 ### submitVote
 
 Function allowing msg.sender to vote for/against a proposal
@@ -1540,8 +1659,6 @@ const tx = governanceService.submitVote({ user, proposalId, support });
 </details>
 
 <br />
-
-## Governance Delegation
 
 ### delegate
 
