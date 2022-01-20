@@ -108,15 +108,3 @@ export interface UserReservesIncentivesDataHumanized {
   vTokenIncentivesUserData: UserIncentiveDataHumanized;
   sTokenIncentivesUserData: UserIncentiveDataHumanized;
 }
-
-// Method types
-
-export type FullReservesIncentiveDataType = {
-  user: string;
-  lendingPoolAddressProvider: string;
-};
-
-export type UserReservesIncentivesDataType = {
-  user: string;
-  lendingPoolAddressProvider: string;
-};
