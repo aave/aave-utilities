@@ -106,7 +106,7 @@ describe('UiIncentiveDataProvider', () => {
         provider,
       });
       await expect(async () =>
-        instance.getReservesIncentivesData(lendingPoolAddressProvider),
+        instance.getReservesIncentivesData({ lendingPoolAddressProvider }),
       ).rejects.toThrowError(
         'UiIncentiveDataProviderAddress must be an eth valid address',
       );
@@ -114,7 +114,7 @@ describe('UiIncentiveDataProvider', () => {
     it('should throw if lending pool address is not a valid ethereum address', async () => {
       const lendingPoolAddressProvider = 'asdf';
       await expect(async () =>
-        instance.getReservesIncentivesData(lendingPoolAddressProvider),
+        instance.getReservesIncentivesData({ lendingPoolAddressProvider }),
       ).rejects.toThrow(
         `Address: ${lendingPoolAddressProvider} is not a valid ethereum Address`,
       );
@@ -126,7 +126,7 @@ describe('UiIncentiveDataProvider', () => {
           getReservesIncentivesData: async () =>
             Promise.resolve(getReservesIncentivesDataMock),
         } as unknown as IUiIncentiveDataProviderV3);
-      await instance.getReservesIncentivesData(lendingPoolAddressProvider);
+      await instance.getReservesIncentivesData({ lendingPoolAddressProvider });
       expect(spy).toHaveBeenCalled();
     });
   });
@@ -202,7 +202,9 @@ describe('UiIncentiveDataProvider', () => {
         provider,
       });
       await expect(async () =>
-        instance.getReservesIncentivesDataHumanized(lendingPoolAddressProvider),
+        instance.getReservesIncentivesDataHumanized({
+          lendingPoolAddressProvider,
+        }),
       ).rejects.toThrowError(
         'UiIncentiveDataProviderAddress must be an eth valid address',
       );
@@ -210,7 +212,9 @@ describe('UiIncentiveDataProvider', () => {
     it('Expects to fail if lendingPoolAddressProvider not an eth address', async () => {
       const lendingPoolAddressProvider = 'asdf';
       await expect(async () =>
-        instance.getReservesIncentivesDataHumanized(lendingPoolAddressProvider),
+        instance.getReservesIncentivesDataHumanized({
+          lendingPoolAddressProvider,
+        }),
       ).rejects.toThrow(
         `Address: ${lendingPoolAddressProvider} is not a valid ethereum Address`,
       );
@@ -222,9 +226,9 @@ describe('UiIncentiveDataProvider', () => {
           getReservesIncentivesData: async () =>
             Promise.resolve(getReservesIncentivesDataMock),
         } as unknown as IUiIncentiveDataProviderV3);
-      const data = await instance.getReservesIncentivesDataHumanized(
+      const data = await instance.getReservesIncentivesDataHumanized({
         lendingPoolAddressProvider,
-      );
+      });
       expect(spy).toHaveBeenCalled();
       expect(data).toEqual([
         {
