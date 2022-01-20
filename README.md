@@ -50,7 +50,7 @@ yarn add @aave/contract-helpers @aave/math-utils
       - [formatUserSummary](#formatUserSummary)
       - [formatUserSummaryAndIncentives](#formatUserSummaryAndIncentives)
 2.  [Transaction Methods](#transaction-methods)
-    - a. [Provider Setup](#provider-setup)
+    - a. [Submitting Transactions](#submitting-transactions)
     - b. [Pool V3](#pool-v3)
       - [supply](#supply)
       - [signERC20Approval](#signERC20Approval)
@@ -515,9 +515,12 @@ and ethers provider
 
 Once initialized this sdk can be used to generate the transaction data needed to
 perform an action. If an approval is required, the method will return an array
-with two transactions, or single transaction if no approval is needed
+with two transactions, or single transaction if no approval is needed.
 
-Transactions objects will be of this type:
+## Submitting Transactions
+
+All transaction methods will return an array of transaction objects of this
+type:
 
 ```ts
 import { EthereumTransactionTypeExtended } from '@aave/contract-helpers';
@@ -526,17 +529,20 @@ import { EthereumTransactionTypeExtended } from '@aave/contract-helpers';
 To send a transaction from this object:
 
 ```ts
-import { BigNumber } from 'ethers';
+import { BigNumber, providers } from 'ethers';
 
-// initialize provider
-
-const extendedTxData = await tx.unsignedData();
-const { from, ...txData } = extendedTxData;
-const signer = provider.getSigner(from);
-const txResponse = await signer.sendTransaction({
-  ...txData,
-  value: txData.value ? BigNumber.from(txData.value) : undefined,
-});
+function submitTransaction({
+  provider: providers.Web3Provider,
+  tx: EthereumTransactionTypeExtended
+}){
+  const extendedTxData = await tx.unsignedData();
+  const { from, ...txData } = extendedTxData;
+  const signer = provider.getSigner(from);
+  const txResponse = await signer.sendTransaction({
+    ...txData,
+    value: txData.value ? BigNumber.from(txData.value) : undefined,
+  });
+}
 ```
 
 ## Pool V3
@@ -575,9 +581,9 @@ const txs: EthereumTransactionTypeExtended[] = await pool.supply({
 // If the user has not appoved the pool contract to spend their tokens, txs will also contain two transactions: approve and supply. These approval and supply transactions can be submitted just as in V2,OR you can skip the first approval transaction with a gasless signature by using signERC20Approval -> supplyWithPermit which are documented below
 
 // If there is no approval transaction, then supply() can called without the need for an approval or signature
-
-// Submit the transaction(s) as shown in Transaction Methods header
 ```
+
+Submit transaction(s) as shown [here](#submitting-transactions)
 
 </details>
 
@@ -654,9 +660,9 @@ const txs: EthereumTransactionTypeExtended[] = await pool.supplyWithPermit({
   signature,
   onBehalfOf,
 });
-
-// Submit transaction[0] as shown in Transaction Methods header
 ```
+
+Submit transaction as shown [here](#submitting-transactions)
 
 </details>
 
@@ -686,16 +692,16 @@ const pool = new Pool(provider, {
 - @param `interestRateMode` // Whether the borrow will incur a stable (InterestRate.Stable) or variable (InterestRate.Variable) interest rate
 - @param @optional `onBehalfOf` The ethereum address for which user is repaying. It will default to the user address
 */
-const txs: EthereumTransactionTypeExtended[] = lendingPool.repay({
+const txs: EthereumTransactionTypeExtended[] = pool.Borrow({
   user,
   reserve,
   amount,
   interestRateMode,
   onBehalfOf,
 });
-
-// Submit transaction[0] as shown in Transaction Methods header
 ```
+
+Submit transaction as shown [here](#submitting-transactions)
 
 </details>
 
@@ -740,9 +746,9 @@ const txs: EthereumTransactionTypeExtended[] = await pool.repay({
 // If the user has not appoved the pool contract to spend their tokens, txs will also contain two transactions: approve and repay. This approval transaction can be submitted just as in V2, OR you approve with a gasless signature by using signERC20Approval -> supplyWithPermit which are documented below
 
 // If there is no approval transaction, then repay() can called without the need for an approval or signature
-
-// Submit transaction(s) as shown in Transaction Methods header
 ```
+
+Submit transaction(s) as shown [here](#submitting-transactions)
 
 </details>
 
@@ -778,9 +784,9 @@ const txs: EthereumTransactionTypeExtended[] = await pool.supplyWithPermit({
   signature,
   onBehalfOf,
 });
-
-// Submit transaction[0] as shown in Transaction Methods header
 ```
+
+Submit transaction as shown [here](#submitting-transactions)
 
 </details>
 
@@ -818,9 +824,9 @@ const txs: EthereumTransactionTypeExtended[] = await pool.repayWithATokens({
   reserve,
   reateMode,
 });
-
-// Submit transaction[0] as shown in Transaction Methods header
 ```
+
+Submit transaction as shown [here](#submitting-transactions)
 
 </details>
 
@@ -855,9 +861,9 @@ const txs: EthereumTransactionTypeExtended[] = await pool.withdraw({
   aTokenAddress,
   onBehalfOf,
 });
-
-// Submit transaction[0] as shown in Transaction Methods header
 ```
+
+Submit transaction as shown [here](#submitting-transactions)
 
 </details>
 
@@ -890,9 +896,9 @@ const txs: EthereumTransactionTypeExtended[] = await pool.swapBorrowRateMode({
   amount,
   onBehalfOf,
 });
-
-// Submit transaction[0] as shown in Transaction Methods header
 ```
+
+Submit transaction as shown [here](#submitting-transactions)
 
 </details>
 
@@ -923,9 +929,9 @@ const txs: EthereumTransactionTypeExtended[] = await pool.setUsageAsCollateral({
   reserve,
   usageAsCollateral,
 });
-
-// Submit transaction[0] as shown in Transaction Methods header
 ```
+
+Submit transaction as shown [here](#submitting-transactions)
 
 </details>
 
@@ -962,9 +968,9 @@ const txs: EthereumTransactionTypeExtended[] = lendingPool.liquidationCall({
   purchaseAmount,
   getAToken,
 });
-
-// Submit transaction(s) as shown in Transaction Methods header
 ```
+
+Submit transaction(s) as shown [here](#submitting-transactions)
 
 </details>
 
@@ -1018,9 +1024,9 @@ const txs: EthereumTransactionTypeExtended[] = await lendingPool.swapCollateral(
     useEthPath,
   },
 );
-
-// Submit transaction(s) as shown in Transaction Methods header
 ```
+
+Submit transaction(s) as shown [here](#submitting-transactions)
 
 </details>
 
@@ -1073,9 +1079,9 @@ const txs: EthereumTransactionTypeExtended[] =
     flash,
     useEthPath,
   });
-
-// Submit transaction(s) as shown in Transaction Methods header
 ```
+
+Submit transaction(s) as shown [here](#submitting-transactions)
 
 </details>
 
@@ -1109,9 +1115,9 @@ const txs: EthereumTransactionTypeExtended[] = await pool.setUserEMode({
   user,
   categoryId,
 });
-
-// Submit transaction[0] as shown in Transaction Methods header
 ```
+
+Submit transaction as shown [here](#submitting-transactions)
 
 </details>
 
@@ -1150,9 +1156,9 @@ const txs: EthereumTransactionTypeExtended[] = await lendingPool.deposit({
   amount,
   onBehalfOf,
 });
-
-// Submit transaction(s) as shown in Transaction Methods header
 ```
+
+Submit transaction(s) as shown [here](#submitting-transactions)
 
 </details>
 
@@ -1194,9 +1200,9 @@ const txs: EthereumTransactionTypeExtended[] = await lendingPool.borrow({
   onBehalfOf,
   referralCode,
 });
-
-// Submit transaction(s) as shown in Transaction Methods header
 ```
+
+Submit transaction as shown [here](#submitting-transactions)
 
 </details>
 
@@ -1236,9 +1242,9 @@ const txs: EthereumTransactionTypeExtended[] = lendingPool.repay({
   interestRateMode,
   onBehalfOf,
 });
-
-// Submit transaction(s) as shown in Transaction Methods header
 ```
+
+Submit transaction(s) as shown [here](#submitting-transactions)
 
 </details>
 
@@ -1273,9 +1279,9 @@ const txs: EthereumTransactionTypeExtended[] = lendingPool.withdraw({
   aTokenAddress,
   onBehalfOf,
 });
-
-// Submit transaction(s) as shown in Transaction Methods header
 ```
+
+Submit transaction as shown [here](#submitting-transactions)
 
 </details>
 
@@ -1306,8 +1312,9 @@ const txs: EthereumTransactionTypeExtended[] = lendingPool.swapBorrowRateMode({
   reserve,
   interestRateMode,
 });
-// Submit transaction(s) as shown in Transaction Methods header
 ```
+
+Submit transaction as shown [here](#submitting-transactions)
 
 </details>
 
@@ -1339,8 +1346,9 @@ const txs: EthereumTransactionTypeExtended[] = lendingPool.setUsageAsCollateral(
     usageAsCollateral,
   },
 );
-// Submit transaction(s) as shown in Transaction Methods header
 ```
+
+Submit transaction as shown [here](#submitting-transactions)
 
 </details>
 
@@ -1379,9 +1387,9 @@ const txs: EthereumTransactionTypeExtended[] = lendingPool.liquidationCall({
   purchaseAmount,
   getAToken,
 });
-
-// Submit transaction(s) as shown in Transaction Methods header
 ```
+
+Submit transaction(s) as shown [here](#submitting-transactions)
 
 </details>
 
@@ -1439,9 +1447,9 @@ const txs: EthereumTransactionTypeExtended[] = await lendingPool.swapCollateral(
     useEthPath,
   },
 );
-
-// Submit transaction(s) as shown in Transaction Methods header
 ```
+
+Submit transaction(s) as shown [here](#submitting-transactions)
 
 </details>
 
@@ -1498,9 +1506,9 @@ const txs: EthereumTransactionTypeExtended[] =
     flash,
     useEthPath,
   });
-
-// Submit transaction(s) as shown in Transaction Methods header
 ```
+
+Submit transaction(s) as shown [here](#submitting-transactions)
 
 </details>
 
@@ -1510,25 +1518,26 @@ const txs: EthereumTransactionTypeExtended[] =
 
 Example of how to use functions of the Aave governance service
 
-```
-import {
-  TxBuilderV2,
-  AaveGovernanceV2Interface,
-  GovernanceDelegationTokenInterface,
-} from '@aave/protocol-js';
+```ts
+import { AaveGovernanceService } from '@aave/contract-helpers';
 
 const httpProvider = new Web3.providers.HttpProvider(
-   process.env.ETHEREUM_URL ||
-   "https://kovan.infura.io/v3/<project_id>"
+  process.env.ETHEREUM_URL || 'https://kovan.infura.io/v3/<project_id>',
 );
-const txBuilder = new TxBuilderV2(Network.main, httpProvider);
-const gov2 = txBuilder.aaveGovernanceV2Service;
-const powerDelegation = txBuilder.governanceDelegationTokenService;
+
+const governanceService = new AaveGovernanceService(httpProvider, {
+  GOVERNANCE_ADDRESS: aaveGovernanceV2Address,
+  GOVERNANCE_HELPER_ADDRESS: aaveGovernanceV2HelperAddress,
+  ipfsGateway: IPFS_ENDPOINT,
+});
 ```
 
 ### create
 
 Creates a Proposal (needs to be validated by the Proposal Validator)
+
+<details>
+  <summary>Sample Code</summary>
 
 ```ts
 import { AaveGovernanceService } from '@aave/contract-helpers';
@@ -1559,14 +1568,20 @@ const tx = governanceService.create({
   ipfsHash,
   executor,
 });
-
-// Submit transaction as shown in Transaction Methods header
 ```
+
+Submit transaction as shown [here](#submitting-transactions)
+
+</details>
+<br />
 
 ### cancel
 
 Cancels a Proposal. Callable by the guardian with relaxed conditions, or by
 anybody if the conditions of cancellation on the executor are fulfilled
+
+<details>
+  <summary>Sample Code</summary>
 
 ```ts
 import { AaveGovernanceService } from '@aave/contract-helpers';
@@ -1582,9 +1597,12 @@ const governanceService = new AaveGovernanceService(rpcProvider, {
 - @param `proposalId` Id of the proposal we want to queue
 */
 const tx = governanceService.cancel({ user, proposalId });
-
-// Submit transaction as shown in Transaction Methods header
 ```
+
+Submit transaction as shown [here](#submitting-transactions)
+
+</details>
+<br />
 
 ### queue
 
@@ -1604,13 +1622,20 @@ const governanceService = new AaveGovernanceService(rpcProvider, {
 - @param `proposalId` Id of the proposal we want to queue
 */
 const tx = governanceService.queue({ user, proposalId });
-
-// Submit transaction as shown in Transaction Methods header
 ```
+
+Submit transaction as shown [here](#submitting-transactions)
+
+</details>
+
+<br />
 
 ### execute
 
 Execute the proposal (If Proposal Queued)
+
+<details>
+  <summary>Sample Code</summary>
 
 ```ts
 import { AaveGovernanceService } from '@aave/contract-helpers';
@@ -1626,9 +1651,12 @@ const governanceService = new AaveGovernanceService(rpcProvider, {
 - @param `proposalId` Id of the proposal we want to execute
 */
 const tx = governanceService.execute({ user, proposalId });
-
-// Submit transaction as shown in Transaction Methods header
 ```
+
+Submit transaction as shown [here](#submitting-transactions)
+
+</details>
+<br />
 
 ### submitVote
 
@@ -1652,9 +1680,9 @@ const governanceService = new AaveGovernanceService(rpcProvider, {
 - @param `support` Bool indicating if you are voting in favor (true) or against (false)
 */
 const tx = governanceService.submitVote({ user, proposalId, support });
-
-// Submit transaction as shown in Transaction Methods header
 ```
+
+Submit transaction as shown [here](#submitting-transactions)
 
 </details>
 
@@ -1679,9 +1707,9 @@ const powerDelegation = new GovernancePowerDelegationTokenService(rpcProvider);
 - @param `governanceToken` The ethereum address of the governance token
 */
 const tx = powerDelegation.delegate({ user, delegatee, governanceToken });
-
-// Submit transaction as shown in Transaction Methods header
 ```
+
+Submit transaction as shown [here](#submitting-transactions)
 
 </details>
 
@@ -1712,8 +1740,9 @@ const tx = powerDelegation.delegateByType({
   delegationType,
   governanceToken,
 });
-// Submit transaction as shown in Transaction Methods header
 ```
+
+Submit transaction as shown [here](#submitting-transactions)
 
 </details>
 
@@ -1742,8 +1771,8 @@ const faucetService = new FaucetService(provider, faucetAddress);
 - @param `tokenSymbol` The symbol of the token you want to mint
 */
 const tx = faucet.mint({ userAddress, reserve, tokenSymbol });
-
-// Submit transaction as shown in Transaction Methods header
 ```
+
+Submit transaction as shown [here](#submitting-transactions)
 
 </details>
