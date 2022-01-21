@@ -18,6 +18,23 @@ import { normalizedToUsd } from '../usd/normalized-to-usd';
 import { calculateReserveDebt } from './calculate-reserve-debt';
 
 export interface FormatReserveResponse {
+  id: string;
+  symbol: string;
+  name: string;
+  decimals: number;
+  underlyingAsset: string;
+  liquidityIndex: string;
+  liquidityRate: string;
+  variableBorrowIndex: string;
+  variableBorrowRate: string;
+  lastUpdateTimestamp: number;
+  debtCeiling: string;
+  usageAsCollateralEnabled: boolean;
+  eModeCategoryId: number;
+  isolationModeTotalDebt: string;
+  debtCeilingDecimals: number;
+  averageStableRate: string;
+  stableDebtLastUpdateTimestamp: number;
   reserveFactor: string;
   baseLTVasCollateral: string;
   eModeLtv: string;
@@ -54,7 +71,12 @@ export interface FormatReserveRequest {
 }
 
 export interface ReserveData {
+  id: string;
+  symbol: string;
+  name: string;
   decimals: number;
+  underlyingAsset: string;
+  usageAsCollateralEnabled: boolean;
   reserveFactor: string;
   baseLTVasCollateral: string;
   averageStableRate: string;
@@ -71,6 +93,7 @@ export interface ReserveData {
   totalScaledVariableDebt: string;
   lastUpdateTimestamp: number;
   // v3
+  eModeCategoryId: number;
   borrowCap: string;
   supplyCap: string;
   debtCeiling: string;
@@ -206,6 +229,7 @@ function formatEnhancedReserve({
     : '0';
 
   return {
+    ...reserve,
     totalVariableDebt: normalizeWithReserve(reserve.totalVariableDebt),
     totalStableDebt: normalizeWithReserve(reserve.totalStableDebt),
     totalLiquidity: normalizeWithReserve(reserve.totalLiquidity),
