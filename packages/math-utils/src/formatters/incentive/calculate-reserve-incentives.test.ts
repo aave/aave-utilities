@@ -27,7 +27,7 @@ describe('calculateReserveIncentives', () => {
     );
 
     const reserve = {
-      ...userReserveMock.userReserve.reserve,
+      ...userReserveMock.reserve,
       totalLiquidity: totalLiquidity.toString(),
     };
 
@@ -54,7 +54,7 @@ describe('calculateReserveIncentives', () => {
         totalStableDebt: calculateReserveDebtResult.totalStableDebt.toString(),
         decimals: 18,
         priceInMarketReferenceCurrency:
-          userReserveMock.userReserve.reserve.priceInMarketReferenceCurrency,
+          userReserveMock.reserve.priceInMarketReferenceCurrency,
         marketReferenceCurrencyDecimals: 8,
       });
       expect(result.aIncentivesData[0].incentiveAPR).toBe('0.000015768');

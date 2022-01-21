@@ -9,10 +9,7 @@ describe('calculateIncentiveAPR', () => {
     .stableBorrow(50);
   const reserveIncentiveMock = new ReserveIncentiveMock();
   it('calculates incentives APR', () => {
-    const { totalLiquidity } = calculateReserveDebt(
-      userReserveMock.userReserve.reserve,
-      1,
-    );
+    const { totalLiquidity } = calculateReserveDebt(userReserveMock.reserve, 1);
     const result = calculateIncentiveAPR({
       emissionPerSecond:
         reserveIncentiveMock.reserveIncentive.aIncentiveData
@@ -22,8 +19,8 @@ describe('calculateIncentiveAPR', () => {
           .rewardsTokenInformation[0].rewardPriceFeed,
       totalTokenSupply: totalLiquidity.toString(),
       priceInMarketReferenceCurrency:
-        userReserveMock.userReserve.reserve.priceInMarketReferenceCurrency,
-      decimals: userReserveMock.userReserve.reserve.decimals,
+        userReserveMock.reserve.priceInMarketReferenceCurrency,
+      decimals: userReserveMock.reserve.decimals,
       rewardTokenDecimals:
         reserveIncentiveMock.reserveIncentive.aIncentiveData
           .rewardsTokenInformation[0].rewardTokenDecimals,

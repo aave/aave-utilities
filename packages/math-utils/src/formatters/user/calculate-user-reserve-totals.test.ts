@@ -15,7 +15,10 @@ describe('calculateUserReserveTotals', () => {
   const currentTimestamp = 1;
   const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
-      userReserve: usdcReserveMock.userReserve,
+      userReserve: {
+        ...usdcReserveMock.userReserve,
+        reserve: { ...usdcReserveMock.reserve },
+      },
       marketReferencePriceInUsdNormalized,
       marketReferenceCurrencyDecimals,
       currentTimestamp,
@@ -29,7 +32,7 @@ describe('calculateUserReserveTotals', () => {
     userReserve: {
       ...ethReserveMock.userReserve,
       reserve: {
-        ...ethReserveMock.userReserve.reserve,
+        ...ethReserveMock.reserve,
         debtCeiling: '1',
       },
     },
@@ -78,6 +81,7 @@ describe('calculateUserReserveTotals', () => {
       generateUserReserveSummary({
         userReserve: {
           ...usdcReserveMock.userReserve,
+          reserve: usdcReserveMock.reserve,
           usageAsCollateralEnabledOnUser: false,
         },
         marketReferencePriceInUsdNormalized,
@@ -88,6 +92,7 @@ describe('calculateUserReserveTotals', () => {
       generateUserReserveSummary({
         userReserve: {
           ...ethReserveMock.userReserve,
+          reserve: ethReserveMock.reserve,
           usageAsCollateralEnabledOnUser: false,
         },
         marketReferencePriceInUsdNormalized,

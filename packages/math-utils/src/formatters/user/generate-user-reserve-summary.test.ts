@@ -10,10 +10,10 @@ describe('generateUserReserveSummary', () => {
     .supply(200)
     .variableBorrow(50)
     .stableBorrow(50);
-  const { decimals } = usdcUserMock.userReserve.reserve;
+  const { decimals } = usdcUserMock.reserve;
   const marketReferenceCurrencyDecimals = 18;
   const rawSummary: UserReserveSummaryResponse = generateUserReserveSummary({
-    userReserve: usdcUserMock.userReserve,
+    userReserve: { ...usdcUserMock.userReserve, reserve: usdcUserMock.reserve },
     marketReferencePriceInUsdNormalized: 10,
     marketReferenceCurrencyDecimals,
     currentTimestamp: 1,

@@ -35,7 +35,7 @@ describe('calculateUserReserveIncentives', () => {
       userReserveData: {
         ...userMock.userReserve,
         reserve: {
-          ...userMock.userReserve.reserve,
+          ...userMock.reserve,
           totalLiquidity: totalLiquidity.toString(),
         },
       },

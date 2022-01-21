@@ -10,10 +10,10 @@ describe('calculateAllReserveIncentives', () => {
     .stableBorrow(100);
 
   const { totalLiquidity, totalVariableDebt, totalStableDebt } =
-    calculateReserveDebt(userReserveMock.userReserve.reserve, 1);
+    calculateReserveDebt(userReserveMock.reserve, 1);
 
   const reserve = {
-    ...userReserveMock.userReserve.reserve,
+    ...userReserveMock.reserve,
     totalLiquidity: totalLiquidity.toString(),
     totalVariableDebt: totalVariableDebt.toString(),
     totalStableDebt: totalStableDebt.toString(),

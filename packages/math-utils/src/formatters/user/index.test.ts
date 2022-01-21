@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js';
+import { formatReserves } from '../..';
 import {
   ReserveIncentiveMock,
+  ReserveMock,
   UserIncentiveMock,
   UserReserveMock,
 } from '../../mocks';
@@ -12,10 +14,6 @@ import {
 } from './index';
 
 describe('formatUserSummaryETHMarket', () => {
-  const ethUserMock = new UserReserveMock({ decimals: 18 })
-    .supply(200)
-    .variableBorrow(50)
-    .stableBorrow(50);
   const usdcUserMock = new UserReserveMock({ decimals: 6 })
     .supply(200)
     .variableBorrow(50)
@@ -23,7 +21,8 @@ describe('formatUserSummaryETHMarket', () => {
   const marketReferencePriceInUsd = 10 ** 9; // 10
   const marketReferenceCurrencyDecimals = 18;
   const request: FormatUserSummaryRequest = {
-    userReserves: [ethUserMock.userReserve, usdcUserMock.userReserve],
+    userReserves: [usdcUserMock.userReserve],
+    formattedReserves: [usdcUserMock.reserve],
     marketReferencePriceInUsd,
     marketReferenceCurrencyDecimals,
     currentTimestamp: 1,
@@ -32,12 +31,12 @@ describe('formatUserSummaryETHMarket', () => {
 
   it('should return the correct response', () => {
     const result = formatUserSummary(request);
-    expect(result.totalLiquidityMarketReferenceCurrency).toEqual('4000');
-    expect(result.totalLiquidityUSD).toEqual('40000');
-    expect(result.totalCollateralMarketReferenceCurrency).toEqual('4000');
-    expect(result.totalCollateralUSD).toEqual('40000');
-    expect(result.totalBorrowsMarketReferenceCurrency).toEqual('2000');
-    expect(result.totalBorrowsUSD).toEqual('20000');
+    expect(result.totalLiquidityMarketReferenceCurrency).toEqual('2000');
+    expect(result.totalLiquidityUSD).toEqual('20000');
+    expect(result.totalCollateralMarketReferenceCurrency).toEqual('2000');
+    expect(result.totalCollateralUSD).toEqual('20000');
+    expect(result.totalBorrowsMarketReferenceCurrency).toEqual('1000');
+    expect(result.totalBorrowsUSD).toEqual('10000');
     expect(result.availableBorrowsMarketReferenceCurrency).toEqual('0');
     expect(result.availableBorrowsUSD).toEqual('0');
     expect(result.currentLoanToValue).toEqual('0.5');
@@ -125,8 +124,16 @@ describe('formatUserSummaryAndIncentives', () => {
   const userIncentiveMock = new UserIncentiveMock();
   const marketReferencePriceInUsd = '10';
   const marketReferenceCurrencyDecimals = 18;
+  const reserveMock = new ReserveMock();
+  const formattedReserves = formatReserves({
+    reserves: [{ ...reserveMock.reserve, priceInMarketReferenceCurrency: '0' }],
+    currentTimestamp: 0,
+    marketReferenceCurrencyDecimals: 0,
+    marketReferencePriceInUsd: '1',
+  });
   const request: FormatUserSummaryAndIncentivesRequest = {
     userReserves: [ethUserMock.userReserve, usdcUserMock.userReserve],
+    formattedReserves,
     marketReferencePriceInUsd,
     marketReferenceCurrencyDecimals,
     currentTimestamp: 1,

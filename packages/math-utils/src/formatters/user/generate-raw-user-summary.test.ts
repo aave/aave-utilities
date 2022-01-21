@@ -21,7 +21,10 @@ describe('generateRawUserSummary', () => {
   const ethUserMock = new UserReserveMock().supply(200).variableBorrow(100);
   const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
-      userReserve: usdcUserMock.userReserve,
+      userReserve: {
+        ...usdcUserMock.userReserve,
+        reserve: usdcUserMock.reserve,
+      },
       marketReferencePriceInUsdNormalized,
       marketReferenceCurrencyDecimals: 18,
       currentTimestamp,
@@ -31,6 +34,7 @@ describe('generateRawUserSummary', () => {
   const rawETHSummary: UserReserveSummaryResponse = generateUserReserveSummary({
     userReserve: {
       ...ethUserMock.userReserve,
+      reserve: ethUserMock.reserve,
     },
     marketReferencePriceInUsdNormalized,
     marketReferenceCurrencyDecimals: 18,
@@ -51,6 +55,7 @@ describe('generateRawUserSummary', () => {
         scaledATokenBalance: (
           Number(usdcUserMock.userReserve.scaledATokenBalance) * 2
         ).toString(),
+        reserve: usdcUserMock.reserve,
       },
       marketReferencePriceInUsdNormalized,
       marketReferenceCurrencyDecimals: 18,
@@ -65,7 +70,7 @@ describe('generateRawUserSummary', () => {
           Number(ethUserMock.userReserve.scaledVariableDebt) * 2
         ).toString(),
         reserve: {
-          ...ethUserMock.userReserve.reserve,
+          ...ethUserMock.reserve,
           debtCeiling: '100000000000000000000000000',
         },
       },
