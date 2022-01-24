@@ -232,10 +232,17 @@ function formatEnhancedReserve({
       4,
     ),
     formattedReserveLiquidationBonus: normalize(
-      reserve.reserveLiquidationBonus,
+      valueToBigNumber(reserve.reserveLiquidationBonus).minus(
+        10 ** LTV_PRECISION,
+      ),
       4,
     ),
-    formattedEModeLiquidationBonus: normalize(reserve.eModeLiquidationBonus, 4),
+    formattedEModeLiquidationBonus: normalize(
+      valueToBigNumber(reserve.reserveLiquidationBonus).minus(
+        10 ** LTV_PRECISION,
+      ),
+      4,
+    ),
     totalScaledVariableDebt: normalizeWithReserve(
       reserve.totalScaledVariableDebt,
     ),
