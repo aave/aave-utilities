@@ -231,8 +231,11 @@ function formatEnhancedReserve({
       reserve.eModeLiquidationThreshold,
       4,
     ),
-    formattedReserveLiquidationBonus: reserve.reserveLiquidationBonus,
-    formattedEModeLiquidationBonus: reserve.eModeLiquidationBonus.toString(),
+    formattedReserveLiquidationBonus: normalize(
+      reserve.reserveLiquidationBonus,
+      4,
+    ),
+    formattedEModeLiquidationBonus: normalize(reserve.eModeLiquidationBonus, 4),
     totalScaledVariableDebt: normalizeWithReserve(
       reserve.totalScaledVariableDebt,
     ),
