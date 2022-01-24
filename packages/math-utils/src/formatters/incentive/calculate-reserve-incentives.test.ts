@@ -57,8 +57,12 @@ describe('calculateReserveIncentives', () => {
           userReserveMock.reserve.priceInMarketReferenceCurrency,
         marketReferenceCurrencyDecimals: 8,
       });
-      expect(result.aIncentivesData[0].incentiveAPR).toBe('0.000015768');
-      expect(result.vIncentivesData[0].incentiveAPR).toBe('0.000063072');
+      expect(result.aIncentivesData[0].incentiveAPR).toBe(
+        '0.00000000000015768',
+      );
+      expect(result.vIncentivesData[0].incentiveAPR).toBe(
+        '0.00000000000063072',
+      );
       expect(result.sIncentivesData[0].incentiveAPR).toBe('0');
       expect(result.aIncentivesData[0].rewardTokenAddress).toBe(
         '0x0000000000000000000000000000000000000000',
