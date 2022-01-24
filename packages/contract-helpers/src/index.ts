@@ -25,3 +25,13 @@ export * from './synthetix-contract';
 export * from './commons/types';
 export * from './commons/ipfs';
 export * from './commons/utils';
+
+// Shared method input types
+export type ReservesHelperInput = {
+  lendingPoolAddressProvider: string;
+};
+
+export type UserReservesHelperInput = {
+  user: string;
+  lendingPoolAddressProvider: string;
+};

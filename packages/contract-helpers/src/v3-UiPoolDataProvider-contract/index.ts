@@ -1,5 +1,6 @@
 import { providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
+import { ReservesHelperInput, UserReservesHelperInput } from '../index';
 import { IUiPoolDataProvider as UiPoolDataProviderContract } from './typechain/IUiPoolDataProvider';
 import { IUiPoolDataProvider__factory } from './typechain/IUiPoolDataProvider__factory';
 import {
@@ -38,21 +39,15 @@ export interface UiPoolDataProviderContext {
 }
 
 export interface UiPoolDataProviderInterface {
-  getReservesList: (lendingPoolAddressProvider: string) => Promise<string[]>;
-  getReservesData: (
-    lendingPoolAddressProvider: string,
-  ) => Promise<ReservesData>;
+  getReservesList: (args: ReservesHelperInput) => Promise<string[]>;
+  getReservesData: (args: ReservesHelperInput) => Promise<ReservesData>;
   getUserReservesData: (
-    lendingPoolAddressProvider: string,
-    user: string,
+    args: UserReservesHelperInput,
   ) => Promise<UserReserveData>;
   getReservesHumanized: (
-    lendingPoolAddressProvider: string,
+    args: ReservesHelperInput,
   ) => Promise<ReservesDataHumanized>;
-  getUserReservesHumanized: (
-    lendingPoolAddressProvider: string,
-    user: string,
-  ) => Promise<{
+  getUserReservesHumanized: (args: UserReservesHelperInput) => Promise<{
     userReserves: UserReserveDataHumanized[];
     userEmodeCategoryId: number;
   }>;
@@ -79,9 +74,9 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
   /**
    * Get the underlying asset address for each lending pool reserve
    */
-  public async getReservesList(
-    lendingPoolAddressProvider: string,
-  ): Promise<string[]> {
+  public async getReservesList({
+    lendingPoolAddressProvider,
+  }: ReservesHelperInput): Promise<string[]> {
     if (!isAddress(lendingPoolAddressProvider)) {
       throw new Error('Lending pool address is not valid');
     }
@@ -92,9 +87,9 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
   /**
    * Get data for each lending pool reserve
    */
-  public async getReservesData(
-    lendingPoolAddressProvider: string,
-  ): Promise<ReservesData> {
+  public async getReservesData({
+    lendingPoolAddressProvider,
+  }: ReservesHelperInput): Promise<ReservesData> {
     if (!isAddress(lendingPoolAddressProvider)) {
       throw new Error('Lending pool address is not valid');
     }
@@ -105,10 +100,10 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
   /**
    * Get data for each user reserve on the lending pool
    */
-  public async getUserReservesData(
-    lendingPoolAddressProvider: string,
-    user: string,
-  ): Promise<UserReserveData> {
+  public async getUserReservesData({
+    lendingPoolAddressProvider,
+    user,
+  }: UserReservesHelperInput): Promise<UserReserveData> {
     if (!isAddress(lendingPoolAddressProvider)) {
       throw new Error('Lending pool address is not valid');
     }
@@ -120,11 +115,11 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
     return this._contract.getUserReservesData(lendingPoolAddressProvider, user);
   }
 
-  public async getReservesHumanized(
-    lendingPoolAddressProvider: string,
-  ): Promise<ReservesDataHumanized> {
+  public async getReservesHumanized({
+    lendingPoolAddressProvider,
+  }: ReservesHelperInput): Promise<ReservesDataHumanized> {
     const { 0: reservesRaw, 1: poolBaseCurrencyRaw }: ReservesData =
-      await this.getReservesData(lendingPoolAddressProvider);
+      await this.getReservesData({ lendingPoolAddressProvider });
 
     const reservesData: ReserveDataHumanized[] = reservesRaw.map(
       reserveRaw => ({
@@ -209,15 +204,15 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
     };
   }
 
-  public async getUserReservesHumanized(
-    lendingPoolAddressProvider: string,
-    user: string,
-  ): Promise<{
+  public async getUserReservesHumanized({
+    lendingPoolAddressProvider,
+    user,
+  }: UserReservesHelperInput): Promise<{
     userReserves: UserReserveDataHumanized[];
     userEmodeCategoryId: number;
   }> {
     const { 0: userReservesRaw, 1: userEmodeCategoryId }: UserReserveData =
-      await this.getUserReservesData(lendingPoolAddressProvider, user);
+      await this.getUserReservesData({ lendingPoolAddressProvider, user });
 
     return {
       userReserves: userReservesRaw.map(userReserveRaw => ({
