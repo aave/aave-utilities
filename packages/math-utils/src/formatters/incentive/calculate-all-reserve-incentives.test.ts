@@ -27,11 +27,11 @@ describe('calculateAllReserveIncentives', () => {
     expect(
       result['0x0000000000000000000000000000000000000000'].aIncentives[0]
         .incentiveAPR,
-    ).toBe('0.000010512');
+    ).toBe('10512000000000');
     expect(
       result['0x0000000000000000000000000000000000000000'].vIncentives[0]
         .incentiveAPR,
-    ).toBe('0.000031536');
+    ).toBe('31536000000000');
     expect(
       result['0x0000000000000000000000000000000000000000'].sIncentives[0]
         .incentiveAPR,
