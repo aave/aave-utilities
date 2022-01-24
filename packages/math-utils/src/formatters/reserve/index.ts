@@ -295,7 +295,7 @@ export interface FormatReserveUSDResponse extends FormatReserveResponse {
   supplyCapUSD: string;
   priceInMarketReferenceCurrency: string;
   formattedPriceInMarketReferenceCurrency: string;
-  // priceInUSD: string;
+  priceInUSD: string;
 }
 
 /**
@@ -370,13 +370,16 @@ export function formatReserveUSD({
       marketReferenceCurrencyDecimals,
     ),
     priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-    // priceInUSD: nativeToUSD({
-    //   amount: new BigNumber(1).shiftedBy(reserve.decimals),
-    //   currencyDecimals: reserve.decimals,
-    //   marketReferenceCurrencyDecimals,
-    //   priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-    //   marketReferencePriceInUsd,
-    // }),
+    priceInUSD: nativeToUSD({
+      amount: new BigNumber(1).shiftedBy(reserve.decimals),
+      currencyDecimals: reserve.decimals,
+      marketReferenceCurrencyDecimals,
+      priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+      normalizedMarketReferencePriceInUsd: normalize(
+        marketReferencePriceInUsd,
+        marketReferenceCurrencyDecimals,
+      ),
+    }),
     // v3
     // caps are already in absolutes
     borrowCapUSD: normalizedToUsd(

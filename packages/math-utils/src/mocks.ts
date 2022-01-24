@@ -116,6 +116,7 @@ export class UserReserveMock {
       formattedEModeLtv: '0.6',
       formattedEModeLiquidationThreshold: '0.7',
       formattedEModeLiquidationBonus: '0',
+      priceInUSD: '10',
       totalLiquidityUSD: '0',
       availableLiquidityUSD: '0',
       totalDebtUSD: '0',

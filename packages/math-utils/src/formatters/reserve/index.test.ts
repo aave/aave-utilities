@@ -62,5 +62,6 @@ describe('formatReserve', () => {
     });
 
     expect(formattedReserve.availableLiquidityUSD).toBe('200');
+    expect(formattedReserve.priceInUSD).toBe('2');
   });
 });
