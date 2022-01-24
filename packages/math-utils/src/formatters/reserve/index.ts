@@ -283,6 +283,7 @@ export interface FormatReserveUSDResponse extends FormatReserveResponse {
   totalStableDebtUSD: string;
   borrowCapUSD: string;
   supplyCapUSD: string;
+  priceInMarketReferenceCurrency: string;
   formattedPriceInMarketReferenceCurrency: string;
   // priceInUSD: string;
 }
@@ -358,6 +359,7 @@ export function formatReserveUSD({
       reserve.priceInMarketReferenceCurrency,
       marketReferenceCurrencyDecimals,
     ),
+    priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
     // priceInUSD: nativeToUSD({
     //   amount: new BigNumber(1).shiftedBy(reserve.decimals),
     //   currencyDecimals: reserve.decimals,
