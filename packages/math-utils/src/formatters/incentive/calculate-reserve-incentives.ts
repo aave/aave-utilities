@@ -36,7 +36,6 @@ export function calculateRewardTokenPrice(
   address: string,
   priceFeed: string,
   priceFeedDecimals: number,
-  marketReferenceCurrencyDecimals: number,
 ): string {
   // For V3 incentives, all rewards will have attached price feed
   if (Number(priceFeed) > 0) {
@@ -54,10 +53,7 @@ export function calculateRewardTokenPrice(
     reserve => reserve.underlyingAsset.toLowerCase() === address,
   );
   if (rewardReserve) {
-    return normalize(
-      rewardReserve.formattedPriceInMarketReferenceCurrency,
-      marketReferenceCurrencyDecimals,
-    );
+    return rewardReserve.formattedPriceInMarketReferenceCurrency;
   }
 
   return '0';
@@ -72,7 +68,6 @@ export function calculateReserveIncentives({
   totalStableDebt,
   decimals,
   priceInMarketReferenceCurrency,
-  marketReferenceCurrencyDecimals,
 }: CalculateReserveIncentivesRequest): CalculateReserveIncentivesResponse {
   const aIncentivesData: ReserveIncentiveResponse[] =
     reserveIncentiveData.aIncentiveData.rewardsTokenInformation.map(reward => {
@@ -83,7 +78,6 @@ export function calculateReserveIncentives({
           reward.rewardTokenAddress,
           reward.rewardPriceFeed,
           reward.priceFeedDecimals,
-          marketReferenceCurrencyDecimals,
         ),
         priceInMarketReferenceCurrency,
         totalTokenSupply: totalLiquidity,
@@ -106,7 +100,6 @@ export function calculateReserveIncentives({
           reward.rewardTokenAddress,
           reward.rewardPriceFeed,
           reward.priceFeedDecimals,
-          marketReferenceCurrencyDecimals,
         ),
         priceInMarketReferenceCurrency,
         totalTokenSupply: totalVariableDebt,
@@ -129,7 +122,6 @@ export function calculateReserveIncentives({
           reward.rewardTokenAddress,
           reward.rewardPriceFeed,
           reward.priceFeedDecimals,
-          marketReferenceCurrencyDecimals,
         ),
         priceInMarketReferenceCurrency,
         totalTokenSupply: totalStableDebt,
