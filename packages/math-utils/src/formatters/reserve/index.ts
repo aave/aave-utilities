@@ -375,10 +375,7 @@ export function formatReserveUSD({
       currencyDecimals: reserve.decimals,
       marketReferenceCurrencyDecimals,
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-      normalizedMarketReferencePriceInUsd: normalize(
-        marketReferencePriceInUsd,
-        marketReferenceCurrencyDecimals,
-      ),
+      normalizedMarketReferencePriceInUsd,
     }),
     // v3
     // caps are already in absolutes
