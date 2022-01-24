@@ -18,7 +18,10 @@ describe('formatUserReserve', () => {
     .stableBorrow(100);
   const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
-      userReserve: usdcUserMock.userReserve,
+      userReserve: {
+        ...usdcUserMock.userReserve,
+        reserve: usdcUserMock.reserve,
+      },
       marketReferencePriceInUsdNormalized,
       currentTimestamp,
       marketReferenceCurrencyDecimals,

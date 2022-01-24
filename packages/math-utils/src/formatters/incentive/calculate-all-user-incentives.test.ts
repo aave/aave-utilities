@@ -34,7 +34,7 @@ describe('calculateAllUserIncentives', () => {
       {
         ...userMock.userReserve,
         reserve: {
-          ...userMock.userReserve.reserve,
+          ...userMock.reserve,
           totalLiquidity: totalLiquidity.toString(),
         },
       },
@@ -61,7 +61,7 @@ describe('calculateAllUserIncentives', () => {
           {
             ...userMock.userReserve,
             reserve: {
-              ...userMock.userReserve.reserve,
+              ...userMock.reserve,
               totalLiquidity: totalLiquidity.toString(),
             },
           },

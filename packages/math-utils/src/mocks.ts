@@ -3,7 +3,7 @@ import {
   ReservesIncentiveDataHumanized,
   UserReservesIncentivesDataHumanized,
 } from './formatters/incentive';
-import { ReserveData } from './formatters/reserve';
+import { FormatReserveUSDResponse, ReserveData } from './formatters/reserve';
 import { UserReserveData } from './formatters/user';
 import { RAY } from './ray.math';
 
@@ -15,7 +15,13 @@ export class ReserveMock {
   constructor(config: { decimals: number } = { decimals: 18 }) {
     this.config = config;
     this.reserve = {
+      id: '0x0',
+      symbol: 'TEST',
+      name: 'TEST',
       decimals: config.decimals,
+      underlyingAsset: '0x0',
+      usageAsCollateralEnabled: true,
+      eModeCategoryId: 1,
       reserveFactor: '0',
       baseLTVasCollateral: '5000', // 50%
       averageStableRate: '0',
@@ -69,28 +75,73 @@ export class ReserveMock {
 
 export class UserReserveMock {
   public userReserve: UserReserveData;
+  public reserve: FormatReserveUSDResponse;
   private readonly config: { decimals: number };
 
   constructor(config: { decimals: number } = { decimals: 18 }) {
     this.config = config;
-    const reserveMock = new ReserveMock({ decimals: config.decimals });
     this.userReserve = {
+      underlyingAsset: '0x0000000000000000000000000000000000000000',
       scaledATokenBalance: '0',
       usageAsCollateralEnabledOnUser: true,
       stableBorrowRate: RAY.multipliedBy(2).toString(),
       scaledVariableDebt: '0',
       principalStableDebt: '0',
       stableBorrowLastUpdateTimestamp: 1,
-      reserve: {
-        ...reserveMock.reserve,
-        priceInMarketReferenceCurrency: (10 ** 19).toString(), // 10
-        id: '0',
-        symbol: '0',
-        usageAsCollateralEnabled: true,
-        underlyingAsset: '0x0000000000000000000000000000000000000000',
-        name: '',
-        eModeCategoryId: 1,
-      },
+    };
+    const reserveMock = new ReserveMock({ decimals: config.decimals });
+    this.reserve = {
+      ...reserveMock.reserve,
+      underlyingAsset: '0x0000000000000000000000000000000000000000',
+      id: '0x0',
+      symbol: 'TEST',
+      name: 'TEST',
+      decimals: config.decimals,
+      usageAsCollateralEnabled: true,
+      eModeCategoryId: 1,
+      formattedBaseLTVasCollateral: '0.5',
+      liquidityIndex: RAY.toString(),
+      formattedReserveLiquidationThreshold: '0.6',
+      formattedReserveLiquidationBonus: '0',
+      variableBorrowIndex: RAY.toString(),
+      variableBorrowRate: RAY.multipliedBy(3).toString(),
+      formattedAvailableLiquidity: '0',
+      liquidityRate: RAY.multipliedBy(1).toString(),
+      totalPrincipalStableDebt: '0',
+      totalScaledVariableDebt: '0',
+      lastUpdateTimestamp: 1,
+      debtCeiling: '0',
+      debtCeilingDecimals: 2,
+      isolationModeTotalDebt: '',
+      formattedEModeLtv: '0.6',
+      formattedEModeLiquidationThreshold: '0.7',
+      formattedEModeLiquidationBonus: '0',
+      priceInUSD: '10',
+      totalLiquidityUSD: '0',
+      availableLiquidityUSD: '0',
+      totalDebtUSD: '0',
+      totalVariableDebtUSD: '0',
+      totalStableDebtUSD: '0',
+      borrowCapUSD: '0',
+      supplyCapUSD: '0',
+      priceInMarketReferenceCurrency: (10 ** 19).toString(),
+      formattedPriceInMarketReferenceCurrency: '10',
+      unborrowedLiquidity: '0',
+      supplyAPY: '0',
+      supplyAPR: '0',
+      variableBorrowAPY: '0',
+      variableBorrowAPR: '0',
+      stableBorrowAPY: '0',
+      stableBorrowAPR: '0',
+      utilizationRate: '0',
+      totalStableDebt: '0',
+      totalVariableDebt: '0',
+      totalDebt: '0',
+      totalLiquidity: '0',
+      debtCeilingUSD: '0',
+      availableDebtCeilingUSD: '0',
+      isolationModeTotalDebtUSD: '0',
+      isIsolated: true,
     };
   }
 
@@ -99,9 +150,9 @@ export class UserReserveMock {
       .shiftedBy(this.config.decimals)
       .plus(this.userReserve.scaledATokenBalance)
       .toString();
-    this.userReserve.reserve.availableLiquidity = new BigNumber(amount)
+    this.reserve.availableLiquidity = new BigNumber(amount)
       .shiftedBy(this.config.decimals)
-      .plus(this.userReserve.reserve.availableLiquidity)
+      .plus(this.reserve.availableLiquidity)
       .toString();
     return this;
   }
@@ -111,9 +162,9 @@ export class UserReserveMock {
       .shiftedBy(this.config.decimals)
       .plus(this.userReserve.scaledVariableDebt)
       .toString();
-    this.userReserve.reserve.totalScaledVariableDebt = new BigNumber(amount)
+    this.reserve.totalScaledVariableDebt = new BigNumber(amount)
       .shiftedBy(this.config.decimals)
-      .plus(this.userReserve.reserve.totalScaledVariableDebt)
+      .plus(this.reserve.totalScaledVariableDebt)
       .toString();
     return this;
   }
@@ -123,9 +174,9 @@ export class UserReserveMock {
       .shiftedBy(this.config.decimals)
       .plus(this.userReserve.principalStableDebt)
       .toString();
-    this.userReserve.reserve.totalPrincipalStableDebt = new BigNumber(amount)
+    this.reserve.totalPrincipalStableDebt = new BigNumber(amount)
       .shiftedBy(this.config.decimals)
-      .plus(this.userReserve.reserve.totalPrincipalStableDebt)
+      .plus(this.reserve.totalPrincipalStableDebt)
       .toString();
     return this;
   }

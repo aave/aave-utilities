@@ -1,10 +1,5 @@
-import {
-  BigNumberValue,
-  normalize,
-  valueToBigNumber,
-  valueToZDBigNumber,
-} from '../../bignumber';
-import { LTV_PRECISION, RAY_DECIMALS, SECONDS_PER_YEAR } from '../../constants';
+import { BigNumberValue, normalize, valueToZDBigNumber } from '../../bignumber';
+import { RAY_DECIMALS, SECONDS_PER_YEAR } from '../../constants';
 import { RAY, rayPow } from '../../ray.math';
 import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
 import { ComputedUserReserve } from './index';
@@ -38,16 +33,6 @@ export function formatUserReserve({
 
   return {
     ...userReserve,
-    reserve: {
-      ...reserve,
-      reserveLiquidationBonus: normalize(
-        valueToBigNumber(reserve.reserveLiquidationBonus).shiftedBy(
-          LTV_PRECISION,
-        ),
-        LTV_PRECISION,
-      ),
-    },
-    scaledATokenBalance: normalizeWithReserve(userReserve.scaledATokenBalance),
     underlyingBalance: normalize(_reserve.underlyingBalance, reserveDecimals),
     underlyingBalanceMarketReferenceCurrency: normalize(
       _reserve.underlyingBalanceMarketReferenceCurrency,

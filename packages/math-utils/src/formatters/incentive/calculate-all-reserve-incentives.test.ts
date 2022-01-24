@@ -10,10 +10,10 @@ describe('calculateAllReserveIncentives', () => {
     .stableBorrow(100);
 
   const { totalLiquidity, totalVariableDebt, totalStableDebt } =
-    calculateReserveDebt(userReserveMock.userReserve.reserve, 1);
+    calculateReserveDebt(userReserveMock.reserve, 1);
 
   const reserve = {
-    ...userReserveMock.userReserve.reserve,
+    ...userReserveMock.reserve,
     totalLiquidity: totalLiquidity.toString(),
     totalVariableDebt: totalVariableDebt.toString(),
     totalStableDebt: totalStableDebt.toString(),
@@ -27,11 +27,11 @@ describe('calculateAllReserveIncentives', () => {
     expect(
       result['0x0000000000000000000000000000000000000000'].aIncentives[0]
         .incentiveAPR,
-    ).toBe('0.000010512');
+    ).toBe('105120');
     expect(
       result['0x0000000000000000000000000000000000000000'].vIncentives[0]
         .incentiveAPR,
-    ).toBe('0.000031536');
+    ).toBe('315360');
     expect(
       result['0x0000000000000000000000000000000000000000'].sIncentives[0]
         .incentiveAPR,
