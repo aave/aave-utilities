@@ -5,7 +5,7 @@ import { ReservesIncentiveDataHumanized } from './types';
 export interface CalculateReserveIncentivesRequest {
   reserves: Array<{
     underlyingAsset: string;
-    priceInMarketReferenceCurrency: string;
+    formattedPriceInMarketReferenceCurrency: string;
   }>;
   reserveIncentiveData: ReservesIncentiveDataHumanized;
   totalLiquidity: string;
@@ -31,7 +31,7 @@ export interface CalculateReserveIncentivesResponse {
 export function calculateRewardTokenPrice(
   reserves: Array<{
     underlyingAsset: string;
-    priceInMarketReferenceCurrency: string;
+    formattedPriceInMarketReferenceCurrency: string;
   }>,
   address: string,
   priceFeed: string,
@@ -55,7 +55,7 @@ export function calculateRewardTokenPrice(
   );
   if (rewardReserve) {
     return normalize(
-      rewardReserve.priceInMarketReferenceCurrency,
+      rewardReserve.formattedPriceInMarketReferenceCurrency,
       marketReferenceCurrencyDecimals,
     );
   }

@@ -449,7 +449,7 @@ export function formatReservesAndIncentives<T extends ReserveDataWithPrice>({
     );
     if (!reserveIncentive) return reserve;
     const incentive = calculateReserveIncentives({
-      reserves,
+      reserves: formattedReserves,
       reserveIncentiveData: reserveIncentive,
       totalLiquidity: normalize(reserve.totalLiquidity, -reserve.decimals),
       totalVariableDebt: normalize(
@@ -457,10 +457,8 @@ export function formatReservesAndIncentives<T extends ReserveDataWithPrice>({
         -reserve.decimals,
       ),
       totalStableDebt: normalize(reserve.totalStableDebt, -reserve.decimals),
-      priceInMarketReferenceCurrency: normalize(
-        reserve.priceInMarketReferenceCurrency,
-        -marketReferenceCurrencyDecimals,
-      ),
+      priceInMarketReferenceCurrency:
+        reserve.formattedPriceInMarketReferenceCurrency,
       decimals: reserve.decimals,
       marketReferenceCurrencyDecimals,
     });

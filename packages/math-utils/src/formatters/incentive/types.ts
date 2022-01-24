@@ -69,6 +69,6 @@ export interface ReserveCalculationData {
   totalLiquidity: string;
   totalVariableDebt: string;
   totalStableDebt: string;
-  priceInMarketReferenceCurrency: string;
+  formattedPriceInMarketReferenceCurrency: string;
   decimals: number;
 }
