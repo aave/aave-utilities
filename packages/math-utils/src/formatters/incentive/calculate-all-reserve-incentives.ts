@@ -51,7 +51,7 @@ export function calculateAllReserveIncentives({
           totalVariableDebt: reserve.totalVariableDebt,
           totalStableDebt: reserve.totalStableDebt,
           priceInMarketReferenceCurrency:
-            reserve.priceInMarketReferenceCurrency,
+            reserve.formattedPriceInMarketReferenceCurrency,
           decimals: reserve.decimals,
           marketReferenceCurrencyDecimals,
         });

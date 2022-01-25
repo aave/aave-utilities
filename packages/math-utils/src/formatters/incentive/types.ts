@@ -60,6 +60,7 @@ export interface UserReserveCalculationData {
     liquidityIndex: string;
     totalScaledVariableDebt: string;
     totalPrincipalStableDebt: string;
+    decimals: number;
   };
 }
 
@@ -69,6 +70,6 @@ export interface ReserveCalculationData {
   totalLiquidity: string;
   totalVariableDebt: string;
   totalStableDebt: string;
-  priceInMarketReferenceCurrency: string;
+  formattedPriceInMarketReferenceCurrency: string;
   decimals: number;
 }

@@ -63,7 +63,9 @@ export function calculateUserReserveIncentives({
                 reserveIncentive.emissionPerSecond,
               ),
               totalSupply: rayDiv(
-                new BigNumber(userReserveData.reserve.totalLiquidity),
+                new BigNumber(userReserveData.reserve.totalLiquidity).shiftedBy(
+                  userReserveData.reserve.decimals,
+                ),
                 new BigNumber(userReserveData.reserve.liquidityIndex),
               ),
               currentTimestamp,
@@ -120,7 +122,7 @@ export function calculateUserReserveIncentives({
               ),
               totalSupply: new BigNumber(
                 userReserveData.reserve.totalScaledVariableDebt,
-              ),
+              ).shiftedBy(userReserveData.reserve.decimals),
               currentTimestamp,
               emissionEndTimestamp: reserveIncentive.emissionEndTimestamp,
             })
@@ -174,7 +176,7 @@ export function calculateUserReserveIncentives({
               ),
               totalSupply: new BigNumber(
                 userReserveData.reserve.totalPrincipalStableDebt,
-              ),
+              ).shiftedBy(userReserveData.reserve.decimals),
               currentTimestamp,
               emissionEndTimestamp: reserveIncentive.emissionEndTimestamp,
             })
