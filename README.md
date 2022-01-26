@@ -2,35 +2,42 @@
 
 <h1 align="center">Aave Utilities</h1>
 
-Aave is a decentralized non-custodial liquidity market protocol where users can
-participate as depositors or borrowers. The Aave Protocol is a set of open
-source smart contracts which facilitate the supply and borrowing of user funds.
-These contracts, and all user transactions/balances are stored on a public
-ledger called a blockchain, making them accessible to anyone
+The Aave Protocol is a decentralized non-custodial liquidity market protocol
+where users can participate as depositors or borrowers. The protocol is a set of
+open source smart contracts which facilitate the supply and borrowing of user
+funds. These contracts, and all user transactions/balances are stored on a
+public ledger called a blockchain, making them accessible to anyone
 
-This Aave utilities packages give developers access to methods for formatting
-contract data and executing transactions on the Aave protocol, and is compatible
-with both Aave V2 and V3
+Aave Utilities is a JavaScript SDK for interacting with V2 and V3 of the Aave
+Protocol, an upgrade to the existing [aave-js](https://github.com/aave/aave-js)
+library
 
-Aave Utilities is an upgrade to the existing
-[aave-js](https://github.com/aave/aave-js) library, designed to be more modular,
-efficient, and easier to use
+The `@aave/math-utils` package contains methods for formatting raw
+([ethers.js](#ethers.js)) or indexed ([subgraph](#subgraph),
+[caching server](#caching-server)) contract data for usage on a frontend
+
+The `@aave/contract-helpers` package contains methods for generating trancations
+based on method and parameter inputs. Can be used to read and write data on the
+protocol contracts.
 
 <br />
 
 ## Installation
 
 Aave utilities are available as npm packages,
-[contract helpers](https://www.npmjs.com/package/@aave/contract-helpers), and
+[contract helpers](https://www.npmjs.com/package/@aave/contract-helpers) and
 [math utils](https://www.npmjs.com/package/@aave/math-utils)
+
+[ethers v5](https://docs.ethers.io/v5/) and [reflect-metadata](reflect metadata)
+are peer dependencies of the contract-helpers package
 
 ```sh
 // with npm
-npm install --save ethers
+npm install --save-dev ethers reflect-metadata
 npm install @aave/contract-helpers @aave/math-utils
 
 // with yarn
-yarn add --dev ethers
+yarn add --dev ethers reflect-metadata
 yarn add @aave/contract-helpers @aave/math-utils
 ```
 
@@ -40,7 +47,7 @@ yarn add @aave/contract-helpers @aave/math-utils
 
 1.  [Data Formatting Methods](#data-formatting-methods)
     - a. [Fetching Protocol Data](#fetching-protocol-data)
-      - [Smart Contract Calls](#smart-contract-calls)
+      - [ethers](#ethers.js)
       - [Subgraph](#subgraph)
       - [Caching Server](#caching-server)
     - b. [Format Reserve Data](#reserve-data)
@@ -99,7 +106,7 @@ yarn add @aave/contract-helpers @aave/math-utils
 Users interact with the Aave protocol through a set of smart contracts. The
 `@aave/math-utils` package is a collection of methods to take raw input data
 from these contracts, and format to use on a frontend interface such as
-[Aave UI](https://github.com/aave/aave-ui) or
+[Aave Ui](https://github.com/aave/aave-ui) or
 [Aave info](https://github.com/sakulstra/info.aave)
 
 ## Fetching Protocol Data
@@ -107,31 +114,9 @@ from these contracts, and format to use on a frontend interface such as
 Input data for these methods can be obtained in a variety of ways with some
 samples below:
 
-- [Contract Queries](#contract-queries)
+- [ethers](#ethers.js)
 - [Subgraph](#subgraph)
 - [Caching Server](#caching-server)
-
-<br />
-
-### Contract Queries
-
-There are a variety of libraries which can be used to query the Aave protocol
-smart contract. The basic process is: you provide the library with an rpc URL
-and TypeChain bindings which will generate a typed sdk for interacting with
-contract data
-
-The rpc endpoint is network-specific url will execute your requests to the
-blockchain. The
-[Aave UI networks config](https://github.com/aave/aave-ui/blob/master/src/ui-config/networks.ts)
-gives a `publicJsonRPCUrl` for each supported network which can be used to make
-requests **with** or **without** an API key.
-
-The following code snippets can be used to fetch data which can be passed
-directly into [data formatting methods](#data-formatting-methods):
-
-- [ethers.js](#ethers.js)
-- [web3.js](#web.js)
-- [truffle](#truffle)
 
 <br />
 
@@ -139,10 +124,6 @@ directly into [data formatting methods](#data-formatting-methods):
 
 [ethers.js](https://docs.ethers.io/v5/) is a library for interacting with
 Ethereum and other EVM compatible blockchains. To install:
-
-```sh
-npm install --save ethers
-```
 
 The first step to query contract data with ethers is to inialize a `provider`,
 there are a [variety](https://docs.ethers.io/v5/api/providers/) to choose from,
@@ -164,20 +145,22 @@ import {
 } from '@aave/contract-helpers';
 
 // Sample RPC address for querying ETH mainnet
-const provider = new ethers.provider.DefaultProvider(
-  'https://cloudflare-eth.com',
+const provider = new ethers.providers.JsonRpcProvider(
+  'https://eth-mainnet.alchemyapi.io/v2/demo',
 );
 
-// This is the provider used in Aave UI, it checks the chainId locally to reduce RPC calls with frequent network switches, but requires that the rpc url and chainId to remain consistent with the request being sent from the wallet (i.e. - detecting the active chainId)
-const providerAlt = new ethers.providers.StaticJsonRpcProvider(
-  'https://cloudflare-eth.com',
+// This is the provider used in Aave UI, it checks the chainId locally to reduce RPC calls with frequent network switches, but requires that the rpc url and chainId to remain consistent with the request being sent from the wallet (i.e. actively detecting the active chainId)
+const provider = new ethers.providers.StaticJsonRpcProvider(
+  'https://eth-mainnet.alchemyapi.io/v2/demo',
   ChainId.mainnet,
 );
 
-// Aave protocol contract addresses, will be different for each market and can be found at https://docs.aave.com/developers/deployed-contracts/deployed-contracts or https://github.com/aave/aave-ui/blob/master/src/ui-config/markets/index.ts
-const uiPoolDataProviderAddress = '';
-const uiIncentiveDataProviderAddress = '';
-const lendingPoolAddressProvider = '';
+// Aave protocol contract addresses, will be different for each market and can be found at https://docs.aave.com/developers/deployed-contracts/deployed-contracts
+// For V3 Testnet Release, contract addresses can be found here https://github.com/aave/aave-ui/blob/feat/arbitrum-clean/src/ui-config/markets/index.ts
+const uiPoolDataProviderAddress = '0xa2DC1422E0cE89E1074A6cd7e2481e8e9c4415A6';
+const uiIncentiveDataProviderAddress =
+  '0xD01ab9a6577E1D84F142e44D49380e23A340387d';
+const lendingPoolAddressProvider = '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5';
 
 // User address to fetch data for
 const currentAccount = '';
@@ -193,6 +176,8 @@ const incentiveDataProviderContract = new UiIncentiveDataProvider({
   uiIncentiveDataProviderAddress,
   provider,
 });
+
+// Note, contract calls should be performed in an async block, and updated on interval or on network/market change
 
 // Object containing array of pool reserves and market base currency data
 // { reservesArray, baseCurrencyData }
@@ -225,14 +210,6 @@ const userIncentives =
 
 <br />
 
-### web.js
-
-<br />
-
-### truffle
-
-<br />
-
 ### Subgraph
 
 A subgraph indexes events emitted from a smart contract and exposes a graphql
@@ -247,23 +224,279 @@ resources on querying subgraph from a frontend application.
 Here are queries for fetching the data fields required for
 [data formatting methods](#data-formatting-methods). The formatting methods are
 the same for V2 and V3, but the queries required to fetch the input data are
-different. The result will need to be formatted
+different. Queries will depend on two parameters:
+
+- `pool` : lendingPoolAddressProvider address for the market you are querying
+  data for
+- `user` : user to fetch account data for
 
 <details>
 	<summary>V2</summary>
 
-```ts
+  <details>
+    <summary>Reserves</summary>
 
+```graphql
+{
+  reserves(
+    where: { pool: "insert_lowercase_lending_pool_address_provider_here" }
+  ) {
+    id
+    symbol
+    name
+    decimals
+    underlyingAsset
+    usageAsCollateralEnabled
+    reserveFactor
+    baseLTVasCollateral
+    averageStableRate
+    stableDebtLastUpdateTimestamp
+    liquidityIndex
+    reserveLiquidationThreshold
+    reserveLiquidationBonus
+    variableBorrowIndex
+    variableBorrowRate
+    liquidityRate
+    totalPrincipalStableDebt
+    totalScaledVariableDebt
+    lastUpdateTimestamp
+    availableLiquidity
+    stableBorrowRate
+    totalLiquidity
+    price {
+      priceInEth
+    }
+  }
+}
 ```
+
+Then formatted to match expected input schema with:
+
+```ts
+const reserves = queryResult.reserves.map(reserve => {
+  return {
+    ...reserve,
+    priceInMarketReferenceCurrency: reserve.price.priceInEth,
+    eModeCategoryId: 0,
+    borrowCap: '',
+    supplyCap: '',
+    debtCeiling: '',
+    debtCeilingDecimals: 0,
+    isolationModeTotalDebt: '',
+    eModeLtv: 0,
+    eModeLiquidationThreshold: 0,
+    eModeLiquidationBonus: 0,
+  };
+});
+```
+
+  </details>
+
+  <details>
+    <summary>User Reserves</summary>
+
+```graphql
+{
+  userReserves(where: {pool: "insert_lowercase_lending_pool_address_provider_here", user: "insert_lowercase_user_address_here"}) {
+    reserve{
+      underlyingAsset
+    }
+    scaledATokenBalance
+    usageAsCollateralEnabledOnUser
+    stableBorrowRate
+    scaledVariableDebt
+    principalStableDebt
+    stableBorrowLastUpdateTimestamp
+  }
+  }
+}
+```
+
+Then formatted to match expected input schema with:
+
+```ts
+const userReserves = queryResults.userReserves.map(userReserve => {
+  return {
+    ...userReserve,
+    underlyingAsset: userReserve.reserve.underlyingAsset,
+  };
+});
+```
+
+The `userEmodeCategoryId` parameter will always be 0 for V2 markets.
+
+  </details>
+
+  <details>
+    <summary>Base Currency Data</summary>
+
+```graphql
+{
+  priceOracles {
+    usdPriceEth
+  }
+}
+```
+
+For ETH-based markets (all V2 markets except Avalanche):
+
+- `marketReferencePriceInUsd` = 1 / (queryResult.priceOracles[0].usdPriceEth /
+  (10 \*\* 18))
+
+- `marketReferenceCurrencyDecimals` = 18
+
+For USD-based markets (Avalanche and all v3 markets):
+
+- `marketReferencePriceInUsd` = 1 / (queryResult.priceOracles[0].usdPriceEth /
+  (10 \*\* 8))
+
+- `marketReferenceCurrencyDecimals` = 8
+
+  </details>
+
+  <details>
+    <summary>Incentives</summary>
+
+Samples for incentives data coming soon. Uses `incentivesControlllers` field and
+maps incentives to reserves and userReserves.
+
+  </details>
 
 </details>
 
 <details>
 	<summary>V3</summary>
 
-```ts
+  <details>
+    <summary>Reserves</summary>
 
+```graphql
+{
+  reserves(
+    where: { pool: "insert_lowercase_lending_pool_address_provider_here" }
+  ) {
+    id
+    symbol
+    name
+    decimals
+    underlyingAsset
+    usageAsCollateralEnabled
+    reserveFactor
+    baseLTVasCollateral
+    averageStableRate
+    stableDebtLastUpdateTimestamp
+    liquidityIndex
+    reserveLiquidationThreshold
+    reserveLiquidationBonus
+    variableBorrowIndex
+    variableBorrowRate
+    liquidityRate
+    totalPrincipalStableDebt
+    totalScaledVariableDebt
+    lastUpdateTimestamp
+    availableLiquidity
+    stableBorrowRate
+    totalLiquidity
+    price {
+      priceInEth
+    }
+    eModeCategoryId
+    borrowCap
+    supplyCap
+    debtCeiling
+    debtCeilingDecimals
+    isolationModeTotalDebt
+    eModeLtv
+    eModeLiquidationThreshold
+    eModeLiquidationBonus
+  }
+}
 ```
+
+Then formatted to match expected input schema with:
+
+```ts
+const reserves = queryResults.map(queryResult => {
+  return {
+    ...queryResult,
+    priceInMarketReferenceCurrency: queryResult.price.priceInEth,
+  };
+});
+```
+
+  </details>
+
+  <details>
+    <summary>User Reserves</summary>
+
+```graphql
+{
+  userReserves(
+    where: {
+      pool: "insert_lowercase_lending_pool_address_provider_here"
+      user: "insert_lowercase_user_address_here"
+    }
+  ) {
+    reserve {
+      underlyingAsset
+    }
+    scaledATokenBalance
+    usageAsCollateralEnabledOnUser
+    stableBorrowRate
+    scaledVariableDebt
+    principalStableDebt
+    stableBorrowLastUpdateTimestamp
+    user {
+      eModeCategoryId {
+        id
+      }
+    }
+  }
+}
+```
+
+Then formatted to match expected input schema with:
+
+```ts
+const userReserves = queryResults.map(queryResult => {
+  return {
+    ...queryResult,
+    underlyingAsset: queryResult.reserve.underlyingAsset,
+  };
+});
+```
+
+The field `queryResults[0].user.eModeCategoryId.id` is the active eModeCategory
+and will input to the user formatters separately.
+
+  </details>
+
+  <details>
+    <summary>Base Currency Data</summary>
+
+```graphql
+{
+  priceOracles {
+    usdPriceEth
+    baseCurrencyUnit
+  }
+}
+```
+
+- `marketReferencePriceInUsd` = 1 / (queryResult.priceOracles[0].usdPriceEth /
+  (10 \*\* 8))
+- `marketReferenceCurrencyDecimals` =
+  queryResult.priceOracles[0].baseCurrencyUnit.toString().length
+
+  </details>
+
+<details>
+    <summary>Incentives</summary>
+
+Samples for incentives data coming soon. Uses `incentivesControlllers` field and
+maps incentives to reserves and userReserves.
+
+</details>
 
 </details>
 
@@ -314,13 +547,14 @@ each reserve in an Aave market
 
 ```ts
 import { formatReserves } from '@aave/math-utils';
+import dayjs from 'dayjs';
 
 // reserves input from Fetching Protocol Data section
 
 const reservesArray = reserves.reservesData;
 const baseCurrencyData = reserves.baseCurrencyData;
 
-const currentTimestamp = Math.round(new Date().getTime() / 1000);
+const currentTimestamp = dayjs().unix();
 
 /*
 - @param `reserves` Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.reservesArray`
@@ -352,13 +586,14 @@ incentives for each reserve in an Aave market
 
 ```ts
 import { formatReservesAndIncentives } from '@aave/math-utils';
+import dayjs from 'dayjs';
 
 // 'reserves' and 'reserveIncentives' inputs from Fetching Protocol Data section
 
 const reservesArray = reserves.reservesData;
 const baseCurrencyData = reserves.baseCurrencyData;
 
-const currentTimestamp = Math.round(new Date().getTime() / 1000);
+const currentTimestamp = dayjs().unix();
 
 /*
 - @param `reserves` Input from [Fetching Protocol Data](#fetching-protocol-data), `reserves.reservesArray`
@@ -398,6 +633,7 @@ factor, and available borrowing power
 
 ```ts
 import { formatUserSummary } from '@aave/math-utils';
+import dayjs from 'dayjs';
 
 // 'reserves' and 'userReserves' inputs from Fetching Protocol Data section
 
@@ -405,25 +641,15 @@ const reservesArray = reserves.reservesData;
 const baseCurrencyData = reserves.baseCurrencyData;
 const userReservesArray = userReserves.userReserves;
 
-const currentTimestamp = Math.round(new Date().getTime() / 1000);
+const currentTimestamp = dayjs().unix();
 
-// Combine reserve data with user data
-const userReservesFormatted: UserReserveData[] = [];
-if (userReservesArray && reservesArray.length) {
-  userReservesArray.forEach(rawUserReserve => {
-    const reserve = reservesArray.find(
-      r =>
-        r.underlyingAsset.toLowerCase() ===
-        rawUserReserve.underlyingAsset.toLowerCase(),
-    );
-    if (reserve) {
-      userReservesFormatted.push({
-        ...rawUserReserve,
-        reserve,
-      });
-    }
-  });
-}
+const formattedPoolReserves = formatReserves({
+  reserves: reservesArray,
+  currentTimestamp,
+  marketReferenceCurrencyDecimals:
+    baseCurrencyData.marketReferenceCurrencyDecimals,
+  marketReferencePriceInUsd: baseCurrencyData.marketReferenceCurrencyPriceInUsd,
+});
 
 /*
 - @param `currentTimestamp` Current UNIX timestamp in seconds, Math.floor(Date.now() / 1000)
@@ -456,13 +682,16 @@ factor, available borrowing power, and dictionary of claimable incentives
   <summary>Sample Code</summary>
 
 ```ts
+import { formatUserSummaryAndIncentives } from '@aave/math-utils';
+import dayjs from 'dayjs';
+
 // 'reserves', 'userReserves', 'reserveIncentives', and 'userIncentives' inputs from Fetching Protocol Data section
 
 const reservesArray = reserves.reservesData;
 const baseCurrencyData = reserves.baseCurrencyData;
 const userReservesArray = userReserves.userReserves;
 
-const currentTimestamp = Math.round(new Date().getTime() / 1000);
+const currentTimestamp = dayjs().unix();
 
 // Combine reserve data with user data
 const userReservesFormatted: UserReserveData[] = [];
@@ -1608,6 +1837,9 @@ Submit transaction as shown [here](#submitting-transactions)
 
 Queue the proposal (If Proposal Succeeded)
 
+<details>
+  <summary>Sample Code</summary>
+
 ```ts
 import { AaveGovernanceService } from '@aave/contract-helpers';
 
@@ -1623,6 +1855,8 @@ const governanceService = new AaveGovernanceService(rpcProvider, {
 */
 const tx = governanceService.queue({ user, proposalId });
 ```
+
+</details>
 
 Submit transaction as shown [here](#submitting-transactions)
 
