@@ -206,6 +206,10 @@ const userIncentives =
   });
 ```
 
+These four variables are passed as parameters into the [reserve](#reserve-data)
+and [user](#user-data) formatters to compute all of the fields needed for a
+frontend interface.
+
 </details>
 
 <br />
@@ -1856,9 +1860,9 @@ const governanceService = new AaveGovernanceService(rpcProvider, {
 const tx = governanceService.queue({ user, proposalId });
 ```
 
-</details>
-
 Submit transaction as shown [here](#submitting-transactions)
+
+</details>
 
 </details>
 
