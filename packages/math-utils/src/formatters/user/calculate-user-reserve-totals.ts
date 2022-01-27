@@ -1,9 +1,11 @@
 import BigNumber from 'bignumber.js';
 import { valueToBigNumber, valueToZDBigNumber } from '../../bignumber';
+import { FormatReserveUSDResponse } from '../reserve';
 import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
 
 interface UserReserveTotalsRequest {
   userReserves: UserReserveSummaryResponse[];
+  userEmodeCategoryId: number;
 }
 
 interface UserReserveTotalsResponse {
@@ -12,16 +14,21 @@ interface UserReserveTotalsResponse {
   totalCollateralMarketReferenceCurrency: BigNumber;
   currentLtv: BigNumber;
   currentLiquidationThreshold: BigNumber;
+  isInIsolationMode: boolean;
+  isolatedReserve?: FormatReserveUSDResponse;
 }
 
 export function calculateUserReserveTotals({
   userReserves,
+  userEmodeCategoryId,
 }: UserReserveTotalsRequest): UserReserveTotalsResponse {
   let totalLiquidityMarketReferenceCurrency = valueToZDBigNumber('0');
   let totalCollateralMarketReferenceCurrency = valueToZDBigNumber('0');
   let totalBorrowsMarketReferenceCurrency = valueToZDBigNumber('0');
   let currentLtv = valueToBigNumber('0');
   let currentLiquidationThreshold = valueToBigNumber('0');
+  let isInIsolationMode = false;
+  let isolatedReserve: FormatReserveUSDResponse | undefined;
 
   userReserves.forEach(userReserveSummary => {
     totalLiquidityMarketReferenceCurrency =
@@ -36,24 +43,48 @@ export function calculateUserReserveTotals({
       userReserveSummary.userReserve.reserve.usageAsCollateralEnabled &&
       userReserveSummary.userReserve.usageAsCollateralEnabledOnUser
     ) {
+      if (userReserveSummary.userReserve.reserve.debtCeiling !== '0') {
+        isolatedReserve = userReserveSummary.userReserve.reserve;
+        isInIsolationMode = true;
+      }
+
       totalCollateralMarketReferenceCurrency =
         totalCollateralMarketReferenceCurrency.plus(
           userReserveSummary.underlyingBalanceMarketReferenceCurrency,
         );
-      currentLtv = currentLtv.plus(
-        valueToBigNumber(
-          userReserveSummary.underlyingBalanceMarketReferenceCurrency,
-        ).multipliedBy(
-          userReserveSummary.userReserve.reserve.baseLTVasCollateral,
-        ),
-      );
-      currentLiquidationThreshold = currentLiquidationThreshold.plus(
-        valueToBigNumber(
-          userReserveSummary.underlyingBalanceMarketReferenceCurrency,
-        ).multipliedBy(
-          userReserveSummary.userReserve.reserve.reserveLiquidationThreshold,
-        ),
-      );
+      if (
+        userEmodeCategoryId &&
+        userEmodeCategoryId ===
+          userReserveSummary.userReserve.reserve.eModeCategoryId
+      ) {
+        currentLtv = currentLtv.plus(
+          valueToBigNumber(
+            userReserveSummary.underlyingBalanceMarketReferenceCurrency,
+          ).multipliedBy(userReserveSummary.userReserve.reserve.eModeLtv),
+        );
+        currentLiquidationThreshold = currentLiquidationThreshold.plus(
+          valueToBigNumber(
+            userReserveSummary.underlyingBalanceMarketReferenceCurrency,
+          ).multipliedBy(
+            userReserveSummary.userReserve.reserve.eModeLiquidationThreshold,
+          ),
+        );
+      } else {
+        currentLtv = currentLtv.plus(
+          valueToBigNumber(
+            userReserveSummary.underlyingBalanceMarketReferenceCurrency,
+          ).multipliedBy(
+            userReserveSummary.userReserve.reserve.baseLTVasCollateral,
+          ),
+        );
+        currentLiquidationThreshold = currentLiquidationThreshold.plus(
+          valueToBigNumber(
+            userReserveSummary.underlyingBalanceMarketReferenceCurrency,
+          ).multipliedBy(
+            userReserveSummary.userReserve.reserve.reserveLiquidationThreshold,
+          ),
+        );
+      }
     }
   });
 
@@ -75,5 +106,7 @@ export function calculateUserReserveTotals({
     totalCollateralMarketReferenceCurrency,
     currentLtv,
     currentLiquidationThreshold,
+    isInIsolationMode,
+    isolatedReserve,
   };
 }

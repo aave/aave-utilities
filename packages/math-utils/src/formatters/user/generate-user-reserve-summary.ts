@@ -6,18 +6,18 @@ import {
   getCompoundedBalance,
   getCompoundedStableBalance,
 } from '../../pool-math';
-import { calculateSupplies } from './calculate-supplies';
-import { RawUserReserveData } from './index';
+import { FormatReserveUSDResponse } from '../reserve';
+import { CombinedReserveData } from './index';
 
 export interface UserReserveSummaryRequest {
-  userReserve: RawUserReserveData;
-  marketRefPriceInUsd: BigNumberValue;
-  marketRefCurrencyDecimals: number;
+  userReserve: CombinedReserveData;
+  marketReferencePriceInUsdNormalized: BigNumberValue;
+  marketReferenceCurrencyDecimals: number;
   currentTimestamp: number;
 }
 
 export interface UserReserveSummaryResponse {
-  userReserve: RawUserReserveData;
+  userReserve: CombinedReserveData;
   underlyingBalance: BigNumber;
   underlyingBalanceMarketReferenceCurrency: BigNumber;
   underlyingBalanceUSD: BigNumber;
@@ -30,18 +30,15 @@ export interface UserReserveSummaryResponse {
   totalBorrows: BigNumber;
   totalBorrowsMarketReferenceCurrency: BigNumber;
   totalBorrowsUSD: BigNumber;
-  totalLiquidity: BigNumber;
-  totalStableDebt: BigNumber;
-  totalVariableDebt: BigNumber;
 }
 
 export function generateUserReserveSummary({
   userReserve,
-  marketRefPriceInUsd,
-  marketRefCurrencyDecimals,
+  marketReferencePriceInUsdNormalized,
+  marketReferenceCurrencyDecimals,
   currentTimestamp,
 }: UserReserveSummaryRequest): UserReserveSummaryResponse {
-  const poolReserve = userReserve.reserve;
+  const poolReserve: FormatReserveUSDResponse = userReserve.reserve;
   const { priceInMarketReferenceCurrency, decimals } = poolReserve;
   const underlyingBalance = getLinearBalance({
     balance: userReserve.scaledATokenBalance,
@@ -56,9 +53,9 @@ export function generateUserReserveSummary({
   } = getMarketReferenceCurrencyAndUsdBalance({
     balance: underlyingBalance,
     priceInMarketReferenceCurrency,
-    marketRefCurrencyDecimals,
+    marketReferenceCurrencyDecimals,
     decimals,
-    marketRefPriceInUsd,
+    marketReferencePriceInUsdNormalized,
   });
 
   const variableBorrows = getCompoundedBalance({
@@ -75,9 +72,9 @@ export function generateUserReserveSummary({
   } = getMarketReferenceCurrencyAndUsdBalance({
     balance: variableBorrows,
     priceInMarketReferenceCurrency,
-    marketRefCurrencyDecimals,
+    marketReferenceCurrencyDecimals,
     decimals,
-    marketRefPriceInUsd,
+    marketReferencePriceInUsdNormalized,
   });
 
   const stableBorrows = getCompoundedStableBalance({
@@ -93,26 +90,10 @@ export function generateUserReserveSummary({
   } = getMarketReferenceCurrencyAndUsdBalance({
     balance: stableBorrows,
     priceInMarketReferenceCurrency,
-    marketRefCurrencyDecimals,
+    marketReferenceCurrencyDecimals,
     decimals,
-    marketRefPriceInUsd,
+    marketReferencePriceInUsdNormalized,
   });
-
-  const { totalLiquidity, totalStableDebt, totalVariableDebt } =
-    calculateSupplies({
-      reserve: {
-        totalScaledVariableDebt: poolReserve.totalScaledVariableDebt,
-        variableBorrowIndex: poolReserve.variableBorrowIndex,
-        variableBorrowRate: poolReserve.variableBorrowRate,
-        totalPrincipalStableDebt: poolReserve.totalPrincipalStableDebt,
-        averageStableRate: poolReserve.averageStableRate,
-        availableLiquidity: poolReserve.availableLiquidity,
-        stableDebtLastUpdateTimestamp:
-          poolReserve.stableDebtLastUpdateTimestamp,
-        lastUpdateTimestamp: poolReserve.lastUpdateTimestamp,
-      },
-      currentTimestamp,
-    });
 
   return {
     userReserve,
@@ -131,8 +112,5 @@ export function generateUserReserveSummary({
         stableBorrowsMarketReferenceCurrency,
       ),
     totalBorrowsUSD: variableBorrowsUSD.plus(stableBorrowsUSD),
-    totalLiquidity,
-    totalStableDebt,
-    totalVariableDebt,
   };
 }

@@ -52,13 +52,17 @@ describe('UiPoolDataProvider', () => {
     it('should not throw', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getReservesList(mockValidEthereumAddress),
+        instance.getReservesList({
+          lendingPoolAddressProvider: mockValidEthereumAddress,
+        }),
       ).resolves.not.toThrow();
     });
     it('should throw when lendingPoolAddressProvider is not valid address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getReservesList(mockInvalidEthereumAddress),
+        instance.getReservesList({
+          lendingPoolAddressProvider: mockInvalidEthereumAddress,
+        }),
       ).rejects.toThrow('Lending pool address is not valid');
     });
   });
@@ -67,13 +71,17 @@ describe('UiPoolDataProvider', () => {
     it('should throw when lendingPoolAddressProvider is not valid address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getReservesData(mockInvalidEthereumAddress),
+        instance.getReservesData({
+          lendingPoolAddressProvider: mockInvalidEthereumAddress,
+        }),
       ).rejects.toThrow('Lending pool address is not valid');
     });
     it('should not throw', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getReservesData(mockValidEthereumAddress),
+        instance.getReservesData({
+          lendingPoolAddressProvider: mockValidEthereumAddress,
+        }),
       ).resolves.not.toThrow();
     });
   });
@@ -82,29 +90,29 @@ describe('UiPoolDataProvider', () => {
     it('should throw when lendingPoolAddressProvider is not valid address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getUserReservesData(
-          mockInvalidEthereumAddress,
-          mockValidEthereumAddress,
-        ),
+        instance.getUserReservesData({
+          lendingPoolAddressProvider: mockInvalidEthereumAddress,
+          user: mockValidEthereumAddress,
+        }),
       ).rejects.toThrow('Lending pool address is not valid');
     });
     it('should throw if user is not a valid ethereum address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getUserReservesData(
-          mockValidEthereumAddress,
-          mockInvalidEthereumAddress,
-        ),
+        instance.getUserReservesData({
+          lendingPoolAddressProvider: mockValidEthereumAddress,
+          user: mockInvalidEthereumAddress,
+        }),
       ).rejects.toThrow('User address is not a valid ethereum address');
     });
 
     it('should not throw if user is a valid ethereum address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getUserReservesData(
-          mockValidEthereumAddress,
-          mockValidEthereumAddress,
-        ),
+        instance.getUserReservesData({
+          lendingPoolAddressProvider: mockValidEthereumAddress,
+          user: mockValidEthereumAddress,
+        }),
       ).resolves.not.toThrow();
     });
   });
@@ -113,14 +121,16 @@ describe('UiPoolDataProvider', () => {
     it('should throw if lendingPoolAddressProvider is not a valid ethereum address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getReservesHumanized(mockInvalidEthereumAddress),
+        instance.getReservesHumanized({
+          lendingPoolAddressProvider: mockInvalidEthereumAddress,
+        }),
       ).rejects.toThrow('Lending pool address is not valid');
     });
     it('should not throw', async () => {
       const instance = createValidInstance();
-      const result = await instance.getReservesHumanized(
-        mockValidEthereumAddress,
-      );
+      const result = await instance.getReservesHumanized({
+        lendingPoolAddressProvider: mockValidEthereumAddress,
+      });
       expect(result).toEqual({
         reservesData: [
           {
@@ -172,6 +182,11 @@ describe('UiPoolDataProvider', () => {
             eModeLiquidationBonus: 1,
             eModePriceSource: '0x3E0437898a5667a4769B1Ca5A34aAB1ae7E81377',
             eModeLabel: 'test label',
+            accruedToTreasury: '0',
+            unbacked: '0',
+            isolationModeTotalDebt: '0',
+            debtCeilingDecimals: 0,
+            borrowableInIsolation: false,
           },
           {
             id: '0xa478c2975ab1ea89e8196811f51a7b7ade33eb110x88757f2f99175387ab4c6a4b3067c77a695b0349',
@@ -222,6 +237,11 @@ describe('UiPoolDataProvider', () => {
             eModeLiquidationBonus: 1,
             eModePriceSource: '0x3E0437898a5667a4769B1Ca5A34aAB1ae7E81377',
             eModeLabel: 'test label',
+            accruedToTreasury: '0',
+            unbacked: '0',
+            isolationModeTotalDebt: '0',
+            debtCeilingDecimals: 0,
+            borrowableInIsolation: false,
           },
         ],
         baseCurrencyData: {
@@ -237,40 +257,42 @@ describe('UiPoolDataProvider', () => {
     it('should throw if lendingPoolAddressProvider is not a valid ethereum address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getUserReservesHumanized(
-          mockInvalidEthereumAddress,
-          mockValidEthereumAddress,
-        ),
+        instance.getUserReservesHumanized({
+          lendingPoolAddressProvider: mockInvalidEthereumAddress,
+          user: mockValidEthereumAddress,
+        }),
       ).rejects.toThrow('Lending pool address is not valid');
     });
     it('should throw if user is not a valid ethereum address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getUserReservesHumanized(
-          mockValidEthereumAddress,
-          mockInvalidEthereumAddress,
-        ),
+        instance.getUserReservesHumanized({
+          lendingPoolAddressProvider: mockValidEthereumAddress,
+          user: mockInvalidEthereumAddress,
+        }),
       ).rejects.toThrow('User address is not a valid ethereum address');
     });
     it('should be ok', async () => {
       const instance = createValidInstance();
-      const result = await instance.getUserReservesHumanized(
-        mockValidEthereumAddress,
-        mockValidEthereumAddress,
-      );
+      const result = await instance.getUserReservesHumanized({
+        lendingPoolAddressProvider: mockValidEthereumAddress,
+        user: mockValidEthereumAddress,
+      });
 
-      expect(result).toEqual([
-        {
-          principalStableDebt: '0',
-          scaledATokenBalance: '0',
-          scaledVariableDebt: '0',
-          stableBorrowLastUpdateTimestamp: 0,
-          stableBorrowRate: '0',
-          underlyingAsset: '0xb597cd8d3217ea6477232f9217fa70837ff667af',
-          usageAsCollateralEnabledOnUser: false,
-          userEmodeCategoryId: 1,
-        },
-      ]);
+      expect(result).toEqual({
+        userReserves: [
+          {
+            principalStableDebt: '0',
+            scaledATokenBalance: '0',
+            scaledVariableDebt: '0',
+            stableBorrowLastUpdateTimestamp: 0,
+            stableBorrowRate: '0',
+            underlyingAsset: '0xb597cd8d3217ea6477232f9217fa70837ff667af',
+            usageAsCollateralEnabledOnUser: false,
+          },
+        ],
+        userEmodeCategoryId: 1,
+      });
     });
   });
 });

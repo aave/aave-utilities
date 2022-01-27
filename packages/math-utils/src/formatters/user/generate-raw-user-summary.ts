@@ -1,16 +1,19 @@
 import BigNumber from 'bignumber.js';
-import { BigNumberValue } from '../../bignumber';
+import { BigNumberValue, normalizeBN } from '../../bignumber';
 import {
   calculateAvailableBorrowsMarketReferenceCurrency,
   calculateHealthFactorFromBalances,
 } from '../../pool-math';
+import { FormatReserveUSDResponse } from '../reserve';
+import { normalizedToUsd } from '../usd/normalized-to-usd';
 import { calculateUserReserveTotals } from './calculate-user-reserve-totals';
 import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
 
 export interface RawUserSummaryRequest {
   userReserves: UserReserveSummaryResponse[];
-  marketRefPriceInUsd: BigNumberValue;
-  marketRefCurrencyDecimals: number;
+  marketReferencePriceInUsd: BigNumberValue;
+  marketReferenceCurrencyDecimals: number;
+  userEmodeCategoryId: number;
 }
 
 export interface RawUserSummaryResponse {
@@ -25,22 +28,15 @@ export interface RawUserSummaryResponse {
   currentLoanToValue: BigNumber;
   currentLiquidationThreshold: BigNumber;
   healthFactor: BigNumber;
-}
-
-function convertToUsd(
-  value: BigNumber,
-  marketRefPriceInUsd: BigNumberValue,
-  marketRefCurrencyDecimals: number,
-): BigNumber {
-  return value
-    .multipliedBy(marketRefPriceInUsd)
-    .shiftedBy(marketRefCurrencyDecimals * -1);
+  isInIsolationMode: boolean;
+  isolatedReserve?: FormatReserveUSDResponse;
 }
 
 export function generateRawUserSummary({
   userReserves,
-  marketRefPriceInUsd,
-  marketRefCurrencyDecimals,
+  marketReferencePriceInUsd,
+  marketReferenceCurrencyDecimals,
+  userEmodeCategoryId,
 }: RawUserSummaryRequest): RawUserSummaryResponse {
   const {
     totalLiquidityMarketReferenceCurrency,
@@ -48,9 +44,11 @@ export function generateRawUserSummary({
     totalCollateralMarketReferenceCurrency,
     currentLtv,
     currentLiquidationThreshold,
-  } = calculateUserReserveTotals({ userReserves });
+    isInIsolationMode,
+    isolatedReserve,
+  } = calculateUserReserveTotals({ userReserves, userEmodeCategoryId });
 
-  const availableBorrowsMarketReferenceCurrency =
+  const _availableBorrowsMarketReferenceCurrency =
     calculateAvailableBorrowsMarketReferenceCurrency({
       collateralBalanceMarketReferenceCurrency:
         totalCollateralMarketReferenceCurrency,
@@ -58,30 +56,46 @@ export function generateRawUserSummary({
       currentLtv,
     });
 
+  const availableBorrowsMarketReferenceCurrency =
+    isInIsolationMode && isolatedReserve
+      ? BigNumber.min(
+          normalizeBN(
+            new BigNumber(isolatedReserve.debtCeiling).minus(
+              isolatedReserve.isolationModeTotalDebt,
+            ),
+            isolatedReserve.debtCeilingDecimals -
+              marketReferenceCurrencyDecimals,
+          ),
+          _availableBorrowsMarketReferenceCurrency,
+        )
+      : _availableBorrowsMarketReferenceCurrency;
+
   return {
-    totalLiquidityUSD: convertToUsd(
+    isInIsolationMode,
+    isolatedReserve,
+    totalLiquidityUSD: normalizedToUsd(
       totalLiquidityMarketReferenceCurrency,
-      marketRefPriceInUsd,
-      marketRefCurrencyDecimals,
+      marketReferencePriceInUsd,
+      marketReferenceCurrencyDecimals,
     ),
-    totalCollateralUSD: convertToUsd(
+    totalCollateralUSD: normalizedToUsd(
       totalCollateralMarketReferenceCurrency,
-      marketRefPriceInUsd,
-      marketRefCurrencyDecimals,
+      marketReferencePriceInUsd,
+      marketReferenceCurrencyDecimals,
     ),
-    totalBorrowsUSD: convertToUsd(
+    totalBorrowsUSD: normalizedToUsd(
       totalBorrowsMarketReferenceCurrency,
-      marketRefPriceInUsd,
-      marketRefCurrencyDecimals,
+      marketReferencePriceInUsd,
+      marketReferenceCurrencyDecimals,
     ),
     totalLiquidityMarketReferenceCurrency,
     totalCollateralMarketReferenceCurrency,
     totalBorrowsMarketReferenceCurrency,
     availableBorrowsMarketReferenceCurrency,
-    availableBorrowsUSD: convertToUsd(
+    availableBorrowsUSD: normalizedToUsd(
       availableBorrowsMarketReferenceCurrency,
-      marketRefPriceInUsd,
-      marketRefCurrencyDecimals,
+      marketReferencePriceInUsd,
+      marketReferenceCurrencyDecimals,
     ),
     currentLoanToValue: currentLtv,
     currentLiquidationThreshold,

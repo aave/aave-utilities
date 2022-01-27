@@ -1,5 +1,11 @@
 import { BigNumberValue, normalize } from '../../bignumber';
-import { LTV_PRECISION } from '../../constants';
+import { LTV_PRECISION, USD_DECIMALS } from '../../constants';
+import { calculateAllUserIncentives, UserIncentiveDict } from '../incentive';
+import {
+  ReservesIncentiveDataHumanized,
+  UserReservesIncentivesDataHumanized,
+} from '../incentive/types';
+import { FormatReserveUSDResponse } from '../reserve';
 import { formatUserReserve } from './format-user-reserve';
 import { generateRawUserSummary } from './generate-raw-user-summary';
 import {
@@ -7,33 +13,8 @@ import {
   UserReserveSummaryResponse,
 } from './generate-user-reserve-summary';
 
-export interface RawReserveData {
-  decimals: number;
-  reserveFactor: string;
-  baseLTVasCollateral: string;
-  averageStableRate: string;
-  stableDebtLastUpdateTimestamp: number;
-  liquidityIndex: string;
-  reserveLiquidationThreshold: string;
-  reserveLiquidationBonus: string;
-  variableBorrowIndex: string;
-  variableBorrowRate: string;
-  availableLiquidity: string;
-  stableBorrowRate: string;
-  liquidityRate: string;
-  totalPrincipalStableDebt: string;
-  totalScaledVariableDebt: string;
-  lastUpdateTimestamp: number;
-  priceInMarketReferenceCurrency: string;
-  id: string;
-  symbol: string;
-  usageAsCollateralEnabled: boolean;
+export interface UserReserveData {
   underlyingAsset: string;
-  name: string;
-}
-
-export interface RawUserReserveData {
-  reserve: RawReserveData;
   scaledATokenBalance: string;
   usageAsCollateralEnabledOnUser: boolean;
   stableBorrowRate: string;
@@ -42,7 +23,11 @@ export interface RawUserReserveData {
   stableBorrowLastUpdateTimestamp: number;
 }
 
-export interface ComputedUserReserve extends RawUserReserveData {
+export interface CombinedReserveData extends UserReserveData {
+  reserve: FormatReserveUSDResponse;
+}
+
+export interface ComputedUserReserve extends CombinedReserveData {
   underlyingBalance: string;
   underlyingBalanceMarketReferenceCurrency: string;
   underlyingBalanceUSD: string;
@@ -55,18 +40,17 @@ export interface ComputedUserReserve extends RawUserReserveData {
   totalBorrows: string;
   totalBorrowsMarketReferenceCurrency: string;
   totalBorrowsUSD: string;
-  totalLiquidity: string;
-  totalStableDebt: string;
-  totalVariableDebt: string;
   stableBorrowAPY: string;
   stableBorrowAPR: string;
 }
 
 export interface FormatUserSummaryRequest {
-  rawUserReserves: RawUserReserveData[];
-  marketRefPriceInUsd: BigNumberValue;
-  marketRefCurrencyDecimals: number;
+  userReserves: UserReserveData[];
+  formattedReserves: FormatReserveUSDResponse[];
+  marketReferencePriceInUsd: BigNumberValue;
+  marketReferenceCurrencyDecimals: number;
   currentTimestamp: number;
+  userEmodeCategoryId: number;
 }
 
 export interface FormatUserSummaryResponse {
@@ -77,25 +61,63 @@ export interface FormatUserSummaryResponse {
   totalCollateralUSD: string;
   totalBorrowsMarketReferenceCurrency: string;
   totalBorrowsUSD: string;
+  netWorthUSD: string;
   availableBorrowsMarketReferenceCurrency: string;
   availableBorrowsUSD: string;
   currentLoanToValue: string;
   currentLiquidationThreshold: string;
   healthFactor: string;
+  isInIsolationMode: boolean;
+  isolatedReserve?: FormatReserveUSDResponse;
+}
+
+export interface FormatUserSummaryAndIncentivesRequest
+  extends FormatUserSummaryRequest {
+  reserveIncentives: ReservesIncentiveDataHumanized[];
+  userIncentives: UserReservesIncentivesDataHumanized[];
+}
+
+export interface FormatUserSummaryAndIncentivesResponse
+  extends FormatUserSummaryResponse {
+  calculatedUserIncentives: UserIncentiveDict;
 }
 
 export function formatUserSummary({
   currentTimestamp,
-  marketRefPriceInUsd,
-  marketRefCurrencyDecimals,
-  rawUserReserves,
+  marketReferencePriceInUsd,
+  marketReferenceCurrencyDecimals,
+  userReserves,
+  formattedReserves,
+  userEmodeCategoryId,
 }: FormatUserSummaryRequest): FormatUserSummaryResponse {
+  const normalizedMarketRefPriceInUsd = normalize(
+    marketReferencePriceInUsd,
+    USD_DECIMALS,
+  );
+
+  // Combine raw user and formatted reserve data
+  const combinedReserves: CombinedReserveData[] = [];
+
+  userReserves.forEach(userReserve => {
+    const reserve = formattedReserves.find(
+      r =>
+        r.underlyingAsset.toLowerCase() ===
+        userReserve.underlyingAsset.toLowerCase(),
+    );
+    if (reserve) {
+      combinedReserves.push({
+        ...userReserve,
+        reserve,
+      });
+    }
+  });
+
   const computedUserReserves: UserReserveSummaryResponse[] =
-    rawUserReserves.map(userReserve =>
+    combinedReserves.map(userReserve =>
       generateUserReserveSummary({
         userReserve,
-        marketRefPriceInUsd,
-        marketRefCurrencyDecimals,
+        marketReferencePriceInUsdNormalized: normalizedMarketRefPriceInUsd,
+        marketReferenceCurrencyDecimals,
         currentTimestamp,
       }),
     );
@@ -103,36 +125,40 @@ export function formatUserSummary({
   const formattedUserReserves = computedUserReserves.map(computedUserReserve =>
     formatUserReserve({
       reserve: computedUserReserve,
-      marketRefCurrencyDecimals,
+      marketReferenceCurrencyDecimals,
     }),
   );
 
   const userData = generateRawUserSummary({
     userReserves: computedUserReserves,
-    marketRefPriceInUsd,
-    marketRefCurrencyDecimals,
+    marketReferencePriceInUsd: normalizedMarketRefPriceInUsd,
+    marketReferenceCurrencyDecimals,
+    userEmodeCategoryId,
   });
 
   return {
     userReservesData: formattedUserReserves,
     totalLiquidityMarketReferenceCurrency: normalize(
       userData.totalLiquidityMarketReferenceCurrency,
-      marketRefCurrencyDecimals,
+      marketReferenceCurrencyDecimals,
     ),
     totalLiquidityUSD: userData.totalLiquidityUSD.toString(),
     totalCollateralMarketReferenceCurrency: normalize(
       userData.totalCollateralMarketReferenceCurrency,
-      marketRefCurrencyDecimals,
+      marketReferenceCurrencyDecimals,
     ),
     totalCollateralUSD: userData.totalCollateralUSD.toString(),
     totalBorrowsMarketReferenceCurrency: normalize(
       userData.totalBorrowsMarketReferenceCurrency,
-      marketRefCurrencyDecimals,
+      marketReferenceCurrencyDecimals,
     ),
     totalBorrowsUSD: userData.totalBorrowsUSD.toString(),
+    netWorthUSD: userData.totalLiquidityUSD
+      .minus(userData.totalBorrowsUSD)
+      .toString(),
     availableBorrowsMarketReferenceCurrency: normalize(
       userData.availableBorrowsMarketReferenceCurrency,
-      marketRefCurrencyDecimals,
+      marketReferenceCurrencyDecimals,
     ),
     availableBorrowsUSD: userData.availableBorrowsUSD.toString(),
     currentLoanToValue: normalize(userData.currentLoanToValue, LTV_PRECISION),
@@ -141,5 +167,39 @@ export function formatUserSummary({
       LTV_PRECISION,
     ),
     healthFactor: userData.healthFactor.toFixed(),
+    isInIsolationMode: userData.isInIsolationMode,
+    isolatedReserve: userData.isolatedReserve,
+  };
+}
+
+export function formatUserSummaryAndIncentives({
+  currentTimestamp,
+  marketReferencePriceInUsd,
+  marketReferenceCurrencyDecimals,
+  userReserves,
+  formattedReserves,
+  userEmodeCategoryId,
+  reserveIncentives,
+  userIncentives,
+}: FormatUserSummaryAndIncentivesRequest): FormatUserSummaryAndIncentivesResponse {
+  const formattedUserSummary = formatUserSummary({
+    currentTimestamp,
+    marketReferencePriceInUsd,
+    marketReferenceCurrencyDecimals,
+    userReserves,
+    formattedReserves,
+    userEmodeCategoryId,
+  });
+
+  const calculatedUserIncentives = calculateAllUserIncentives({
+    reserveIncentives,
+    userIncentives,
+    userReserves: formattedUserSummary.userReservesData,
+    currentTimestamp,
+  });
+
+  return {
+    ...formattedUserSummary,
+    calculatedUserIncentives,
   };
 }
