@@ -1,5 +1,28 @@
 # Change Log
 
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# 0.28.0 (2022-01-27)
+
+
+* feat!: migrate helpers to support v2 and v3 (#176) ([b679d19](https://github.com/@aave/aave-utilities/commit/b679d19f24a4ff78e6bcf73029dbedc9b04dc5ea)), closes [#176](https://github.com/@aave/aave-utilities/issues/176)
+
+
+### BREAKING CHANGES
+
+* The contract helper now contains all required helpers to build a/the ui.
+A lot of interfaces have been aligned which caused breaking changes in all places. Make sure to check out the new docs.
+
+Co-authored-by: Lukas <lukasstrassel@googlemail.com>
+Co-authored-by: Andrew Schmidt <andrew@aave.com>
+
+
+
+
+
+# Change Log
+
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
