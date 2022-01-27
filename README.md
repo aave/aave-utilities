@@ -662,12 +662,13 @@ const formattedPoolReserves = formatReserves({
 - @param `userReserves` Input from [Fetching Protocol Data](#fetching-protocol-data), combination of `userReserves.userReserves` and `reserves.reservesArray`
 - @param `userEmodeCategoryId` Input from [Fetching Protocol Data](#fetching-protocol-data), `userReserves.userEmodeCategoryId`
 */
-const userSummary = formatUserSummaryAndIncentives({
+const userSummary = formatUserSummary({
   currentTimestamp,
   marketReferencePriceInUsd: baseCurrencyData.marketReferenceCurrencyPriceInUsd,
   marketReferenceCurrencyDecimals:
     baseCurrencyData.marketReferenceCurrencyDecimals,
-  userReserves: userReservesFormatted,
+  userReserves: userReservesArray,
+  formattedReserves,
   userEmodeCategoryId: userReserves.userEmodeCategoryId,
 });
 ```
@@ -697,23 +698,13 @@ const userReservesArray = userReserves.userReserves;
 
 const currentTimestamp = dayjs().unix();
 
-// Combine reserve data with user data
-const userReservesFormatted: UserReserveData[] = [];
-if (userReservesArray && reservesArray.length) {
-  userReservesArray.forEach(rawUserReserve => {
-    const reserve = reservesArray.find(
-      r =>
-        r.underlyingAsset.toLowerCase() ===
-        rawUserReserve.underlyingAsset.toLowerCase(),
-    );
-    if (reserve) {
-      userReservesFormatted.push({
-        ...rawUserReserve,
-        reserve,
-      });
-    }
-  });
-}
+const formattedPoolReserves = formatReserves({
+  reserves: reservesArray,
+  currentTimestamp,
+  marketReferenceCurrencyDecimals:
+    baseCurrencyData.marketReferenceCurrencyDecimals,
+  marketReferencePriceInUsd: baseCurrencyData.marketReferenceCurrencyPriceInUsd,
+});
 
 /*
 - @param `currentTimestamp` Current UNIX timestamp in seconds, Math.floor(Date.now() / 1000)
@@ -729,7 +720,8 @@ const userSummary = formatUserSummaryAndIncentives({
   marketReferencePriceInUsd: baseCurrencyData.marketReferenceCurrencyPriceInUsd,
   marketReferenceCurrencyDecimals:
     baseCurrencyData.marketReferenceCurrencyDecimals,
-  userReserves: userReservesFormatted,
+  userReserves: userReservesArray,
+  formattedReserves,
   userEmodeCategoryId: userReserves.userEmodeCategoryId,
   reserveIncentives,
   userIncentives,
