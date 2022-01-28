@@ -10,6 +10,8 @@ import {
   GetUserStakeUIDataHumanized,
 } from './types';
 
+export * from './types';
+
 export interface UiStakeDataProviderInterface {
   getUserStakeUIData: (params: { user: string }) => Promise<GetUserStakeUIData>;
   getGeneralStakeUIData: () => Promise<GeneralStakeUIData>;
