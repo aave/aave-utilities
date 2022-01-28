@@ -553,3 +553,16 @@ export function GovDelegationValidator(
     return method.apply(this, arguments);
   };
 }
+
+export function StackeUiDataProviderValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    isEthAddressValidator(target, propertyName, arguments);
+
+    return method.apply(this, arguments);
+  };
+}
