@@ -9,15 +9,19 @@ import {
 import { FormatReserveUSDResponse } from '../reserve';
 import { CombinedReserveData } from './index';
 
-export interface UserReserveSummaryRequest {
-  userReserve: CombinedReserveData;
+export interface UserReserveSummaryRequest<
+  T extends FormatReserveUSDResponse = FormatReserveUSDResponse,
+> {
+  userReserve: CombinedReserveData<T>;
   marketReferencePriceInUsdNormalized: BigNumberValue;
   marketReferenceCurrencyDecimals: number;
   currentTimestamp: number;
 }
 
-export interface UserReserveSummaryResponse {
-  userReserve: CombinedReserveData;
+export interface UserReserveSummaryResponse<
+  T extends FormatReserveUSDResponse = FormatReserveUSDResponse,
+> {
+  userReserve: CombinedReserveData<T>;
   underlyingBalance: BigNumber;
   underlyingBalanceMarketReferenceCurrency: BigNumber;
   underlyingBalanceUSD: BigNumber;
@@ -32,12 +36,14 @@ export interface UserReserveSummaryResponse {
   totalBorrowsUSD: BigNumber;
 }
 
-export function generateUserReserveSummary({
+export function generateUserReserveSummary<
+  T extends FormatReserveUSDResponse = FormatReserveUSDResponse,
+>({
   userReserve,
   marketReferencePriceInUsdNormalized,
   marketReferenceCurrencyDecimals,
   currentTimestamp,
-}: UserReserveSummaryRequest): UserReserveSummaryResponse {
+}: UserReserveSummaryRequest<T>): UserReserveSummaryResponse<T> {
   const poolReserve: FormatReserveUSDResponse = userReserve.reserve;
   const { priceInMarketReferenceCurrency, decimals } = poolReserve;
   const underlyingBalance = getLinearBalance({

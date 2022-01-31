@@ -23,11 +23,15 @@ export interface UserReserveData {
   stableBorrowLastUpdateTimestamp: number;
 }
 
-export interface CombinedReserveData extends UserReserveData {
-  reserve: FormatReserveUSDResponse;
+export interface CombinedReserveData<
+  T extends FormatReserveUSDResponse = FormatReserveUSDResponse,
+> extends UserReserveData {
+  reserve: T;
 }
 
-export interface ComputedUserReserve extends CombinedReserveData {
+export interface ComputedUserReserve<
+  T extends FormatReserveUSDResponse = FormatReserveUSDResponse,
+> extends CombinedReserveData<T> {
   underlyingBalance: string;
   underlyingBalanceMarketReferenceCurrency: string;
   underlyingBalanceUSD: string;
@@ -44,17 +48,21 @@ export interface ComputedUserReserve extends CombinedReserveData {
   stableBorrowAPR: string;
 }
 
-export interface FormatUserSummaryRequest {
+export interface FormatUserSummaryRequest<
+  T extends FormatReserveUSDResponse = FormatReserveUSDResponse,
+> {
   userReserves: UserReserveData[];
-  formattedReserves: FormatReserveUSDResponse[];
+  formattedReserves: T[];
   marketReferencePriceInUsd: BigNumberValue;
   marketReferenceCurrencyDecimals: number;
   currentTimestamp: number;
   userEmodeCategoryId: number;
 }
 
-export interface FormatUserSummaryResponse {
-  userReservesData: ComputedUserReserve[];
+export interface FormatUserSummaryResponse<
+  T extends FormatReserveUSDResponse = FormatReserveUSDResponse,
+> {
+  userReservesData: Array<ComputedUserReserve<T>>;
   totalLiquidityMarketReferenceCurrency: string;
   totalLiquidityUSD: string;
   totalCollateralMarketReferenceCurrency: string;
@@ -71,32 +79,36 @@ export interface FormatUserSummaryResponse {
   isolatedReserve?: FormatReserveUSDResponse;
 }
 
-export interface FormatUserSummaryAndIncentivesRequest
-  extends FormatUserSummaryRequest {
+export interface FormatUserSummaryAndIncentivesRequest<
+  T extends FormatReserveUSDResponse = FormatReserveUSDResponse,
+> extends FormatUserSummaryRequest<T> {
   reserveIncentives: ReservesIncentiveDataHumanized[];
   userIncentives: UserReservesIncentivesDataHumanized[];
 }
 
-export interface FormatUserSummaryAndIncentivesResponse
-  extends FormatUserSummaryResponse {
+export interface FormatUserSummaryAndIncentivesResponse<
+  T extends FormatReserveUSDResponse = FormatReserveUSDResponse,
+> extends FormatUserSummaryResponse<T> {
   calculatedUserIncentives: UserIncentiveDict;
 }
 
-export function formatUserSummary({
+export function formatUserSummary<
+  T extends FormatReserveUSDResponse = FormatReserveUSDResponse,
+>({
   currentTimestamp,
   marketReferencePriceInUsd,
   marketReferenceCurrencyDecimals,
   userReserves,
   formattedReserves,
   userEmodeCategoryId,
-}: FormatUserSummaryRequest): FormatUserSummaryResponse {
+}: FormatUserSummaryRequest<T>): FormatUserSummaryResponse<T> {
   const normalizedMarketRefPriceInUsd = normalize(
     marketReferencePriceInUsd,
     USD_DECIMALS,
   );
 
   // Combine raw user and formatted reserve data
-  const combinedReserves: CombinedReserveData[] = [];
+  const combinedReserves: Array<CombinedReserveData<T>> = [];
 
   userReserves.forEach(userReserve => {
     const reserve = formattedReserves.find(
@@ -112,9 +124,9 @@ export function formatUserSummary({
     }
   });
 
-  const computedUserReserves: UserReserveSummaryResponse[] =
+  const computedUserReserves: Array<UserReserveSummaryResponse<T>> =
     combinedReserves.map(userReserve =>
-      generateUserReserveSummary({
+      generateUserReserveSummary<T>({
         userReserve,
         marketReferencePriceInUsdNormalized: normalizedMarketRefPriceInUsd,
         marketReferenceCurrencyDecimals,
@@ -123,7 +135,7 @@ export function formatUserSummary({
     );
 
   const formattedUserReserves = computedUserReserves.map(computedUserReserve =>
-    formatUserReserve({
+    formatUserReserve<T>({
       reserve: computedUserReserve,
       marketReferenceCurrencyDecimals,
     }),
@@ -172,7 +184,9 @@ export function formatUserSummary({
   };
 }
 
-export function formatUserSummaryAndIncentives({
+export function formatUserSummaryAndIncentives<
+  T extends FormatReserveUSDResponse = FormatReserveUSDResponse,
+>({
   currentTimestamp,
   marketReferencePriceInUsd,
   marketReferenceCurrencyDecimals,
@@ -181,7 +195,7 @@ export function formatUserSummaryAndIncentives({
   userEmodeCategoryId,
   reserveIncentives,
   userIncentives,
-}: FormatUserSummaryAndIncentivesRequest): FormatUserSummaryAndIncentivesResponse {
+}: FormatUserSummaryAndIncentivesRequest<T>): FormatUserSummaryAndIncentivesResponse<T> {
   const formattedUserSummary = formatUserSummary({
     currentTimestamp,
     marketReferencePriceInUsd,
