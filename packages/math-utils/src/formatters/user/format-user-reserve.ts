@@ -1,7 +1,7 @@
-import { FormatReserveUSDResponse } from 'math-utils/src';
 import { BigNumberValue, normalize, valueToZDBigNumber } from '../../bignumber';
 import { RAY_DECIMALS, SECONDS_PER_YEAR } from '../../constants';
 import { RAY, rayPow } from '../../ray.math';
+import { FormatReserveUSDResponse } from '../reserve';
 import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
 import { ComputedUserReserve } from './index';
 
