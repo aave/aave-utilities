@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.29.1 (2022-02-01)
+
+
+### Bug Fixes
+
+* add unique ids ([#271](https://github.com/@aave/aave-utilities/issues/271)) ([a621706](https://github.com/@aave/aave-utilities/commit/a62170698bfeec047aca743f94a023707f1f5238))
+
+
+
+
+
 # 0.29.0 (2022-02-01)
 
 
