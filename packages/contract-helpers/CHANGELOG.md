@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.29.0 (2022-02-01)
+
+
+### Features
+
+* make user formatter generic ([#270](https://github.com/@aave/aave-utilities/issues/270)) ([5a33387](https://github.com/@aave/aave-utilities/commit/5a3338722b4b1c6e7c6f869548410249a88998a3))
+
+
+
+
+
 ## 0.28.2 (2022-01-28)
 
 **Note:** Version bump only for package @aave/contract-helpers
