@@ -126,9 +126,9 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
 
     const reservesData: ReserveDataHumanized[] = reservesRaw.map(
       reserveRaw => ({
-        id: `${chainId.toString()}${
+        id: `${chainId.toString()}-${
           reserveRaw.underlyingAsset
-        }${lendingPoolAddressProvider}`.toLowerCase(),
+        }-${lendingPoolAddressProvider}`.toLowerCase(),
         underlyingAsset: reserveRaw.underlyingAsset.toLowerCase(),
         name: reserveRaw.name,
         symbol: ammSymbolMap[reserveRaw.underlyingAsset.toLowerCase()]
@@ -202,9 +202,9 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
     const { chainId } = await this._contract.provider.getNetwork();
 
     return userReservesRaw.map((userReserveRaw: UserReserveData) => ({
-      id: `${chainId.toString()}${user}${
+      id: `${chainId.toString()}-${user}-${
         userReserveRaw.underlyingAsset
-      }${lendingPoolAddressProvider}`.toLowerCase(),
+      }-${lendingPoolAddressProvider}`.toLowerCase(),
       underlyingAsset: userReserveRaw.underlyingAsset.toLowerCase(),
       scaledATokenBalance: userReserveRaw.scaledATokenBalance.toString(),
       usageAsCollateralEnabledOnUser:
