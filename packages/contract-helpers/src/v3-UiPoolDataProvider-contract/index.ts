@@ -120,12 +120,13 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
   }: ReservesHelperInput): Promise<ReservesDataHumanized> {
     const { 0: reservesRaw, 1: poolBaseCurrencyRaw }: ReservesData =
       await this.getReservesData({ lendingPoolAddressProvider });
+    const { chainId } = await this._contract.provider.getNetwork();
 
     const reservesData: ReserveDataHumanized[] = reservesRaw.map(
       reserveRaw => ({
-        id: (
-          reserveRaw.underlyingAsset + lendingPoolAddressProvider
-        ).toLowerCase(),
+        id: `${chainId.toString()}-${
+          reserveRaw.underlyingAsset
+        }-${lendingPoolAddressProvider}`.toLowerCase(),
         underlyingAsset: reserveRaw.underlyingAsset.toLowerCase(),
         name: reserveRaw.name,
         symbol: ammSymbolMap[reserveRaw.underlyingAsset.toLowerCase()]
@@ -213,9 +214,13 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
   }> {
     const { 0: userReservesRaw, 1: userEmodeCategoryId }: UserReserveData =
       await this.getUserReservesData({ lendingPoolAddressProvider, user });
+    const { chainId } = await this._contract.provider.getNetwork();
 
     return {
       userReserves: userReservesRaw.map(userReserveRaw => ({
+        id: `${chainId.toString()}-${user}-${
+          userReserveRaw.underlyingAsset
+        }-${lendingPoolAddressProvider}`.toLowerCase(),
         underlyingAsset: userReserveRaw.underlyingAsset.toLowerCase(),
         scaledATokenBalance: userReserveRaw.scaledATokenBalance.toString(),
         usageAsCollateralEnabledOnUser:

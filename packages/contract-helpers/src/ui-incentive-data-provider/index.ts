@@ -136,8 +136,12 @@ export class UiIncentiveDataProvider
     const response = await this.getReservesIncentivesData(
       lendingPoolAddressProvider,
     );
+    const { chainId } = await this._contract.provider.getNetwork();
 
     return response.map(r => ({
+      id: `${chainId.toString()}-${
+        r.underlyingAsset
+      }-${lendingPoolAddressProvider}`.toLowerCase(),
       underlyingAsset: r.underlyingAsset.toLowerCase(),
       aIncentiveData: this._formatIncentiveData(r.aIncentiveData),
       vIncentiveData: this._formatIncentiveData(r.vIncentiveData),
@@ -153,8 +157,12 @@ export class UiIncentiveDataProvider
       user,
       lendingPoolAddressProvider,
     );
+    const { chainId } = await this._contract.provider.getNetwork();
 
     return response.map(r => ({
+      id: `${chainId.toString()}-${user}-${
+        r.underlyingAsset
+      }-${lendingPoolAddressProvider}`.toLowerCase(),
       underlyingAsset: r.underlyingAsset.toLowerCase(),
       aTokenIncentivesUserData: this._formatUserIncentiveData(
         r.aTokenIncentivesUserData,

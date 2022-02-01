@@ -23,6 +23,11 @@ describe('UiPoolDataProvider', () => {
       getReservesList: jest.fn(),
       getReservesData: mockGetReservesData,
       getUserReservesData: mockGetUserReservesData,
+      provider: {
+        getNetwork() {
+          return { chainId: 137 };
+        },
+      },
     };
 
     return instance;
@@ -134,7 +139,7 @@ describe('UiPoolDataProvider', () => {
       expect(result).toEqual({
         reservesData: [
           {
-            id: '0x3e0437898a5667a4769b1ca5a34aab1ae7e813770x88757f2f99175387ab4c6a4b3067c77a695b0349',
+            id: '137-0x3e0437898a5667a4769b1ca5a34aab1ae7e81377-0x88757f2f99175387ab4c6a4b3067c77a695b0349',
             underlyingAsset: '0x3e0437898a5667a4769b1ca5a34aab1ae7e81377',
             name: '',
             symbol: 'AMPL',
@@ -189,7 +194,7 @@ describe('UiPoolDataProvider', () => {
             borrowableInIsolation: false,
           },
           {
-            id: '0xa478c2975ab1ea89e8196811f51a7b7ade33eb110x88757f2f99175387ab4c6a4b3067c77a695b0349',
+            id: '137-0xa478c2975ab1ea89e8196811f51a7b7ade33eb11-0x88757f2f99175387ab4c6a4b3067c77a695b0349',
             underlyingAsset: '0xa478c2975ab1ea89e8196811f51a7b7ade33eb11',
             name: '',
             symbol: 'UNIDAIWETH',
@@ -282,6 +287,7 @@ describe('UiPoolDataProvider', () => {
       expect(result).toEqual({
         userReserves: [
           {
+            id: '137-0x88757f2f99175387ab4c6a4b3067c77a695b0349-0xb597cd8d3217ea6477232f9217fa70837ff667af-0x88757f2f99175387ab4c6a4b3067c77a695b0349',
             principalStableDebt: '0',
             scaledATokenBalance: '0',
             scaledVariableDebt: '0',
