@@ -35,6 +35,7 @@ const ammSymbolMap: Record<string, string> = {
 export interface UiPoolDataProviderContext {
   uiPoolDataProviderAddress: string;
   provider: providers.Provider;
+  chainId: number;
 }
 
 export interface UiPoolDataProviderInterface {
@@ -58,6 +59,7 @@ export interface UiPoolDataProviderInterface {
 export class UiPoolDataProvider implements UiPoolDataProviderInterface {
   private readonly _contract: UiPoolDataProviderContract;
 
+  private readonly chainId: number;
   /**
    * Constructor
    * @param context The ui pool data provider context
@@ -71,6 +73,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
       context.uiPoolDataProviderAddress,
       context.provider,
     );
+    this.chainId = context.chainId;
   }
 
   /**
@@ -122,13 +125,10 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
   ): Promise<ReservesDataHumanized> {
     const { 0: reservesRaw, 1: poolBaseCurrencyRaw }: ReservesData =
       await this.getReservesData(lendingPoolAddressProvider);
-    const { chainId } = await this._contract.provider.getNetwork();
 
     const reservesData: ReserveDataHumanized[] = reservesRaw.map(
       reserveRaw => ({
-        id: `${chainId.toString()}-${
-          reserveRaw.underlyingAsset
-        }-${lendingPoolAddressProvider}`.toLowerCase(),
+        id: `${this.chainId}-${reserveRaw.underlyingAsset}-${lendingPoolAddressProvider}`.toLowerCase(),
         underlyingAsset: reserveRaw.underlyingAsset.toLowerCase(),
         name: reserveRaw.name,
         symbol: ammSymbolMap[reserveRaw.underlyingAsset.toLowerCase()]
@@ -199,12 +199,9 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
       lendingPoolAddressProvider,
       user,
     );
-    const { chainId } = await this._contract.provider.getNetwork();
 
     return userReservesRaw.map((userReserveRaw: UserReserveData) => ({
-      id: `${chainId.toString()}-${user}-${
-        userReserveRaw.underlyingAsset
-      }-${lendingPoolAddressProvider}`.toLowerCase(),
+      id: `${this.chainId}-${user}-${userReserveRaw.underlyingAsset}-${lendingPoolAddressProvider}`.toLowerCase(),
       underlyingAsset: userReserveRaw.underlyingAsset.toLowerCase(),
       scaledATokenBalance: userReserveRaw.scaledATokenBalance.toString(),
       usageAsCollateralEnabledOnUser:
