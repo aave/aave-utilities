@@ -1,22 +1,29 @@
 import { BigNumberValue, normalize, valueToZDBigNumber } from '../../bignumber';
 import { RAY_DECIMALS, SECONDS_PER_YEAR } from '../../constants';
 import { RAY, rayPow } from '../../ray.math';
+import { FormatReserveUSDResponse } from '../reserve';
 import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
 import { ComputedUserReserve } from './index';
 
-export interface FormatUserReserveRequest {
-  reserve: UserReserveSummaryResponse;
+export interface FormatUserReserveRequest<
+  T extends FormatReserveUSDResponse = FormatReserveUSDResponse,
+> {
+  reserve: UserReserveSummaryResponse<T>;
   marketReferenceCurrencyDecimals: number;
 }
 
-export interface FormatUserReserveResponse {
-  reserve: ComputedUserReserve;
+export interface FormatUserReserveResponse<
+  T extends FormatReserveUSDResponse = FormatReserveUSDResponse,
+> {
+  reserve: ComputedUserReserve<T>;
 }
 
-export function formatUserReserve({
+export function formatUserReserve<
+  T extends FormatReserveUSDResponse = FormatReserveUSDResponse,
+>({
   reserve: _reserve,
   marketReferenceCurrencyDecimals,
-}: FormatUserReserveRequest): ComputedUserReserve {
+}: FormatUserReserveRequest<T>): ComputedUserReserve<T> {
   const { userReserve } = _reserve;
   const { reserve } = userReserve;
   const reserveDecimals = reserve.decimals;
