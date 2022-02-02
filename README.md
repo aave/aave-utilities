@@ -2,10 +2,10 @@
 
 <h1 align="center">Aave Utilities</h1>
 
-The Aave Protocol is a decentralized non-custodial liquidity market protocol
-where users can participate as depositors or borrowers. The protocol is a set of
-open source smart contracts which facilitate the supply and borrowing of user
-funds. These contracts, and all user transactions/balances are stored on a
+The Aave Protocol is a decentralized non-custodial liquidity protocol
+where users can participate as suppliers or borrowers. The protocol is a set of
+open source smart contracts which facilitate the logic of user interactions. 
+These contracts, and all user transactions/balances are stored on a
 public ledger called a blockchain, making them accessible to anyone
 
 Aave Utilities is a JavaScript SDK for interacting with V2 and V3 of the Aave
