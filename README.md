@@ -47,7 +47,7 @@ yarn add @aave/contract-helpers @aave/math-utils
 
 1.  [Data Formatting Methods](#data-formatting-methods)
     - a. [Fetching Protocol Data](#fetching-protocol-data)
-      - [ethers](#ethers.js)
+      - [ethers](#ethersjs)
       - [Subgraph](#subgraph)
       - [Caching Server](#caching-server)
     - b. [Format Reserve Data](#reserve-data)
@@ -757,10 +757,10 @@ To send a transaction from this object:
 import { BigNumber, providers } from 'ethers';
 
 function submitTransaction({
-  provider: providers.Web3Provider,
+  provider: providers.Web3Provider,  // Signing transactions requires a wallet provider, Aave UI currently uses web3-react (https://github.com/NoahZinsmeister/web3-react) for connecting wallets and accessing the wallet provider
   tx: EthereumTransactionTypeExtended
 }){
-  const extendedTxData = await tx.unsignedData();
+  const extendedTxData = await tx.tx();
   const { from, ...txData } = extendedTxData;
   const signer = provider.getSigner(from);
   const txResponse = await signer.sendTransaction({
