@@ -10,6 +10,7 @@ describe('UiPoolDataProvider', () => {
     const instance = new UiPoolDataProvider({
       uiPoolDataProviderAddress: mockValidEthereumAddress,
       provider: new providers.JsonRpcProvider(),
+      chainId: 137,
     });
 
     const mockGetReservesData = jest.fn();
@@ -23,11 +24,6 @@ describe('UiPoolDataProvider', () => {
       getReservesList: jest.fn(),
       getReservesData: mockGetReservesData,
       getUserReservesData: mockGetUserReservesData,
-      provider: {
-        getNetwork() {
-          return { chainId: 137 };
-        },
-      },
     };
 
     return instance;
@@ -40,6 +36,7 @@ describe('UiPoolDataProvider', () => {
           new UiPoolDataProvider({
             uiPoolDataProviderAddress: mockInvalidEthereumAddress,
             provider: new providers.JsonRpcProvider(),
+            chainId: 137,
           }),
       ).toThrowError('contract address is not valid');
     });
@@ -47,6 +44,7 @@ describe('UiPoolDataProvider', () => {
       const instance = new UiPoolDataProvider({
         uiPoolDataProviderAddress: mockValidEthereumAddress,
         provider: new providers.JsonRpcProvider(),
+        chainId: 137,
       });
 
       expect(instance instanceof UiPoolDataProvider).toEqual(true);
