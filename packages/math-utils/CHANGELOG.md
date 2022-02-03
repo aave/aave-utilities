@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.30.0 (2022-02-03)
+
+
+### Features
+
+* enforce providing chain ([#275](https://github.com/@aave/aave-utilities/issues/275)) ([10758e2](https://github.com/@aave/aave-utilities/commit/10758e2836ec3e72ccbf1ffe87644e74952aa7fc))
+
+
+
+
+
 ## 0.29.1 (2022-02-01)
 
 
