@@ -82,6 +82,7 @@ export const reservesMock: ReservesData = {
         _hex: '0x0',
         _isBigNumber: true,
       }),
+      priceOracle: '0x796ec26fc7df8D81BCB5BABF74ccdE0E2B122164',
       variableRateSlope1: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
@@ -95,6 +96,10 @@ export const reservesMock: ReservesData = {
         _isBigNumber: true,
       }),
       stableRateSlope2: BigNumber.from({
+        _hex: '0x0',
+        _isBigNumber: true,
+      }),
+      optimalUsageRatio: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
       }),
@@ -214,6 +219,7 @@ export const reservesMock: ReservesData = {
         _hex: '0x0',
         _isBigNumber: true,
       }),
+      priceOracle: '0x796ec26fc7df8D81BCB5BABF74ccdE0E2B122164',
       variableRateSlope1: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
@@ -227,6 +233,10 @@ export const reservesMock: ReservesData = {
         _isBigNumber: true,
       }),
       stableRateSlope2: BigNumber.from({
+        _hex: '0x0',
+        _isBigNumber: true,
+      }),
+      optimalUsageRatio: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
       }),

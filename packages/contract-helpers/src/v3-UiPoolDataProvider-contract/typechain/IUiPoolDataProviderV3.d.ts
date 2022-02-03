@@ -17,7 +17,7 @@ import { Listener, Provider } from '@ethersproject/providers';
 import { FunctionFragment, EventFragment, Result } from '@ethersproject/abi';
 import { TypedEventFilter, TypedEvent, TypedListener } from './commons';
 
-interface IUiPoolDataProviderInterface extends ethers.utils.Interface {
+interface IUiPoolDataProviderV3Interface extends ethers.utils.Interface {
   functions: {
     'getReservesData(address)': FunctionFragment;
     'getReservesList(address)': FunctionFragment;
@@ -53,7 +53,7 @@ interface IUiPoolDataProviderInterface extends ethers.utils.Interface {
   events: {};
 }
 
-export class IUiPoolDataProvider extends BaseContract {
+export class IUiPoolDataProviderV3 extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -94,7 +94,7 @@ export class IUiPoolDataProvider extends BaseContract {
     toBlock?: string | number | undefined,
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: IUiPoolDataProviderInterface;
+  interface: IUiPoolDataProviderV3Interface;
 
   functions: {
     getReservesData(
@@ -131,6 +131,8 @@ export class IUiPoolDataProvider extends BaseContract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
+          string,
           BigNumber,
           BigNumber,
           BigNumber,
@@ -181,10 +183,12 @@ export class IUiPoolDataProvider extends BaseContract {
           stableDebtLastUpdateTimestamp: BigNumber;
           totalScaledVariableDebt: BigNumber;
           priceInMarketReferenceCurrency: BigNumber;
+          priceOracle: string;
           variableRateSlope1: BigNumber;
           variableRateSlope2: BigNumber;
           stableRateSlope1: BigNumber;
           stableRateSlope2: BigNumber;
+          optimalUsageRatio: BigNumber;
           isPaused: boolean;
           accruedToTreasury: BigNumber;
           unbacked: BigNumber;
@@ -278,6 +282,8 @@ export class IUiPoolDataProvider extends BaseContract {
         BigNumber,
         BigNumber,
         BigNumber,
+        string,
+        BigNumber,
         BigNumber,
         BigNumber,
         BigNumber,
@@ -327,10 +333,12 @@ export class IUiPoolDataProvider extends BaseContract {
         stableDebtLastUpdateTimestamp: BigNumber;
         totalScaledVariableDebt: BigNumber;
         priceInMarketReferenceCurrency: BigNumber;
+        priceOracle: string;
         variableRateSlope1: BigNumber;
         variableRateSlope2: BigNumber;
         stableRateSlope1: BigNumber;
         stableRateSlope2: BigNumber;
+        optimalUsageRatio: BigNumber;
         isPaused: boolean;
         accruedToTreasury: BigNumber;
         unbacked: BigNumber;
@@ -424,6 +432,8 @@ export class IUiPoolDataProvider extends BaseContract {
           BigNumber,
           BigNumber,
           BigNumber,
+          string,
+          BigNumber,
           BigNumber,
           BigNumber,
           BigNumber,
@@ -473,10 +483,12 @@ export class IUiPoolDataProvider extends BaseContract {
           stableDebtLastUpdateTimestamp: BigNumber;
           totalScaledVariableDebt: BigNumber;
           priceInMarketReferenceCurrency: BigNumber;
+          priceOracle: string;
           variableRateSlope1: BigNumber;
           variableRateSlope2: BigNumber;
           stableRateSlope1: BigNumber;
           stableRateSlope2: BigNumber;
+          optimalUsageRatio: BigNumber;
           isPaused: boolean;
           accruedToTreasury: BigNumber;
           unbacked: BigNumber;
