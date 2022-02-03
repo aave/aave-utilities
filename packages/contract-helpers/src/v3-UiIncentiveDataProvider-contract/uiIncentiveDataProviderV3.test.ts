@@ -29,6 +29,7 @@ describe('UiIncentiveDataProvider', () => {
       const instance = new UiIncentiveDataProvider({
         uiIncentiveDataProviderAddress,
         provider: new providers.JsonRpcProvider(),
+        chainId: 137,
       });
       expect(instance instanceof UiIncentiveDataProvider).toEqual(true);
     });
@@ -40,11 +41,13 @@ describe('UiIncentiveDataProvider', () => {
     const instance = new UiIncentiveDataProvider({
       uiIncentiveDataProviderAddress,
       provider,
+      chainId: 137,
     });
     it('should throw if uiIncentiveDataProvider is not a valid ethereum address', async () => {
       const instance = new UiIncentiveDataProvider({
         uiIncentiveDataProviderAddress: 'asdf',
         provider,
+        chainId: 137,
       });
       await expect(async () =>
         instance.getFullReservesIncentiveData({
@@ -96,6 +99,7 @@ describe('UiIncentiveDataProvider', () => {
     const instance = new UiIncentiveDataProvider({
       uiIncentiveDataProviderAddress,
       provider,
+      chainId: 137,
     });
     afterEach(() => {
       jest.clearAllMocks();
@@ -104,6 +108,7 @@ describe('UiIncentiveDataProvider', () => {
       const instance = new UiIncentiveDataProvider({
         uiIncentiveDataProviderAddress: 'asdf',
         provider,
+        chainId: 137,
       });
       await expect(async () =>
         instance.getReservesIncentivesData({ lendingPoolAddressProvider }),
@@ -135,6 +140,7 @@ describe('UiIncentiveDataProvider', () => {
     const instance = new UiIncentiveDataProvider({
       uiIncentiveDataProviderAddress,
       provider,
+      chainId: 137,
     });
     afterEach(() => {
       jest.clearAllMocks();
@@ -143,6 +149,7 @@ describe('UiIncentiveDataProvider', () => {
       const instance = new UiIncentiveDataProvider({
         uiIncentiveDataProviderAddress: 'asdf',
         provider,
+        chainId: 137,
       });
       await expect(async () =>
         instance.getUserReservesIncentivesData({
@@ -192,6 +199,7 @@ describe('UiIncentiveDataProvider', () => {
     const instance = new UiIncentiveDataProvider({
       uiIncentiveDataProviderAddress,
       provider,
+      chainId: 137,
     });
     afterEach(() => {
       jest.clearAllMocks();
@@ -200,6 +208,7 @@ describe('UiIncentiveDataProvider', () => {
       const instance = new UiIncentiveDataProvider({
         uiIncentiveDataProviderAddress: 'asdf',
         provider,
+        chainId: 137,
       });
       await expect(async () =>
         instance.getReservesIncentivesDataHumanized({
@@ -232,6 +241,7 @@ describe('UiIncentiveDataProvider', () => {
       expect(spy).toHaveBeenCalled();
       expect(data).toEqual([
         {
+          id: '137-0xb04aaa2a73ff3d88950bdf19eb4ac029630a2367-0x0000000000000000000000000000000000000002',
           underlyingAsset:
             '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
           aIncentiveData: {
@@ -354,6 +364,7 @@ describe('UiIncentiveDataProvider', () => {
     const instance = new UiIncentiveDataProvider({
       uiIncentiveDataProviderAddress,
       provider,
+      chainId: 137,
     });
     afterEach(() => {
       jest.clearAllMocks();
@@ -362,6 +373,7 @@ describe('UiIncentiveDataProvider', () => {
       const instance = new UiIncentiveDataProvider({
         uiIncentiveDataProviderAddress: 'asdf',
         provider,
+        chainId: 137,
       });
       await expect(async () =>
         instance.getUserReservesIncentivesDataHumanized({
@@ -406,6 +418,7 @@ describe('UiIncentiveDataProvider', () => {
       expect(spy).toHaveBeenCalled();
       expect(response).toEqual([
         {
+          id: '137-0xb04aaa2a73ff3d88950bdf19eb4ac029630a2367-0x0000000000000000000000000000000000000002',
           underlyingAsset:
             '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
           aTokenIncentivesUserData: {
@@ -479,6 +492,7 @@ describe('UiIncentiveDataProvider', () => {
     const instance = new UiIncentiveDataProvider({
       uiIncentiveDataProviderAddress,
       provider,
+      chainId: 137,
     });
     const chainlinkFeedsRegistry = '0x0000000000000000000000000000000000000004';
 
@@ -489,6 +503,7 @@ describe('UiIncentiveDataProvider', () => {
       const instance = new UiIncentiveDataProvider({
         uiIncentiveDataProviderAddress: 'asdf',
         provider,
+        chainId: 137,
       });
       await expect(async () =>
         instance.getIncentivesDataWithPriceLegacy({
@@ -533,6 +548,7 @@ describe('UiIncentiveDataProvider', () => {
       expect(clInstance.getPriceFeed).toBeCalled();
       expect(result).toEqual([
         {
+          id: '137-0xb04aaa2a73ff3d88950bdf19eb4ac029630a2367-0x0000000000000000000000000000000000000002',
           underlyingAsset:
             '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
           aIncentiveData: {
@@ -681,6 +697,7 @@ describe('UiIncentiveDataProvider', () => {
       expect(clInstance.getPriceFeed).toBeCalled();
       expect(result).toEqual([
         {
+          id: '137-0xb04aaa2a73ff3d88950bdf19eb4ac029630a2367-0x0000000000000000000000000000000000000002',
           underlyingAsset:
             '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
           aIncentiveData: {
@@ -827,6 +844,7 @@ describe('UiIncentiveDataProvider', () => {
       expect(clInstance.getPriceFeed).toBeCalled();
       expect(result).toEqual([
         {
+          id: '137-0xb04aaa2a73ff3d88950bdf19eb4ac029630a2367-0x0000000000000000000000000000000000000002',
           underlyingAsset:
             '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
           aIncentiveData: {
@@ -962,6 +980,7 @@ describe('UiIncentiveDataProvider', () => {
 
       expect(result).toEqual([
         {
+          id: '137-0xb04aaa2a73ff3d88950bdf19eb4ac029630a2367-0x0000000000000000000000000000000000000002',
           underlyingAsset:
             '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
           aIncentiveData: {
@@ -1097,6 +1116,7 @@ describe('UiIncentiveDataProvider', () => {
 
       expect(result).toEqual([
         {
+          id: '137-0xb04aaa2a73ff3d88950bdf19eb4ac029630a2367-0x0000000000000000000000000000000000000002',
           underlyingAsset:
             '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
           aIncentiveData: {
@@ -1214,6 +1234,7 @@ describe('UiIncentiveDataProvider', () => {
       ]);
       expect(result2).toEqual([
         {
+          id: '137-0xb04aaa2a73ff3d88950bdf19eb4ac029630a2367-0x0000000000000000000000000000000000000002',
           underlyingAsset:
             '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
           aIncentiveData: {
@@ -1345,6 +1366,7 @@ describe('UiIncentiveDataProvider', () => {
 
       expect(result).toEqual([
         {
+          id: '137-0xb04aaa2a73ff3d88950bdf19eb4ac029630a2367-0x0000000000000000000000000000000000000002',
           underlyingAsset:
             '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
           aIncentiveData: {
@@ -1474,6 +1496,7 @@ describe('UiIncentiveDataProvider', () => {
 
       expect(result).toEqual([
         {
+          id: '137-0xb04aaa2a73ff3d88950bdf19eb4ac029630a2367-0x0000000000000000000000000000000000000002',
           underlyingAsset:
             '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
           aIncentiveData: {
@@ -1604,6 +1627,7 @@ describe('UiIncentiveDataProvider', () => {
 
       expect(result).toEqual([
         {
+          id: '137-0xb04aaa2a73ff3d88950bdf19eb4ac029630a2367-0x0000000000000000000000000000000000000002',
           underlyingAsset:
             '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
           aIncentiveData: {

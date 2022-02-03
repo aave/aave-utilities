@@ -62,6 +62,7 @@ export interface GetIncentivesDataWithPriceType {
 export interface UiIncentiveDataProviderContext {
   uiIncentiveDataProviderAddress: string;
   provider: providers.Provider;
+  chainId: number;
 }
 
 export class UiIncentiveDataProvider
@@ -69,6 +70,8 @@ export class UiIncentiveDataProvider
   implements UiIncentiveDataProviderInterface
 {
   readonly uiIncentiveDataProviderAddress: string;
+
+  readonly chainId: number;
 
   private readonly _chainlinkFeedsRegistries: Record<
     string,
@@ -82,10 +85,12 @@ export class UiIncentiveDataProvider
   public constructor({
     provider,
     uiIncentiveDataProviderAddress,
+    chainId,
   }: UiIncentiveDataProviderContext) {
     super(provider, IUiIncentiveDataProviderV3__factory);
     this.uiIncentiveDataProviderAddress = uiIncentiveDataProviderAddress;
     this._chainlinkFeedsRegistries = {};
+    this.chainId = chainId;
   }
 
   /**
@@ -154,6 +159,7 @@ export class UiIncentiveDataProvider
       await this.getReservesIncentivesData({ lendingPoolAddressProvider });
 
     return response.map(r => ({
+      id: `${this.chainId}-${r.underlyingAsset}-${lendingPoolAddressProvider}`.toLowerCase(),
       underlyingAsset: r.underlyingAsset.toLowerCase(),
       aIncentiveData: this._formatIncentiveData(r.aIncentiveData),
       vIncentiveData: this._formatIncentiveData(r.vIncentiveData),
@@ -174,6 +180,7 @@ export class UiIncentiveDataProvider
       });
 
     return response.map(r => ({
+      id: `${this.chainId}-${r.underlyingAsset}-${lendingPoolAddressProvider}`.toLowerCase(),
       underlyingAsset: r.underlyingAsset.toLowerCase(),
       aTokenIncentivesUserData: this._formatUserIncentiveData(
         r.aTokenIncentivesUserData,
@@ -244,6 +251,7 @@ export class UiIncentiveDataProvider
 
     return incentives.map((incentive: ReservesIncentiveDataHumanized) => {
       return {
+        id: `${this.chainId}-${incentive.underlyingAsset}-${lendingPoolAddressProvider}`.toLowerCase(),
         underlyingAsset: incentive.underlyingAsset,
         aIncentiveData: {
           ...incentive.aIncentiveData,
