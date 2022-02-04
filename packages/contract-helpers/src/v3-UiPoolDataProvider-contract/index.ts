@@ -169,6 +169,8 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
         variableRateSlope2: reserveRaw.variableRateSlope2.toString(),
         stableRateSlope1: reserveRaw.stableRateSlope1.toString(),
         stableRateSlope2: reserveRaw.stableRateSlope2.toString(),
+        baseStableBorrowRate: reserveRaw.baseStableBorrowRate.toString(),
+        baseVariableBorrowRate: reserveRaw.baseVariableBorrowRate.toString(),
         optimalUsageRatio: reserveRaw.optimalUsageRatio.toString(),
         // new fields
         isPaused: reserveRaw.isPaused,

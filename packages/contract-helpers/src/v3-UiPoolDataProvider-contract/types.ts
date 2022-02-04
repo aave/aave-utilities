@@ -36,6 +36,8 @@ export interface ReservesData {
     variableRateSlope2: BigNumber;
     stableRateSlope1: BigNumber;
     stableRateSlope2: BigNumber;
+    baseStableBorrowRate: BigNumber;
+    baseVariableBorrowRate: BigNumber;
     optimalUsageRatio: BigNumber;
     isPaused: boolean;
     accruedToTreasury: BigNumber;
@@ -116,6 +118,8 @@ export interface ReserveDataHumanized {
   variableRateSlope2: string;
   stableRateSlope1: string;
   stableRateSlope2: string;
+  baseStableBorrowRate: string;
+  baseVariableBorrowRate: string;
   optimalUsageRatio: string;
   // v3 only
   isPaused: boolean;

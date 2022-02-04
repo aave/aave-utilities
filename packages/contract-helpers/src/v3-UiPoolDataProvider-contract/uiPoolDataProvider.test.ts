@@ -176,6 +176,8 @@ describe('UiPoolDataProvider', () => {
             variableRateSlope2: '0',
             stableRateSlope1: '0',
             stableRateSlope2: '0',
+            baseStableBorrowRate: '0',
+            baseVariableBorrowRate: '0',
             optimalUsageRatio: '0',
             // new
             debtCeiling: '0',
@@ -233,6 +235,8 @@ describe('UiPoolDataProvider', () => {
             variableRateSlope2: '0',
             stableRateSlope1: '0',
             stableRateSlope2: '0',
+            baseStableBorrowRate: '0',
+            baseVariableBorrowRate: '0',
             optimalUsageRatio: '0',
             // new
             debtCeiling: '0',

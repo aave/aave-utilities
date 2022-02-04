@@ -138,6 +138,8 @@ export class IUiPoolDataProviderV3 extends BaseContract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
+          BigNumber,
           boolean,
           BigNumber,
           BigNumber,
@@ -188,6 +190,8 @@ export class IUiPoolDataProviderV3 extends BaseContract {
           variableRateSlope2: BigNumber;
           stableRateSlope1: BigNumber;
           stableRateSlope2: BigNumber;
+          baseStableBorrowRate: BigNumber;
+          baseVariableBorrowRate: BigNumber;
           optimalUsageRatio: BigNumber;
           isPaused: boolean;
           accruedToTreasury: BigNumber;
@@ -288,6 +292,8 @@ export class IUiPoolDataProviderV3 extends BaseContract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
+        BigNumber,
         boolean,
         BigNumber,
         BigNumber,
@@ -338,6 +344,8 @@ export class IUiPoolDataProviderV3 extends BaseContract {
         variableRateSlope2: BigNumber;
         stableRateSlope1: BigNumber;
         stableRateSlope2: BigNumber;
+        baseStableBorrowRate: BigNumber;
+        baseVariableBorrowRate: BigNumber;
         optimalUsageRatio: BigNumber;
         isPaused: boolean;
         accruedToTreasury: BigNumber;
@@ -438,6 +446,8 @@ export class IUiPoolDataProviderV3 extends BaseContract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
+          BigNumber,
           boolean,
           BigNumber,
           BigNumber,
@@ -488,6 +498,8 @@ export class IUiPoolDataProviderV3 extends BaseContract {
           variableRateSlope2: BigNumber;
           stableRateSlope1: BigNumber;
           stableRateSlope2: BigNumber;
+          baseStableBorrowRate: BigNumber;
+          baseVariableBorrowRate: BigNumber;
           optimalUsageRatio: BigNumber;
           isPaused: boolean;
           accruedToTreasury: BigNumber;

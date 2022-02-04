@@ -193,6 +193,16 @@ const _abi = [
           },
           {
             internalType: 'uint256',
+            name: 'baseStableBorrowRate',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'baseVariableBorrowRate',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
             name: 'optimalUsageRatio',
             type: 'uint256',
           },
