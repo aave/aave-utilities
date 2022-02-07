@@ -197,7 +197,7 @@ describe('BaseService', () => {
       expect(gas?.gasLimit).toEqual('1');
       expect(gas?.gasPrice).toEqual('2');
     });
-    it('Expects null when no gas limit', async () => {
+    xit('Expects null when no gas limit', async () => {
       const txCallback = async () => ({});
       const txs = [
         {
@@ -213,6 +213,24 @@ describe('BaseService', () => {
       );
       const gas = await gasObj();
       expect(gas).toEqual(null);
+    });
+    it('Expects to fail when no gas limit', async () => {
+      const txCallback = async () => ({});
+      const txs = [
+        {
+          txType: eEthereumTxType.DLP_ACTION,
+          tx: txCallback,
+          gas: async () => Promise.reject(new Error('Some error')),
+        },
+      ];
+      const gasObj = baseService.generateTxPriceEstimation(
+        txs,
+        txCallback,
+        action,
+      );
+      await expect(async () => gasObj()).rejects.toThrowError(
+        'Transaction calculation error',
+      );
     });
   });
 });
