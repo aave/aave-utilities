@@ -130,8 +130,8 @@ export type Proposal = {
   withDelegatecalls: boolean[];
   startBlock: number;
   endBlock: number;
-  executionTime: string;
-  executionTimeWithGracePeriod: string;
+  executionTime: number;
+  executionTimeWithGracePeriod: number;
   forVotes: string;
   againstVotes: string;
   executed: boolean;
