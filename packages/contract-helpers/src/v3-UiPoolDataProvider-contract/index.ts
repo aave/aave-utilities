@@ -1,8 +1,8 @@
 import { providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import { ReservesHelperInput, UserReservesHelperInput } from '../index';
-import { IUiPoolDataProvider as UiPoolDataProviderContract } from './typechain/IUiPoolDataProvider';
-import { IUiPoolDataProvider__factory } from './typechain/IUiPoolDataProvider__factory';
+import { IUiPoolDataProviderV3 as UiPoolDataProviderContract } from './typechain/IUiPoolDataProviderV3';
+import { IUiPoolDataProviderV3__factory } from './typechain/IUiPoolDataProviderV3__factory';
 import {
   ReservesData,
   UserReserveData,
@@ -67,7 +67,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
       throw new Error('contract address is not valid');
     }
 
-    this._contract = IUiPoolDataProvider__factory.connect(
+    this._contract = IUiPoolDataProviderV3__factory.connect(
       context.uiPoolDataProviderAddress,
       context.provider,
     );
@@ -164,10 +164,14 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
         totalScaledVariableDebt: reserveRaw.totalScaledVariableDebt.toString(),
         priceInMarketReferenceCurrency:
           reserveRaw.priceInMarketReferenceCurrency.toString(),
+        priceOracle: reserveRaw.priceOracle,
         variableRateSlope1: reserveRaw.variableRateSlope1.toString(),
         variableRateSlope2: reserveRaw.variableRateSlope2.toString(),
         stableRateSlope1: reserveRaw.stableRateSlope1.toString(),
         stableRateSlope2: reserveRaw.stableRateSlope2.toString(),
+        baseStableBorrowRate: reserveRaw.baseStableBorrowRate.toString(),
+        baseVariableBorrowRate: reserveRaw.baseVariableBorrowRate.toString(),
+        optimalUsageRatio: reserveRaw.optimalUsageRatio.toString(),
         // new fields
         isPaused: reserveRaw.isPaused,
         debtCeiling: reserveRaw.debtCeiling.toString(),

@@ -4,9 +4,9 @@
 import { Contract, Signer, utils } from 'ethers';
 import { Provider } from '@ethersproject/providers';
 import type {
-  IUiPoolDataProvider,
-  IUiPoolDataProviderInterface,
-} from './IUiPoolDataProvider';
+  IUiPoolDataProviderV3,
+  IUiPoolDataProviderV3Interface,
+} from './IUiPoolDataProviderV3';
 
 const _abi = [
   {
@@ -167,6 +167,11 @@ const _abi = [
             type: 'uint256',
           },
           {
+            internalType: 'address',
+            name: 'priceOracle',
+            type: 'address',
+          },
+          {
             internalType: 'uint256',
             name: 'variableRateSlope1',
             type: 'uint256',
@@ -184,6 +189,21 @@ const _abi = [
           {
             internalType: 'uint256',
             name: 'stableRateSlope2',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'baseStableBorrowRate',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'baseVariableBorrowRate',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'optimalUsageRatio',
             type: 'uint256',
           },
           {
@@ -262,7 +282,7 @@ const _abi = [
             type: 'bool',
           },
         ],
-        internalType: 'struct IUiPoolDataProvider.AggregatedReserveData[]',
+        internalType: 'struct IUiPoolDataProviderV3.AggregatedReserveData[]',
         name: '',
         type: 'tuple[]',
       },
@@ -289,7 +309,7 @@ const _abi = [
             type: 'uint8',
           },
         ],
-        internalType: 'struct IUiPoolDataProvider.BaseCurrencyInfo',
+        internalType: 'struct IUiPoolDataProviderV3.BaseCurrencyInfo',
         name: '',
         type: 'tuple',
       },
@@ -369,7 +389,7 @@ const _abi = [
             type: 'uint256',
           },
         ],
-        internalType: 'struct IUiPoolDataProvider.UserReserveData[]',
+        internalType: 'struct IUiPoolDataProviderV3.UserReserveData[]',
         name: '',
         type: 'tuple[]',
       },
@@ -384,15 +404,19 @@ const _abi = [
   },
 ];
 
-export class IUiPoolDataProvider__factory {
+export class IUiPoolDataProviderV3__factory {
   static readonly abi = _abi;
-  static createInterface(): IUiPoolDataProviderInterface {
-    return new utils.Interface(_abi) as IUiPoolDataProviderInterface;
+  static createInterface(): IUiPoolDataProviderV3Interface {
+    return new utils.Interface(_abi) as IUiPoolDataProviderV3Interface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider,
-  ): IUiPoolDataProvider {
-    return new Contract(address, _abi, signerOrProvider) as IUiPoolDataProvider;
+  ): IUiPoolDataProviderV3 {
+    return new Contract(
+      address,
+      _abi,
+      signerOrProvider,
+    ) as IUiPoolDataProviderV3;
   }
 }
