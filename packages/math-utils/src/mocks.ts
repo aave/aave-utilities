@@ -45,29 +45,37 @@ export class ReserveMock {
       eModeLtv: 6000, // 60%
       eModeLiquidationThreshold: 7000, // 70%
       eModeLiquidationBonus: 0,
+      unbacked: '0',
     };
   }
 
-  addLiquidity(decimal: number | string) {
-    this.reserve.availableLiquidity = new BigNumber(decimal)
+  addLiquidity(amount: number | string) {
+    this.reserve.availableLiquidity = new BigNumber(amount)
       .shiftedBy(this.config.decimals)
       .plus(this.reserve.availableLiquidity)
       .toString();
     return this;
   }
 
-  addVariableDebt(decimal: number | string) {
-    this.reserve.totalScaledVariableDebt = new BigNumber(decimal)
+  addVariableDebt(amount: number | string) {
+    this.reserve.totalScaledVariableDebt = new BigNumber(amount)
       .shiftedBy(this.config.decimals)
       .plus(this.reserve.totalScaledVariableDebt)
       .toString();
     return this;
   }
 
-  addStableDebt(decimal: number | string) {
-    this.reserve.totalPrincipalStableDebt = new BigNumber(decimal)
+  addStableDebt(amount: number | string) {
+    this.reserve.totalPrincipalStableDebt = new BigNumber(amount)
       .shiftedBy(this.config.decimals)
       .plus(this.reserve.totalPrincipalStableDebt)
+      .toString();
+    return this;
+  }
+
+  addUnbacked(amount: number | string) {
+    this.reserve.unbacked = new BigNumber(amount)
+      .shiftedBy(this.config.decimals)
       .toString();
     return this;
   }
@@ -133,7 +141,8 @@ export class UserReserveMock {
       variableBorrowAPR: '0',
       stableBorrowAPY: '0',
       stableBorrowAPR: '0',
-      utilizationRate: '0',
+      borrowUsageRatio: '0',
+      supplyUsageRatio: '0',
       totalStableDebt: '0',
       totalVariableDebt: '0',
       totalDebt: '0',
