@@ -45,20 +45,20 @@ export function augustusFromAmountOffsetFromCalldata(calldata: string): number {
   }
 }
 
-export function augustusToAmountOffsetFromCalldata(calldata: string) {
-  switch (calldata.slice(0, 10)) {
-    case '0x935fb84b': // Augustus V5 buyOnUniswap
-      return 36; // 4 + 1 * 32
-    case '0xc03786b0': // Augustus V5 buyOnUniswapFork
-      return 100; // 4 + 3 * 32
-    case '0xb2f1e6db': // Augustus V5 buyOnUniswapV2Fork
-      return 68; // 4 + 2 * 32
-    case '0xb66bcbac': // Augustus V5 buy
-      return 164; // 4 + 5 * 32
-    default:
-      throw new Error('Unrecognized function selector for Augustus');
-  }
-}
+// export function augustusToAmountOffsetFromCalldata(calldata: string) {
+//   switch (calldata.slice(0, 10)) {
+//     case '0x935fb84b': // Augustus V5 buyOnUniswap
+//       return 36; // 4 + 1 * 32
+//     case '0xc03786b0': // Augustus V5 buyOnUniswapFork
+//       return 100; // 4 + 3 * 32
+//     case '0xb2f1e6db': // Augustus V5 buyOnUniswapV2Fork
+//       return 68; // 4 + 2 * 32
+//     case '0xb66bcbac': // Augustus V5 buy
+//       return 164; // 4 + 5 * 32
+//     default:
+//       throw new Error('Unrecognized function selector for Augustus');
+//   }
+// }
 
 export type SwapAndDepositMethodType = {
   user: tEthereumAddress;
