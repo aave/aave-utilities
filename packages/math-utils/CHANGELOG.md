@@ -3,6 +3,78 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.30.0 (2022-02-03)
+
+
+### Features
+
+* enforce providing chain ([#275](https://github.com/@aave/aave-utilities/issues/275)) ([10758e2](https://github.com/@aave/aave-utilities/commit/10758e2836ec3e72ccbf1ffe87644e74952aa7fc))
+
+
+
+
+
+## 0.29.1 (2022-02-01)
+
+
+### Bug Fixes
+
+* add unique ids ([#271](https://github.com/@aave/aave-utilities/issues/271)) ([a621706](https://github.com/@aave/aave-utilities/commit/a62170698bfeec047aca743f94a023707f1f5238))
+
+
+
+
+
+# 0.29.0 (2022-02-01)
+
+
+### Features
+
+* make user formatter generic ([#270](https://github.com/@aave/aave-utilities/issues/270)) ([5a33387](https://github.com/@aave/aave-utilities/commit/5a3338722b4b1c6e7c6f869548410249a88998a3))
+
+
+
+
+
+## 0.28.2 (2022-01-28)
+
+**Note:** Version bump only for package @aave/math-utils
+
+
+
+
+
+## 0.28.1 (2022-01-27)
+
+**Note:** Version bump only for package @aave/math-utils
+
+
+
+
+
+# 0.28.0 (2022-01-27)
+
+
+* feat!: migrate helpers to support v2 and v3 (#176) ([b679d19](https://github.com/@aave/aave-utilities/commit/b679d19f24a4ff78e6bcf73029dbedc9b04dc5ea)), closes [#176](https://github.com/@aave/aave-utilities/issues/176)
+
+
+### BREAKING CHANGES
+
+* The contract helper now contains all required helpers to build a/the ui.
+A lot of interfaces have been aligned which caused breaking changes in all places. Make sure to check out the new docs.
+
+Co-authored-by: Lukas <lukasstrassel@googlemail.com>
+Co-authored-by: Andrew Schmidt <andrew@aave.com>
+
+
+
+
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## 0.27.3 (2021-12-16)
 
 **Note:** Version bump only for package @aave/math-utils
@@ -113,96 +185,58 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package @aave/math-utils
 
-
-
-
-
 ## 0.25.6 (2021-11-16)
 
 **Note:** Version bump only for package @aave/math-utils
-
-
-
-
 
 ## 0.25.5 (2021-11-16)
 
 **Note:** Version bump only for package @aave/math-utils
 
-
-
-
-
 ## 0.25.4 (2021-11-15)
 
 **Note:** Version bump only for package @aave/math-utils
-
-
-
-
 
 ## 0.25.3 (2021-11-15)
 
 **Note:** Version bump only for package @aave/math-utils
 
-
-
-
-
 ## 0.25.2 (2021-11-12)
-
 
 ### Bug Fixes
 
-* remove staking address from type ([#173](https://github.com/@aave/aave-utilities/issues/173)) ([57ff194](https://github.com/@aave/aave-utilities/commit/57ff1944c174a3fa32df755c7e08ee18a614f914))
-
-
-
-
+- remove staking address from type
+  ([#173](https://github.com/@aave/aave-utilities/issues/173))
+  ([57ff194](https://github.com/@aave/aave-utilities/commit/57ff1944c174a3fa32df755c7e08ee18a614f914))
 
 ## 0.25.1 (2021-11-11)
 
-
 ### Bug Fixes
 
-* coverage ([#171](https://github.com/@aave/aave-utilities/issues/171)) ([9c16633](https://github.com/@aave/aave-utilities/commit/9c166331e1c343481129a49b3e4eb610b2de13f6))
-
-
-
-
+- coverage ([#171](https://github.com/@aave/aave-utilities/issues/171))
+  ([9c16633](https://github.com/@aave/aave-utilities/commit/9c166331e1c343481129a49b3e4eb610b2de13f6))
 
 # 0.25.0 (2021-11-10)
 
-
 ### Features
 
-* v3 pool contract ([#165](https://github.com/@aave/aave-utilities/issues/165)) ([25676f4](https://github.com/@aave/aave-utilities/commit/25676f45e747ac6ff5827ac09e3c3c73658035ee))
-
-
-
-
+- v3 pool contract ([#165](https://github.com/@aave/aave-utilities/issues/165))
+  ([25676f4](https://github.com/@aave/aave-utilities/commit/25676f45e747ac6ff5827ac09e3c3c73658035ee))
 
 ## 0.24.2 (2021-11-08)
 
-
 ### Bug Fixes
 
-* bind this context ([#164](https://github.com/@aave/aave-utilities/issues/164)) ([b1606ab](https://github.com/@aave/aave-utilities/commit/b1606ab89d214c0d46e2c7eb0ae06f7ad3c9bc3a))
-
-
-
-
+- bind this context ([#164](https://github.com/@aave/aave-utilities/issues/164))
+  ([b1606ab](https://github.com/@aave/aave-utilities/commit/b1606ab89d214c0d46e2c7eb0ae06f7ad3c9bc3a))
 
 ## 0.24.1 (2021-11-08)
 
-
 ### Bug Fixes
 
-* user usd formatting ([#155](https://github.com/@aave/aave-utilities/issues/155)) ([0f3521b](https://github.com/@aave/aave-utilities/commit/0f3521bf0862f0c0b70b6d3b6c2801414cdce977))
-
-
-
-
+- user usd formatting
+  ([#155](https://github.com/@aave/aave-utilities/issues/155))
+  ([0f3521b](https://github.com/@aave/aave-utilities/commit/0f3521bf0862f0c0b70b6d3b6c2801414cdce977))
 
 # Change Log
 
@@ -211,14 +245,11 @@ All notable changes to this project will be documented in this file. See
 
 # 0.24.0 (2021-11-08)
 
-
 ### Features
 
-* added new fields to v3 uipooldataprovider ([#154](https://github.com/@aave/aave-utilities/issues/154)) ([09584fe](https://github.com/@aave/aave-utilities/commit/09584fede051cfc2be0c05d496d31018431a69f2))
-
-
-
-
+- added new fields to v3 uipooldataprovider
+  ([#154](https://github.com/@aave/aave-utilities/issues/154))
+  ([09584fe](https://github.com/@aave/aave-utilities/commit/09584fede051cfc2be0c05d496d31018431a69f2))
 
 # Change Log
 

@@ -23,6 +23,7 @@ describe('UiIncentiveDataProvider', () => {
     const instance = new UiIncentiveDataProvider({
       incentiveDataProviderAddress: mockValidEthereumAddress,
       provider: new providers.JsonRpcProvider(),
+      chainId: 137,
     });
 
     const mockGetReservesIncentivesData = jest.fn();
@@ -51,6 +52,7 @@ describe('UiIncentiveDataProvider', () => {
           new UiIncentiveDataProvider({
             incentiveDataProviderAddress: mockInvalidEthereumAddress,
             provider: new providers.JsonRpcProvider(),
+            chainId: 137,
           }),
       ).toThrowError('contract address is not valid');
     });
@@ -141,6 +143,7 @@ describe('UiIncentiveDataProvider', () => {
 
       expect(response).toEqual([
         {
+          id: '137-0x1f9840a85d5af5bf1d1762f925bdaddc4201f984-0xdac17f958d2ee523a2206206994597c13d831ec7-0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           underlyingAsset: '0xdac17f958d2ee523a2206206994597c13d831ec7',
           aTokenIncentivesUserData: {
             tokenAddress: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811',

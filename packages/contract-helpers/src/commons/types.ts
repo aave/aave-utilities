@@ -13,6 +13,7 @@ export enum InterestRate {
 export const ChainIdToNetwork: Record<number, string> = {
   1: 'mainnet',
   3: 'ropsten',
+  4: 'rinkeby',
   42: 'kovan',
   100: 'xDAI',
   137: 'polygon',
@@ -21,11 +22,18 @@ export const ChainIdToNetwork: Record<number, string> = {
   43113: 'fuji',
   42161: 'arbitrum_one',
   421611: 'arbitrum_rinkeby',
+  250: 'fantom_opera',
+  4002: 'fantom_testnet',
+  10: 'optimism',
+  69: 'optimism_kovan',
+  1666600000: 'harmony',
+  1666700000: 'harmony_testnet',
 };
 
 export enum ChainId {
   mainnet = 1,
   ropsten = 3,
+  rinkeby = 4,
   kovan = 42,
   xdai = 100,
   polygon = 137,
@@ -34,6 +42,12 @@ export enum ChainId {
   fuji = 43113, // avalanche test network
   arbitrum_one = 42161,
   arbitrum_rinkeby = 421611,
+  fantom = 250,
+  fantom_testnet = 4002,
+  optimism = 10,
+  optimism_kovan = 69,
+  harmony = 1666600000,
+  harmony_testnet = 1666700000,
 }
 export type ConstantAddressesByNetwork = Record<
   string,

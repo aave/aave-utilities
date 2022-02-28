@@ -1,27 +1,29 @@
-import {
-  BigNumberValue,
-  normalize,
-  valueToBigNumber,
-  valueToZDBigNumber,
-} from '../../bignumber';
-import { LTV_PRECISION, RAY_DECIMALS, SECONDS_PER_YEAR } from '../../constants';
+import { BigNumberValue, normalize, valueToZDBigNumber } from '../../bignumber';
+import { RAY_DECIMALS, SECONDS_PER_YEAR } from '../../constants';
 import { RAY, rayPow } from '../../ray.math';
+import { FormatReserveUSDResponse } from '../reserve';
 import { UserReserveSummaryResponse } from './generate-user-reserve-summary';
 import { ComputedUserReserve } from './index';
 
-export interface FormatUserReserveRequest {
-  reserve: UserReserveSummaryResponse;
-  marketRefCurrencyDecimals: number;
+export interface FormatUserReserveRequest<
+  T extends FormatReserveUSDResponse = FormatReserveUSDResponse,
+> {
+  reserve: UserReserveSummaryResponse<T>;
+  marketReferenceCurrencyDecimals: number;
 }
 
-export interface FormatUserReserveResponse {
-  reserve: ComputedUserReserve;
+export interface FormatUserReserveResponse<
+  T extends FormatReserveUSDResponse = FormatReserveUSDResponse,
+> {
+  reserve: ComputedUserReserve<T>;
 }
 
-export function formatUserReserve({
+export function formatUserReserve<
+  T extends FormatReserveUSDResponse = FormatReserveUSDResponse,
+>({
   reserve: _reserve,
-  marketRefCurrencyDecimals,
-}: FormatUserReserveRequest): ComputedUserReserve {
+  marketReferenceCurrencyDecimals,
+}: FormatUserReserveRequest<T>): ComputedUserReserve<T> {
   const { userReserve } = _reserve;
   const { reserve } = userReserve;
   const reserveDecimals = reserve.decimals;
@@ -38,43 +40,30 @@ export function formatUserReserve({
 
   return {
     ...userReserve,
-    reserve: {
-      ...reserve,
-      reserveLiquidationBonus: normalize(
-        valueToBigNumber(reserve.reserveLiquidationBonus).shiftedBy(
-          LTV_PRECISION,
-        ),
-        LTV_PRECISION,
-      ),
-    },
-    scaledATokenBalance: normalizeWithReserve(userReserve.scaledATokenBalance),
     underlyingBalance: normalize(_reserve.underlyingBalance, reserveDecimals),
     underlyingBalanceMarketReferenceCurrency: normalize(
       _reserve.underlyingBalanceMarketReferenceCurrency,
-      marketRefCurrencyDecimals,
+      marketReferenceCurrencyDecimals,
     ),
     underlyingBalanceUSD: _reserve.underlyingBalanceUSD.toString(),
     stableBorrows: normalizeWithReserve(_reserve.stableBorrows),
     stableBorrowsMarketReferenceCurrency: normalize(
       _reserve.stableBorrowsMarketReferenceCurrency,
-      marketRefCurrencyDecimals,
+      marketReferenceCurrencyDecimals,
     ),
     stableBorrowsUSD: _reserve.stableBorrowsUSD.toString(),
     variableBorrows: normalizeWithReserve(_reserve.variableBorrows),
     variableBorrowsMarketReferenceCurrency: normalize(
       _reserve.variableBorrowsMarketReferenceCurrency,
-      marketRefCurrencyDecimals,
+      marketReferenceCurrencyDecimals,
     ),
     variableBorrowsUSD: _reserve.variableBorrowsUSD.toString(),
     totalBorrows: normalizeWithReserve(_reserve.totalBorrows),
     totalBorrowsMarketReferenceCurrency: normalize(
       _reserve.totalBorrowsMarketReferenceCurrency,
-      marketRefCurrencyDecimals,
+      marketReferenceCurrencyDecimals,
     ),
     totalBorrowsUSD: _reserve.totalBorrowsUSD.toString(),
-    totalLiquidity: normalizeWithReserve(_reserve.totalLiquidity),
-    totalStableDebt: normalizeWithReserve(_reserve.totalStableDebt),
-    totalVariableDebt: normalizeWithReserve(_reserve.totalVariableDebt),
     stableBorrowAPR: normalize(userReserve.stableBorrowRate, RAY_DECIMALS),
     stableBorrowAPY: normalize(exactStableBorrowRate, RAY_DECIMALS),
   };
