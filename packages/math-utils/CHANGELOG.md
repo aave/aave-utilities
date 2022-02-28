@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.30.1 (2022-02-28)
+
+
+### Bug Fixes
+
+* update paraswap calldata mapping ([#295](https://github.com/@aave/aave-utilities/issues/295)) ([#296](https://github.com/@aave/aave-utilities/issues/296)) ([5ec74b9](https://github.com/@aave/aave-utilities/commit/5ec74b9d1a53b6086a6d906181452b6b8ec923ae))
+
+
+
+
+
 # 0.30.0 (2022-02-03)
 
 
