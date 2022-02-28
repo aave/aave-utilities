@@ -82,7 +82,7 @@ describe('LiquiditySwapAdapterService', () => {
 
       expect(offset).toEqual(68);
     });
-    it('Expects 68 when Augustus V5 swapOnUniswapV2Fork', () => {
+    it('Expects 36 when Augustus V5 swapOnUniswapV2Fork', () => {
       const callData = '0x0b86a4c10000000000otherCallData000000000';
       const offset = augustusFromAmountOffsetFromCalldata(callData);
 
