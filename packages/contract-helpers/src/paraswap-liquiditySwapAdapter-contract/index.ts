@@ -32,6 +32,8 @@ export function augustusFromAmountOffsetFromCalldata(calldata: string): number {
       return 4; // 4 + 0 * 32
     case '0xf5661034': // Augustus V5 swapOnUniswapFork
       return 68; // 4 + 2 * 32
+    case '0x0b86a4c1': // Augustus V5 swapOnUniswapV2Fork
+      return 36; // 4 + 1 * 32
     case '0x64466805': // Augustus V5 swapOnZeroXv4
       return 68; // 4 + 2 * 32
     case '0xa94e78ef': // Augustus V5 multiSwap
