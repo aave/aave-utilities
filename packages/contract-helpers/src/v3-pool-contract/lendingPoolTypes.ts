@@ -6,12 +6,13 @@ import {
   PermitSignature,
 } from '../commons/types';
 
-export type LPDepositParamsType = {
+export type LPSupplyParamsType = {
   user: tEthereumAddress;
   reserve: tEthereumAddress;
   amount: string;
   onBehalfOf?: tEthereumAddress;
   referralCode?: string;
+  useOptimizedPath?: boolean;
 };
 
 export type LPWithdrawParamsType = {

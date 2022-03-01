@@ -38,6 +38,7 @@ module.exports = {
     'packages/contract-helpers/src/governance-power-delegation-contract/typechain',
     'packages/contract-helpers/src/erc20-2612/typechain',
     'packages/contract-helpers/src/v3-pool-contract/typechain',
+    'packages/contract-helpers/src/v3-pool-rollups/typechain',
     'packages/contract-helpers/src/faucet-contract/typechain',
     'packages/contract-helpers/src/uiStakeDataProvider-contract/typechain',
     'packages/contract-helpers/src/repayWithCollateralAdapter-contract/typechain',
