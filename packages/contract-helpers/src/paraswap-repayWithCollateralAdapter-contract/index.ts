@@ -40,16 +40,15 @@ export class ParaswapRepayWithCollateral
   extends BaseService<ParaSwapRepayAdapter>
   implements ParaswapRepayWithCollateralInterface
 {
-  readonly paraswapRepayWithCollateralAdapter: string;
+  readonly repayWithCollateralAddress: string;
 
   constructor(
     provider: providers.Provider,
-    paraswapRepayWithCollateralAdapterAddress?: string,
+    repayWithCollateralAddress?: string,
   ) {
     super(provider, ParaSwapRepayAdapter__factory);
 
-    this.paraswapRepayWithCollateralAdapter =
-      paraswapRepayWithCollateralAdapterAddress ?? '';
+    this.repayWithCollateralAddress = repayWithCollateralAddress ?? '';
 
     this.swapAndRepay = this.swapAndRepay.bind(this);
   }
@@ -77,7 +76,7 @@ export class ParaswapRepayWithCollateral
     const numericInterestRate = debtRateMode === InterestRate.Stable ? 1 : 2;
 
     const swapAndRepayContract: ParaSwapRepayAdapter = this.getContractInstance(
-      this.paraswapRepayWithCollateralAdapter,
+      this.repayWithCollateralAddress,
     );
 
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
