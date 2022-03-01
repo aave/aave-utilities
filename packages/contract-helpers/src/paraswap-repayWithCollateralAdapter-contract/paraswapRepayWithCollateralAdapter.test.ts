@@ -119,6 +119,60 @@ describe('ParaswapRepayWithCollateralAdapterService', () => {
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
     });
+    it('Exepcts the tx object to be returned if all params passed with repay all false', async () => {
+      const repayAll = false;
+      const txObj = repayInstance.swapAndRepay({
+        user,
+        collateralAsset,
+        debtAsset,
+        collateralAmount,
+        debtRepayAmount,
+        debtRateMode,
+        permitParams,
+        swapAndRepayCallData,
+        repayAll,
+      });
+
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(repayWithCollateralAddress);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+
+      const decoded = utils.defaultAbiCoder.decode(
+        [
+          'address',
+          'address',
+          'uint256',
+          'uint256',
+          'uint256',
+          'uint256',
+          'bytes',
+          '(uint256,uint256,uint8,bytes32,bytes32)',
+        ],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(collateralAsset);
+      expect(decoded[1]).toEqual(debtAsset);
+      expect(decoded[2]).toEqual(BigNumber.from(collateralAmount));
+      expect(decoded[3]).toEqual(BigNumber.from(debtRepayAmount));
+      expect(decoded[4]).toEqual(BigNumber.from(2));
+      expect(decoded[5]).toEqual(BigNumber.from(0));
+      expect(decoded[6]).toEqual(swapAndRepayCallData);
+      expect(decoded[7][0]).toEqual(BigNumber.from(permitParams.amount));
+      expect(decoded[7][1]).toEqual(BigNumber.from(permitParams.deadline));
+      expect(decoded[7][2]).toEqual(permitParams.v);
+      expect(decoded[7][3]).toEqual(permitParams.r);
+      expect(decoded[7][4]).toEqual(permitParams.s);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
     it('Exepcts the tx object to be returned if all params passed with rate mode stable', async () => {
       const debtRateMode = InterestRate.Stable;
       const txObj = repayInstance.swapAndRepay({

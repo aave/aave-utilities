@@ -5284,6 +5284,42 @@ describe('Pool', () => {
       expect(decimalsSpy).toHaveBeenCalled();
       expect(repaySpy).toHaveBeenCalled();
     });
+    it('Expects the tx object passing all params and no repayAllDebt, and no flash', async () => {
+      const poolInstance = new Pool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(poolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValue(Promise.resolve(decimals));
+
+      const repaySpy = jest
+        .spyOn(
+          poolInstance.paraswapRepayWithCollateralAdapterService,
+          'swapAndRepay',
+        )
+        .mockReturnValue({} as EthereumTransactionTypeExtended);
+
+      await poolInstance.paraswapRepayWithCollateral({
+        user,
+        fromAsset,
+        fromAToken,
+        assetToRepay,
+        repayWithAmount,
+        repayAmount,
+        permitSignature,
+        // repayAllDebt,
+        rateMode,
+        onBehalfOf,
+        referralCode,
+        // flash,
+        swapAndRepayCallData,
+      });
+
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+      expect(repaySpy).toHaveBeenCalled();
+    });
     it('Expects to fail when PoolAddress not provided', async () => {
       const poolInstance = new Pool(provider);
       const txObj = await poolInstance.paraswapRepayWithCollateral({

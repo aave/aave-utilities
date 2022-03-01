@@ -5,6 +5,7 @@ import {
   DEFAULT_NULL_VALUE_ON_TX,
   valueToWei,
   getTxValue,
+  augustusToAmountOffsetFromCalldata,
 } from './utils';
 
 describe('Utils', () => {
@@ -50,6 +51,29 @@ describe('Utils', () => {
     it('Expects the value to be in wei decimals and fixed 0', () => {
       const value = valueToWei('123.123541241123', 6);
       expect(value).toEqual('123123541');
+    });
+  });
+  describe('augustusToAmountOffsetFromCalldata', () => {
+    it('Expects 36', () => {
+      const offset = augustusToAmountOffsetFromCalldata('0x935fb84b');
+      expect(offset).toEqual(36);
+    });
+    it('Expects 100', () => {
+      const offset = augustusToAmountOffsetFromCalldata('0xc03786b0');
+      expect(offset).toEqual(100);
+    });
+    it('Expects 68', () => {
+      const offset = augustusToAmountOffsetFromCalldata('0xb2f1e6db');
+      expect(offset).toEqual(68);
+    });
+    it('Expects 164', () => {
+      const offset = augustusToAmountOffsetFromCalldata('0xb66bcbac');
+      expect(offset).toEqual(164);
+    });
+    it('Expects Error', () => {
+      expect(() => augustusToAmountOffsetFromCalldata('asdf')).toThrowError(
+        `Unrecognized function selector for Augustus`,
+      );
     });
   });
 });
