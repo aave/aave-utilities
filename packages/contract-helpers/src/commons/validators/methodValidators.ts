@@ -206,6 +206,29 @@ export function LPValidator(
   };
 }
 
+export function L2PValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    if (
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.l2PoolAddress) ||
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.encoderAddress)
+    ) {
+      console.error(`[L2PoolValidator] You need to pass valid addresses`);
+      return [];
+    }
+
+    isEthAddressValidator(target, propertyName, arguments);
+
+    return method.apply(this, arguments);
+  };
+}
+
 export function LPValidatorV3(
   target: any,
   propertyName: string,

@@ -7,6 +7,7 @@ import {
   transactionType,
 } from '../commons/types';
 import { getTxValue } from '../commons/utils';
+import { L2PValidator } from '../commons/validators/methodValidators';
 import {
   LPBorrowParamsType,
   LPSupplyParamsType,
@@ -82,6 +83,7 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     this.encoderAddress = encoderAddress ?? '';
   }
 
+  @L2PValidator
   public async supply(
     { user, reserve, amount, referralCode }: LPSupplyParamsType,
     txs: EthereumTransactionTypeExtended[],
@@ -118,6 +120,7 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     return txs;
   }
 
+  @L2PValidator
   public async supplyWithPermit(
     {
       user,
@@ -166,6 +169,7 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     return txs;
   }
 
+  @L2PValidator
   public async withdraw({
     user,
     reserve,
@@ -202,6 +206,7 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     ];
   }
 
+  @L2PValidator
   public async borrow({
     user,
     reserve,
@@ -237,6 +242,7 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     ];
   }
 
+  @L2PValidator
   public async repay(
     { reserve, user, amount, numericRateMode }: LPRepayParamsType,
     txs: EthereumTransactionTypeExtended[],
@@ -269,6 +275,7 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     return txs;
   }
 
+  @L2PValidator
   public async repayWithPermit(
     {
       user,
@@ -318,6 +325,7 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     return txs;
   }
 
+  @L2PValidator
   public async repayWithATokens(
     { reserve, user, amount, numericRateMode }: LPRepayParamsType,
     txs: EthereumTransactionTypeExtended[],
@@ -350,6 +358,7 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     return txs;
   }
 
+  @L2PValidator
   public async swapBorrowRateMode({
     reserve,
     numericRateMode,
@@ -381,7 +390,7 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     ];
   }
 
-  public async setUserUseReserveAsCollateral({
+  @L2PValidator public async setUserUseReserveAsCollateral({
     reserve,
     usageAsCollateral,
     user,
@@ -415,6 +424,7 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     ];
   }
 
+  @L2PValidator
   public async liquidationCall(
     {
       liquidator,
@@ -463,8 +473,9 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     return txs;
   }
 
-  private getEncoder(): L2Encoder {
-    if (!this.encoderContract && this.encoderAddress !== '') {
+  @L2PValidator
+  public getEncoder(): L2Encoder {
+    if (!this.encoderContract) {
       this.encoderContract = L2Encoder__factory.connect(
         this.encoderAddress,
         this.provider,

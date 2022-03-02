@@ -383,7 +383,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     );
 
     // use optimized path
-    if (this.l2EncoderAddress && this.l2PoolAddress && useOptimizedPath) {
+    if (this.l2EncoderAddress) {
       return this.l2PoolService.supply(
         { user, reserve, amount: convertedAmount, referralCode },
         txs,
@@ -521,7 +521,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       throw new Error('Not enough funds to execute operation');
     }
 
-    if (useOptimizedPath && this.l2EncoderAddress && this.l2PoolAddress) {
+    if (useOptimizedPath) {
       return this.l2PoolService.supplyWithPermit(
         {
           user,
@@ -601,7 +601,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         ? constants.MaxUint256.toString()
         : valueToWei(amount, decimals);
 
-    if (useOptimizedPath && this.l2EncoderAddress && this.l2PoolAddress) {
+    if (useOptimizedPath) {
       return this.l2PoolService.withdraw({
         user,
         reserve,
@@ -676,7 +676,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
 
     const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
 
-    if (useOptimizedPath && this.l2EncoderAddress && this.l2PoolAddress) {
+    if (useOptimizedPath) {
       return this.l2PoolService.borrow({
         user,
         reserve,
@@ -777,7 +777,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       txs.push(approveTx);
     }
 
-    if (useOptimizedPath && this.l2EncoderAddress && this.l2PoolAddress) {
+    if (useOptimizedPath) {
       return this.l2PoolService.repay(
         {
           user,
@@ -856,7 +856,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       }
     }
 
-    if (useOptimizedPath && this.l2EncoderAddress && this.l2PoolAddress) {
+    if (useOptimizedPath) {
       return this.l2PoolService.repayWithPermit(
         {
           user,
@@ -909,7 +909,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
   ): Promise<EthereumTransactionTypeExtended[]> {
     const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
 
-    if (useOptimizedPath && this.l2EncoderAddress && this.l2PoolAddress) {
+    if (useOptimizedPath) {
       return this.l2PoolService.swapBorrowRateMode({
         user,
         reserve,
@@ -949,7 +949,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
   ): Promise<EthereumTransactionTypeExtended[]> {
     const poolContract: IPool = this.getContractInstance(this.poolAddress);
 
-    if (useOptimizedPath && this.l2EncoderAddress && this.l2PoolAddress) {
+    if (useOptimizedPath) {
       return this.l2PoolService.setUserUseReserveAsCollateral({
         user,
         reserve,
@@ -1021,7 +1021,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       convertedAmount = valueToWei(purchaseAmount, reserveDecimals);
     }
 
-    if (useOptimizedPath && this.l2EncoderAddress && this.l2PoolAddress) {
+    if (useOptimizedPath) {
       return this.l2PoolService.liquidationCall(
         {
           liquidator,
