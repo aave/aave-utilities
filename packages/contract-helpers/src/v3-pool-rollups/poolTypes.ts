@@ -38,7 +38,7 @@ export type LPSupplyWithPermitType = {
   permitV: BigNumberish;
   permitR: BytesLike;
   permitS: BytesLike;
-  referralCode?: number;
+  referralCode?: string;
 };
 
 export type LPRepayWithPermitParamsType = {

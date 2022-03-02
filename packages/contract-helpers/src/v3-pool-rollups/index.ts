@@ -26,6 +26,7 @@ import { L2Encoder } from './typechain/L2Encoder';
 import { L2Encoder__factory } from './typechain/L2Encoder__factory';
 
 export interface L2PoolInterface {
+  encoderContract: L2Encoder;
   supply: (
     args: LPSupplyParamsType,
     txs: EthereumTransactionTypeExtended[],
@@ -62,6 +63,7 @@ export interface L2PoolInterface {
     args: LPLiquidationCall,
     txs: EthereumTransactionTypeExtended[],
   ) => Promise<EthereumTransactionTypeExtended[]>;
+  getEncoder: () => L2Encoder;
 }
 
 export type L2PoolConfigType = {
@@ -390,7 +392,8 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     ];
   }
 
-  @L2PValidator public async setUserUseReserveAsCollateral({
+  @L2PValidator
+  public async setUserUseReserveAsCollateral({
     reserve,
     usageAsCollateral,
     user,
@@ -473,9 +476,8 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     return txs;
   }
 
-  @L2PValidator
   public getEncoder(): L2Encoder {
-    if (!this.encoderContract) {
+    if (!this.encoderContract && this.encoderAddress !== '') {
       this.encoderContract = L2Encoder__factory.connect(
         this.encoderAddress,
         this.provider,

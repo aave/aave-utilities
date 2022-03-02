@@ -383,7 +383,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     );
 
     // use optimized path
-    if (this.l2EncoderAddress) {
+    if (useOptimizedPath) {
       return this.l2PoolService.supply(
         { user, reserve, amount: convertedAmount, referralCode },
         txs,
