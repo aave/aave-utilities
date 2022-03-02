@@ -43,6 +43,8 @@ describe('Pool', () => {
   const REPAY_WITH_COLLATERAL_ADAPTER =
     '0x0000000000000000000000000000000000000004';
   const SWAP_COLLATERAL_ADAPTER = '0x0000000000000000000000000000000000000005';
+  const L2_ENCODER = '0x0000000000000000000000000000000000000020';
+  const L2_POOL = '0x0000000000000000000000000000000000000021';
   describe('Initialization', () => {
     const config = {
       POOL,
@@ -50,6 +52,8 @@ describe('Pool', () => {
       REPAY_WITH_COLLATERAL_ADAPTER,
       SWAP_COLLATERAL_ADAPTER,
       WETH_GATEWAY,
+      L2_ENCODER,
+      L2_POOL,
     };
     it('Expects to initialize correctly with all params', () => {
       const instance = new Pool(provider, config);
@@ -479,6 +483,37 @@ describe('Pool', () => {
       expect(gasPrice).not.toBeNull();
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all parameters with optimal path enabled', async () => {
+      const poolInstance = new Pool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(poolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const synthetixSpy = jest
+        .spyOn(poolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(true));
+      const optimalPoolSpy = jest
+        .spyOn(poolInstance.l2PoolService, 'supply')
+        .mockReturnValue(Promise.resolve([]));
+
+      const supplyTxObj = await poolInstance.supply({
+        user,
+        reserve,
+        amount,
+        onBehalfOf,
+        referralCode,
+        useOptimizedPath: true,
+      });
+
+      expect(synthetixSpy).toHaveBeenCalled();
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+      expect(optimalPoolSpy).toHaveBeenCalled();
+
+      expect(supplyTxObj.length).toEqual(0);
     });
     it('Expects the tx object passing all parameters but not onBehalfOf', async () => {
       const poolInstance = new Pool(provider, config);
@@ -937,7 +972,7 @@ describe('Pool', () => {
     const user = '0x0000000000000000000000000000000000000006';
     const reserve = '0x0000000000000000000000000000000000000007';
     const onBehalfOf = '0x0000000000000000000000000000000000000008';
-    const referralCode = 1;
+    const referralCode = '1';
     // const message = 'victor washington'
     const signature =
       '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c';
@@ -988,7 +1023,7 @@ describe('Pool', () => {
       expect(decoded[0]).toEqual(reserve);
       expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
       expect(decoded[2]).toEqual(onBehalfOf);
-      expect(decoded[3]).toEqual(referralCode);
+      expect(decoded[3]).toEqual(Number(referralCode));
       expect(decoded[4]).toEqual(constants.MaxUint256);
       expect(decoded[5]).toEqual(28);
       expect(decoded[6]).toEqual(
@@ -1003,6 +1038,27 @@ describe('Pool', () => {
       expect(gasPrice).not.toBeNull();
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object if all params ok and optimal path chosen', async () => {
+      const poolInstance = new Pool(provider, { POOL });
+      jest.spyOn(poolInstance.erc20Service, 'decimalsOf').mockResolvedValue(18);
+      const optimalPoolSpy = jest
+        .spyOn(poolInstance.l2PoolService, 'supplyWithPermit')
+        .mockReturnValue(Promise.resolve([]));
+
+      const supplyTxObj = await poolInstance.supplyWithPermit({
+        user,
+        reserve,
+        amount,
+        onBehalfOf,
+        referralCode,
+        signature,
+        useOptimizedPath: true,
+      });
+
+      expect(optimalPoolSpy).toHaveBeenCalled();
+
+      expect(supplyTxObj.length).toEqual(0);
     });
     it('Expects the tx object if all params ok, without onBehalf', async () => {
       const poolInstance = new Pool(provider, { POOL });
@@ -1044,7 +1100,7 @@ describe('Pool', () => {
       expect(decoded[0]).toEqual(reserve);
       expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
       expect(decoded[2]).toEqual(user);
-      expect(decoded[3]).toEqual(referralCode);
+      expect(decoded[3]).toEqual(Number(referralCode));
       expect(decoded[4]).toEqual(constants.MaxUint256);
       expect(decoded[5]).toEqual(28);
       expect(decoded[6]).toEqual(
@@ -1233,7 +1289,7 @@ describe('Pool', () => {
     it('Expects to fail if referralCode not positive', async () => {
       const poolInstance = new Pool(provider, { POOL });
 
-      const referralCode = -1;
+      const referralCode = '-1';
       await expect(async () =>
         poolInstance.supplyWithPermit({
           user,
@@ -1321,6 +1377,28 @@ describe('Pool', () => {
         gasLimitRecommendations[ProtocolAction.withdraw].recommended,
       );
       expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all parameters with optimal path selected', async () => {
+      const poolInstance = new Pool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const optimalPoolSpy = jest
+        .spyOn(poolInstance.l2PoolService, 'withdraw')
+        .mockReturnValue(Promise.resolve([]));
+
+      const depositTxObj = await poolInstance.withdraw({
+        user,
+        reserve,
+        amount,
+        aTokenAddress,
+        useOptimizedPath: true,
+      });
+
+      expect(optimalPoolSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(depositTxObj.length).toEqual(0);
     });
     it('Expects the tx object passing all params and -1 amount', async () => {
       const poolInstance = new Pool(provider, config);
@@ -1555,6 +1633,30 @@ describe('Pool', () => {
       expect(gasPrice).not.toBeNull();
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all parameters with optimal path selected', async () => {
+      const poolInstance = new Pool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const optimalPoolSpy = jest
+        .spyOn(poolInstance.l2PoolService, 'borrow')
+        .mockReturnValue(Promise.resolve([]));
+
+      const borrowTxObj = await poolInstance.borrow({
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        debtTokenAddress,
+        referralCode,
+        useOptimizedPath: true,
+      });
+
+      expect(decimalsSpy).toHaveBeenCalled();
+      expect(optimalPoolSpy).toHaveBeenCalled();
+
+      expect(borrowTxObj.length).toEqual(0);
     });
     it('Expects the tx object passing all parameters but not referralCode and rate stable', async () => {
       const poolInstance = new Pool(provider, config);
@@ -1850,6 +1952,36 @@ describe('Pool', () => {
       expect(gasPrice).not.toBeNull();
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params without onBehalfOf and no approval', async () => {
+      const poolInstance = new Pool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(poolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const synthetixSpy = jest
+        .spyOn(poolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(true));
+      const optimalPoolSpy = jest
+        .spyOn(poolInstance.l2PoolService, 'repay')
+        .mockReturnValue(Promise.resolve([]));
+
+      const depositTxObj = await poolInstance.repay({
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        useOptimizedPath: true,
+      });
+
+      expect(synthetixSpy).toHaveBeenCalled();
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+      expect(optimalPoolSpy).toHaveBeenCalled();
+
+      expect(depositTxObj.length).toEqual(0);
     });
     it('Expects the tx object passing all params with amount -1 with approve needed and reate stable', async () => {
       const poolInstance = new Pool(provider, config);
@@ -2165,6 +2297,33 @@ describe('Pool', () => {
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
     });
+    it('Expects the tx object passing all params with optimal path', async () => {
+      const poolInstance = new Pool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const synthetixSpy = jest
+        .spyOn(poolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(true));
+      const optimalPoolSpy = jest
+        .spyOn(poolInstance.l2PoolService, 'repayWithPermit')
+        .mockReturnValue(Promise.resolve([]));
+
+      const depositTxObj = await poolInstance.repayWithPermit({
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        signature,
+        useOptimizedPath: true,
+      });
+
+      expect(synthetixSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+      expect(optimalPoolSpy).toHaveBeenCalled();
+
+      expect(depositTxObj.length).toEqual(0);
+    });
     it('Expects the tx object passing all params with amount -1 and reate stable', async () => {
       const poolInstance = new Pool(provider, config);
       const decimalsSpy = jest
@@ -2421,7 +2580,7 @@ describe('Pool', () => {
     it('Expects the tx object passing all params with Inerest rate None', async () => {
       const poolInstance = new Pool(provider, config);
 
-      const swapBorrowRateModeTxObj = poolInstance.swapBorrowRateMode({
+      const swapBorrowRateModeTxObj = await poolInstance.swapBorrowRateMode({
         user,
         reserve,
         interestRateMode,
@@ -2451,10 +2610,26 @@ describe('Pool', () => {
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
     });
+    it('Expects the tx object passing all params with optimal path', async () => {
+      const poolInstance = new Pool(provider, config);
+      const optimalPoolSpy = jest
+        .spyOn(poolInstance.l2PoolService, 'swapBorrowRateMode')
+        .mockReturnValue(Promise.resolve([]));
+
+      const swapBorrowRateModeTxObj = await poolInstance.swapBorrowRateMode({
+        user,
+        reserve,
+        interestRateMode,
+        useOptimizedPath: true,
+      });
+
+      expect(optimalPoolSpy).toHaveBeenCalled();
+      expect(swapBorrowRateModeTxObj.length).toEqual(0);
+    });
     it('Expects the tx object passing all params with Inerest rate Stable', async () => {
       const poolInstance = new Pool(provider, config);
       const interestRateMode = InterestRate.Stable;
-      const swapBorrowRateModeTxObj = poolInstance.swapBorrowRateMode({
+      const swapBorrowRateModeTxObj = await poolInstance.swapBorrowRateMode({
         user,
         reserve,
         interestRateMode,
@@ -2487,7 +2662,7 @@ describe('Pool', () => {
     it('Expects the tx object passing all params with Inerest rate Variable', async () => {
       const poolInstance = new Pool(provider, config);
       const interestRateMode = InterestRate.Variable;
-      const swapBorrowRateModeTxObj = poolInstance.swapBorrowRateMode({
+      const swapBorrowRateModeTxObj = await poolInstance.swapBorrowRateMode({
         user,
         reserve,
         interestRateMode,
@@ -2517,36 +2692,40 @@ describe('Pool', () => {
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
     });
-    it('Expects to fail when PoolAddress not provided', () => {
+    it('Expects to fail when PoolAddress not provided', async () => {
       const poolInstance = new Pool(provider);
-      const txObj = poolInstance.swapBorrowRateMode({
+      const txObj = await poolInstance.swapBorrowRateMode({
         user,
         reserve,
         interestRateMode,
       });
       expect(txObj).toEqual([]);
     });
-    it('Expects to fail when user not and eth address', () => {
+    it('Expects to fail when user not and eth address', async () => {
       const poolInstance = new Pool(provider, config);
       const user = 'asdf';
-      expect(() =>
+      await expect(async () =>
         poolInstance.swapBorrowRateMode({
           user,
           reserve,
           interestRateMode,
         }),
-      ).toThrowError(`Address: ${user} is not a valid ethereum Address`);
+      ).rejects.toThrowError(
+        `Address: ${user} is not a valid ethereum Address`,
+      );
     });
-    it('Expects to fail when reserve not and eth address', () => {
+    it('Expects to fail when reserve not and eth address', async () => {
       const poolInstance = new Pool(provider, config);
       const reserve = 'asdf';
-      expect(() =>
+      await expect(async () =>
         poolInstance.swapBorrowRateMode({
           user,
           reserve,
           interestRateMode,
         }),
-      ).toThrowError(`Address: ${reserve} is not a valid ethereum Address`);
+      ).rejects.toThrowError(
+        `Address: ${reserve} is not a valid ethereum Address`,
+      );
     });
   });
   describe('setUsageAsCollateral', () => {
@@ -2562,11 +2741,13 @@ describe('Pool', () => {
     it('Expects the tx object passing all params with usage as collateral true', async () => {
       const poolInstance = new Pool(provider, config);
 
-      const setUsageAsCollateralTxObj = poolInstance.setUsageAsCollateral({
-        user,
-        reserve,
-        usageAsCollateral,
-      });
+      const setUsageAsCollateralTxObj = await poolInstance.setUsageAsCollateral(
+        {
+          user,
+          reserve,
+          usageAsCollateral,
+        },
+      );
 
       expect(setUsageAsCollateralTxObj.length).toEqual(1);
       const txObj = setUsageAsCollateralTxObj[0];
@@ -2591,16 +2772,36 @@ describe('Pool', () => {
       expect(gasPrice).not.toBeNull();
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params with optimal path', async () => {
+      const poolInstance = new Pool(provider, config);
+      const optimalPoolSpy = jest
+        .spyOn(poolInstance.l2PoolService, 'setUserUseReserveAsCollateral')
+        .mockReturnValue(Promise.resolve([]));
+
+      const setUsageAsCollateralTxObj = await poolInstance.setUsageAsCollateral(
+        {
+          user,
+          reserve,
+          usageAsCollateral,
+          useOptimizedPath: true,
+        },
+      );
+
+      expect(optimalPoolSpy).toHaveBeenCalled();
+      expect(setUsageAsCollateralTxObj.length).toEqual(0);
     });
     it('Expects the tx object passing all params with usage as collateral false', async () => {
       const poolInstance = new Pool(provider, config);
 
       const usageAsCollateral = false;
-      const setUsageAsCollateralTxObj = poolInstance.setUsageAsCollateral({
-        user,
-        reserve,
-        usageAsCollateral,
-      });
+      const setUsageAsCollateralTxObj = await poolInstance.setUsageAsCollateral(
+        {
+          user,
+          reserve,
+          usageAsCollateral,
+        },
+      );
 
       expect(setUsageAsCollateralTxObj.length).toEqual(1);
       const txObj = setUsageAsCollateralTxObj[0];
@@ -2626,9 +2827,9 @@ describe('Pool', () => {
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
     });
-    it('Expects to fail when PoolAddress not provided', () => {
+    it('Expects to fail when PoolAddress not provided', async () => {
       const poolInstance = new Pool(provider);
-      const txObj = poolInstance.setUsageAsCollateral({
+      const txObj = await poolInstance.setUsageAsCollateral({
         user,
         reserve,
         usageAsCollateral,
@@ -2638,24 +2839,28 @@ describe('Pool', () => {
     it('Expects to fail when user not and eth address', async () => {
       const poolInstance = new Pool(provider, config);
       const user = 'asdf';
-      expect(() =>
+      await expect(async () =>
         poolInstance.setUsageAsCollateral({
           user,
           reserve,
           usageAsCollateral,
         }),
-      ).toThrowError(`Address: ${user} is not a valid ethereum Address`);
+      ).rejects.toThrowError(
+        `Address: ${user} is not a valid ethereum Address`,
+      );
     });
     it('Expects to fail when reserve not and eth address', async () => {
       const poolInstance = new Pool(provider, config);
       const reserve = 'asdf';
-      expect(() =>
+      await expect(async () =>
         poolInstance.setUsageAsCollateral({
           user,
           reserve,
           usageAsCollateral,
         }),
-      ).toThrowError(`Address: ${reserve} is not a valid ethereum Address`);
+      ).rejects.toThrowError(
+        `Address: ${reserve} is not a valid ethereum Address`,
+      );
     });
   });
   describe('liquidationCall', () => {
@@ -2717,6 +2922,31 @@ describe('Pool', () => {
       expect(gasPrice).not.toBeNull();
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params with optimal path', async () => {
+      const poolInstance = new Pool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(poolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+      const optimalPoolSpy = jest
+        .spyOn(poolInstance.l2PoolService, 'liquidationCall')
+        .mockReturnValue(Promise.resolve([]));
+
+      const liquidationCallTxObj = await poolInstance.liquidationCall({
+        liquidator,
+        liquidatedUser,
+        debtReserve,
+        collateralReserve,
+        purchaseAmount,
+        getAToken,
+        liquidateAll,
+        useOptimizedPath: true,
+      });
+
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(optimalPoolSpy).toHaveBeenCalled();
+
+      expect(liquidationCallTxObj.length).toEqual(0);
     });
     it('Expects the tx object passing all params but not passing getAToken and no approval needed', async () => {
       const poolInstance = new Pool(provider, config);
@@ -5994,6 +6224,34 @@ describe('Pool', () => {
       expect(gasPrice).not.toBeNull();
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params with optimal path', async () => {
+      const poolInstance = new Pool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const synthetixSpy = jest
+        .spyOn(poolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(true));
+      const optimalPoolSpy = jest
+        .spyOn(poolInstance.l2PoolService, 'repayWithATokens')
+        .mockReturnValue(Promise.resolve([]));
+
+      const amount = '-1';
+      const rateMode = InterestRate.Stable;
+      const reapyTxObj = await poolInstance.repayWithATokens({
+        user,
+        reserve,
+        amount,
+        rateMode,
+        useOptimizedPath: true,
+      });
+
+      expect(synthetixSpy).not.toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+      expect(optimalPoolSpy).toHaveBeenCalled();
+
+      expect(reapyTxObj.length).toEqual(0);
     });
     it('Expects the tx object passing all params with with specific amount and rate variable', async () => {
       const poolInstance = new Pool(provider, config);

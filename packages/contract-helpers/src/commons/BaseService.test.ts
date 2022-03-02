@@ -65,7 +65,7 @@ describe('BaseService', () => {
     const from = '0x0000000000000000000000000000000000000001';
     const value = '1';
     const gasSurplus = 10;
-    const action = ProtocolAction.deposit;
+    const action = ProtocolAction.supply;
     const rawTxMethod = async () => ({});
 
     it('Expects a tx object with specified value', async () => {
@@ -104,7 +104,7 @@ describe('BaseService', () => {
   });
   describe('generateTxPriceEstimation', () => {
     const baseService = new BaseService(provider, Test__factory);
-    const action = ProtocolAction.deposit;
+    const action = ProtocolAction.supply;
     const txCallback = async () => ({
       gasLimit: BigNumber.from(1),
       gasPrice: BigNumber.from(2),

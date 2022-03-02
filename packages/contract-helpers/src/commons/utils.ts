@@ -38,6 +38,10 @@ export const gasLimitRecommendations: GasRecommendationType = {
     limit: '210000',
     recommended: '210000',
   },
+  [ProtocolAction.supply]: {
+    limit: '300000',
+    recommended: '300000',
+  },
   [ProtocolAction.deposit]: {
     limit: '300000',
     recommended: '300000',

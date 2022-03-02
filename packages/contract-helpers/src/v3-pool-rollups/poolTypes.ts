@@ -1,4 +1,3 @@
-import { SignatureLike } from '@ethersproject/bytes';
 import { BigNumberish, BytesLike } from 'ethers';
 import { tEthereumAddress } from '../commons/types';
 

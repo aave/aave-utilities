@@ -142,7 +142,7 @@ export type LPSupplyWithPermitType = {
   onBehalfOf?: tEthereumAddress;
   amount: string;
   signature: SignatureLike;
-  referralCode?: number;
+  referralCode?: string;
   useOptimizedPath?: boolean;
 };
 

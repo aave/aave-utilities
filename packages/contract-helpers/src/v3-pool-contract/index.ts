@@ -313,7 +313,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       gas: this.generateTxPriceEstimation(
         txs,
         txCallback,
-        ProtocolAction.deposit,
+        ProtocolAction.supply,
       ),
     });
 
@@ -1617,7 +1617,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         ? constants.MaxUint256.toString()
         : valueToWei(amount, decimals);
 
-    if (useOptimizedPath && this.l2EncoderAddress && this.l2PoolAddress) {
+    if (useOptimizedPath) {
       return this.l2PoolService.repayWithATokens(
         {
           user,

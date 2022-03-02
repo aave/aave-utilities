@@ -207,8 +207,8 @@ export function LPValidator(
 }
 
 export function L2PValidator(
-  target: any,
-  propertyName: string,
+  _target: any,
+  _propertyName: string,
   descriptor: TypedPropertyDescriptor<any>,
 ): any {
   const method = descriptor.value;
@@ -223,7 +223,7 @@ export function L2PValidator(
       return [];
     }
 
-    isEthAddressValidator(target, propertyName, arguments);
+    // isEthAddressValidator(target, propertyName, arguments);
 
     return method.apply(this, arguments);
   };
