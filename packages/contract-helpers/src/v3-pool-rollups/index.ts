@@ -17,7 +17,8 @@ import {
   LPSupplyWithPermitType,
   LPSwapBorrowRateMode,
   LPWithdrawParamsType,
-} from '../v3-pool-contract/lendingPoolTypes';
+  LPRepayWithPermitParamsType,
+} from './poolTypes';
 import { IL2Pool } from './typechain/IL2Pool';
 import { IL2Pool__factory } from './typechain/IL2Pool__factory';
 import { L2Encoder } from './typechain/L2Encoder';
@@ -28,38 +29,38 @@ export interface L2PoolInterface {
     args: LPSupplyParamsType,
     txs: EthereumTransactionTypeExtended[],
   ) => Promise<EthereumTransactionTypeExtended[]>;
-  // supplyWithPermit: (
-  //   args: LPSupplyWithPermitType,
-  //   txs: EthereumTransactionTypeExtended[],
-  // ) => Promise<EthereumTransactionTypeExtended[]>;
-  // withdraw: (
-  //   args: LPWithdrawParamsType,
-  //   txs: EthereumTransactionTypeExtended[],
-  // ) => Promise<EthereumTransactionTypeExtended[]>;
-  // borrow: (
-  //   args: LPBorrowParamsType,
-  //   txs: EthereumTransactionTypeExtended[],
-  // ) => Promise<EthereumTransactionTypeExtended[]>;
-  // repay: (
-  //   args: LPRepayParamsType,
-  //   txs: EthereumTransactionTypeExtended[],
-  // ) => Promise<EthereumTransactionTypeExtended[]>;
-  // swapBorrowRateMode: (
-  //   args: LPSwapBorrowRateMode,
-  //   txs: EthereumTransactionTypeExtended[],
-  // ) => EthereumTransactionTypeExtended[];
-  // setUserUseReserveAsCollateral: (
-  //   args: LPSetUsageAsCollateral,
-  //   txs: EthereumTransactionTypeExtended[],
-  // ) => EthereumTransactionTypeExtended[];
-  // repayWithATokens: (
-  //   args: LPRepayWithATokensType,
-  //   txs: EthereumTransactionTypeExtended[],
-  // ) => Promise<EthereumTransactionTypeExtended[]>;
-  // liquidationCall: (
-  //   args: LPLiquidationCall,
-  //   txs: EthereumTransactionTypeExtended[],
-  // ) => Promise<EthereumTransactionTypeExtended[]>;
+  supplyWithPermit: (
+    args: LPSupplyWithPermitType,
+    txs: EthereumTransactionTypeExtended[],
+  ) => Promise<EthereumTransactionTypeExtended[]>;
+  withdraw: (
+    args: LPWithdrawParamsType,
+  ) => Promise<EthereumTransactionTypeExtended[]>;
+  borrow: (
+    args: LPBorrowParamsType,
+  ) => Promise<EthereumTransactionTypeExtended[]>;
+  repay: (
+    args: LPRepayParamsType,
+    txs: EthereumTransactionTypeExtended[],
+  ) => Promise<EthereumTransactionTypeExtended[]>;
+  repayWithPermit: (
+    args: LPRepayWithPermitParamsType,
+    txs: EthereumTransactionTypeExtended[],
+  ) => Promise<EthereumTransactionTypeExtended[]>;
+  repayWithATokens: (
+    args: LPRepayWithATokensType,
+    txs: EthereumTransactionTypeExtended[],
+  ) => Promise<EthereumTransactionTypeExtended[]>;
+  swapBorrowRateMode: (
+    args: LPSwapBorrowRateMode,
+  ) => Promise<EthereumTransactionTypeExtended[]>;
+  setUserUseReserveAsCollateral: (
+    args: LPSetUsageAsCollateral,
+  ) => Promise<EthereumTransactionTypeExtended[]>;
+  liquidationCall: (
+    args: LPLiquidationCall,
+    txs: EthereumTransactionTypeExtended[],
+  ) => Promise<EthereumTransactionTypeExtended[]>;
 }
 
 export type L2PoolConfigType = {
@@ -111,6 +112,351 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
         txs,
         txCallback,
         ProtocolAction.supply,
+      ),
+    });
+
+    return txs;
+  }
+
+  public async supplyWithPermit(
+    {
+      user,
+      reserve,
+      amount,
+      deadline,
+      referralCode,
+      permitR,
+      permitS,
+      permitV,
+    }: LPSupplyWithPermitType,
+    txs: EthereumTransactionTypeExtended[],
+  ): Promise<EthereumTransactionTypeExtended[]> {
+    const encoder = this.getEncoder();
+
+    const encodedParams: string[] = await encoder.encodeSupplyWithPermitParams(
+      reserve,
+      amount,
+      referralCode ?? 0,
+      deadline,
+      permitV,
+      permitR,
+      permitS,
+    );
+
+    const l2PoolContract: IL2Pool = this.getContractInstance(
+      this.l2PoolAddress,
+    );
+
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        l2PoolContract.populateTransaction.supplyWithPermit(
+          encodedParams[0],
+          permitR,
+          permitS,
+        ),
+      from: user,
+    });
+
+    txs.push({
+      tx: txCallback,
+      txType: eEthereumTxType.DLP_ACTION,
+      gas: this.generateTxPriceEstimation(txs, txCallback),
+    });
+
+    return txs;
+  }
+
+  public async withdraw({
+    user,
+    reserve,
+    amount,
+  }: LPWithdrawParamsType): Promise<EthereumTransactionTypeExtended[]> {
+    const encoder = this.getEncoder();
+
+    const encodedParams: string = await encoder.encodeWithdrawParams(
+      reserve,
+      amount,
+    );
+
+    const l2PoolContract: IL2Pool = this.getContractInstance(
+      this.l2PoolAddress,
+    );
+
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        l2PoolContract.populateTransaction.withdraw(encodedParams),
+      from: user,
+      action: ProtocolAction.withdraw,
+    });
+
+    return [
+      {
+        tx: txCallback,
+        txType: eEthereumTxType.DLP_ACTION,
+        gas: this.generateTxPriceEstimation(
+          [],
+          txCallback,
+          ProtocolAction.supply,
+        ),
+      },
+    ];
+  }
+
+  public async borrow({
+    user,
+    reserve,
+    amount,
+    numericRateMode,
+    referralCode,
+  }: LPBorrowParamsType): Promise<EthereumTransactionTypeExtended[]> {
+    const encoder = this.getEncoder();
+
+    const encodedParams: string = await encoder.encodeBorrowParams(
+      reserve,
+      amount,
+      numericRateMode,
+      referralCode ?? 0,
+    );
+
+    const l2PoolContract: IL2Pool = this.getContractInstance(
+      this.l2PoolAddress,
+    );
+
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        l2PoolContract.populateTransaction.borrow(encodedParams),
+      from: user,
+    });
+
+    return [
+      {
+        tx: txCallback,
+        txType: eEthereumTxType.DLP_ACTION,
+        gas: this.generateTxPriceEstimation([], txCallback),
+      },
+    ];
+  }
+
+  public async repay(
+    { reserve, user, amount, numericRateMode }: LPRepayParamsType,
+    txs: EthereumTransactionTypeExtended[],
+  ): Promise<EthereumTransactionTypeExtended[]> {
+    const encoder = this.getEncoder();
+
+    const encodedParams: string = await encoder.encodeRepayParams(
+      reserve,
+      amount,
+      numericRateMode,
+    );
+
+    const l2PoolContract: IL2Pool = this.getContractInstance(
+      this.l2PoolAddress,
+    );
+
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        l2PoolContract.populateTransaction.repay(encodedParams),
+      from: user,
+      value: getTxValue(reserve, amount),
+    });
+
+    txs.push({
+      tx: txCallback,
+      txType: eEthereumTxType.DLP_ACTION,
+      gas: this.generateTxPriceEstimation([], txCallback, ProtocolAction.repay),
+    });
+
+    return txs;
+  }
+
+  public async repayWithPermit(
+    {
+      user,
+      reserve,
+      amount,
+      numericRateMode,
+      permitR,
+      permitS,
+      permitV,
+      deadline,
+    }: LPRepayWithPermitParamsType,
+    txs: EthereumTransactionTypeExtended[],
+  ): Promise<EthereumTransactionTypeExtended[]> {
+    const encoder = this.getEncoder();
+
+    const encodedParams: string[] = await encoder.encodeRepayWithPermitParams(
+      reserve,
+      amount,
+      numericRateMode,
+      deadline,
+      permitV,
+      permitR,
+      permitS,
+    );
+
+    const l2PoolContract: IL2Pool = this.getContractInstance(
+      this.l2PoolAddress,
+    );
+
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        l2PoolContract.populateTransaction.repayWithPermit(
+          encodedParams[0],
+          permitR,
+          permitS,
+        ),
+      from: user,
+      value: getTxValue(reserve, amount),
+    });
+
+    txs.push({
+      tx: txCallback,
+      txType: eEthereumTxType.DLP_ACTION,
+      gas: this.generateTxPriceEstimation([], txCallback, ProtocolAction.repay),
+    });
+
+    return txs;
+  }
+
+  public async repayWithATokens(
+    { reserve, user, amount, numericRateMode }: LPRepayParamsType,
+    txs: EthereumTransactionTypeExtended[],
+  ): Promise<EthereumTransactionTypeExtended[]> {
+    const encoder = this.getEncoder();
+
+    const encodedParams: string = await encoder.encodeRepayWithATokensParams(
+      reserve,
+      amount,
+      numericRateMode,
+    );
+
+    const l2PoolContract: IL2Pool = this.getContractInstance(
+      this.l2PoolAddress,
+    );
+
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        l2PoolContract.populateTransaction.repayWithATokens(encodedParams),
+      from: user,
+      value: getTxValue(reserve, amount),
+    });
+
+    txs.push({
+      tx: txCallback,
+      txType: eEthereumTxType.DLP_ACTION,
+      gas: this.generateTxPriceEstimation([], txCallback, ProtocolAction.repay),
+    });
+
+    return txs;
+  }
+
+  public async swapBorrowRateMode({
+    reserve,
+    numericRateMode,
+    user,
+  }: LPSwapBorrowRateMode): Promise<EthereumTransactionTypeExtended[]> {
+    const encoder = this.getEncoder();
+
+    const encodedParams: string = await encoder.encodeSwapBorrowRateMode(
+      reserve,
+      numericRateMode,
+    );
+
+    const l2PoolContract: IL2Pool = this.getContractInstance(
+      this.l2PoolAddress,
+    );
+
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        l2PoolContract.populateTransaction.swapBorrowRateMode(encodedParams),
+      from: user,
+    });
+
+    return [
+      {
+        tx: txCallback,
+        txType: eEthereumTxType.DLP_ACTION,
+        gas: this.generateTxPriceEstimation([], txCallback),
+      },
+    ];
+  }
+
+  public async setUserUseReserveAsCollateral({
+    reserve,
+    usageAsCollateral,
+    user,
+  }: LPSetUsageAsCollateral): Promise<EthereumTransactionTypeExtended[]> {
+    const encoder = this.getEncoder();
+
+    const encodedParams: string =
+      await encoder.encodeSetUserUseReserveAsCollateral(
+        reserve,
+        usageAsCollateral,
+      );
+
+    const l2PoolContract: IL2Pool = this.getContractInstance(
+      this.l2PoolAddress,
+    );
+
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        l2PoolContract.populateTransaction.setUserUseReserveAsCollateral(
+          encodedParams,
+        ),
+      from: user,
+    });
+
+    return [
+      {
+        tx: txCallback,
+        txType: eEthereumTxType.DLP_ACTION,
+        gas: this.generateTxPriceEstimation([], txCallback),
+      },
+    ];
+  }
+
+  public async liquidationCall(
+    {
+      liquidator,
+      liquidatedUser,
+      debtReserve,
+      collateralReserve,
+      debtToCover,
+      getAToken,
+    }: LPLiquidationCall,
+    txs: EthereumTransactionTypeExtended[],
+  ): Promise<EthereumTransactionTypeExtended[]> {
+    const encoder = this.getEncoder();
+
+    const encodedParams: string[] = await encoder.encodeLiquidationCall(
+      collateralReserve,
+      debtReserve,
+      liquidatedUser,
+      debtToCover,
+      getAToken ?? false,
+    );
+
+    const l2PoolContract: IL2Pool = this.getContractInstance(
+      this.l2PoolAddress,
+    );
+
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        l2PoolContract.populateTransaction.liquidationCall(
+          encodedParams[0],
+          encodedParams[1],
+        ),
+      from: liquidator,
+      value: getTxValue(debtReserve, debtToCover),
+    });
+
+    txs.push({
+      tx: txCallback,
+      txType: eEthereumTxType.DLP_ACTION,
+      gas: this.generateTxPriceEstimation(
+        [],
+        txCallback,
+        ProtocolAction.liquidationCall,
       ),
     });
 
