@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -8,6 +9,7 @@ import {
   amount0OrPositiveValidator,
   amountGtThan0OrMinus1,
   amountGtThan0Validator,
+  isDeadline32BytesValidator,
   isEthAddressArrayValidator,
   // isEthAddressArrayValidatorNotEmpty,
   isEthAddressOrEnsValidator,
@@ -201,6 +203,33 @@ export function LPValidator(
     amountGtThan0OrMinus1(target, propertyName, arguments);
 
     amount0OrPositiveValidator(target, propertyName, arguments);
+
+    return method.apply(this, arguments);
+  };
+}
+
+export function L2PValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    if (
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.l2PoolAddress) ||
+      // @ts-expect-error todo: check why this ignore is needed
+      !utils.isAddress(this.encoderAddress)
+    ) {
+      console.error(
+        // @ts-expect-error todo: check why this ignore is needed
+        `[L2PoolValidator] You need to pass valid addresses: l2pool: ${this.l2PoolAddress} encoder: ${this.encoderAddress}`,
+      );
+      return [];
+    }
+
+    // isEthAddressValidator(target, propertyName, arguments);
+    isDeadline32BytesValidator(target, propertyName, arguments);
 
     return method.apply(this, arguments);
   };

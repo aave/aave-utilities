@@ -6,12 +6,13 @@ import {
   PermitSignature,
 } from '../commons/types';
 
-export type LPDepositParamsType = {
+export type LPSupplyParamsType = {
   user: tEthereumAddress;
   reserve: tEthereumAddress;
   amount: string;
   onBehalfOf?: tEthereumAddress;
   referralCode?: string;
+  useOptimizedPath?: boolean;
 };
 
 export type LPWithdrawParamsType = {
@@ -20,7 +21,9 @@ export type LPWithdrawParamsType = {
   amount: string;
   onBehalfOf?: tEthereumAddress;
   aTokenAddress?: tEthereumAddress;
+  useOptimizedPath?: boolean;
 };
+
 export type LPBorrowParamsType = {
   user: tEthereumAddress;
   reserve: tEthereumAddress;
@@ -29,23 +32,30 @@ export type LPBorrowParamsType = {
   debtTokenAddress?: tEthereumAddress;
   onBehalfOf?: tEthereumAddress;
   referralCode?: string;
+  useOptimizedPath?: boolean;
 };
+
 export type LPRepayParamsType = {
   user: tEthereumAddress;
   reserve: tEthereumAddress;
   amount: string;
   interestRateMode: InterestRate;
   onBehalfOf?: tEthereumAddress;
+  useOptimizedPath?: boolean;
 };
+
 export type LPSwapBorrowRateMode = {
   user: tEthereumAddress;
   reserve: tEthereumAddress;
   interestRateMode: InterestRate;
+  useOptimizedPath?: boolean;
 };
+
 export type LPSetUsageAsCollateral = {
   user: tEthereumAddress;
   reserve: tEthereumAddress;
   usageAsCollateral: boolean;
+  useOptimizedPath?: boolean;
 };
 export type LPLiquidationCall = {
   liquidator: tEthereumAddress;
@@ -55,6 +65,7 @@ export type LPLiquidationCall = {
   purchaseAmount: string;
   getAToken?: boolean;
   liquidateAll?: boolean;
+  useOptimizedPath?: boolean;
 };
 
 export type LPSwapCollateral = {
@@ -131,7 +142,9 @@ export type LPSupplyWithPermitType = {
   onBehalfOf?: tEthereumAddress;
   amount: string;
   signature: SignatureLike;
-  referralCode?: number;
+  referralCode?: string;
+  useOptimizedPath?: boolean;
+  deadline: string;
 };
 
 export type LPRepayWithPermitParamsType = {
@@ -141,12 +154,15 @@ export type LPRepayWithPermitParamsType = {
   interestRateMode: InterestRate;
   onBehalfOf?: tEthereumAddress;
   signature: SignatureLike;
+  useOptimizedPath?: boolean;
+  deadline: string;
 };
 
 export type LPSignERC20ApprovalType = {
   user: tEthereumAddress;
   reserve: tEthereumAddress;
   amount: string;
+  deadline: string;
 };
 
 export type LPSetUserEModeType = {
@@ -159,4 +175,5 @@ export type LPRepayWithATokensType = {
   reserve: string;
   amount: string;
   rateMode: InterestRate;
+  useOptimizedPath?: boolean;
 };
