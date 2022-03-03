@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -219,7 +220,10 @@ export function L2PValidator(
       // @ts-expect-error todo: check why this ignore is needed
       !utils.isAddress(this.encoderAddress)
     ) {
-      console.error(`[L2PoolValidator] You need to pass valid addresses`);
+      console.error(
+        // @ts-expect-error todo: check why this ignore is needed
+        `[L2PoolValidator] You need to pass valid addresses: l2pool: ${this.l2PoolAddress} encoder: ${this.encoderAddress}`,
+      );
       return [];
     }
 
