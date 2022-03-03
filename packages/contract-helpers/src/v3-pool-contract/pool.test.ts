@@ -782,6 +782,7 @@ describe('Pool', () => {
     const reserve = '0x0000000000000000000000000000000000000007';
     const amount = '123.456';
     const decimals = 18;
+    const deadline = Math.round(Date.now() / 1000 + 3600).toString();
     jest.spyOn(provider, 'getTransactionCount').mockResolvedValue(1);
     jest.spyOn(provider, 'getNetwork').mockResolvedValue({
       name: 'mainnet',
@@ -816,6 +817,7 @@ describe('Pool', () => {
         user,
         reserve,
         amount,
+        deadline,
       });
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -828,7 +830,7 @@ describe('Pool', () => {
       expect(message.spender).toEqual(POOL);
       expect(message.value).toEqual(valueToWei(amount, decimals));
       expect(message.nonce).toEqual(1);
-      expect(message.deadline).toEqual(constants.MaxUint256.toString());
+      expect(message.deadline).toEqual(deadline);
     });
     it('Expects the permission string to be returned when all params and amount -1', async () => {
       const poolInstance = new Pool(provider, config);
@@ -855,6 +857,7 @@ describe('Pool', () => {
         user,
         reserve,
         amount,
+        deadline,
       });
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -867,7 +870,7 @@ describe('Pool', () => {
       expect(message.spender).toEqual(POOL);
       expect(message.value).toEqual(constants.MaxUint256.toString());
       expect(message.nonce).toEqual(1);
-      expect(message.deadline).toEqual(constants.MaxUint256.toString());
+      expect(message.deadline).toEqual(deadline);
     });
     it('Expects the permission string to be `` when no nonce', async () => {
       const poolInstance = new Pool(provider, config);
@@ -892,6 +895,7 @@ describe('Pool', () => {
         user,
         reserve,
         amount,
+        deadline,
       });
 
       expect(signature).toEqual('');
@@ -916,6 +920,7 @@ describe('Pool', () => {
         user,
         reserve,
         amount,
+        deadline,
       });
 
       expect(signature).toEqual('');
@@ -926,6 +931,7 @@ describe('Pool', () => {
         user,
         reserve,
         amount,
+        deadline,
       });
       expect(signature).toEqual([]);
     });
@@ -934,7 +940,7 @@ describe('Pool', () => {
 
       const user = 'asdf';
       await expect(async () =>
-        poolInstance.signERC20Approval({ user, reserve, amount }),
+        poolInstance.signERC20Approval({ user, reserve, amount, deadline }),
       ).rejects.toThrowError(
         `Address: ${user} is not a valid ethereum Address`,
       );
@@ -944,7 +950,7 @@ describe('Pool', () => {
 
       const reserve = 'asdf';
       await expect(async () =>
-        poolInstance.signERC20Approval({ user, reserve, amount }),
+        poolInstance.signERC20Approval({ user, reserve, amount, deadline }),
       ).rejects.toThrowError(
         `Address: ${reserve} is not a valid ethereum Address`,
       );
@@ -954,7 +960,7 @@ describe('Pool', () => {
 
       const amount = '0';
       await expect(async () =>
-        poolInstance.signERC20Approval({ user, reserve, amount }),
+        poolInstance.signERC20Approval({ user, reserve, amount, deadline }),
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
     it('Expects to fail when amount not number', async () => {
@@ -962,7 +968,7 @@ describe('Pool', () => {
 
       const amount = 'asdf';
       await expect(async () =>
-        poolInstance.signERC20Approval({ user, reserve, amount }),
+        poolInstance.signERC20Approval({ user, reserve, amount, deadline }),
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
   });
@@ -971,6 +977,7 @@ describe('Pool', () => {
     const reserve = '0x0000000000000000000000000000000000000007';
     const onBehalfOf = '0x0000000000000000000000000000000000000008';
     const referralCode = '1';
+    const deadline = Math.round(Date.now() / 1000 + 3600).toString();
     // const message = 'victor washington'
     const signature =
       '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c';
@@ -992,6 +999,7 @@ describe('Pool', () => {
         onBehalfOf,
         referralCode,
         signature,
+        deadline,
       });
 
       expect(supplyTxObj.length).toEqual(1);
@@ -1022,7 +1030,7 @@ describe('Pool', () => {
       expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
       expect(decoded[2]).toEqual(onBehalfOf);
       expect(decoded[3]).toEqual(Number(referralCode));
-      expect(decoded[4]).toEqual(constants.MaxUint256);
+      expect(decoded[4]).toEqual(BigNumber.from(deadline));
       expect(decoded[5]).toEqual(28);
       expect(decoded[6]).toEqual(
         '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e',
@@ -1052,6 +1060,7 @@ describe('Pool', () => {
         referralCode,
         signature,
         useOptimizedPath: true,
+        deadline,
       });
 
       expect(optimalPoolSpy).toHaveBeenCalled();
@@ -1069,6 +1078,7 @@ describe('Pool', () => {
         // onBehalfOf,
         referralCode,
         signature,
+        deadline,
       });
 
       expect(supplyTxObj.length).toEqual(1);
@@ -1099,7 +1109,7 @@ describe('Pool', () => {
       expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
       expect(decoded[2]).toEqual(user);
       expect(decoded[3]).toEqual(Number(referralCode));
-      expect(decoded[4]).toEqual(constants.MaxUint256);
+      expect(decoded[4]).toEqual(BigNumber.from(deadline));
       expect(decoded[5]).toEqual(28);
       expect(decoded[6]).toEqual(
         '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e',
@@ -1125,6 +1135,7 @@ describe('Pool', () => {
         onBehalfOf,
         // referralCode,
         signature,
+        deadline,
       });
 
       expect(supplyTxObj.length).toEqual(1);
@@ -1155,7 +1166,7 @@ describe('Pool', () => {
       expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
       expect(decoded[2]).toEqual(onBehalfOf);
       expect(decoded[3]).toEqual(0);
-      expect(decoded[4]).toEqual(constants.MaxUint256);
+      expect(decoded[4]).toEqual(BigNumber.from(deadline));
       expect(decoded[5]).toEqual(28);
       expect(decoded[6]).toEqual(
         '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e',
@@ -1186,6 +1197,7 @@ describe('Pool', () => {
           onBehalfOf,
           referralCode,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError('Not enough funds to execute operation');
 
@@ -1200,6 +1212,7 @@ describe('Pool', () => {
         onBehalfOf,
         referralCode,
         signature,
+        deadline,
       });
       expect(txObj).toEqual([]);
     });
@@ -1215,6 +1228,7 @@ describe('Pool', () => {
           onBehalfOf,
           referralCode,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(
         `Address: ${user} is not a valid ethereum Address`,
@@ -1232,6 +1246,7 @@ describe('Pool', () => {
           onBehalfOf,
           referralCode,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(
         `Address: ${reserve} is not a valid ethereum Address`,
@@ -1249,6 +1264,7 @@ describe('Pool', () => {
           onBehalfOf,
           referralCode,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(
         `Address: ${onBehalfOf} is not a valid ethereum Address`,
@@ -1266,6 +1282,7 @@ describe('Pool', () => {
           onBehalfOf,
           referralCode,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
@@ -1281,6 +1298,7 @@ describe('Pool', () => {
           onBehalfOf,
           referralCode,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
@@ -1296,6 +1314,7 @@ describe('Pool', () => {
           onBehalfOf,
           referralCode,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(
         `Amount: ${referralCode} needs to be greater than 0`,
@@ -2223,6 +2242,7 @@ describe('Pool', () => {
     const amount = '123.456';
     const decimals = 18;
     const interestRateMode = InterestRate.None;
+    const deadline = Math.round(Date.now() / 1000 + 3600).toString();
     // const message = 'victor washington'
     const signature =
       '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c';
@@ -2247,6 +2267,7 @@ describe('Pool', () => {
         amount,
         interestRateMode,
         signature,
+        deadline,
       });
 
       expect(synthetixSpy).toHaveBeenCalled();
@@ -2280,7 +2301,7 @@ describe('Pool', () => {
       expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
       expect(decoded[2]).toEqual(BigNumber.from(1));
       expect(decoded[3]).toEqual(user);
-      expect(decoded[4]).toEqual(constants.MaxUint256);
+      expect(decoded[4]).toEqual(BigNumber.from(deadline));
       expect(decoded[5]).toEqual(28);
       expect(decoded[6]).toEqual(
         '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e',
@@ -2314,6 +2335,7 @@ describe('Pool', () => {
         interestRateMode,
         signature,
         useOptimizedPath: true,
+        deadline,
       });
 
       expect(synthetixSpy).toHaveBeenCalled();
@@ -2341,6 +2363,7 @@ describe('Pool', () => {
         interestRateMode,
         onBehalfOf,
         signature,
+        deadline,
       });
 
       expect(synthetixSpy).not.toHaveBeenCalled();
@@ -2374,6 +2397,7 @@ describe('Pool', () => {
       expect(decoded[1]).toEqual(constants.MaxUint256);
       expect(decoded[2]).toEqual(BigNumber.from(1));
       expect(decoded[3]).toEqual(onBehalfOf);
+      expect(decoded[4]).toEqual(BigNumber.from(deadline));
       expect(decoded[5]).toEqual(28);
       expect(decoded[6]).toEqual(
         '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e',
@@ -2405,6 +2429,7 @@ describe('Pool', () => {
         interestRateMode,
         onBehalfOf,
         signature,
+        deadline,
       });
 
       expect(synthetixSpy).toHaveBeenCalled();
@@ -2438,6 +2463,7 @@ describe('Pool', () => {
       expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
       expect(decoded[2]).toEqual(BigNumber.from(2));
       expect(decoded[3]).toEqual(onBehalfOf);
+      expect(decoded[4]).toEqual(BigNumber.from(deadline));
       expect(decoded[5]).toEqual(28);
       expect(decoded[6]).toEqual(
         '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e',
@@ -2470,6 +2496,7 @@ describe('Pool', () => {
           interestRateMode,
           onBehalfOf,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError('Not enough funds to execute operation');
 
@@ -2485,6 +2512,7 @@ describe('Pool', () => {
         interestRateMode,
         onBehalfOf,
         signature,
+        deadline,
       });
       expect(txObj).toEqual([]);
     });
@@ -2499,6 +2527,7 @@ describe('Pool', () => {
           interestRateMode,
           onBehalfOf,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(
         `Address: ${user} is not a valid ethereum Address`,
@@ -2515,6 +2544,7 @@ describe('Pool', () => {
           interestRateMode,
           onBehalfOf,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(
         `Address: ${reserve} is not a valid ethereum Address`,
@@ -2531,6 +2561,7 @@ describe('Pool', () => {
           interestRateMode,
           onBehalfOf,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(
         `Address: ${onBehalfOf} is not a valid ethereum Address`,
@@ -2547,6 +2578,7 @@ describe('Pool', () => {
           interestRateMode,
           onBehalfOf,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
@@ -2561,6 +2593,7 @@ describe('Pool', () => {
           interestRateMode,
           onBehalfOf,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });

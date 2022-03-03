@@ -144,6 +144,7 @@ export type LPSupplyWithPermitType = {
   signature: SignatureLike;
   referralCode?: string;
   useOptimizedPath?: boolean;
+  deadline: string;
 };
 
 export type LPRepayWithPermitParamsType = {
@@ -154,12 +155,14 @@ export type LPRepayWithPermitParamsType = {
   onBehalfOf?: tEthereumAddress;
   signature: SignatureLike;
   useOptimizedPath?: boolean;
+  deadline: string;
 };
 
 export type LPSignERC20ApprovalType = {
   user: tEthereumAddress;
   reserve: tEthereumAddress;
   amount: string;
+  deadline: string;
 };
 
 export type LPSetUserEModeType = {

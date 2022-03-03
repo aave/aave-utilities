@@ -419,7 +419,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     @isEthAddress('user')
     @isEthAddress('reserve')
     @isPositiveOrMinusOneAmount('amount')
-    { user, reserve, amount }: LPSignERC20ApprovalType,
+    { user, reserve, amount, deadline }: LPSignERC20ApprovalType,
   ): Promise<string> {
     const { getTokenData, isApproved } = this.erc20Service;
     const { name, decimals } = await getTokenData(reserve);
@@ -479,7 +479,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         spender: this.poolAddress,
         value: convertedAmount,
         nonce,
-        deadline: constants.MaxUint256.toString(),
+        deadline,
       },
     };
     return JSON.stringify(typeData);
@@ -500,6 +500,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       referralCode,
       signature,
       useOptimizedPath,
+      deadline,
     }: LPSupplyWithPermitType,
   ): Promise<EthereumTransactionTypeExtended[]> {
     const txs: EthereumTransactionTypeExtended[] = [];
@@ -526,7 +527,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           reserve,
           amount: convertedAmount,
           referralCode,
-          deadline: constants.MaxUint256.toString(),
+          deadline,
           permitV: sig.v,
           permitR: sig.r,
           permitS: sig.s,
@@ -542,7 +543,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           convertedAmount,
           onBehalfOf ?? user,
           referralCode ?? 0,
-          constants.MaxUint256.toString(),
+          deadline,
           sig.v,
           sig.r,
           sig.s,
@@ -826,6 +827,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       onBehalfOf,
       signature,
       useOptimizedPath,
+      deadline,
     }: LPRepayWithPermitParamsType,
   ): Promise<EthereumTransactionTypeExtended[]> {
     const txs: EthereumTransactionTypeExtended[] = [];
@@ -861,7 +863,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           reserve,
           amount: convertedAmount,
           numericRateMode,
-          deadline: constants.MaxUint256.toString(),
+          deadline,
           permitR: sig.r,
           permitS: sig.s,
           permitV: sig.v,
@@ -877,7 +879,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           convertedAmount,
           numericRateMode,
           onBehalfOf ?? user,
-          constants.MaxUint256.toString(),
+          deadline,
           sig.v,
           sig.r,
           sig.s,
