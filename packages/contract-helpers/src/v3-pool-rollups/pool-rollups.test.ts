@@ -1,4 +1,4 @@
-import { BigNumber, providers, utils } from 'ethers';
+import { BigNumber, constants, providers, utils } from 'ethers';
 import {
   eEthereumTxType,
   GasType,
@@ -331,6 +331,27 @@ describe('L2Pool', () => {
       );
       expect(supplyWithPermitTxObj).toEqual([]);
     });
+    it('Expects to fail when deadline is to big', async () => {
+      const instance: L2PoolInterface = new L2Pool(provider, {
+        encoderAddress,
+        l2PoolAddress,
+      });
+      const deadline = constants.MaxUint256.toString();
+      await expect(async () =>
+        instance.supplyWithPermit(
+          {
+            user,
+            reserve,
+            amount,
+            deadline,
+            permitR,
+            permitS,
+            permitV,
+          },
+          [],
+        ),
+      ).rejects.toThrowError(`Deadline: ${deadline} is bigger than 32 bytes`);
+    });
   });
   describe('withdraw', () => {
     afterEach(() => {
@@ -642,6 +663,28 @@ describe('L2Pool', () => {
         [],
       );
       expect(repayWithPermitTxObj).toEqual([]);
+    });
+    it('Expects to fail when deadline is to big', async () => {
+      const instance: L2PoolInterface = new L2Pool(provider, {
+        encoderAddress,
+        l2PoolAddress,
+      });
+      const deadline = constants.MaxUint256.toString();
+      await expect(async () =>
+        instance.repayWithPermit(
+          {
+            user,
+            reserve,
+            amount,
+            numericRateMode,
+            deadline,
+            permitR,
+            permitS,
+            permitV,
+          },
+          [],
+        ),
+      ).rejects.toThrowError(`Deadline: ${deadline} is bigger than 32 bytes`);
     });
   });
   describe('repayWithATokens', () => {

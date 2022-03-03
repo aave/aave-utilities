@@ -8,6 +8,7 @@ import {
 } from '../commons/types';
 import { getTxValue } from '../commons/utils';
 import { L2PValidator } from '../commons/validators/methodValidators';
+import { isDeadline32Bytes } from '../commons/validators/paramValidators';
 import {
   LPBorrowParamsType,
   LPSupplyParamsType,
@@ -124,6 +125,7 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
 
   @L2PValidator
   public async supplyWithPermit(
+    @isDeadline32Bytes('deadline')
     {
       user,
       reserve,
@@ -279,6 +281,7 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
 
   @L2PValidator
   public async repayWithPermit(
+    @isDeadline32Bytes('deadline')
     {
       user,
       reserve,

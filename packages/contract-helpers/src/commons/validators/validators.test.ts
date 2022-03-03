@@ -1,9 +1,11 @@
+import { constants } from 'ethers';
 import {
   is0OrPositiveMetadataKey,
   isEthAddressArrayMetadataKey,
   isEthAddressArrayMetadataKeyNotEmpty,
   isEthAddressMetadataKey,
   isEthAddressOrENSMetadataKey,
+  isPermitDeadline32Bytes,
   isPositiveMetadataKey,
   isPositiveOrMinusOneMetadataKey,
 } from './paramValidators';
@@ -11,6 +13,7 @@ import {
   amount0OrPositiveValidator,
   amountGtThan0OrMinus1,
   amountGtThan0Validator,
+  isDeadline32BytesValidator,
   isEthAddressArrayValidator,
   isEthAddressArrayValidatorNotEmpty,
   isEthAddressOrEnsValidator,
@@ -24,6 +27,182 @@ describe('validators', () => {
   const target = Test;
   const propertyName = 'claimRewards';
   const propertyKey = 'claimRewards';
+  describe('isDeadline32BytesValidator', () => {
+    it('Expects to run with correct deadline', () => {
+      const methodArguments = {
+        '0': {
+          deadline: '1234',
+        },
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: 'deadline',
+        },
+      ];
+
+      Reflect.defineMetadata(
+        isPermitDeadline32Bytes,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isDeadline32BytesValidator(target, propertyName, methodArguments);
+      }).not.toThrow();
+    });
+    it('Expects to run with no field @isDeadline32Bytes', () => {
+      const methodArguments = {
+        '0': '1234',
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: undefined,
+        },
+      ];
+
+      Reflect.defineMetadata(
+        isPermitDeadline32Bytes,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isDeadline32BytesValidator(target, propertyName, methodArguments);
+      }).not.toThrow();
+    });
+    it('Expects to run with no params', () => {
+      const methodArguments = {
+        '0': {
+          deadline: '1234',
+        },
+      };
+
+      Reflect.defineMetadata(
+        isPermitDeadline32Bytes,
+        undefined,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isDeadline32BytesValidator(target, propertyName, methodArguments);
+      }).not.toThrow();
+    });
+    it('Expects to run with no deadline if optional', () => {
+      const methodArguments = {
+        '0': {},
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: undefined,
+        },
+      ];
+
+      const isParamOptional = [true];
+      Reflect.defineMetadata(
+        isPermitDeadline32Bytes,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isDeadline32BytesValidator(
+          target,
+          propertyName,
+          methodArguments,
+          isParamOptional,
+        );
+      }).not.toThrow();
+    });
+    it('Expect to not run with incorrect deadline', () => {
+      const methodArguments = {
+        '0': {
+          deadline: constants.MaxUint256.toString(),
+        },
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: 'deadline',
+        },
+      ];
+
+      Reflect.defineMetadata(
+        isPermitDeadline32Bytes,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isDeadline32BytesValidator(target, propertyName, methodArguments);
+      }).toThrowError(
+        `Deadline: ${methodArguments[0].deadline} is bigger than 32 bytes`,
+      );
+    });
+    it('Expects to throw when wrong deadline and not optional', () => {
+      const methodArguments = {
+        '0': {},
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: undefined,
+        },
+      ];
+
+      Reflect.defineMetadata(
+        isPermitDeadline32Bytes,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isDeadline32BytesValidator(target, propertyName, methodArguments);
+      }).toThrowError(
+        // eslint-disable-next-line no-useless-escape
+        `The \"string\" argument must be of type string or an instance of Buffer or ArrayBuffer. Received an instance of Object`,
+      );
+    });
+    it('Expect to throw when no deadline and not optional', () => {
+      const methodArguments = {
+        '0': {},
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: undefined,
+        },
+      ];
+
+      const isParamOptional = [false];
+      Reflect.defineMetadata(
+        isPermitDeadline32Bytes,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isDeadline32BytesValidator(
+          target,
+          propertyName,
+          methodArguments,
+          isParamOptional,
+        );
+      }).toThrowError(
+        // eslint-disable-next-line no-useless-escape
+        `The \"string\" argument must be of type string or an instance of Buffer or ArrayBuffer. Received an instance of Object`,
+      );
+    });
+  });
   describe('isEthAddressValidator', () => {
     it('Expects to run with correct address', () => {
       const methodArguments = {
@@ -71,7 +250,6 @@ describe('validators', () => {
         isEthAddressValidator(target, propertyName, methodArguments);
       }).not.toThrow();
     });
-
     it('Expects to run with no params', () => {
       const methodArguments = {
         '0': {

@@ -9,6 +9,7 @@ import {
   amount0OrPositiveValidator,
   amountGtThan0OrMinus1,
   amountGtThan0Validator,
+  isDeadline32BytesValidator,
   isEthAddressArrayValidator,
   // isEthAddressArrayValidatorNotEmpty,
   isEthAddressOrEnsValidator,
@@ -208,8 +209,8 @@ export function LPValidator(
 }
 
 export function L2PValidator(
-  _target: any,
-  _propertyName: string,
+  target: any,
+  propertyName: string,
   descriptor: TypedPropertyDescriptor<any>,
 ): any {
   const method = descriptor.value;
@@ -228,6 +229,7 @@ export function L2PValidator(
     }
 
     // isEthAddressValidator(target, propertyName, arguments);
+    isDeadline32BytesValidator(target, propertyName, arguments);
 
     return method.apply(this, arguments);
   };
