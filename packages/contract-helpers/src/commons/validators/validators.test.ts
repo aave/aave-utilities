@@ -146,6 +146,36 @@ describe('validators', () => {
         `Deadline: ${methodArguments[0].deadline} is bigger than 32 bytes`,
       );
     });
+    it('Expect to not run with incorrect deadline and optional', () => {
+      const methodArguments = {
+        '0': constants.MaxUint256.toString(),
+      };
+      const existingPossibleAddresses = [
+        {
+          index: 0,
+          field: undefined,
+        },
+      ];
+
+      const isParamOptional = [false];
+      Reflect.defineMetadata(
+        isPermitDeadline32Bytes,
+        existingPossibleAddresses,
+        target,
+        propertyKey,
+      );
+
+      expect(() => {
+        isDeadline32BytesValidator(
+          target,
+          propertyName,
+          methodArguments,
+          isParamOptional,
+        );
+      }).toThrowError(
+        `Deadline: ${constants.MaxUint256.toString()} is bigger than 32 bytes`,
+      );
+    });
     it('Expects to throw when wrong deadline and not optional', () => {
       const methodArguments = {
         '0': {},
@@ -907,7 +937,6 @@ describe('validators', () => {
         ]);
       }).not.toThrow();
     });
-
     it('should throw for invalid address', () => {
       const methodArguments = {
         '0': 'aave',
@@ -1414,7 +1443,6 @@ describe('validators', () => {
         amount0OrPositiveValidator(target, propertyName, methodArguments);
       }).not.toThrow();
     });
-
     it('Expects to run if 0', () => {
       const methodArguments = {
         '0': {
