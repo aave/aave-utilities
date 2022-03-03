@@ -44,7 +44,6 @@ describe('Pool', () => {
     '0x0000000000000000000000000000000000000004';
   const SWAP_COLLATERAL_ADAPTER = '0x0000000000000000000000000000000000000005';
   const L2_ENCODER = '0x0000000000000000000000000000000000000020';
-  const L2_POOL = '0x0000000000000000000000000000000000000021';
   describe('Initialization', () => {
     const config = {
       POOL,
@@ -53,7 +52,6 @@ describe('Pool', () => {
       SWAP_COLLATERAL_ADAPTER,
       WETH_GATEWAY,
       L2_ENCODER,
-      L2_POOL,
     };
     it('Expects to initialize correctly with all params', () => {
       const instance = new Pool(provider, config);

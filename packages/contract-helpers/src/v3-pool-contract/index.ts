@@ -202,7 +202,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       SWAP_COLLATERAL_ADAPTER,
       WETH_GATEWAY,
       L2_ENCODER,
-      L2_POOL,
     } = lendingPoolConfig ?? {};
 
     this.poolAddress = POOL ?? '';
@@ -210,7 +209,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     this.swapCollateralAddress = SWAP_COLLATERAL_ADAPTER ?? '';
     this.repayWithCollateralAddress = REPAY_WITH_COLLATERAL_ADAPTER ?? '';
     this.l2EncoderAddress = L2_ENCODER ?? '';
-    this.l2PoolAddress = L2_POOL ?? '';
 
     // initialize services
     this.erc20_2612Service = new ERC20_2612Service(provider);
@@ -235,7 +233,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       new ParaswapRepayWithCollateral(provider, REPAY_WITH_COLLATERAL_ADAPTER);
 
     this.l2PoolService = new L2Pool(provider, {
-      l2PoolAddress: this.l2PoolAddress,
+      l2PoolAddress: this.poolAddress,
       encoderAddress: this.l2EncoderAddress,
     });
   }
