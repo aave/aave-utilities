@@ -278,7 +278,11 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     txs.push({
       tx: txCallback,
       txType: eEthereumTxType.DLP_ACTION,
-      gas: this.generateTxPriceEstimation([], txCallback, ProtocolAction.repay),
+      gas: this.generateTxPriceEstimation(
+        txs,
+        txCallback,
+        ProtocolAction.repay,
+      ),
     });
 
     return txs;
