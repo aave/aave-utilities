@@ -777,7 +777,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     }
 
     if (useOptimizedPath) {
-      console.log('||||||| optimized path |||||||');
       return this.l2PoolService.repay(
         {
           user,
