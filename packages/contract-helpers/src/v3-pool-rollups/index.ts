@@ -252,13 +252,18 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     txs: EthereumTransactionTypeExtended[],
   ): Promise<EthereumTransactionTypeExtended[]> {
     const encoder = this.getEncoder();
-
+    console.log(`--- params ---
+      reserve: ${reserve}
+      user: ${user}
+      amount: ${amount}
+      reate: ${numericRateMode}
+    `);
     const encodedParams: string = await encoder.encodeRepayParams(
       reserve,
       amount,
       numericRateMode,
     );
-
+    console.log('encoded aprams: ', encodedParams);
     const l2PoolContract: IL2Pool = this.getContractInstance(
       this.l2PoolAddress,
     );
