@@ -252,13 +252,11 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     txs: EthereumTransactionTypeExtended[],
   ): Promise<EthereumTransactionTypeExtended[]> {
     const encoder = this.getEncoder();
-
     const encodedParams: string = await encoder.encodeRepayParams(
       reserve,
       amount,
       numericRateMode,
     );
-
     const l2PoolContract: IL2Pool = this.getContractInstance(
       this.l2PoolAddress,
     );
@@ -273,7 +271,11 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     txs.push({
       tx: txCallback,
       txType: eEthereumTxType.DLP_ACTION,
-      gas: this.generateTxPriceEstimation([], txCallback, ProtocolAction.repay),
+      gas: this.generateTxPriceEstimation(
+        txs,
+        txCallback,
+        ProtocolAction.repay,
+      ),
     });
 
     return txs;
@@ -324,7 +326,11 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     txs.push({
       tx: txCallback,
       txType: eEthereumTxType.DLP_ACTION,
-      gas: this.generateTxPriceEstimation([], txCallback, ProtocolAction.repay),
+      gas: this.generateTxPriceEstimation(
+        txs,
+        txCallback,
+        ProtocolAction.repay,
+      ),
     });
 
     return txs;
@@ -336,13 +342,11 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     txs: EthereumTransactionTypeExtended[],
   ): Promise<EthereumTransactionTypeExtended[]> {
     const encoder = this.getEncoder();
-
     const encodedParams: string = await encoder.encodeRepayWithATokensParams(
       reserve,
       amount,
       numericRateMode,
     );
-
     const l2PoolContract: IL2Pool = this.getContractInstance(
       this.l2PoolAddress,
     );
@@ -357,7 +361,11 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     txs.push({
       tx: txCallback,
       txType: eEthereumTxType.DLP_ACTION,
-      gas: this.generateTxPriceEstimation([], txCallback, ProtocolAction.repay),
+      gas: this.generateTxPriceEstimation(
+        txs,
+        txCallback,
+        ProtocolAction.repay,
+      ),
     });
 
     return txs;
