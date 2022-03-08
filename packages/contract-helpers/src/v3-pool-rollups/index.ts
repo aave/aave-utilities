@@ -350,7 +350,7 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
       amount,
       numericRateMode,
     );
-
+    console.log('encoded params: ', encodedParams);
     const l2PoolContract: IL2Pool = this.getContractInstance(
       this.l2PoolAddress,
     );
