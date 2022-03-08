@@ -337,6 +337,14 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
   ): Promise<EthereumTransactionTypeExtended[]> {
     const encoder = this.getEncoder();
 
+    console.log(`---- repay with a tokens lib ----
+      reserve: ${reserve}
+      user: ${user}
+      amount: ${amount}
+      rate mode: ${numericRateMode}
+
+    `);
+
     const encodedParams: string = await encoder.encodeRepayWithATokensParams(
       reserve,
       amount,
