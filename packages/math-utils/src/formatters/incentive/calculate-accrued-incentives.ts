@@ -23,12 +23,17 @@ export function calculateAccruedIncentives({
   reserveIndexTimestamp,
   emissionPerSecond,
   totalSupply,
-  currentTimestamp,
+  currentTimestamp: _currentTimestamp,
   emissionEndTimestamp,
 }: CalculateAccruedIncentivesRequest): BigNumber {
   if (totalSupply.isEqualTo(new BigNumber(0))) {
     return new BigNumber(0);
   }
+
+  const currentTimestamp =
+    _currentTimestamp < reserveIndexTimestamp
+      ? reserveIndexTimestamp
+      : _currentTimestamp;
 
   const actualCurrentTimestamp =
     currentTimestamp > emissionEndTimestamp
