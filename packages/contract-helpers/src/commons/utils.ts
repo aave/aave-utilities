@@ -113,7 +113,7 @@ export const mintAmountsPerToken: Record<string, string> = {
   UNILINKETH: valueToWei(uniswapEthAmount, 18),
   UNIMKRETH: valueToWei(uniswapEthAmount, 18),
   EURS: valueToWei('10000', 2),
-  AGUER: valueToWei('10000', 18),
+  AGEUR: valueToWei('10000', 18),
   BAL: valueToWei('10000', 18),
   CRV: valueToWei('10000', 18),
   DPI: valueToWei('10000', 18),
