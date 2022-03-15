@@ -21,7 +21,7 @@ export function nativeToUSD({
     .multipliedBy(normalizedMarketReferencePriceInUsd)
     .dividedBy(
       new BigNumber(1).shiftedBy(
-        currencyDecimals + marketReferenceCurrencyDecimals,
+        Number(currencyDecimals) + Number(marketReferenceCurrencyDecimals),
       ),
     )
     .toString();
