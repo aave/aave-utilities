@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { BigNumberValue } from '../../bignumber';
+import { BigNumberValue, valueToBigNumber } from '../../bignumber';
 
 interface NativeToUSD {
   amount: BigNumber;
@@ -16,7 +16,7 @@ export function nativeToUSD({
   marketReferenceCurrencyDecimals,
   normalizedMarketReferencePriceInUsd,
 }: NativeToUSD) {
-  return amount
+  return valueToBigNumber(amount.toString())
     .multipliedBy(priceInMarketReferenceCurrency)
     .multipliedBy(normalizedMarketReferencePriceInUsd)
     .dividedBy(
