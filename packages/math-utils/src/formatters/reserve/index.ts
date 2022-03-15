@@ -331,6 +331,38 @@ export function formatReserveUSD({
     reserve: { ...reserve, ...computedFields },
   });
   console.log('Reserve:::----------------- ', reserve.symbol);
+  console.log(
+    {
+      amount: computedFields.totalLiquidity.toString(),
+      currencyDecimals: reserve.decimals,
+      marketReferenceCurrencyDecimals,
+      priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+      normalizedMarketReferencePriceInUsd:
+        normalizedMarketReferencePriceInUsd.toString(),
+    },
+    nativeToUSD({
+      amount: computedFields.totalLiquidity,
+      currencyDecimals: reserve.decimals,
+      marketReferenceCurrencyDecimals,
+      priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+      normalizedMarketReferencePriceInUsd,
+    }),
+    {
+      amount: computedFields.formattedAvailableLiquidity.toString(),
+      currencyDecimals: reserve.decimals,
+      marketReferenceCurrencyDecimals,
+      priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+      normalizedMarketReferencePriceInUsd:
+        normalizedMarketReferencePriceInUsd.toString(),
+    },
+    nativeToUSD({
+      amount: computedFields.formattedAvailableLiquidity,
+      currencyDecimals: reserve.decimals,
+      marketReferenceCurrencyDecimals,
+      priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
+      normalizedMarketReferencePriceInUsd,
+    }),
+  );
   return {
     ...formattedReserve,
     totalLiquidityUSD: nativeToUSD({
