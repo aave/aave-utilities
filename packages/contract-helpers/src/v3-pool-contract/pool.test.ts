@@ -43,6 +43,7 @@ describe('Pool', () => {
   const REPAY_WITH_COLLATERAL_ADAPTER =
     '0x0000000000000000000000000000000000000004';
   const SWAP_COLLATERAL_ADAPTER = '0x0000000000000000000000000000000000000005';
+  const L2_ENCODER = '0x0000000000000000000000000000000000000020';
   describe('Initialization', () => {
     const config = {
       POOL,
@@ -50,6 +51,7 @@ describe('Pool', () => {
       REPAY_WITH_COLLATERAL_ADAPTER,
       SWAP_COLLATERAL_ADAPTER,
       WETH_GATEWAY,
+      L2_ENCODER,
     };
     it('Expects to initialize correctly with all params', () => {
       const instance = new Pool(provider, config);
@@ -480,6 +482,37 @@ describe('Pool', () => {
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
     });
+    it('Expects the tx object passing all parameters with optimal path enabled', async () => {
+      const poolInstance = new Pool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(poolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const synthetixSpy = jest
+        .spyOn(poolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(true));
+      const optimalPoolSpy = jest
+        .spyOn(poolInstance.l2PoolService, 'supply')
+        .mockReturnValue(Promise.resolve([]));
+
+      const supplyTxObj = await poolInstance.supply({
+        user,
+        reserve,
+        amount,
+        onBehalfOf,
+        referralCode,
+        useOptimizedPath: true,
+      });
+
+      expect(synthetixSpy).toHaveBeenCalled();
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+      expect(optimalPoolSpy).toHaveBeenCalled();
+
+      expect(supplyTxObj.length).toEqual(0);
+    });
     it('Expects the tx object passing all parameters but not onBehalfOf', async () => {
       const poolInstance = new Pool(provider, config);
       const isApprovedSpy = jest
@@ -749,6 +782,7 @@ describe('Pool', () => {
     const reserve = '0x0000000000000000000000000000000000000007';
     const amount = '123.456';
     const decimals = 18;
+    const deadline = Math.round(Date.now() / 1000 + 3600).toString();
     jest.spyOn(provider, 'getTransactionCount').mockResolvedValue(1);
     jest.spyOn(provider, 'getNetwork').mockResolvedValue({
       name: 'mainnet',
@@ -783,6 +817,7 @@ describe('Pool', () => {
         user,
         reserve,
         amount,
+        deadline,
       });
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -795,7 +830,7 @@ describe('Pool', () => {
       expect(message.spender).toEqual(POOL);
       expect(message.value).toEqual(valueToWei(amount, decimals));
       expect(message.nonce).toEqual(1);
-      expect(message.deadline).toEqual(constants.MaxUint256.toString());
+      expect(message.deadline).toEqual(deadline);
     });
     it('Expects the permission string to be returned when all params and amount -1', async () => {
       const poolInstance = new Pool(provider, config);
@@ -822,6 +857,7 @@ describe('Pool', () => {
         user,
         reserve,
         amount,
+        deadline,
       });
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -834,7 +870,7 @@ describe('Pool', () => {
       expect(message.spender).toEqual(POOL);
       expect(message.value).toEqual(constants.MaxUint256.toString());
       expect(message.nonce).toEqual(1);
-      expect(message.deadline).toEqual(constants.MaxUint256.toString());
+      expect(message.deadline).toEqual(deadline);
     });
     it('Expects the permission string to be `` when no nonce', async () => {
       const poolInstance = new Pool(provider, config);
@@ -859,6 +895,7 @@ describe('Pool', () => {
         user,
         reserve,
         amount,
+        deadline,
       });
 
       expect(signature).toEqual('');
@@ -883,6 +920,7 @@ describe('Pool', () => {
         user,
         reserve,
         amount,
+        deadline,
       });
 
       expect(signature).toEqual('');
@@ -893,6 +931,7 @@ describe('Pool', () => {
         user,
         reserve,
         amount,
+        deadline,
       });
       expect(signature).toEqual([]);
     });
@@ -901,7 +940,7 @@ describe('Pool', () => {
 
       const user = 'asdf';
       await expect(async () =>
-        poolInstance.signERC20Approval({ user, reserve, amount }),
+        poolInstance.signERC20Approval({ user, reserve, amount, deadline }),
       ).rejects.toThrowError(
         `Address: ${user} is not a valid ethereum Address`,
       );
@@ -911,7 +950,7 @@ describe('Pool', () => {
 
       const reserve = 'asdf';
       await expect(async () =>
-        poolInstance.signERC20Approval({ user, reserve, amount }),
+        poolInstance.signERC20Approval({ user, reserve, amount, deadline }),
       ).rejects.toThrowError(
         `Address: ${reserve} is not a valid ethereum Address`,
       );
@@ -921,7 +960,7 @@ describe('Pool', () => {
 
       const amount = '0';
       await expect(async () =>
-        poolInstance.signERC20Approval({ user, reserve, amount }),
+        poolInstance.signERC20Approval({ user, reserve, amount, deadline }),
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
     it('Expects to fail when amount not number', async () => {
@@ -929,7 +968,7 @@ describe('Pool', () => {
 
       const amount = 'asdf';
       await expect(async () =>
-        poolInstance.signERC20Approval({ user, reserve, amount }),
+        poolInstance.signERC20Approval({ user, reserve, amount, deadline }),
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
   });
@@ -937,7 +976,8 @@ describe('Pool', () => {
     const user = '0x0000000000000000000000000000000000000006';
     const reserve = '0x0000000000000000000000000000000000000007';
     const onBehalfOf = '0x0000000000000000000000000000000000000008';
-    const referralCode = 1;
+    const referralCode = '1';
+    const deadline = Math.round(Date.now() / 1000 + 3600).toString();
     // const message = 'victor washington'
     const signature =
       '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c';
@@ -959,6 +999,7 @@ describe('Pool', () => {
         onBehalfOf,
         referralCode,
         signature,
+        deadline,
       });
 
       expect(supplyTxObj.length).toEqual(1);
@@ -988,8 +1029,8 @@ describe('Pool', () => {
       expect(decoded[0]).toEqual(reserve);
       expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
       expect(decoded[2]).toEqual(onBehalfOf);
-      expect(decoded[3]).toEqual(referralCode);
-      expect(decoded[4]).toEqual(constants.MaxUint256);
+      expect(decoded[3]).toEqual(Number(referralCode));
+      expect(decoded[4]).toEqual(BigNumber.from(deadline));
       expect(decoded[5]).toEqual(28);
       expect(decoded[6]).toEqual(
         '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e',
@@ -1004,6 +1045,28 @@ describe('Pool', () => {
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
     });
+    it('Expects the tx object if all params ok and optimal path chosen', async () => {
+      const poolInstance = new Pool(provider, { POOL });
+      jest.spyOn(poolInstance.erc20Service, 'decimalsOf').mockResolvedValue(18);
+      const optimalPoolSpy = jest
+        .spyOn(poolInstance.l2PoolService, 'supplyWithPermit')
+        .mockReturnValue(Promise.resolve([]));
+
+      const supplyTxObj = await poolInstance.supplyWithPermit({
+        user,
+        reserve,
+        amount,
+        onBehalfOf,
+        referralCode,
+        signature,
+        useOptimizedPath: true,
+        deadline,
+      });
+
+      expect(optimalPoolSpy).toHaveBeenCalled();
+
+      expect(supplyTxObj.length).toEqual(0);
+    });
     it('Expects the tx object if all params ok, without onBehalf', async () => {
       const poolInstance = new Pool(provider, { POOL });
       jest.spyOn(poolInstance.erc20Service, 'decimalsOf').mockResolvedValue(18);
@@ -1015,6 +1078,7 @@ describe('Pool', () => {
         // onBehalfOf,
         referralCode,
         signature,
+        deadline,
       });
 
       expect(supplyTxObj.length).toEqual(1);
@@ -1044,8 +1108,8 @@ describe('Pool', () => {
       expect(decoded[0]).toEqual(reserve);
       expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
       expect(decoded[2]).toEqual(user);
-      expect(decoded[3]).toEqual(referralCode);
-      expect(decoded[4]).toEqual(constants.MaxUint256);
+      expect(decoded[3]).toEqual(Number(referralCode));
+      expect(decoded[4]).toEqual(BigNumber.from(deadline));
       expect(decoded[5]).toEqual(28);
       expect(decoded[6]).toEqual(
         '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e',
@@ -1071,6 +1135,7 @@ describe('Pool', () => {
         onBehalfOf,
         // referralCode,
         signature,
+        deadline,
       });
 
       expect(supplyTxObj.length).toEqual(1);
@@ -1101,7 +1166,7 @@ describe('Pool', () => {
       expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
       expect(decoded[2]).toEqual(onBehalfOf);
       expect(decoded[3]).toEqual(0);
-      expect(decoded[4]).toEqual(constants.MaxUint256);
+      expect(decoded[4]).toEqual(BigNumber.from(deadline));
       expect(decoded[5]).toEqual(28);
       expect(decoded[6]).toEqual(
         '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e',
@@ -1132,6 +1197,7 @@ describe('Pool', () => {
           onBehalfOf,
           referralCode,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError('Not enough funds to execute operation');
 
@@ -1146,6 +1212,7 @@ describe('Pool', () => {
         onBehalfOf,
         referralCode,
         signature,
+        deadline,
       });
       expect(txObj).toEqual([]);
     });
@@ -1161,6 +1228,7 @@ describe('Pool', () => {
           onBehalfOf,
           referralCode,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(
         `Address: ${user} is not a valid ethereum Address`,
@@ -1178,6 +1246,7 @@ describe('Pool', () => {
           onBehalfOf,
           referralCode,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(
         `Address: ${reserve} is not a valid ethereum Address`,
@@ -1195,6 +1264,7 @@ describe('Pool', () => {
           onBehalfOf,
           referralCode,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(
         `Address: ${onBehalfOf} is not a valid ethereum Address`,
@@ -1212,6 +1282,7 @@ describe('Pool', () => {
           onBehalfOf,
           referralCode,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
@@ -1227,13 +1298,14 @@ describe('Pool', () => {
           onBehalfOf,
           referralCode,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
     it('Expects to fail if referralCode not positive', async () => {
       const poolInstance = new Pool(provider, { POOL });
 
-      const referralCode = -1;
+      const referralCode = '-1';
       await expect(async () =>
         poolInstance.supplyWithPermit({
           user,
@@ -1242,6 +1314,7 @@ describe('Pool', () => {
           onBehalfOf,
           referralCode,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(
         `Amount: ${referralCode} needs to be greater than 0`,
@@ -1321,6 +1394,28 @@ describe('Pool', () => {
         gasLimitRecommendations[ProtocolAction.withdraw].recommended,
       );
       expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all parameters with optimal path selected', async () => {
+      const poolInstance = new Pool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const optimalPoolSpy = jest
+        .spyOn(poolInstance.l2PoolService, 'withdraw')
+        .mockReturnValue(Promise.resolve([]));
+
+      const depositTxObj = await poolInstance.withdraw({
+        user,
+        reserve,
+        amount,
+        aTokenAddress,
+        useOptimizedPath: true,
+      });
+
+      expect(optimalPoolSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(depositTxObj.length).toEqual(0);
     });
     it('Expects the tx object passing all params and -1 amount', async () => {
       const poolInstance = new Pool(provider, config);
@@ -1555,6 +1650,30 @@ describe('Pool', () => {
       expect(gasPrice).not.toBeNull();
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all parameters with optimal path selected', async () => {
+      const poolInstance = new Pool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const optimalPoolSpy = jest
+        .spyOn(poolInstance.l2PoolService, 'borrow')
+        .mockReturnValue(Promise.resolve([]));
+
+      const borrowTxObj = await poolInstance.borrow({
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        debtTokenAddress,
+        referralCode,
+        useOptimizedPath: true,
+      });
+
+      expect(decimalsSpy).toHaveBeenCalled();
+      expect(optimalPoolSpy).toHaveBeenCalled();
+
+      expect(borrowTxObj.length).toEqual(0);
     });
     it('Expects the tx object passing all parameters but not referralCode and rate stable', async () => {
       const poolInstance = new Pool(provider, config);
@@ -1851,6 +1970,36 @@ describe('Pool', () => {
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
     });
+    it('Expects the tx object passing all params without onBehalfOf and no approval', async () => {
+      const poolInstance = new Pool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(poolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const synthetixSpy = jest
+        .spyOn(poolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(true));
+      const optimalPoolSpy = jest
+        .spyOn(poolInstance.l2PoolService, 'repay')
+        .mockReturnValue(Promise.resolve([]));
+
+      const depositTxObj = await poolInstance.repay({
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        useOptimizedPath: true,
+      });
+
+      expect(synthetixSpy).toHaveBeenCalled();
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+      expect(optimalPoolSpy).toHaveBeenCalled();
+
+      expect(depositTxObj.length).toEqual(0);
+    });
     it('Expects the tx object passing all params with amount -1 with approve needed and reate stable', async () => {
       const poolInstance = new Pool(provider, config);
       const isApprovedSpy = jest
@@ -2093,6 +2242,7 @@ describe('Pool', () => {
     const amount = '123.456';
     const decimals = 18;
     const interestRateMode = InterestRate.None;
+    const deadline = Math.round(Date.now() / 1000 + 3600).toString();
     // const message = 'victor washington'
     const signature =
       '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c';
@@ -2117,6 +2267,7 @@ describe('Pool', () => {
         amount,
         interestRateMode,
         signature,
+        deadline,
       });
 
       expect(synthetixSpy).toHaveBeenCalled();
@@ -2150,7 +2301,7 @@ describe('Pool', () => {
       expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
       expect(decoded[2]).toEqual(BigNumber.from(1));
       expect(decoded[3]).toEqual(user);
-      expect(decoded[4]).toEqual(constants.MaxUint256);
+      expect(decoded[4]).toEqual(BigNumber.from(deadline));
       expect(decoded[5]).toEqual(28);
       expect(decoded[6]).toEqual(
         '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e',
@@ -2164,6 +2315,34 @@ describe('Pool', () => {
       expect(gasPrice).not.toBeNull();
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params with optimal path', async () => {
+      const poolInstance = new Pool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const synthetixSpy = jest
+        .spyOn(poolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(true));
+      const optimalPoolSpy = jest
+        .spyOn(poolInstance.l2PoolService, 'repayWithPermit')
+        .mockReturnValue(Promise.resolve([]));
+
+      const depositTxObj = await poolInstance.repayWithPermit({
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        signature,
+        useOptimizedPath: true,
+        deadline,
+      });
+
+      expect(synthetixSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+      expect(optimalPoolSpy).toHaveBeenCalled();
+
+      expect(depositTxObj.length).toEqual(0);
     });
     it('Expects the tx object passing all params with amount -1 and reate stable', async () => {
       const poolInstance = new Pool(provider, config);
@@ -2184,6 +2363,7 @@ describe('Pool', () => {
         interestRateMode,
         onBehalfOf,
         signature,
+        deadline,
       });
 
       expect(synthetixSpy).not.toHaveBeenCalled();
@@ -2217,6 +2397,7 @@ describe('Pool', () => {
       expect(decoded[1]).toEqual(constants.MaxUint256);
       expect(decoded[2]).toEqual(BigNumber.from(1));
       expect(decoded[3]).toEqual(onBehalfOf);
+      expect(decoded[4]).toEqual(BigNumber.from(deadline));
       expect(decoded[5]).toEqual(28);
       expect(decoded[6]).toEqual(
         '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e',
@@ -2248,6 +2429,7 @@ describe('Pool', () => {
         interestRateMode,
         onBehalfOf,
         signature,
+        deadline,
       });
 
       expect(synthetixSpy).toHaveBeenCalled();
@@ -2281,6 +2463,7 @@ describe('Pool', () => {
       expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, decimals)));
       expect(decoded[2]).toEqual(BigNumber.from(2));
       expect(decoded[3]).toEqual(onBehalfOf);
+      expect(decoded[4]).toEqual(BigNumber.from(deadline));
       expect(decoded[5]).toEqual(28);
       expect(decoded[6]).toEqual(
         '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e',
@@ -2313,6 +2496,7 @@ describe('Pool', () => {
           interestRateMode,
           onBehalfOf,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError('Not enough funds to execute operation');
 
@@ -2328,6 +2512,7 @@ describe('Pool', () => {
         interestRateMode,
         onBehalfOf,
         signature,
+        deadline,
       });
       expect(txObj).toEqual([]);
     });
@@ -2342,6 +2527,7 @@ describe('Pool', () => {
           interestRateMode,
           onBehalfOf,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(
         `Address: ${user} is not a valid ethereum Address`,
@@ -2358,6 +2544,7 @@ describe('Pool', () => {
           interestRateMode,
           onBehalfOf,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(
         `Address: ${reserve} is not a valid ethereum Address`,
@@ -2374,6 +2561,7 @@ describe('Pool', () => {
           interestRateMode,
           onBehalfOf,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(
         `Address: ${onBehalfOf} is not a valid ethereum Address`,
@@ -2390,6 +2578,7 @@ describe('Pool', () => {
           interestRateMode,
           onBehalfOf,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
@@ -2404,6 +2593,7 @@ describe('Pool', () => {
           interestRateMode,
           onBehalfOf,
           signature,
+          deadline,
         }),
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
@@ -2421,7 +2611,7 @@ describe('Pool', () => {
     it('Expects the tx object passing all params with Inerest rate None', async () => {
       const poolInstance = new Pool(provider, config);
 
-      const swapBorrowRateModeTxObj = poolInstance.swapBorrowRateMode({
+      const swapBorrowRateModeTxObj = await poolInstance.swapBorrowRateMode({
         user,
         reserve,
         interestRateMode,
@@ -2451,10 +2641,26 @@ describe('Pool', () => {
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
     });
+    it('Expects the tx object passing all params with optimal path', async () => {
+      const poolInstance = new Pool(provider, config);
+      const optimalPoolSpy = jest
+        .spyOn(poolInstance.l2PoolService, 'swapBorrowRateMode')
+        .mockReturnValue(Promise.resolve([]));
+
+      const swapBorrowRateModeTxObj = await poolInstance.swapBorrowRateMode({
+        user,
+        reserve,
+        interestRateMode,
+        useOptimizedPath: true,
+      });
+
+      expect(optimalPoolSpy).toHaveBeenCalled();
+      expect(swapBorrowRateModeTxObj.length).toEqual(0);
+    });
     it('Expects the tx object passing all params with Inerest rate Stable', async () => {
       const poolInstance = new Pool(provider, config);
       const interestRateMode = InterestRate.Stable;
-      const swapBorrowRateModeTxObj = poolInstance.swapBorrowRateMode({
+      const swapBorrowRateModeTxObj = await poolInstance.swapBorrowRateMode({
         user,
         reserve,
         interestRateMode,
@@ -2487,7 +2693,7 @@ describe('Pool', () => {
     it('Expects the tx object passing all params with Inerest rate Variable', async () => {
       const poolInstance = new Pool(provider, config);
       const interestRateMode = InterestRate.Variable;
-      const swapBorrowRateModeTxObj = poolInstance.swapBorrowRateMode({
+      const swapBorrowRateModeTxObj = await poolInstance.swapBorrowRateMode({
         user,
         reserve,
         interestRateMode,
@@ -2517,36 +2723,40 @@ describe('Pool', () => {
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
     });
-    it('Expects to fail when PoolAddress not provided', () => {
+    it('Expects to fail when PoolAddress not provided', async () => {
       const poolInstance = new Pool(provider);
-      const txObj = poolInstance.swapBorrowRateMode({
+      const txObj = await poolInstance.swapBorrowRateMode({
         user,
         reserve,
         interestRateMode,
       });
       expect(txObj).toEqual([]);
     });
-    it('Expects to fail when user not and eth address', () => {
+    it('Expects to fail when user not and eth address', async () => {
       const poolInstance = new Pool(provider, config);
       const user = 'asdf';
-      expect(() =>
+      await expect(async () =>
         poolInstance.swapBorrowRateMode({
           user,
           reserve,
           interestRateMode,
         }),
-      ).toThrowError(`Address: ${user} is not a valid ethereum Address`);
+      ).rejects.toThrowError(
+        `Address: ${user} is not a valid ethereum Address`,
+      );
     });
-    it('Expects to fail when reserve not and eth address', () => {
+    it('Expects to fail when reserve not and eth address', async () => {
       const poolInstance = new Pool(provider, config);
       const reserve = 'asdf';
-      expect(() =>
+      await expect(async () =>
         poolInstance.swapBorrowRateMode({
           user,
           reserve,
           interestRateMode,
         }),
-      ).toThrowError(`Address: ${reserve} is not a valid ethereum Address`);
+      ).rejects.toThrowError(
+        `Address: ${reserve} is not a valid ethereum Address`,
+      );
     });
   });
   describe('setUsageAsCollateral', () => {
@@ -2562,11 +2772,13 @@ describe('Pool', () => {
     it('Expects the tx object passing all params with usage as collateral true', async () => {
       const poolInstance = new Pool(provider, config);
 
-      const setUsageAsCollateralTxObj = poolInstance.setUsageAsCollateral({
-        user,
-        reserve,
-        usageAsCollateral,
-      });
+      const setUsageAsCollateralTxObj = await poolInstance.setUsageAsCollateral(
+        {
+          user,
+          reserve,
+          usageAsCollateral,
+        },
+      );
 
       expect(setUsageAsCollateralTxObj.length).toEqual(1);
       const txObj = setUsageAsCollateralTxObj[0];
@@ -2591,16 +2803,36 @@ describe('Pool', () => {
       expect(gasPrice).not.toBeNull();
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params with optimal path', async () => {
+      const poolInstance = new Pool(provider, config);
+      const optimalPoolSpy = jest
+        .spyOn(poolInstance.l2PoolService, 'setUserUseReserveAsCollateral')
+        .mockReturnValue(Promise.resolve([]));
+
+      const setUsageAsCollateralTxObj = await poolInstance.setUsageAsCollateral(
+        {
+          user,
+          reserve,
+          usageAsCollateral,
+          useOptimizedPath: true,
+        },
+      );
+
+      expect(optimalPoolSpy).toHaveBeenCalled();
+      expect(setUsageAsCollateralTxObj.length).toEqual(0);
     });
     it('Expects the tx object passing all params with usage as collateral false', async () => {
       const poolInstance = new Pool(provider, config);
 
       const usageAsCollateral = false;
-      const setUsageAsCollateralTxObj = poolInstance.setUsageAsCollateral({
-        user,
-        reserve,
-        usageAsCollateral,
-      });
+      const setUsageAsCollateralTxObj = await poolInstance.setUsageAsCollateral(
+        {
+          user,
+          reserve,
+          usageAsCollateral,
+        },
+      );
 
       expect(setUsageAsCollateralTxObj.length).toEqual(1);
       const txObj = setUsageAsCollateralTxObj[0];
@@ -2626,9 +2858,9 @@ describe('Pool', () => {
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
     });
-    it('Expects to fail when PoolAddress not provided', () => {
+    it('Expects to fail when PoolAddress not provided', async () => {
       const poolInstance = new Pool(provider);
-      const txObj = poolInstance.setUsageAsCollateral({
+      const txObj = await poolInstance.setUsageAsCollateral({
         user,
         reserve,
         usageAsCollateral,
@@ -2638,24 +2870,28 @@ describe('Pool', () => {
     it('Expects to fail when user not and eth address', async () => {
       const poolInstance = new Pool(provider, config);
       const user = 'asdf';
-      expect(() =>
+      await expect(async () =>
         poolInstance.setUsageAsCollateral({
           user,
           reserve,
           usageAsCollateral,
         }),
-      ).toThrowError(`Address: ${user} is not a valid ethereum Address`);
+      ).rejects.toThrowError(
+        `Address: ${user} is not a valid ethereum Address`,
+      );
     });
     it('Expects to fail when reserve not and eth address', async () => {
       const poolInstance = new Pool(provider, config);
       const reserve = 'asdf';
-      expect(() =>
+      await expect(async () =>
         poolInstance.setUsageAsCollateral({
           user,
           reserve,
           usageAsCollateral,
         }),
-      ).toThrowError(`Address: ${reserve} is not a valid ethereum Address`);
+      ).rejects.toThrowError(
+        `Address: ${reserve} is not a valid ethereum Address`,
+      );
     });
   });
   describe('liquidationCall', () => {
@@ -2717,6 +2953,31 @@ describe('Pool', () => {
       expect(gasPrice).not.toBeNull();
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params with optimal path', async () => {
+      const poolInstance = new Pool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(poolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+      const optimalPoolSpy = jest
+        .spyOn(poolInstance.l2PoolService, 'liquidationCall')
+        .mockReturnValue(Promise.resolve([]));
+
+      const liquidationCallTxObj = await poolInstance.liquidationCall({
+        liquidator,
+        liquidatedUser,
+        debtReserve,
+        collateralReserve,
+        purchaseAmount,
+        getAToken,
+        liquidateAll,
+        useOptimizedPath: true,
+      });
+
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(optimalPoolSpy).toHaveBeenCalled();
+
+      expect(liquidationCallTxObj.length).toEqual(0);
     });
     it('Expects the tx object passing all params but not passing getAToken and no approval needed', async () => {
       const poolInstance = new Pool(provider, config);
@@ -4629,6 +4890,943 @@ describe('Pool', () => {
       );
     });
   });
+  describe('paraswapRepayWithCollateral', () => {
+    const user = '0x0000000000000000000000000000000000000006';
+    const fromAsset = '0x0000000000000000000000000000000000000007';
+    const fromAToken = '0x0000000000000000000000000000000000000008';
+    const assetToRepay = '0x0000000000000000000000000000000000000009';
+    const onBehalfOf = '0x0000000000000000000000000000000000000010';
+    const repayWithAmount = '12.34';
+    const repayAmount = '13.56';
+    const permitSignature = {
+      amount: '1',
+      deadline: '1',
+      v: 1,
+      r: '0x0000000000000000000000000000000000000000000000000000000000000001',
+      s: '0x0000000000000000000000000000000000000000000000000000000000000001',
+    };
+    const repayAllDebt = true;
+    const rateMode = InterestRate.None;
+    const referralCode = '1';
+    const flash = true;
+    const swapAndRepayCallData =
+      '0x935fb84b0000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c5990000000000000000000000007fc66500c84a76ad7e9c93437bfc5ac33e2ddae900000000000000000000000000000000000000000000000000000000119027b700000000000000000000000000000000000000000000001e483c86fa843f6c2000000000000000000000000000000000000000000000000000000000000000440000000000000000000000000000000000000000000000000000000000000180000000000000000000000000def171fe48cf0115b1d80b88dc8eab59176fee5700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000116446c67b6d00000000000000000000000000000000000000000000000000000000000000200000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c59900000000000000000000000000000000000000000000000000000000119027b700000000000000000000000000000000000000000000001dfec636122d1008df00000000000000000000000000000000000000000000001e4c566f818d31d01300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000160000000000000000000000000000000000000000000000000000000006161766500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001120000000000000000000000000000000000000000000000000000000006177abb9ae2ba6c0362c11ec8f12233bf85851b3000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000004a000000000000000000000000000000000000000000000000000000000000015180000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000007fc66500c84a76ad7e9c93437bfc5ac33e2ddae900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000003a0430bf7cd2633af111ce3204db4b0990857a6f000000000000000000000000000000000000000000000000000000000000271000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000def1c0ded9bec7f1a1670819833240f027b25eff000000000000000000000000000000000000000000000000000000000000271000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000007fc66500c84a76ad7e9c93437bfc5ac33e2ddae90000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c5990000000000000000000000000000000000000000000000108e47a6846afd000000000000000000000000000000000000000000000000000000000000099433f80000000000000000000000000000006daea1723962647b7e189d311d757fb793000000000000000000000000def171fe48cf0115b1d80b88dc8eab59176fee57000000000000000000000000100cec21fa2a0bdc21f770ec06e885e7c52a18680000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006177abb93d1d355dba3f70000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000001c558d406f7449cc936da0231093b069fcb8a42e3a2f0f78f0497515f8d795a29c3a57485920bb65c42c9f5884af63388d493b5cd0bcd2a6eed4fff7173982f4f800000000000000000000000000000000000000000000000000000000000011f80000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000420000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000003a0430bf7cd2633af111ce3204db4b0990857a6f000000000000000000000000000000000000000000000000000000000000271000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000def1c0ded9bec7f1a1670819833240f027b25eff000000000000000000000000000000000000000000000000000000000000271000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc20000000000000000000000002260fac5e5542a773aa44fbcfedf7c193bc2c5990000000000000000000000000000000000000000000000011abcf02276ffa00000000000000000000000000000000000000000000000000000000000082b007c000000000000000000000000b3c839dbde6b96d37c56ee4f9dad3390d49310aa000000000000000000000000def171fe48cf0115b1d80b88dc8eab59176fee57000000000000000000000000100cec21fa2a0bdc21f770ec06e885e7c52a18680000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006177abd60000000000000000000000000000000000000000000000000000017cbb773bf00000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000001bc072f450f48f66263bd53e801840fbf545c7aa5aac969d568f87eb830b66f36907cba9fd12582a9a96f23d1396da6c94d46fa4bc0ab851972246cd117659949f0000000000000000000000007fc66500c84a76ad7e9c93437bfc5ac33e2ddae900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000003a0430bf7cd2633af111ce3204db4b0990857a6f0000000000000000000000000000000000000000000000000000000000002710000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002c00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000def1c0ded9bec7f1a1670819833240f027b25eff00000000000000000000000000000000000000000000000000000000000009c400000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000007fc66500c84a76ad7e9c93437bfc5ac33e2ddae9000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000386598f16ac87200000000000000000000000000000000000000000000000000046a1698a248c022a0000000000000000000000000000006daea1723962647b7e189d311d757fb793000000000000000000000000def171fe48cf0115b1d80b88dc8eab59176fee57000000000000000000000000100cec21fa2a0bdc21f770ec06e885e7c52a18680000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006177abb902d4eee4d7c128000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000001c41623d640c08c3543660e464261260aed59bfba57c22b00326533525bd011953350326cee2a506e6daf1d0d8780eca139ec48cab2280c6e0bf1a1efe72b0ad880000000000000000000000000000000000000000000000000000000000000001000000000000000000000000def1c0ded9bec7f1a1670819833240f027b25eff0000000000000000000000000000000000000000000000000000000000001d4c00000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000007fc66500c84a76ad7e9c93437bfc5ac33e2ddae9000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000a91c3e5350e240000000000000000000000000000000000000000000000000000d41a7b6e826d0000000000000000000000000000b3c839dbde6b96d37c56ee4f9dad3390d49310aa000000000000000000000000def171fe48cf0115b1d80b88dc8eab59176fee57000000000000000000000000100cec21fa2a0bdc21f770ec06e885e7c52a18680000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006177abd60000000000000000000000000000000000000000000000000000017cbb773bf00000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000001b842ca8317744091cfd12b2d2e9de4c17618cf2e19d5f0eecb68e3691b078542307aae0aeff4ae756ca20d0ec1dff2ec0a6cfdc595dd3a43d6b8a76f630c4b2f9000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
+
+    const decimals = 18;
+
+    const config = { POOL, REPAY_WITH_COLLATERAL_ADAPTER };
+
+    const repayAmountWithSurplus: string = (
+      Number(repayAmount) +
+      (Number(repayAmount) * Number(SURPLUS)) / 100
+    ).toString();
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('Expects the tx object passing all params and approval needed for flash with rate mode None', async () => {
+      const poolInstance = new Pool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(poolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(false));
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValue(Promise.resolve(decimals));
+      const approveSpy = jest
+        .spyOn(poolInstance.erc20Service, 'approve')
+        .mockReturnValueOnce({
+          txType: eEthereumTxType.ERC20_APPROVAL,
+          tx: async () => ({}),
+          gas: async () => ({
+            gasLimit: '1',
+            gasPrice: '1',
+          }),
+        });
+
+      const repayWithCollateralTxObj =
+        await poolInstance.paraswapRepayWithCollateral({
+          user,
+          fromAsset,
+          fromAToken,
+          assetToRepay,
+          repayWithAmount,
+          repayAmount,
+          permitSignature,
+          repayAllDebt,
+          rateMode,
+          onBehalfOf,
+          referralCode,
+          flash,
+          swapAndRepayCallData,
+        });
+
+      expect(approveSpy).toHaveBeenCalled();
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(repayWithCollateralTxObj.length).toEqual(2);
+      const txObj = repayWithCollateralTxObj[1];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        [
+          'address',
+          'address[]',
+          'uint256[]',
+          'uint256[]',
+          'address',
+          'bytes',
+          'uint16',
+        ],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      const params: string = utils.defaultAbiCoder.encode(
+        [
+          'address',
+          'uint256',
+          'uint256',
+          'uint256',
+          'bytes',
+          'uint256',
+          'uint256',
+          'uint8',
+          'bytes32',
+          'bytes32',
+        ],
+        [
+          fromAsset,
+          valueToWei(repayWithAmount, decimals),
+          2,
+          36,
+          swapAndRepayCallData,
+          permitSignature.amount,
+          permitSignature.deadline,
+          permitSignature.v,
+          permitSignature.r,
+          permitSignature.s,
+        ],
+      );
+
+      expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
+      expect(decoded[1]).toEqual([assetToRepay]);
+      expect(decoded[2]).toEqual([
+        BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
+      ]);
+      expect(decoded[3]).toEqual([BigNumber.from(0)]);
+      expect(decoded[4]).toEqual(onBehalfOf);
+      expect(decoded[5]).toEqual(params);
+      expect(decoded[6]).toEqual(Number(referralCode));
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.repayCollateral].limit,
+      );
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params and no approval needed for flash with rate mode Stable', async () => {
+      const poolInstance = new Pool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(poolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValue(Promise.resolve(decimals));
+
+      const rateMode = InterestRate.Stable;
+      const repayWithCollateralTxObj =
+        await poolInstance.paraswapRepayWithCollateral({
+          user,
+          fromAsset,
+          fromAToken,
+          assetToRepay,
+          repayWithAmount,
+          repayAmount,
+          permitSignature,
+          repayAllDebt,
+          rateMode,
+          onBehalfOf,
+          referralCode,
+          flash,
+          swapAndRepayCallData,
+        });
+
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(repayWithCollateralTxObj.length).toEqual(1);
+      const txObj = repayWithCollateralTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        [
+          'address',
+          'address[]',
+          'uint256[]',
+          'uint256[]',
+          'address',
+          'bytes',
+          'uint16',
+        ],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      const params: string = utils.defaultAbiCoder.encode(
+        [
+          'address',
+          'uint256',
+          'uint256',
+          'uint256',
+          'bytes',
+          'uint256',
+          'uint256',
+          'uint8',
+          'bytes32',
+          'bytes32',
+        ],
+        [
+          fromAsset,
+          valueToWei(repayWithAmount, decimals),
+          1,
+          36,
+          swapAndRepayCallData,
+          permitSignature.amount,
+          permitSignature.deadline,
+          permitSignature.v,
+          permitSignature.r,
+          permitSignature.s,
+        ],
+      );
+
+      expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
+      expect(decoded[1]).toEqual([assetToRepay]);
+      expect(decoded[2]).toEqual([
+        BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
+      ]);
+      expect(decoded[3]).toEqual([BigNumber.from(0)]);
+      expect(decoded[4]).toEqual(onBehalfOf);
+      expect(decoded[5]).toEqual(params);
+      expect(decoded[6]).toEqual(Number(referralCode));
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params and no approval needed for flash with rate mode Variable', async () => {
+      const poolInstance = new Pool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(poolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValue(Promise.resolve(decimals));
+
+      const rateMode = InterestRate.Variable;
+      const repayWithCollateralTxObj =
+        await poolInstance.paraswapRepayWithCollateral({
+          user,
+          fromAsset,
+          fromAToken,
+          assetToRepay,
+          repayWithAmount,
+          repayAmount,
+          permitSignature,
+          repayAllDebt,
+          rateMode,
+          onBehalfOf,
+          referralCode,
+          flash,
+          swapAndRepayCallData,
+        });
+
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(repayWithCollateralTxObj.length).toEqual(1);
+      const txObj = repayWithCollateralTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        [
+          'address',
+          'address[]',
+          'uint256[]',
+          'uint256[]',
+          'address',
+          'bytes',
+          'uint16',
+        ],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      const params: string = utils.defaultAbiCoder.encode(
+        [
+          'address',
+          'uint256',
+          'uint256',
+          'uint256',
+          'bytes',
+          'uint256',
+          'uint256',
+          'uint8',
+          'bytes32',
+          'bytes32',
+        ],
+        [
+          fromAsset,
+          valueToWei(repayWithAmount, decimals),
+          2,
+          36,
+          swapAndRepayCallData,
+          permitSignature.amount,
+          permitSignature.deadline,
+          permitSignature.v,
+          permitSignature.r,
+          permitSignature.s,
+        ],
+      );
+
+      expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
+      expect(decoded[1]).toEqual([assetToRepay]);
+      expect(decoded[2]).toEqual([
+        BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
+      ]);
+      expect(decoded[3]).toEqual([BigNumber.from(0)]);
+      expect(decoded[4]).toEqual(onBehalfOf);
+      expect(decoded[5]).toEqual(params);
+      expect(decoded[6]).toEqual(Number(referralCode));
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params and no approval needed for flash without onBehalfOf', async () => {
+      const poolInstance = new Pool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(poolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValue(Promise.resolve(decimals));
+
+      const repayWithCollateralTxObj =
+        await poolInstance.paraswapRepayWithCollateral({
+          user,
+          fromAsset,
+          fromAToken,
+          assetToRepay,
+          repayWithAmount,
+          repayAmount,
+          permitSignature,
+          repayAllDebt,
+          rateMode,
+          // onBehalfOf,
+          referralCode,
+          flash,
+          swapAndRepayCallData,
+        });
+
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(repayWithCollateralTxObj.length).toEqual(1);
+      const txObj = repayWithCollateralTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        [
+          'address',
+          'address[]',
+          'uint256[]',
+          'uint256[]',
+          'address',
+          'bytes',
+          'uint16',
+        ],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      const params: string = utils.defaultAbiCoder.encode(
+        [
+          'address',
+          'uint256',
+          'uint256',
+          'uint256',
+          'bytes',
+          'uint256',
+          'uint256',
+          'uint8',
+          'bytes32',
+          'bytes32',
+        ],
+        [
+          fromAsset,
+          valueToWei(repayWithAmount, decimals),
+          2,
+          36,
+          swapAndRepayCallData,
+          permitSignature.amount,
+          permitSignature.deadline,
+          permitSignature.v,
+          permitSignature.r,
+          permitSignature.s,
+        ],
+      );
+
+      expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
+      expect(decoded[1]).toEqual([assetToRepay]);
+      expect(decoded[2]).toEqual([
+        BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
+      ]);
+      expect(decoded[3]).toEqual([BigNumber.from(0)]);
+      expect(decoded[4]).toEqual(user);
+      expect(decoded[5]).toEqual(params);
+      expect(decoded[6]).toEqual(Number(referralCode));
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params and no approval needed for flash without referralCode', async () => {
+      const poolInstance = new Pool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(poolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValue(Promise.resolve(decimals));
+
+      const repayWithCollateralTxObj =
+        await poolInstance.paraswapRepayWithCollateral({
+          user,
+          fromAsset,
+          fromAToken,
+          assetToRepay,
+          repayWithAmount,
+          repayAmount,
+          permitSignature,
+          repayAllDebt,
+          rateMode,
+          onBehalfOf,
+          // referralCode,
+          flash,
+          swapAndRepayCallData,
+        });
+
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(repayWithCollateralTxObj.length).toEqual(1);
+      const txObj = repayWithCollateralTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        [
+          'address',
+          'address[]',
+          'uint256[]',
+          'uint256[]',
+          'address',
+          'bytes',
+          'uint16',
+        ],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      const params: string = utils.defaultAbiCoder.encode(
+        [
+          'address',
+          'uint256',
+          'uint256',
+          'uint256',
+          'bytes',
+          'uint256',
+          'uint256',
+          'uint8',
+          'bytes32',
+          'bytes32',
+        ],
+        [
+          fromAsset,
+          valueToWei(repayWithAmount, decimals),
+          2,
+          36,
+          swapAndRepayCallData,
+          permitSignature.amount,
+          permitSignature.deadline,
+          permitSignature.v,
+          permitSignature.r,
+          permitSignature.s,
+        ],
+      );
+
+      expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
+      expect(decoded[1]).toEqual([assetToRepay]);
+      expect(decoded[2]).toEqual([
+        BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
+      ]);
+      expect(decoded[3]).toEqual([BigNumber.from(0)]);
+      expect(decoded[4]).toEqual(onBehalfOf);
+      expect(decoded[5]).toEqual(params);
+      expect(decoded[6]).toEqual(0);
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params and no approval needed without flash and not repayAllDebt', async () => {
+      const poolInstance = new Pool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(poolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValue(Promise.resolve(decimals));
+
+      const repayWithCollateralTxObj =
+        await poolInstance.paraswapRepayWithCollateral({
+          user,
+          fromAsset,
+          fromAToken,
+          assetToRepay,
+          repayWithAmount,
+          repayAmount,
+          permitSignature,
+          // repayAllDebt,
+          rateMode,
+          onBehalfOf,
+          referralCode,
+          flash,
+          swapAndRepayCallData,
+        });
+
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(repayWithCollateralTxObj.length).toEqual(1);
+      const txObj = repayWithCollateralTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        [
+          'address',
+          'address[]',
+          'uint256[]',
+          'uint256[]',
+          'address',
+          'bytes',
+          'uint16',
+        ],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      const params: string = utils.defaultAbiCoder.encode(
+        [
+          'address',
+          'uint256',
+          'uint256',
+          'uint256',
+          'bytes',
+          'uint256',
+          'uint256',
+          'uint8',
+          'bytes32',
+          'bytes32',
+        ],
+        [
+          fromAsset,
+          valueToWei(repayWithAmount, decimals),
+          2,
+          0,
+          swapAndRepayCallData,
+          permitSignature.amount,
+          permitSignature.deadline,
+          permitSignature.v,
+          permitSignature.r,
+          permitSignature.s,
+        ],
+      );
+
+      expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
+      expect(decoded[1]).toEqual([assetToRepay]);
+      expect(decoded[2]).toEqual([
+        BigNumber.from(valueToWei(repayAmount, decimals)),
+      ]);
+      expect(decoded[3]).toEqual([BigNumber.from(0)]);
+      expect(decoded[4]).toEqual(onBehalfOf);
+      expect(decoded[5]).toEqual(params);
+      expect(decoded[6]).toEqual(Number(referralCode));
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params and no permitSignature, and no flash', async () => {
+      const poolInstance = new Pool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(poolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValue(Promise.resolve(decimals));
+
+      const repaySpy = jest
+        .spyOn(
+          poolInstance.paraswapRepayWithCollateralAdapterService,
+          'swapAndRepay',
+        )
+        .mockReturnValue({} as EthereumTransactionTypeExtended);
+
+      await poolInstance.paraswapRepayWithCollateral({
+        user,
+        fromAsset,
+        fromAToken,
+        assetToRepay,
+        repayWithAmount,
+        repayAmount,
+        // permitSignature,
+        repayAllDebt,
+        rateMode,
+        onBehalfOf,
+        referralCode,
+        // flash,
+        swapAndRepayCallData,
+      });
+
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+      expect(repaySpy).toHaveBeenCalled();
+    });
+    it('Expects the tx object passing all params and no repayAllDebt, and no flash', async () => {
+      const poolInstance = new Pool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(poolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValue(Promise.resolve(decimals));
+
+      const repaySpy = jest
+        .spyOn(
+          poolInstance.paraswapRepayWithCollateralAdapterService,
+          'swapAndRepay',
+        )
+        .mockReturnValue({} as EthereumTransactionTypeExtended);
+
+      await poolInstance.paraswapRepayWithCollateral({
+        user,
+        fromAsset,
+        fromAToken,
+        assetToRepay,
+        repayWithAmount,
+        repayAmount,
+        permitSignature,
+        // repayAllDebt,
+        rateMode,
+        onBehalfOf,
+        referralCode,
+        // flash,
+        swapAndRepayCallData,
+      });
+
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+      expect(repaySpy).toHaveBeenCalled();
+    });
+    it('Expects to fail when PoolAddress not provided', async () => {
+      const poolInstance = new Pool(provider);
+      const txObj = await poolInstance.paraswapRepayWithCollateral({
+        user,
+        fromAsset,
+        fromAToken,
+        assetToRepay,
+        repayWithAmount,
+        repayAmount,
+        permitSignature,
+        repayAllDebt,
+        rateMode,
+        onBehalfOf,
+        referralCode,
+        flash,
+        swapAndRepayCallData,
+      });
+      expect(txObj).toEqual([]);
+    });
+    it('Expects to fail when REPAY_WITH_COLLATERAL_ADAPTER not provided', async () => {
+      const poolInstance = new Pool(provider, { POOL });
+      const txObj = await poolInstance.paraswapRepayWithCollateral({
+        user,
+        fromAsset,
+        fromAToken,
+        assetToRepay,
+        repayWithAmount,
+        repayAmount,
+        permitSignature,
+        repayAllDebt,
+        rateMode,
+        onBehalfOf,
+        referralCode,
+        flash,
+        swapAndRepayCallData,
+      });
+      expect(txObj).toEqual([]);
+    });
+    it('Expects to fail when user not and eth address', async () => {
+      const poolInstance = new Pool(provider, config);
+      const user = 'asdf';
+      await expect(async () =>
+        poolInstance.paraswapRepayWithCollateral({
+          user,
+          fromAsset,
+          fromAToken,
+          assetToRepay,
+          repayWithAmount,
+          repayAmount,
+          permitSignature,
+          repayAllDebt,
+          rateMode,
+          onBehalfOf,
+          referralCode,
+          flash,
+          swapAndRepayCallData,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${user} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when fromAsset not and eth address', async () => {
+      const poolInstance = new Pool(provider, config);
+      const fromAsset = 'asdf';
+      await expect(async () =>
+        poolInstance.paraswapRepayWithCollateral({
+          user,
+          fromAsset,
+          fromAToken,
+          assetToRepay,
+          repayWithAmount,
+          repayAmount,
+          permitSignature,
+          repayAllDebt,
+          rateMode,
+          onBehalfOf,
+          referralCode,
+          flash,
+          swapAndRepayCallData,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${fromAsset} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when fromAToken not and eth address', async () => {
+      const poolInstance = new Pool(provider, config);
+      const fromAToken = 'asdf';
+      await expect(async () =>
+        poolInstance.paraswapRepayWithCollateral({
+          user,
+          fromAsset,
+          fromAToken,
+          assetToRepay,
+          repayWithAmount,
+          repayAmount,
+          permitSignature,
+          repayAllDebt,
+          rateMode,
+          onBehalfOf,
+          referralCode,
+          flash,
+          swapAndRepayCallData,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${fromAToken} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when assetToRepay not and eth address', async () => {
+      const poolInstance = new Pool(provider, config);
+      const assetToRepay = 'asdf';
+      await expect(async () =>
+        poolInstance.paraswapRepayWithCollateral({
+          user,
+          fromAsset,
+          fromAToken,
+          assetToRepay,
+          repayWithAmount,
+          repayAmount,
+          permitSignature,
+          repayAllDebt,
+          rateMode,
+          onBehalfOf,
+          referralCode,
+          flash,
+          swapAndRepayCallData,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${assetToRepay} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when onBehalfOf not and eth address', async () => {
+      const poolInstance = new Pool(provider, config);
+      const onBehalfOf = 'asdf';
+      await expect(async () =>
+        poolInstance.paraswapRepayWithCollateral({
+          user,
+          fromAsset,
+          fromAToken,
+          assetToRepay,
+          repayWithAmount,
+          repayAmount,
+          permitSignature,
+          repayAllDebt,
+          rateMode,
+          onBehalfOf,
+          referralCode,
+          flash,
+          swapAndRepayCallData,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${onBehalfOf} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when repayWithAmount not positive', async () => {
+      const poolInstance = new Pool(provider, config);
+      const repayWithAmount = '0';
+      await expect(async () =>
+        poolInstance.paraswapRepayWithCollateral({
+          user,
+          fromAsset,
+          fromAToken,
+          assetToRepay,
+          repayWithAmount,
+          repayAmount,
+          permitSignature,
+          repayAllDebt,
+          rateMode,
+          onBehalfOf,
+          referralCode,
+          flash,
+          swapAndRepayCallData,
+        }),
+      ).rejects.toThrowError(
+        `Amount: ${repayWithAmount} needs to be greater than 0`,
+      );
+    });
+    it('Expects to fail when repayWithAmount not number', async () => {
+      const poolInstance = new Pool(provider, config);
+      const repayWithAmount = 'asdf';
+      await expect(async () =>
+        poolInstance.paraswapRepayWithCollateral({
+          user,
+          fromAsset,
+          fromAToken,
+          assetToRepay,
+          repayWithAmount,
+          repayAmount,
+          permitSignature,
+          repayAllDebt,
+          rateMode,
+          onBehalfOf,
+          referralCode,
+          flash,
+          swapAndRepayCallData,
+        }),
+      ).rejects.toThrowError(
+        `Amount: ${repayWithAmount} needs to be greater than 0`,
+      );
+    });
+    it('Expects to fail when repayAmount not positive', async () => {
+      const poolInstance = new Pool(provider, config);
+      const repayAmount = '0';
+      await expect(async () =>
+        poolInstance.paraswapRepayWithCollateral({
+          user,
+          fromAsset,
+          fromAToken,
+          assetToRepay,
+          repayWithAmount,
+          repayAmount,
+          permitSignature,
+          repayAllDebt,
+          rateMode,
+          onBehalfOf,
+          referralCode,
+          flash,
+          swapAndRepayCallData,
+        }),
+      ).rejects.toThrowError(
+        `Amount: ${repayAmount} needs to be greater than 0`,
+      );
+    });
+    it('Expects to fail when repayAmount not number', async () => {
+      const poolInstance = new Pool(provider, config);
+      const repayAmount = 'adf';
+      await expect(async () =>
+        poolInstance.paraswapRepayWithCollateral({
+          user,
+          fromAsset,
+          fromAToken,
+          assetToRepay,
+          repayWithAmount,
+          repayAmount,
+          permitSignature,
+          repayAllDebt,
+          rateMode,
+          onBehalfOf,
+          referralCode,
+          flash,
+          swapAndRepayCallData,
+        }),
+      ).rejects.toThrowError(
+        `Amount: ${repayAmount} needs to be greater than 0`,
+      );
+    });
+  });
   describe('flashLiquidation', () => {
     const user = '0x0000000000000000000000000000000000000006';
     const collateralAsset = '0x0000000000000000000000000000000000000007';
@@ -5057,6 +6255,34 @@ describe('Pool', () => {
       expect(gasPrice).not.toBeNull();
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params with optimal path', async () => {
+      const poolInstance = new Pool(provider, config);
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+      const synthetixSpy = jest
+        .spyOn(poolInstance.synthetixService, 'synthetixValidation')
+        .mockReturnValue(Promise.resolve(true));
+      const optimalPoolSpy = jest
+        .spyOn(poolInstance.l2PoolService, 'repayWithATokens')
+        .mockReturnValue(Promise.resolve([]));
+
+      const amount = '-1';
+      const rateMode = InterestRate.Stable;
+      const reapyTxObj = await poolInstance.repayWithATokens({
+        user,
+        reserve,
+        amount,
+        rateMode,
+        useOptimizedPath: true,
+      });
+
+      expect(synthetixSpy).not.toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+      expect(optimalPoolSpy).toHaveBeenCalled();
+
+      expect(reapyTxObj.length).toEqual(0);
     });
     it('Expects the tx object passing all params with with specific amount and rate variable', async () => {
       const poolInstance = new Pool(provider, config);

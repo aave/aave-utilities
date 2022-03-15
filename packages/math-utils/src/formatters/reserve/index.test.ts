@@ -28,7 +28,8 @@ describe('formatReserve', () => {
       reserve: reserve.reserve,
       currentTimestamp: reserve.reserve.lastUpdateTimestamp,
     });
-    expect(zeroLiquidity.utilizationRate).toEqual('0');
+    expect(zeroLiquidity.borrowUsageRatio).toEqual('0');
+    expect(zeroLiquidity.supplyUsageRatio).toEqual('0');
 
     // no borrows
     reserve.addLiquidity(100);
@@ -36,7 +37,8 @@ describe('formatReserve', () => {
       reserve: reserve.reserve,
       currentTimestamp: reserve.reserve.lastUpdateTimestamp,
     });
-    expect(onlyLiquidity.utilizationRate).toEqual('0');
+    expect(onlyLiquidity.borrowUsageRatio).toEqual('0');
+    expect(onlyLiquidity.supplyUsageRatio).toEqual('0');
 
     // borrows
     reserve.addVariableDebt(100);
@@ -44,7 +46,17 @@ describe('formatReserve', () => {
       reserve: reserve.reserve,
       currentTimestamp: reserve.reserve.lastUpdateTimestamp,
     });
-    expect(fiftyPercent.utilizationRate).toEqual('0.5');
+    expect(fiftyPercent.borrowUsageRatio).toEqual('0.5');
+    expect(fiftyPercent.supplyUsageRatio).toEqual('0.5');
+
+    // add unbacked supplies
+    reserve.addUnbacked(200);
+    const unbacked = formatReserve({
+      reserve: reserve.reserve,
+      currentTimestamp: reserve.reserve.lastUpdateTimestamp,
+    });
+    expect(unbacked.borrowUsageRatio).toEqual('0.5');
+    expect(unbacked.supplyUsageRatio).toEqual('0.25');
   });
 
   it('should calculate usd values', () => {

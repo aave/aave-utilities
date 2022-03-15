@@ -31,10 +31,14 @@ export interface ReservesData {
     stableDebtLastUpdateTimestamp: BigNumber;
     totalScaledVariableDebt: BigNumber;
     priceInMarketReferenceCurrency: BigNumber;
+    priceOracle: string;
     variableRateSlope1: BigNumber;
     variableRateSlope2: BigNumber;
     stableRateSlope1: BigNumber;
     stableRateSlope2: BigNumber;
+    baseStableBorrowRate: BigNumber;
+    baseVariableBorrowRate: BigNumber;
+    optimalUsageRatio: BigNumber;
     isPaused: boolean;
     accruedToTreasury: BigNumber;
     unbacked: BigNumber;
@@ -109,10 +113,14 @@ export interface ReserveDataHumanized {
   stableDebtLastUpdateTimestamp: number;
   totalScaledVariableDebt: string;
   priceInMarketReferenceCurrency: string;
+  priceOracle: string;
   variableRateSlope1: string;
   variableRateSlope2: string;
   stableRateSlope1: string;
   stableRateSlope2: string;
+  baseStableBorrowRate: string;
+  baseVariableBorrowRate: string;
+  optimalUsageRatio: string;
   // v3 only
   isPaused: boolean;
   accruedToTreasury: string;

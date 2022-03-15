@@ -4,6 +4,7 @@
 import 'reflect-metadata';
 
 export const isEthAddressMetadataKey = Symbol('ethAddress');
+export const isPermitDeadline32Bytes = Symbol('deadline32Bytes');
 export const isEthAddressArrayMetadataKey = Symbol('ethAddressArray');
 export const isEthAddressOrENSMetadataKey = Symbol('ethOrENSAddress');
 export const isPositiveMetadataKey = Symbol('isPositive');
@@ -18,6 +19,30 @@ export type paramsType = {
   index: number;
   field: string | undefined;
 };
+
+export function isDeadline32Bytes(field?: string) {
+  return function (
+    target: any,
+    propertyKey: string | symbol,
+    parameterIndex: number,
+  ): void {
+    const existingPossibleAddresses: paramsType[] =
+      Reflect.getOwnMetadata(isPermitDeadline32Bytes, target, propertyKey) ||
+      [];
+
+    existingPossibleAddresses.push({
+      index: parameterIndex,
+      field,
+    });
+
+    Reflect.defineMetadata(
+      isPermitDeadline32Bytes,
+      existingPossibleAddresses,
+      target,
+      propertyKey,
+    );
+  };
+}
 
 export function isEthAddress(field?: string) {
   return function (

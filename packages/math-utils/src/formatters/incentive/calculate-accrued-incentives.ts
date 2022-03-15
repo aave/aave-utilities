@@ -39,7 +39,7 @@ export function calculateAccruedIncentives({
 
   let currentReserveIndex;
   if (
-    reserveIndexTimestamp === Number(currentTimestamp) ||
+    reserveIndexTimestamp >= Number(currentTimestamp) ||
     reserveIndexTimestamp >= emissionEndTimestamp
   ) {
     currentReserveIndex = reserveIndex;

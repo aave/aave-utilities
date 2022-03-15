@@ -38,6 +38,10 @@ export const gasLimitRecommendations: GasRecommendationType = {
     limit: '210000',
     recommended: '210000',
   },
+  [ProtocolAction.supply]: {
+    limit: '300000',
+    recommended: '300000',
+  },
   [ProtocolAction.deposit]: {
     limit: '300000',
     recommended: '300000',
@@ -109,4 +113,28 @@ export const mintAmountsPerToken: Record<string, string> = {
   UNILINKETH: valueToWei(uniswapEthAmount, 18),
   UNIMKRETH: valueToWei(uniswapEthAmount, 18),
   EURS: valueToWei('10000', 2),
+  AGEUR: valueToWei('10000', 18),
+  BAL: valueToWei('10000', 18),
+  CRV: valueToWei('10000', 18),
+  DPI: valueToWei('10000', 18),
+  GHST: valueToWei('10000', 18),
+  JEUR: valueToWei('10000', 18),
+  SUSHI: valueToWei('10000', 18),
+};
+
+export const augustusToAmountOffsetFromCalldata = (
+  calldata: string,
+): number => {
+  switch (calldata.slice(0, 10)) {
+    case '0x935fb84b': // Augustus V5 buyOnUniswap
+      return 36; // 4 + 1 * 32
+    case '0xc03786b0': // Augustus V5 buyOnUniswapFork
+      return 100; // 4 + 3 * 32
+    case '0xb2f1e6db': // Augustus V5 buyOnUniswapV2Fork
+      return 68; // 4 + 2 * 32
+    case '0xb66bcbac': // Augustus V5 buy
+      return 164; // 4 + 5 * 32
+    default:
+      throw new Error('Unrecognized function selector for Augustus');
+  }
 };

@@ -29,7 +29,8 @@ export interface FormatReserveResponse extends ReserveData {
   totalVariableDebt: string;
   totalStableDebt: string;
   totalLiquidity: string;
-  utilizationRate: string;
+  borrowUsageRatio: string;
+  supplyUsageRatio: string;
   supplyAPY: string;
   variableBorrowAPY: string;
   stableBorrowAPY: string;
@@ -80,6 +81,7 @@ export interface ReserveData {
   eModeLtv: number;
   eModeLiquidationThreshold: number;
   eModeLiquidationBonus: number;
+  unbacked: string;
 }
 
 interface GetComputedReserveFieldsResponse {
@@ -92,7 +94,8 @@ interface GetComputedReserveFieldsResponse {
   totalStableDebt: BigNumber;
   totalVariableDebt: BigNumber;
   totalLiquidity: BigNumber;
-  utilizationRate: string;
+  borrowUsageRatio: string;
+  supplyUsageRatio: string;
   supplyAPY: BigNumber;
   variableBorrowAPY: BigNumber;
   stableBorrowAPY: BigNumber;
@@ -108,9 +111,14 @@ function getComputedReserveFields({
 }: FormatReserveRequest): GetComputedReserveFieldsResponse {
   const { totalDebt, totalStableDebt, totalVariableDebt, totalLiquidity } =
     calculateReserveDebt(reserve, currentTimestamp);
-  const utilizationRate = totalLiquidity.eq(0)
+  const borrowUsageRatio = totalLiquidity.eq(0)
     ? '0'
     : valueToBigNumber(totalDebt).dividedBy(totalLiquidity).toFixed();
+  const supplyUsageRatio = totalLiquidity.eq(0)
+    ? '0'
+    : valueToBigNumber(totalDebt)
+        .dividedBy(totalLiquidity.plus(reserve.unbacked))
+        .toFixed();
   // https://github.com/aave/protocol-v2/blob/baeb455fad42d3160d571bd8d3a795948b72dd85/contracts/protocol/lendingpool/LendingPoolConfigurator.sol#L284
   const reserveLiquidationBonus = normalize(
     valueToBigNumber(reserve.reserveLiquidationBonus).minus(
@@ -164,7 +172,8 @@ function getComputedReserveFields({
     totalStableDebt,
     totalVariableDebt,
     totalLiquidity,
-    utilizationRate,
+    borrowUsageRatio,
+    supplyUsageRatio,
     formattedReserveLiquidationBonus: reserveLiquidationBonus,
     formattedEModeLiquidationBonus: eModeLiquidationBonus,
     formattedEModeLiquidationThreshold:
@@ -209,7 +218,8 @@ function formatEnhancedReserve({
       reserve.availableLiquidity,
     ),
     unborrowedLiquidity: normalizeWithReserve(reserve.unborrowedLiquidity),
-    utilizationRate: reserve.utilizationRate,
+    borrowUsageRatio: reserve.borrowUsageRatio,
+    supplyUsageRatio: reserve.supplyUsageRatio,
     totalDebt: normalizeWithReserve(reserve.totalDebt),
     formattedBaseLTVasCollateral: normalize(
       reserve.baseLTVasCollateral,

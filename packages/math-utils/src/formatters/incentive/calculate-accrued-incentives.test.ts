@@ -105,6 +105,10 @@ describe('calculateAccruedIncentives', () => {
     const result = calculateAccruedIncentives(depositRewardsRequest);
     expect(normalize(result, 18)).toBe('100000000000');
   });
+  it('should calculate the correct deposit rewards when running ahead', () => {
+    const result = calculateAccruedIncentives(depositRewardsRequest);
+    expect(normalize(result, 18)).toBe('100000000000');
+  });
   it('should calculate the correct variable debt rewards', () => {
     const result = calculateAccruedIncentives(variableDebtRewardsRequest);
     expect(normalize(result, 18)).toBe('200000000000');
