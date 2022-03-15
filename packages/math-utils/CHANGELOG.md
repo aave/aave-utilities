@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.0.3 (2022-03-15)
+
+
+### Bug Fixes
+
+*  test for protected ([#314](https://github.com/@aave/aave-utilities/issues/314)) ([953888c](https://github.com/@aave/aave-utilities/commit/953888c88b543cadf01288cd2628e75b83af0d54))
+
+
+
+
+
 ## 1.0.2 (2022-03-15)
 
 
