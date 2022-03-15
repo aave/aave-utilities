@@ -330,7 +330,7 @@ export function formatReserveUSD({
   const formattedReserve = formatEnhancedReserve({
     reserve: { ...reserve, ...computedFields },
   });
-
+  console.log('Reserve:::----------------- ', reserve.symbol);
   return {
     ...formattedReserve,
     totalLiquidityUSD: nativeToUSD({
@@ -427,6 +427,9 @@ export function formatReserves<T extends ReserveDataWithPrice>({
       marketReferencePriceInUsd,
       marketReferenceCurrencyDecimals,
     });
+    console.log(
+      `------------- ${formattedReserve.symbol} ------  price in usd: ${formattedReserve.totalLiquidityUSD}`,
+    );
     return { ...reserve, ...formattedReserve };
   });
 }

@@ -16,6 +16,14 @@ export function nativeToUSD({
   marketReferenceCurrencyDecimals,
   normalizedMarketReferencePriceInUsd,
 }: NativeToUSD) {
+  console.log(`native to usd:
+    amount: ${amount.toString()}
+    currencyDecimals: ${currencyDecimals}
+    priceInMarketRefCurr: ${priceInMarketReferenceCurrency.toString()}
+    marketRefCurrDecimals: ${marketReferenceCurrencyDecimals}
+    normlizedMarketRefPriceInUsd: ${normalizedMarketReferencePriceInUsd.toString()}
+    currencyDecimals
+  `);
   return amount
     .multipliedBy(priceInMarketReferenceCurrency)
     .multipliedBy(normalizedMarketReferencePriceInUsd)
