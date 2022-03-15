@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.0.2 (2022-03-15)
+
+
+### Bug Fixes
+
+* rewrap bn ([#313](https://github.com/@aave/aave-utilities/issues/313)) ([86e675b](https://github.com/@aave/aave-utilities/commit/86e675beafa416b6527d2957b76bf6507d87d77d))
+
+
+
+
+
 ## 1.0.1 (2022-03-15)
 
 **Note:** Version bump only for package @aave/contract-helpers
