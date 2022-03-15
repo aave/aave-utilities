@@ -2,10 +2,10 @@
 
 <h1 align="center">Aave Utilities</h1>
 
-The Aave Protocol is a decentralized non-custodial liquidity market protocol
-where users can participate as depositors or borrowers. The protocol is a set of
-open source smart contracts which facilitate the supply and borrowing of user
-funds. These contracts, and all user transactions/balances are stored on a
+The Aave Protocol is a decentralized non-custodial liquidity protocol
+where users can participate as suppliers or borrowers. The protocol is a set of
+open source smart contracts which facilitate the logic of user interactions. 
+These contracts, and all user transactions/balances are stored on a
 public ledger called a blockchain, making them accessible to anyone
 
 Aave Utilities is a JavaScript SDK for interacting with V2 and V3 of the Aave
@@ -47,7 +47,7 @@ yarn add @aave/contract-helpers @aave/math-utils
 
 1.  [Data Formatting Methods](#data-formatting-methods)
     - a. [Fetching Protocol Data](#fetching-protocol-data)
-      - [ethers](#ethers.js)
+      - [ethers](#ethersjs)
       - [Subgraph](#subgraph)
       - [Caching Server](#caching-server)
     - b. [Format Reserve Data](#reserve-data)
@@ -757,10 +757,10 @@ To send a transaction from this object:
 import { BigNumber, providers } from 'ethers';
 
 function submitTransaction({
-  provider: providers.Web3Provider,
+  provider: providers.Web3Provider,  // Signing transactions requires a wallet provider, Aave UI currently uses web3-react (https://github.com/NoahZinsmeister/web3-react) for connecting wallets and accessing the wallet provider
   tx: EthereumTransactionTypeExtended
 }){
-  const extendedTxData = await tx.unsignedData();
+  const extendedTxData = await tx.tx();
   const { from, ...txData } = extendedTxData;
   const signer = provider.getSigner(from);
   const txResponse = await signer.sendTransaction({
