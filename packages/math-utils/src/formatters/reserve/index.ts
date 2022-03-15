@@ -333,7 +333,7 @@ export function formatReserveUSD({
   console.log('Reserve:::----------------- ', reserve.symbol);
   console.log(
     {
-      amount: computedFields.totalLiquidity.toString(),
+      amount: computedFields.totalLiquidity,
       currencyDecimals: reserve.decimals,
       marketReferenceCurrencyDecimals,
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
@@ -348,7 +348,7 @@ export function formatReserveUSD({
       normalizedMarketReferencePriceInUsd,
     }),
     {
-      amount: computedFields.formattedAvailableLiquidity.toString(),
+      amount: computedFields.formattedAvailableLiquidity,
       currencyDecimals: reserve.decimals,
       marketReferenceCurrencyDecimals,
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
