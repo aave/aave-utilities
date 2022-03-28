@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.1.0 (2022-03-28)
+
+
+### Features
+
+* added paraswap repay to v2 ([#317](https://github.com/@aave/aave-utilities/issues/317)) ([eba5e4e](https://github.com/@aave/aave-utilities/commit/eba5e4e3fe3ea91fecef5c17c15c3843c64a3896))
+
+
+
+
+
 ## 1.0.4 (2022-03-15)
 
 **Note:** Version bump only for package @aave/math-utils
