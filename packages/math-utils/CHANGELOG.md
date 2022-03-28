@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.0.5 (2022-03-28)
+
+
+### Bug Fixes
+
+* formatted emode liquidation bonus ([#321](https://github.com/@aave/aave-utilities/issues/321)) ([8819000](https://github.com/@aave/aave-utilities/commit/88190000acfeb4045102c04e836cc6daee60fc09))
+
+
+
+
+
 ## 1.0.4 (2022-03-15)
 
 **Note:** Version bump only for package @aave/math-utils
