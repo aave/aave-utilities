@@ -248,7 +248,7 @@ function formatEnhancedReserve({
       4,
     ),
     formattedEModeLiquidationBonus: normalize(
-      valueToBigNumber(reserve.reserveLiquidationBonus).minus(
+      valueToBigNumber(reserve.eModeLiquidationBonus).minus(
         10 ** LTV_PRECISION,
       ),
       4,
