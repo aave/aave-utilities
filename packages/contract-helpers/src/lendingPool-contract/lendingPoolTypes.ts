@@ -107,3 +107,19 @@ export type LPFlashLiquidation = {
   initiator: tEthereumAddress;
   useEthPath?: boolean;
 };
+
+export type LPParaswapRepayWithCollateral = {
+  user: tEthereumAddress;
+  fromAsset: tEthereumAddress;
+  fromAToken: tEthereumAddress;
+  assetToRepay: tEthereumAddress; // List of addresses of the underlying asset to be swap from
+  repayWithAmount: string;
+  repayAmount: string; // List of amounts to be swapped. If the amount exceeds the balance, the total balance is used for the swap
+  permitSignature?: PermitSignature;
+  repayAllDebt?: boolean;
+  rateMode: InterestRate;
+  onBehalfOf?: tEthereumAddress;
+  referralCode?: string;
+  flash?: boolean;
+  swapAndRepayCallData: BytesLike;
+};
