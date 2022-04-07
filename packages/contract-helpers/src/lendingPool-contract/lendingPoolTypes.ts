@@ -122,4 +122,5 @@ export type LPParaswapRepayWithCollateral = {
   referralCode?: string;
   flash?: boolean;
   swapAndRepayCallData: BytesLike;
+  augustus: tEthereumAddress;
 };

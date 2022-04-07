@@ -1362,6 +1362,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     @isEthAddress('onBehalfOf')
     @isPositiveAmount('repayWithAmount')
     @isPositiveAmount('repayAmount')
+    @isEthAddress('augustus')
     {
       user,
       fromAsset,
@@ -1376,6 +1377,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       referralCode,
       flash,
       swapAndRepayCallData,
+      augustus,
     }: LPParaswapRepayWithCollateral,
   ): Promise<EthereumTransactionTypeExtended[]> {
     const txs: EthereumTransactionTypeExtended[] = [];
@@ -1426,6 +1428,11 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     const numericInterestRate = rateMode === InterestRate.Stable ? 1 : 2;
 
     if (flash) {
+      const callDataEncoded = utils.defaultAbiCoder.encode(
+        ['bytes', 'address'],
+        [swapAndRepayCallData, augustus],
+      );
+
       const params: string = utils.defaultAbiCoder.encode(
         [
           'address',
@@ -1446,7 +1453,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           repayAllDebt
             ? augustusToAmountOffsetFromCalldata(swapAndRepayCallData as string)
             : 0,
-          swapAndRepayCallData,
+          callDataEncoded,
           permitParams.amount,
           permitParams.deadline,
           permitParams.v,
@@ -1497,6 +1504,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           permitParams,
           repayAll: repayAllDebt ?? false,
           swapAndRepayCallData,
+          augustus,
         },
         txs,
       );

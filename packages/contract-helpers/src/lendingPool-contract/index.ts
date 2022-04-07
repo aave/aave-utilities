@@ -925,6 +925,7 @@ export class LendingPool
     @isEthAddress('onBehalfOf')
     @isPositiveAmount('repayWithAmount')
     @isPositiveAmount('repayAmount')
+    @isEthAddress('augustus')
     {
       user,
       fromAsset,
@@ -939,6 +940,7 @@ export class LendingPool
       referralCode,
       flash,
       swapAndRepayCallData,
+      augustus,
     }: LPParaswapRepayWithCollateral,
   ): Promise<EthereumTransactionTypeExtended[]> {
     const txs: EthereumTransactionTypeExtended[] = [];
@@ -989,6 +991,11 @@ export class LendingPool
     const numericInterestRate = rateMode === InterestRate.Stable ? 1 : 2;
 
     if (flash) {
+      const callDataEncoded = utils.defaultAbiCoder.encode(
+        ['bytes', 'address'],
+        [swapAndRepayCallData, augustus],
+      );
+
       const params: string = utils.defaultAbiCoder.encode(
         [
           'address',
@@ -1009,7 +1016,7 @@ export class LendingPool
           repayAllDebt
             ? augustusToAmountOffsetFromCalldata(swapAndRepayCallData as string)
             : 0,
-          swapAndRepayCallData,
+          callDataEncoded,
           permitParams.amount,
           permitParams.deadline,
           permitParams.v,
@@ -1060,6 +1067,7 @@ export class LendingPool
           permitParams,
           repayAll: repayAllDebt ?? false,
           swapAndRepayCallData,
+          augustus,
         },
         txs,
       );
