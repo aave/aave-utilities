@@ -81,7 +81,7 @@ export class ParaswapRepayWithCollateral
     const swapAndRepayContract: ParaSwapRepayAdapter = this.getContractInstance(
       this.repayWithCollateralAddress,
     );
-
+    console.log('augustus: ', augustus);
     const callDataEncoded = utils.defaultAbiCoder.encode(
       ['bytes', 'address'],
       [swapAndRepayCallData, augustus],
