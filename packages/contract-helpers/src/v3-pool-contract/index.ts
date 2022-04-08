@@ -116,6 +116,9 @@ export interface PoolInterface {
     args: LPLiquidationCall,
   ) => Promise<EthereumTransactionTypeExtended[]>;
   setUserEMode: (args: LPSetUserEModeType) => EthereumTransactionTypeExtended[];
+  paraswapRepayWithCollateral(
+    args: LPParaswapRepayWithCollateral,
+  ): Promise<EthereumTransactionTypeExtended[]>;
 }
 
 export type LendingPoolMarketConfigV3 = {
