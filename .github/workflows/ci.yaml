@@ -6,75 +6,55 @@ concurrency:
 
 on:
   push:
-    branches:
-      - master
+    branches: ['master']
   pull_request:
+    branches: ['master']
 
 jobs:
   ci:
     runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository ||
+      (github.ref == 'refs/heads/master' && github.event_name == 'push')
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846 # v3.0.0
         with:
           token: ${{ secrets.BOT_TOKEN }}
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-          cache: 'yarn'
 
-      - name: prepare
-        id: prepare
-        shell: bash
+      - name: Build packages
+        uses: ./.github/actions/build
+
+      # https://github.com/lerna/lerna/issues/2788 --no-verify-access
+      # https://github.com/lerna/lerna/issues/1893 --preid ${{ github.sha }}
+      - name: prerelease
+        if: |
+          !contains(github.head_ref, 'dependabot') &&
+          github.ref != 'refs/heads/master'
+        run: |
+          yarn release:canary \
+          --yes --no-verify-access \
+          --dist-tag ${{ github.event.pull_request.head.sha }} --preid ${{ github.event.pull_request.head.sha }} \
+          | tee __publish-log.txt
+
+      - name: Comment on PR
+        if: github.event.number
+        uses: ./.github/actions/pr-comment
+        with:
+          PR_NUMBER: ${{ github.event.number }}
+
+      - name: prepare git
+        if: |
+          github.event_name == 'push' &&
+          github.ref == 'refs/heads/master'
         run: |
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> ~/.npmrc
           git config user.name "GitHub Actions Build"
           git config user.email "developers@aave.com"
-      - name: install
-        id: install
-        run: |
-          yarn install --frozen-lockfile
-      - id: lint
-        name: lint
-        run: |
-          yarn lint
-      - id: cover
-        name: cover
-        run: |
-          yarn cover
-      - id: build
-        name: build
-        run: |
-          yarn build
-      # https://github.com/lerna/lerna/issues/2788 --no-verify-access
-      # https://github.com/lerna/lerna/issues/1893 --preid ${{ github.sha }}
-      - id: prerelease
-        name: prerelease
+
+      - name: release
         if: |
-          github.event.pull_request.head.repo.full_name == github.repository &&
-          !contains(github.head_ref, 'dependabot') &&
-          github.ref != 'refs/heads/master'
-        run: |
-          yarn release:canary --yes --no-verify-access --dist-tag ${{ github.sha }} --preid ${{ github.sha }}
-      #- uses: actions/github-script@v4
-      #  if: |
-      #    github.event.pull_request.head.repo.full_name == github.repository &&
-      #    !contains(github.head_ref, 'dependabot') &&
-      #    github.ref != 'refs/heads/master'
-      #  with:
-      #    script: |
-      #      github.issues.createComment({
-      #        issue_number: context.issue.number,
-      #        owner: context.repo.owner,
-      #        repo: context.repo.repo,
-      #        body: '🎉 Canary Release. You can install canary version via `npm install package@next`'
-      #      })
-      - id: release
-        name: release
-        if: |
-          github.ref == 'refs/heads/master' &&
-          !contains(github.event.head_commit.message, 'chore(release)')
+          github.event_name == 'push' &&
+          github.ref == 'refs/heads/master'
         run: |
           yarn release:check
           yarn release:latest --yes --no-verify-access

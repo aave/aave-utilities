@@ -1,0 +1,23 @@
+name: Build
+description: Build
+runs:
+  using: "composite"
+  steps:  
+    - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # v3.0.0
+      with:
+        node-version-file: '.nvmrc'
+        cache: 'yarn'
+
+    - name: install
+      shell: sh
+      run: yarn --frozen-lockfile
+
+    - name: lint
+      shell: sh
+      run: yarn lint
+    - name: cover
+      shell: sh
+      run: yarn cover
+    - name: build
+      shell: sh
+      run: yarn build

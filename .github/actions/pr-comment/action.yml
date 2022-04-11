@@ -1,0 +1,26 @@
+name: Publish canary version
+description: Publish canary version
+inputs:
+  PR_NUMBER:
+    description: Pull request number to comment on
+    required: true
+runs:
+  using: "composite"
+  steps:  
+    - name: get canary version
+      shell: sh
+      run: |
+        grep -Po '@aave/math-utils.*=>\s[0-9].*$' __publish-log.txt | awk '{print $3}' > __version
+
+    - name: 'Comment on PR'
+      uses: actions/github-script@9ac08808f993958e9de277fe43a64532a609130e # v6.0.0
+      with:
+        script: |
+          const fs = require('fs');
+          const version = fs.readFileSync('./__version');
+          await github.rest.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: Number(${{ inputs.PR_NUMBER }}),
+            body: `🎉 Canary Release\nTo install use\n\`npm install @aave/math-utils@${version}\`\n\`npm install @aave/contract-helpers@${version}\``
+          });
