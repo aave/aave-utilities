@@ -87,6 +87,20 @@ export class ParaswapRepayWithCollateral
       [swapAndRepayCallData, augustus],
     );
 
+    console.log(`
+        ---- SWAP and REPAY params -----
+        collateralAsset: ${collateralAsset}
+        debtAsset : ${debtAsset}
+        collateralAmount: ${collateralAmount}
+        debtRepayAmount: ${debtRepayAmount}
+        numericRate: ${numericInterestRate}
+        offset: ${augustusToAmountOffsetFromCalldata(
+          swapAndRepayCallData as string,
+        )}
+        callDataEncoded: ${callDataEncoded}
+        permitParams: ${JSON.stringify(permitParams)}
+      `);
+
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>
         swapAndRepayContract.populateTransaction.swapAndRepay(
