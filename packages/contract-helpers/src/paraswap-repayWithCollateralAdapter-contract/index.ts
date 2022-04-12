@@ -99,6 +99,7 @@ export class ParaswapRepayWithCollateral
         )}
         callDataEncoded: ${callDataEncoded}
         permitParams: ${JSON.stringify(permitParams)}
+        -----------------------------------
       `);
 
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
