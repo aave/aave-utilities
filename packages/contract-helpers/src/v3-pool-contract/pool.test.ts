@@ -3944,10 +3944,9 @@ describe('Pool', () => {
 
     const config = { POOL, REPAY_WITH_COLLATERAL_ADAPTER };
 
-    const repayAmountWithSurplus: string = (
-      Number(repayAmount) +
-      (Number(repayAmount) * Number(SURPLUS)) / 100
-    ).toString();
+    const repayAmountWithSurplus: string = Number(repayAmount) // +
+      // (Number(repayAmount) * Number(SURPLUS)) / 100
+      .toString();
 
     afterEach(() => {
       jest.clearAllMocks();
@@ -4922,10 +4921,9 @@ describe('Pool', () => {
 
     const config = { POOL, REPAY_WITH_COLLATERAL_ADAPTER };
 
-    const repayAmountWithSurplus: string = (
-      Number(repayAmount) +
-      (Number(repayAmount) * Number(SURPLUS)) / 100
-    ).toString();
+    const repayAmountWithSurplus: string = Number(repayAmount) //+
+      // (Number(repayAmount) * Number(SURPLUS)) / 100
+      .toString();
 
     afterEach(() => {
       jest.clearAllMocks();
