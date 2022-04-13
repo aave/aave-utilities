@@ -94,9 +94,11 @@ export class ParaswapRepayWithCollateral
         collateralAmount: ${collateralAmount}
         debtRepayAmount: ${debtRepayAmount}
         numericRate: ${numericInterestRate}
-        offset: ${augustusToAmountOffsetFromCalldata(
-          swapAndRepayCallData as string,
-        )}
+        offset: ${
+          repayAll
+            ? augustusToAmountOffsetFromCalldata(swapAndRepayCallData as string)
+            : 0
+        }
         callDataEncoded: ${callDataEncoded}
         permitParams: ${JSON.stringify(permitParams)}
         -----------------------------------
