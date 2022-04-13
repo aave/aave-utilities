@@ -1400,6 +1400,9 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       amount: repayWithAmount,
     });
 
+    console.log('approved:: ', this.repayWithCollateralAddress);
+    console.log('a token: ', fromAToken);
+
     if (!approved) {
       const approveTx: EthereumTransactionTypeExtended =
         this.erc20Service.approve({
@@ -1418,15 +1421,22 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       fromDecimals,
     );
 
-    const repayAmountWithSurplus: string = (
-      Number(repayAmount) +
-      (Number(repayAmount) * Number(SURPLUS)) / 100
-    ).toString();
+    // const repayAmountWithSurplus: string = (
+    //   Number(repayAmount) +
+    //   (Number(repayAmount) * Number(SURPLUS)) / 100
+    // ).toString();
 
     const decimals: number = await this.erc20Service.decimalsOf(assetToRepay);
-    const convertedRepayAmount: string = repayAllDebt
-      ? valueToWei(repayAmountWithSurplus, decimals)
-      : valueToWei(repayAmount, decimals);
+    const convertedRepayAmount: string = valueToWei(repayAmount, decimals);
+    // repayAllDebt
+    // ? valueToWei(repayAmountWithSurplus, decimals)
+    // : valueToWei(repayAmount, decimals);
+
+    console.log(`
+      ----------------------------
+      convertedRepayAmount: ${convertedRepayAmount}
+      repayAmount         : ${repayAmount}
+    `);
 
     const numericInterestRate = rateMode === InterestRate.Stable ? 1 : 2;
 

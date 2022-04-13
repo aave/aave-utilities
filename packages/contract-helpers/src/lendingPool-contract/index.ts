@@ -978,15 +978,16 @@ export class LendingPool
       fromDecimals,
     );
 
-    const repayAmountWithSurplus: string = (
-      Number(repayAmount) +
-      (Number(repayAmount) * Number(SURPLUS)) / 100
-    ).toString();
+    // const repayAmountWithSurplus: string = (
+    //   Number(repayAmount) +
+    //   (Number(repayAmount) * Number(SURPLUS)) / 100
+    // ).toString();
 
     const decimals: number = await this.erc20Service.decimalsOf(assetToRepay);
-    const convertedRepayAmount: string = repayAllDebt
-      ? valueToWei(repayAmountWithSurplus, decimals)
-      : valueToWei(repayAmount, decimals);
+    const convertedRepayAmount: string = valueToWei(repayAmount, decimals);
+    // repayAllDebt
+    //   ? valueToWei(repayAmountWithSurplus, decimals)
+    //   : valueToWei(repayAmount, decimals);
 
     const numericInterestRate = rateMode === InterestRate.Stable ? 1 : 2;
 
