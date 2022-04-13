@@ -1105,7 +1105,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     const approved: boolean = await this.erc20Service.isApproved({
       token: fromAToken,
       user,
-      spender: this.repayWithCollateralAddress,
+      spender: this.swapCollateralAddress,
       amount: fromAmount,
     });
 
@@ -1114,7 +1114,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         this.erc20Service.approve({
           user,
           token: fromAToken,
-          spender: this.repayWithCollateralAddress,
+          spender: this.swapCollateralAddress,
           amount: constants.MaxUint256.toString(),
         });
 
