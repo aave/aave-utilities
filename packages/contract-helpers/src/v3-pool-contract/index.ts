@@ -1421,22 +1421,18 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       fromDecimals,
     );
 
-    // const repayAmountWithSurplus: string = (
-    //   Number(repayAmount) +
-    //   (Number(repayAmount) * Number(SURPLUS)) / 100
-    // ).toString();
+    const repayWithAmountWithSurplus: string = (
+      Number(repayWithAmount) +
+      (Number(repayWithAmount) * Number(SURPLUS)) / 100
+    ).toString();
+
+    const convertedRepayWithAmountWithSurplus: string = valueToWei(
+      repayWithAmountWithSurplus,
+      fromDecimals,
+    );
 
     const decimals: number = await this.erc20Service.decimalsOf(assetToRepay);
     const convertedRepayAmount: string = valueToWei(repayAmount, decimals);
-    // repayAllDebt
-    // ? valueToWei(repayAmountWithSurplus, decimals)
-    // : valueToWei(repayAmount, decimals);
-
-    console.log(`
-      ----------------------------
-      convertedRepayAmount: ${convertedRepayAmount}
-      repayAmount         : ${repayAmount}
-    `);
 
     const numericInterestRate = rateMode === InterestRate.Stable ? 1 : 2;
 
@@ -1460,12 +1456,12 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           'bytes32',
         ],
         [
-          fromAsset,
-          convertedRepayWithAmount,
-          numericInterestRate,
+          assetToRepay,
+          convertedRepayAmount,
           repayAllDebt
             ? augustusToAmountOffsetFromCalldata(swapAndRepayCallData as string)
             : 0,
+          numericInterestRate,
           callDataEncoded,
           permitParams.amount,
           permitParams.deadline,
@@ -1482,8 +1478,10 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           rawTxMethod: async () =>
             poolContract.populateTransaction.flashLoan(
               this.repayWithCollateralAddress,
-              [assetToRepay],
-              [convertedRepayAmount],
+              [fromAsset],
+              repayAllDebt
+                ? [convertedRepayWithAmountWithSurplus]
+                : [convertedRepayWithAmount],
               [0], // interest rate mode to NONE for flashloan to not open debt
               onBehalfOf ?? user,
               params,

@@ -4922,9 +4922,10 @@ describe('Pool', () => {
 
     const config = { POOL, REPAY_WITH_COLLATERAL_ADAPTER };
 
-    const repayAmountWithSurplus: string = Number(repayAmount) //+
-      // (Number(repayAmount) * Number(SURPLUS)) / 100
-      .toString();
+    const repayAmountWithSurplus: string = (
+      Number(repayWithAmount) +
+      (Number(repayWithAmount) * Number(SURPLUS)) / 100
+    ).toString();
 
     afterEach(() => {
       jest.clearAllMocks();
@@ -5007,10 +5008,10 @@ describe('Pool', () => {
           'bytes32',
         ],
         [
-          fromAsset,
-          valueToWei(repayWithAmount, decimals),
-          2,
+          assetToRepay,
+          valueToWei(repayAmount, decimals),
           36,
+          2,
           paraswapCalldata,
           permitSignature.amount,
           permitSignature.deadline,
@@ -5021,7 +5022,7 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([assetToRepay]);
+      expect(decoded[1]).toEqual([fromAsset]);
       expect(decoded[2]).toEqual([
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
       ]);
@@ -5106,10 +5107,10 @@ describe('Pool', () => {
           'bytes32',
         ],
         [
-          fromAsset,
-          valueToWei(repayWithAmount, decimals),
-          1,
+          assetToRepay,
+          valueToWei(repayAmount, decimals),
           36,
+          1,
           paraswapCalldata,
           permitSignature.amount,
           permitSignature.deadline,
@@ -5120,7 +5121,7 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([assetToRepay]);
+      expect(decoded[1]).toEqual([fromAsset]);
       expect(decoded[2]).toEqual([
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
       ]);
@@ -5203,10 +5204,10 @@ describe('Pool', () => {
           'bytes32',
         ],
         [
-          fromAsset,
-          valueToWei(repayWithAmount, decimals),
-          2,
+          assetToRepay,
+          valueToWei(repayAmount, decimals),
           36,
+          2,
           paraswapCalldata,
           permitSignature.amount,
           permitSignature.deadline,
@@ -5217,7 +5218,7 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([assetToRepay]);
+      expect(decoded[1]).toEqual([fromAsset]);
       expect(decoded[2]).toEqual([
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
       ]);
@@ -5299,10 +5300,10 @@ describe('Pool', () => {
           'bytes32',
         ],
         [
-          fromAsset,
-          valueToWei(repayWithAmount, decimals),
-          2,
+          assetToRepay,
+          valueToWei(repayAmount, decimals),
           36,
+          2,
           paraswapCalldata,
           permitSignature.amount,
           permitSignature.deadline,
@@ -5313,7 +5314,7 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([assetToRepay]);
+      expect(decoded[1]).toEqual([fromAsset]);
       expect(decoded[2]).toEqual([
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
       ]);
@@ -5395,10 +5396,10 @@ describe('Pool', () => {
           'bytes32',
         ],
         [
-          fromAsset,
-          valueToWei(repayWithAmount, decimals),
-          2,
+          assetToRepay,
+          valueToWei(repayAmount, decimals),
           36,
+          2,
           paraswapCalldata,
           permitSignature.amount,
           permitSignature.deadline,
@@ -5409,7 +5410,7 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([assetToRepay]);
+      expect(decoded[1]).toEqual([fromAsset]);
       expect(decoded[2]).toEqual([
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
       ]);
@@ -5491,10 +5492,10 @@ describe('Pool', () => {
           'bytes32',
         ],
         [
-          fromAsset,
-          valueToWei(repayWithAmount, decimals),
-          2,
+          assetToRepay,
+          valueToWei(repayAmount, decimals),
           0,
+          2,
           paraswapCalldata,
           permitSignature.amount,
           permitSignature.deadline,
@@ -5505,9 +5506,9 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([assetToRepay]);
+      expect(decoded[1]).toEqual([fromAsset]);
       expect(decoded[2]).toEqual([
-        BigNumber.from(valueToWei(repayAmount, decimals)),
+        BigNumber.from(valueToWei(repayWithAmount, decimals)),
       ]);
       expect(decoded[3]).toEqual([BigNumber.from(0)]);
       expect(decoded[4]).toEqual(onBehalfOf);

@@ -68,7 +68,7 @@ export default class BaseService<T extends Contract> {
       if (
         action &&
         gasLimitRecommendations[action] &&
-        tx.gasLimit.lte(BigNumber.from(gasLimitRecommendations[action].limit))
+        tx.gasLimit?.lte(BigNumber.from(gasLimitRecommendations[action].limit))
       ) {
         tx.gasLimit = BigNumber.from(
           gasLimitRecommendations[action].recommended,
