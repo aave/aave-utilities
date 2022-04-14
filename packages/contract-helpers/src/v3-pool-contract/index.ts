@@ -1400,9 +1400,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       amount: repayWithAmount,
     });
 
-    console.log('approved:: ', this.repayWithCollateralAddress);
-    console.log('a token: ', fromAToken);
-
     if (!approved) {
       const approveTx: EthereumTransactionTypeExtended =
         this.erc20Service.approve({
