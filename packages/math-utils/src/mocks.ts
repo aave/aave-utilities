@@ -132,6 +132,7 @@ export class UserReserveMock {
       totalStableDebtUSD: '0',
       borrowCapUSD: '0',
       supplyCapUSD: '0',
+      unbackedUSD: '0',
       priceInMarketReferenceCurrency: (10 ** 19).toString(),
       formattedPriceInMarketReferenceCurrency: '10',
       unborrowedLiquidity: '0',
