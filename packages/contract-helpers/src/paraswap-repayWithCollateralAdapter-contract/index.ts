@@ -1,4 +1,4 @@
-import { BytesLike, providers } from 'ethers';
+import { BytesLike, providers, utils } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
@@ -27,6 +27,7 @@ export type SwapAndRepayType = {
   permitParams: PermitSignature;
   swapAndRepayCallData: BytesLike;
   user: string;
+  augustus: string;
 };
 
 export interface ParaswapRepayWithCollateralInterface {
@@ -60,6 +61,7 @@ export class ParaswapRepayWithCollateral
     @isEthAddress('debtAsset')
     @isPositiveAmount('collateralAmount')
     @isPositiveAmount('debtRepayAmount')
+    @isEthAddress('augustus')
     {
       collateralAsset,
       debtAsset,
@@ -70,6 +72,7 @@ export class ParaswapRepayWithCollateral
       permitParams,
       swapAndRepayCallData,
       user,
+      augustus,
     }: SwapAndRepayType,
     txs?: EthereumTransactionTypeExtended[],
   ): EthereumTransactionTypeExtended {
@@ -77,6 +80,10 @@ export class ParaswapRepayWithCollateral
 
     const swapAndRepayContract: ParaSwapRepayAdapter = this.getContractInstance(
       this.repayWithCollateralAddress,
+    );
+    const callDataEncoded = utils.defaultAbiCoder.encode(
+      ['bytes', 'address'],
+      [swapAndRepayCallData, augustus],
     );
 
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
@@ -90,7 +97,7 @@ export class ParaswapRepayWithCollateral
           repayAll
             ? augustusToAmountOffsetFromCalldata(swapAndRepayCallData as string)
             : 0,
-          swapAndRepayCallData,
+          callDataEncoded,
           permitParams,
         ),
       from: user,

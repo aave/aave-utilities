@@ -49,6 +49,13 @@ describe('ParaswapRepayWithCollateralAdapterService', () => {
       r: '0x0000000000000000000000000000000000000000000000000000000000000000',
       s: '0x0000000000000000000000000000000000000000000000000000000000000000',
     };
+    const augustus = '0x0000000000000000000000000000000000000005';
+
+    const paraswapCalldata = utils.defaultAbiCoder.encode(
+      ['bytes', 'address'],
+      [swapAndRepayCallData, augustus],
+    );
+
     const debtRateMode = InterestRate.None;
     const repayAll = true;
 
@@ -77,6 +84,7 @@ describe('ParaswapRepayWithCollateralAdapterService', () => {
         permitParams,
         swapAndRepayCallData,
         repayAll,
+        augustus,
       });
 
       expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
@@ -106,7 +114,7 @@ describe('ParaswapRepayWithCollateralAdapterService', () => {
       expect(decoded[3]).toEqual(BigNumber.from(debtRepayAmount));
       expect(decoded[4]).toEqual(BigNumber.from(2));
       expect(decoded[5]).toEqual(BigNumber.from(36));
-      expect(decoded[6]).toEqual(swapAndRepayCallData);
+      expect(decoded[6]).toEqual(paraswapCalldata);
       expect(decoded[7][0]).toEqual(BigNumber.from(permitParams.amount));
       expect(decoded[7][1]).toEqual(BigNumber.from(permitParams.deadline));
       expect(decoded[7][2]).toEqual(permitParams.v);
@@ -131,6 +139,7 @@ describe('ParaswapRepayWithCollateralAdapterService', () => {
         permitParams,
         swapAndRepayCallData,
         repayAll,
+        augustus,
       });
 
       expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
@@ -160,7 +169,7 @@ describe('ParaswapRepayWithCollateralAdapterService', () => {
       expect(decoded[3]).toEqual(BigNumber.from(debtRepayAmount));
       expect(decoded[4]).toEqual(BigNumber.from(2));
       expect(decoded[5]).toEqual(BigNumber.from(0));
-      expect(decoded[6]).toEqual(swapAndRepayCallData);
+      expect(decoded[6]).toEqual(paraswapCalldata);
       expect(decoded[7][0]).toEqual(BigNumber.from(permitParams.amount));
       expect(decoded[7][1]).toEqual(BigNumber.from(permitParams.deadline));
       expect(decoded[7][2]).toEqual(permitParams.v);
@@ -185,6 +194,7 @@ describe('ParaswapRepayWithCollateralAdapterService', () => {
         permitParams,
         swapAndRepayCallData,
         repayAll,
+        augustus,
       });
       expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
 
@@ -213,7 +223,7 @@ describe('ParaswapRepayWithCollateralAdapterService', () => {
       expect(decoded[3]).toEqual(BigNumber.from(debtRepayAmount));
       expect(decoded[4]).toEqual(BigNumber.from(1));
       expect(decoded[5]).toEqual(BigNumber.from(36));
-      expect(decoded[6]).toEqual(swapAndRepayCallData);
+      expect(decoded[6]).toEqual(paraswapCalldata);
       expect(decoded[7][0]).toEqual(BigNumber.from(permitParams.amount));
       expect(decoded[7][1]).toEqual(BigNumber.from(permitParams.deadline));
       expect(decoded[7][2]).toEqual(permitParams.v);
@@ -238,6 +248,7 @@ describe('ParaswapRepayWithCollateralAdapterService', () => {
         permitParams,
         swapAndRepayCallData,
         repayAll,
+        augustus,
       });
       expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
 
@@ -266,7 +277,7 @@ describe('ParaswapRepayWithCollateralAdapterService', () => {
       expect(decoded[3]).toEqual(BigNumber.from(debtRepayAmount));
       expect(decoded[4]).toEqual(BigNumber.from(2));
       expect(decoded[5]).toEqual(BigNumber.from(36));
-      expect(decoded[6]).toEqual(swapAndRepayCallData);
+      expect(decoded[6]).toEqual(paraswapCalldata);
       expect(decoded[7][0]).toEqual(BigNumber.from(permitParams.amount));
       expect(decoded[7][1]).toEqual(BigNumber.from(permitParams.deadline));
       expect(decoded[7][2]).toEqual(permitParams.v);
@@ -291,6 +302,7 @@ describe('ParaswapRepayWithCollateralAdapterService', () => {
           permitParams,
           swapAndRepayCallData,
           repayAll,
+          augustus,
         },
         [
           {
@@ -330,7 +342,7 @@ describe('ParaswapRepayWithCollateralAdapterService', () => {
       expect(decoded[3]).toEqual(BigNumber.from(debtRepayAmount));
       expect(decoded[4]).toEqual(BigNumber.from(2));
       expect(decoded[5]).toEqual(BigNumber.from(36));
-      expect(decoded[6]).toEqual(swapAndRepayCallData);
+      expect(decoded[6]).toEqual(paraswapCalldata);
       expect(decoded[7][0]).toEqual(BigNumber.from(permitParams.amount));
       expect(decoded[7][1]).toEqual(BigNumber.from(permitParams.deadline));
       expect(decoded[7][2]).toEqual(permitParams.v);
@@ -355,6 +367,7 @@ describe('ParaswapRepayWithCollateralAdapterService', () => {
         permitParams,
         swapAndRepayCallData,
         repayAll,
+        augustus,
       });
       expect(txObj).toEqual([]);
     });
@@ -371,6 +384,7 @@ describe('ParaswapRepayWithCollateralAdapterService', () => {
           permitParams,
           swapAndRepayCallData,
           repayAll,
+          augustus,
         }),
       ).toThrowError(`Address: ${user} is not a valid ethereum Address`);
     });
@@ -387,10 +401,28 @@ describe('ParaswapRepayWithCollateralAdapterService', () => {
           permitParams,
           swapAndRepayCallData,
           repayAll,
+          augustus,
         }),
       ).toThrowError(
         `Address: ${collateralAsset} is not a valid ethereum Address`,
       );
+    });
+    it('Expects to fail when augustus not address', () => {
+      const augustus = 'asdf';
+      expect(() =>
+        repayInstance.swapAndRepay({
+          user,
+          collateralAsset,
+          debtAsset,
+          collateralAmount,
+          debtRepayAmount,
+          debtRateMode,
+          permitParams,
+          swapAndRepayCallData,
+          repayAll,
+          augustus,
+        }),
+      ).toThrowError(`Address: ${augustus} is not a valid ethereum Address`);
     });
     it('Expects to fail when debtAsset not address', () => {
       const debtAsset = 'asdf';
@@ -405,6 +437,7 @@ describe('ParaswapRepayWithCollateralAdapterService', () => {
           permitParams,
           swapAndRepayCallData,
           repayAll,
+          augustus,
         }),
       ).toThrowError(`Address: ${debtAsset} is not a valid ethereum Address`);
     });
@@ -421,6 +454,7 @@ describe('ParaswapRepayWithCollateralAdapterService', () => {
           permitParams,
           swapAndRepayCallData,
           repayAll,
+          augustus,
         }),
       ).toThrowError(`Amount: ${collateralAmount} needs to be greater than 0`);
     });
@@ -437,6 +471,7 @@ describe('ParaswapRepayWithCollateralAdapterService', () => {
           permitParams,
           swapAndRepayCallData,
           repayAll,
+          augustus,
         }),
       ).toThrowError(`Amount: ${collateralAmount} needs to be greater than 0`);
     });
@@ -453,6 +488,7 @@ describe('ParaswapRepayWithCollateralAdapterService', () => {
           permitParams,
           swapAndRepayCallData,
           repayAll,
+          augustus,
         }),
       ).toThrowError(`Amount: ${debtRepayAmount} needs to be greater than 0`);
     });
@@ -469,6 +505,7 @@ describe('ParaswapRepayWithCollateralAdapterService', () => {
           permitParams,
           swapAndRepayCallData,
           repayAll,
+          augustus,
         }),
       ).toThrowError(`Amount: ${debtRepayAmount} needs to be greater than 0`);
     });

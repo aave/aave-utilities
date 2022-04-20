@@ -925,6 +925,7 @@ export class LendingPool
     @isEthAddress('onBehalfOf')
     @isPositiveAmount('repayWithAmount')
     @isPositiveAmount('repayAmount')
+    @isEthAddress('augustus')
     {
       user,
       fromAsset,
@@ -939,6 +940,7 @@ export class LendingPool
       referralCode,
       flash,
       swapAndRepayCallData,
+      augustus,
     }: LPParaswapRepayWithCollateral,
   ): Promise<EthereumTransactionTypeExtended[]> {
     const txs: EthereumTransactionTypeExtended[] = [];
@@ -976,19 +978,27 @@ export class LendingPool
       fromDecimals,
     );
 
-    const repayAmountWithSurplus: string = (
-      Number(repayAmount) +
-      (Number(repayAmount) * Number(SURPLUS)) / 100
+    const repayWithAmountWithSurplus: string = (
+      Number(repayWithAmount) +
+      (Number(repayWithAmount) * Number(SURPLUS)) / 100
     ).toString();
 
+    const convertedRepayWithAmountWithSurplus: string = valueToWei(
+      repayWithAmountWithSurplus,
+      fromDecimals,
+    );
+
     const decimals: number = await this.erc20Service.decimalsOf(assetToRepay);
-    const convertedRepayAmount: string = repayAllDebt
-      ? valueToWei(repayAmountWithSurplus, decimals)
-      : valueToWei(repayAmount, decimals);
+    const convertedRepayAmount: string = valueToWei(repayAmount, decimals);
 
     const numericInterestRate = rateMode === InterestRate.Stable ? 1 : 2;
 
     if (flash) {
+      const callDataEncoded = utils.defaultAbiCoder.encode(
+        ['bytes', 'address'],
+        [swapAndRepayCallData, augustus],
+      );
+
       const params: string = utils.defaultAbiCoder.encode(
         [
           'address',
@@ -1003,13 +1013,13 @@ export class LendingPool
           'bytes32',
         ],
         [
-          fromAsset,
-          convertedRepayWithAmount,
-          numericInterestRate,
+          assetToRepay,
+          convertedRepayAmount,
           repayAllDebt
             ? augustusToAmountOffsetFromCalldata(swapAndRepayCallData as string)
             : 0,
-          swapAndRepayCallData,
+          numericInterestRate,
+          callDataEncoded,
           permitParams.amount,
           permitParams.deadline,
           permitParams.v,
@@ -1025,8 +1035,10 @@ export class LendingPool
           rawTxMethod: async () =>
             poolContract.populateTransaction.flashLoan(
               this.repayWithCollateralAddress,
-              [assetToRepay],
-              [convertedRepayAmount],
+              [fromAsset],
+              repayAllDebt
+                ? [convertedRepayWithAmountWithSurplus]
+                : [convertedRepayWithAmount],
               [0], // interest rate mode to NONE for flashloan to not open debt
               onBehalfOf ?? user,
               params,
@@ -1060,6 +1072,7 @@ export class LendingPool
           permitParams,
           repayAll: repayAllDebt ?? false,
           swapAndRepayCallData,
+          augustus,
         },
         txs,
       );
