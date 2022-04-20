@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.1.2 (2022-04-20)
+
+
+### Bug Fixes
+
+* added augustus to call data for paraswap repay call ([#326](https://github.com/@aave/aave-utilities/issues/326)) ([cf8445e](https://github.com/@aave/aave-utilities/commit/cf8445e6cb2f6b7bed3a5f372c1436135258ea04))
+
+
+
+
+
 ## 1.1.1 (2022-04-18)
 
 **Note:** Version bump only for package @aave/math-utils
