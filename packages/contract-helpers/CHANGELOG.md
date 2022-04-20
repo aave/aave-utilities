@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.2.0 (2022-04-20)
+
+
+### Features
+
+* add unbackedUSD field ([#329](https://github.com/@aave/aave-utilities/issues/329)) ([7d6feea](https://github.com/@aave/aave-utilities/commit/7d6feeacffbd3318f78e50a8caa9f772f8b14ff4))
+
+
+
+
+
 ## 1.1.2 (2022-04-20)
 
 
