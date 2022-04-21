@@ -24,6 +24,8 @@ jobs:
       - name: Build packages
         uses: ./.github/actions/build
 
+      - name: prepare npm access
+        run: echo '//registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}' >> ~/.npmrc
       # https://github.com/lerna/lerna/issues/2788 --no-verify-access
       # https://github.com/lerna/lerna/issues/1893 --preid ${{ github.sha }}
       - name: prerelease
@@ -42,19 +44,14 @@ jobs:
         with:
           PR_NUMBER: ${{ github.event.number }}
 
-      - name: prepare git
-        if: |
-          github.event_name == 'push' &&
-          github.ref == 'refs/heads/master'
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> ~/.npmrc
-          git config user.name "GitHub Actions Build"
-          git config user.email "developers@aave.com"
-
       - name: release
         if: |
           github.event_name == 'push' &&
           github.ref == 'refs/heads/master'
+        env:
+          GH_TOKEN: '${{ secrets.BOT_TOKEN }}'
         run: |
+          git config user.name "GitHub Actions Build"
+          git config user.email "developers@aave.com"
           yarn release:check
           yarn release:latest --yes --no-verify-access
