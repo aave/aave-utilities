@@ -3207,7 +3207,6 @@ describe('Pool', () => {
     const fromAsset = '0x0000000000000000000000000000000000000007';
     const fromAToken = '0x0000000000000000000000000000000000000008';
     const toAsset = '0x0000000000000000000000000000000000000009';
-    const onBehalfOf = '0x0000000000000000000000000000000000000010';
     const augustus = '0x0000000000000000000000000000000000000011';
     const fromAmount = '12.34';
     const minToAmount = '13.56';
@@ -3263,7 +3262,6 @@ describe('Pool', () => {
         minToAmount,
         permitSignature,
         swapAll,
-        onBehalfOf,
         referralCode,
         augustus,
         swapCallData,
@@ -3322,12 +3320,11 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(SWAP_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([fromAsset]);
-      expect(decoded[2]).toEqual([
+      expect(decoded[1]).toEqual(fromAsset);
+      expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(amountWithSurplus, decimals)),
-      ]);
-      expect(decoded[3]).toEqual([BigNumber.from(0)]);
-      expect(decoded[4]).toEqual(onBehalfOf);
+      );
+      expect(decoded[3]).toEqual(BigNumber.from(0));
       expect(decoded[5]).toEqual(params);
       expect(decoded[6]).toEqual(Number(referralCode));
 
@@ -3358,7 +3355,6 @@ describe('Pool', () => {
         minToAmount,
         permitSignature,
         swapAll,
-        // onBehalfOf,
         referralCode,
         augustus,
         swapCallData,
@@ -3450,7 +3446,6 @@ describe('Pool', () => {
         minToAmount,
         permitSignature,
         swapAll,
-        onBehalfOf,
         // referralCode,
         augustus,
         swapCallData,
@@ -3508,12 +3503,11 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(SWAP_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([fromAsset]);
-      expect(decoded[2]).toEqual([
+      expect(decoded[1]).toEqual(fromAsset);
+      expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(amountWithSurplus, decimals)),
-      ]);
-      expect(decoded[3]).toEqual([BigNumber.from(0)]);
-      expect(decoded[4]).toEqual(onBehalfOf);
+      );
+      expect(decoded[3]).toEqual(BigNumber.from(0));
       expect(decoded[5]).toEqual(params);
       expect(decoded[6]).toEqual(0);
 
@@ -3543,7 +3537,6 @@ describe('Pool', () => {
         minToAmount,
         permitSignature,
         swapAll,
-        onBehalfOf,
         referralCode,
         augustus,
         swapCallData,
@@ -3601,12 +3594,11 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(SWAP_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([fromAsset]);
-      expect(decoded[2]).toEqual([
+      expect(decoded[1]).toEqual(fromAsset);
+      expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(fromAmount, decimals)),
-      ]);
-      expect(decoded[3]).toEqual([BigNumber.from(0)]);
-      expect(decoded[4]).toEqual(onBehalfOf);
+      );
+      expect(decoded[3]).toEqual(BigNumber.from(0));
       expect(decoded[5]).toEqual(params);
       expect(decoded[6]).toEqual(Number(referralCode));
 
@@ -3639,7 +3631,6 @@ describe('Pool', () => {
         minToAmount,
         // permitSignature,
         swapAll,
-        onBehalfOf,
         referralCode,
         augustus,
         swapCallData,
@@ -3662,7 +3653,6 @@ describe('Pool', () => {
         minToAmount,
         permitSignature,
         swapAll,
-        onBehalfOf,
         referralCode,
         augustus,
         swapCallData,
@@ -3681,7 +3671,6 @@ describe('Pool', () => {
         minToAmount,
         permitSignature,
         swapAll,
-        onBehalfOf,
         referralCode,
         augustus,
         swapCallData,
@@ -3702,7 +3691,6 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
-          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3725,7 +3713,6 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
-          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3748,7 +3735,6 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
-          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3771,36 +3757,12 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
-          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
         }),
       ).rejects.toThrowError(
         `Address: ${toAsset} is not a valid ethereum Address`,
-      );
-    });
-    it('Expects to fail when onBehalfOf not and eth address', async () => {
-      const poolInstance = new Pool(provider, config);
-      const onBehalfOf = 'asdf';
-      await expect(async () =>
-        poolInstance.swapCollateral({
-          user,
-          flash,
-          fromAsset,
-          fromAToken,
-          toAsset,
-          fromAmount,
-          minToAmount,
-          permitSignature,
-          swapAll,
-          onBehalfOf,
-          referralCode,
-          augustus,
-          swapCallData,
-        }),
-      ).rejects.toThrowError(
-        `Address: ${onBehalfOf} is not a valid ethereum Address`,
       );
     });
     it('Expects to fail when augustus not and eth address', async () => {
@@ -3817,7 +3779,6 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
-          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3840,7 +3801,6 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
-          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3863,7 +3823,6 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
-          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3886,7 +3845,6 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
-          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3909,7 +3867,6 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
-          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
