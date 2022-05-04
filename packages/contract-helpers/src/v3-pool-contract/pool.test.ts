@@ -3207,6 +3207,7 @@ describe('Pool', () => {
     const fromAsset = '0x0000000000000000000000000000000000000007';
     const fromAToken = '0x0000000000000000000000000000000000000008';
     const toAsset = '0x0000000000000000000000000000000000000009';
+    const onBehalfOf = '0x0000000000000000000000000000000000000010';
     const augustus = '0x0000000000000000000000000000000000000011';
     const fromAmount = '12.34';
     const minToAmount = '13.56';
@@ -3262,6 +3263,7 @@ describe('Pool', () => {
         minToAmount,
         permitSignature,
         swapAll,
+        onBehalfOf,
         referralCode,
         augustus,
         swapCallData,
@@ -3282,15 +3284,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        [
-          'address',
-          'address[]',
-          'uint256[]',
-          'uint256[]',
-          'address',
-          'bytes',
-          'uint16',
-        ],
+        ['address', 'address', 'uint256', 'bytes', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
@@ -3324,9 +3318,8 @@ describe('Pool', () => {
       expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(amountWithSurplus, decimals)),
       );
-      expect(decoded[3]).toEqual(BigNumber.from(0));
-      expect(decoded[5]).toEqual(params);
-      expect(decoded[6]).toEqual(Number(referralCode));
+      expect(decoded[3]).toEqual(params);
+      expect(decoded[4]).toEqual(Number(referralCode));
 
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
@@ -3355,6 +3348,7 @@ describe('Pool', () => {
         minToAmount,
         permitSignature,
         swapAll,
+        // onBehalfOf,
         referralCode,
         augustus,
         swapCallData,
@@ -3374,106 +3368,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        [
-          'address',
-          'address[]',
-          'uint256[]',
-          'uint256[]',
-          'address',
-          'bytes',
-          'uint16',
-        ],
-        utils.hexDataSlice(tx.data ?? '', 4),
-      );
-
-      const params = utils.defaultAbiCoder.encode(
-        [
-          'address',
-          'uint256',
-          'uint256',
-          'bytes',
-          'address',
-          'tuple(uint256,uint256,uint8,bytes32,bytes32)',
-        ],
-        [
-          toAsset,
-          valueToWei(minToAmount, decimals),
-          100,
-          swapCallData,
-          augustus,
-          [
-            permitSignature.amount,
-            permitSignature.deadline,
-            permitSignature.v,
-            permitSignature.r,
-            permitSignature.s,
-          ],
-        ],
-      );
-
-      expect(decoded[0]).toEqual(SWAP_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([fromAsset]);
-      expect(decoded[2]).toEqual([
-        BigNumber.from(valueToWei(amountWithSurplus, decimals)),
-      ]);
-      expect(decoded[3]).toEqual([BigNumber.from(0)]);
-      expect(decoded[4]).toEqual(user);
-      expect(decoded[5]).toEqual(params);
-      expect(decoded[6]).toEqual(Number(referralCode));
-
-      // gas price
-      const gasPrice: GasType | null = await txObj.gas();
-      expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
-      expect(gasPrice?.gasPrice).toEqual('1');
-    });
-    it('Expects the tx object passing all params without referralCode and no approval needed for flash', async () => {
-      const poolInstance = new Pool(provider, config);
-      const isApprovedSpy = jest
-        .spyOn(poolInstance.erc20Service, 'isApproved')
-        .mockImplementationOnce(async () => Promise.resolve(true));
-      const decimalsSpy = jest
-        .spyOn(poolInstance.erc20Service, 'decimalsOf')
-        .mockReturnValue(Promise.resolve(decimals));
-
-      const swapCollateralTxObj = await poolInstance.swapCollateral({
-        user,
-        flash,
-        fromAsset,
-        fromAToken,
-        toAsset,
-        fromAmount,
-        minToAmount,
-        permitSignature,
-        swapAll,
-        // referralCode,
-        augustus,
-        swapCallData,
-      });
-
-      expect(isApprovedSpy).toHaveBeenCalled();
-      expect(decimalsSpy).toHaveBeenCalled();
-
-      expect(swapCollateralTxObj.length).toEqual(1);
-      const txObj = swapCollateralTxObj[0];
-      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
-
-      const tx: transactionType = await txObj.tx();
-      expect(tx.to).toEqual(POOL);
-      expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
-      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
-
-      const decoded = utils.defaultAbiCoder.decode(
-        [
-          'address',
-          'address[]',
-          'uint256[]',
-          'uint256[]',
-          'address',
-          'bytes',
-          'uint16',
-        ],
+        ['address', 'address', 'uint256', 'bytes', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
@@ -3507,9 +3402,90 @@ describe('Pool', () => {
       expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(amountWithSurplus, decimals)),
       );
-      expect(decoded[3]).toEqual(BigNumber.from(0));
-      expect(decoded[5]).toEqual(params);
-      expect(decoded[6]).toEqual(0);
+      expect(decoded[3]).toEqual(params);
+      expect(decoded[4]).toEqual(Number(referralCode));
+
+      // gas price
+      const gasPrice: GasType | null = await txObj.gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object passing all params without referralCode and no approval needed for flash', async () => {
+      const poolInstance = new Pool(provider, config);
+      const isApprovedSpy = jest
+        .spyOn(poolInstance.erc20Service, 'isApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+      const decimalsSpy = jest
+        .spyOn(poolInstance.erc20Service, 'decimalsOf')
+        .mockReturnValue(Promise.resolve(decimals));
+
+      const swapCollateralTxObj = await poolInstance.swapCollateral({
+        user,
+        flash,
+        fromAsset,
+        fromAToken,
+        toAsset,
+        fromAmount,
+        minToAmount,
+        permitSignature,
+        swapAll,
+        onBehalfOf,
+        // referralCode,
+        augustus,
+        swapCallData,
+      });
+
+      expect(isApprovedSpy).toHaveBeenCalled();
+      expect(decimalsSpy).toHaveBeenCalled();
+
+      expect(swapCollateralTxObj.length).toEqual(1);
+      const txObj = swapCollateralTxObj[0];
+      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
+
+      const tx: transactionType = await txObj.tx();
+      expect(tx.to).toEqual(POOL);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'address', 'uint256', 'bytes', 'uint16'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      const params = utils.defaultAbiCoder.encode(
+        [
+          'address',
+          'uint256',
+          'uint256',
+          'bytes',
+          'address',
+          'tuple(uint256,uint256,uint8,bytes32,bytes32)',
+        ],
+        [
+          toAsset,
+          valueToWei(minToAmount, decimals),
+          100,
+          swapCallData,
+          augustus,
+          [
+            permitSignature.amount,
+            permitSignature.deadline,
+            permitSignature.v,
+            permitSignature.r,
+            permitSignature.s,
+          ],
+        ],
+      );
+
+      expect(decoded[0]).toEqual(SWAP_COLLATERAL_ADAPTER);
+      expect(decoded[1]).toEqual(fromAsset);
+      expect(decoded[2]).toEqual(
+        BigNumber.from(valueToWei(amountWithSurplus, decimals)),
+      );
+      expect(decoded[3]).toEqual(params);
+      expect(decoded[4]).toEqual(0);
 
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
@@ -3537,6 +3513,7 @@ describe('Pool', () => {
         minToAmount,
         permitSignature,
         swapAll,
+        onBehalfOf,
         referralCode,
         augustus,
         swapCallData,
@@ -3556,15 +3533,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        [
-          'address',
-          'address[]',
-          'uint256[]',
-          'uint256[]',
-          'address',
-          'bytes',
-          'uint16',
-        ],
+        ['address', 'address', 'uint256', 'bytes', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
@@ -3598,9 +3567,8 @@ describe('Pool', () => {
       expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(fromAmount, decimals)),
       );
-      expect(decoded[3]).toEqual(BigNumber.from(0));
-      expect(decoded[5]).toEqual(params);
-      expect(decoded[6]).toEqual(Number(referralCode));
+      expect(decoded[3]).toEqual(params);
+      expect(decoded[4]).toEqual(Number(referralCode));
 
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
@@ -3631,6 +3599,7 @@ describe('Pool', () => {
         minToAmount,
         // permitSignature,
         swapAll,
+        onBehalfOf,
         referralCode,
         augustus,
         swapCallData,
@@ -3653,6 +3622,7 @@ describe('Pool', () => {
         minToAmount,
         permitSignature,
         swapAll,
+        onBehalfOf,
         referralCode,
         augustus,
         swapCallData,
@@ -3671,6 +3641,7 @@ describe('Pool', () => {
         minToAmount,
         permitSignature,
         swapAll,
+        onBehalfOf,
         referralCode,
         augustus,
         swapCallData,
@@ -3691,6 +3662,7 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
+          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3713,6 +3685,7 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
+          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3735,6 +3708,7 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
+          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3757,6 +3731,7 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
+          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3779,6 +3754,7 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
+          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3801,6 +3777,7 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
+          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3823,6 +3800,7 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
+          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3845,6 +3823,7 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
+          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3867,6 +3846,7 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
+          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3959,15 +3939,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        [
-          'address',
-          'address[]',
-          'uint256[]',
-          'uint256[]',
-          'address',
-          'bytes',
-          'uint16',
-        ],
+        ['address', 'address', 'uint256', 'bytes', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
@@ -3997,14 +3969,12 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([assetToRepay]);
-      expect(decoded[2]).toEqual([
+      expect(decoded[1]).toEqual(assetToRepay);
+      expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
-      ]);
-      expect(decoded[3]).toEqual([BigNumber.from(0)]);
-      expect(decoded[4]).toEqual(onBehalfOf);
-      expect(decoded[5]).toEqual(params);
-      expect(decoded[6]).toEqual(Number(referralCode));
+      );
+      expect(decoded[3]).toEqual(params);
+      expect(decoded[4]).toEqual(Number(referralCode));
 
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
@@ -4054,15 +4024,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        [
-          'address',
-          'address[]',
-          'uint256[]',
-          'uint256[]',
-          'address',
-          'bytes',
-          'uint16',
-        ],
+        ['address', 'address', 'uint256', 'bytes', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
@@ -4092,14 +4054,12 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([assetToRepay]);
-      expect(decoded[2]).toEqual([
+      expect(decoded[1]).toEqual(assetToRepay);
+      expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
-      ]);
-      expect(decoded[3]).toEqual([BigNumber.from(0)]);
-      expect(decoded[4]).toEqual(onBehalfOf);
-      expect(decoded[5]).toEqual(params);
-      expect(decoded[6]).toEqual(Number(referralCode));
+      );
+      expect(decoded[3]).toEqual(params);
+      expect(decoded[4]).toEqual(Number(referralCode));
 
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
@@ -4147,15 +4107,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        [
-          'address',
-          'address[]',
-          'uint256[]',
-          'uint256[]',
-          'address',
-          'bytes',
-          'uint16',
-        ],
+        ['address', 'address', 'uint256', 'bytes', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
@@ -4185,14 +4137,12 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([assetToRepay]);
-      expect(decoded[2]).toEqual([
+      expect(decoded[1]).toEqual(assetToRepay);
+      expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
-      ]);
-      expect(decoded[3]).toEqual([BigNumber.from(0)]);
-      expect(decoded[4]).toEqual(onBehalfOf);
-      expect(decoded[5]).toEqual(params);
-      expect(decoded[6]).toEqual(Number(referralCode));
+      );
+      expect(decoded[3]).toEqual(params);
+      expect(decoded[4]).toEqual(Number(referralCode));
 
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
@@ -4239,15 +4189,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        [
-          'address',
-          'address[]',
-          'uint256[]',
-          'uint256[]',
-          'address',
-          'bytes',
-          'uint16',
-        ],
+        ['address', 'address', 'uint256', 'bytes', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
@@ -4277,14 +4219,12 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([assetToRepay]);
-      expect(decoded[2]).toEqual([
+      expect(decoded[1]).toEqual(assetToRepay);
+      expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
-      ]);
-      expect(decoded[3]).toEqual([BigNumber.from(0)]);
-      expect(decoded[4]).toEqual(user);
-      expect(decoded[5]).toEqual(params);
-      expect(decoded[6]).toEqual(Number(referralCode));
+      );
+      expect(decoded[3]).toEqual(params);
+      expect(decoded[4]).toEqual(Number(referralCode));
 
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
@@ -4331,15 +4271,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        [
-          'address',
-          'address[]',
-          'uint256[]',
-          'uint256[]',
-          'address',
-          'bytes',
-          'uint16',
-        ],
+        ['address', 'address', 'uint256', 'bytes', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
@@ -4369,14 +4301,12 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([assetToRepay]);
-      expect(decoded[2]).toEqual([
+      expect(decoded[1]).toEqual(assetToRepay);
+      expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
-      ]);
-      expect(decoded[3]).toEqual([BigNumber.from(0)]);
-      expect(decoded[4]).toEqual(onBehalfOf);
-      expect(decoded[5]).toEqual(params);
-      expect(decoded[6]).toEqual(0);
+      );
+      expect(decoded[3]).toEqual(params);
+      expect(decoded[4]).toEqual(0);
 
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
@@ -4423,15 +4353,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        [
-          'address',
-          'address[]',
-          'uint256[]',
-          'uint256[]',
-          'address',
-          'bytes',
-          'uint16',
-        ],
+        ['address', 'address', 'uint256', 'bytes', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
@@ -4461,14 +4383,12 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([assetToRepay]);
-      expect(decoded[2]).toEqual([
+      expect(decoded[1]).toEqual(assetToRepay);
+      expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
-      ]);
-      expect(decoded[3]).toEqual([BigNumber.from(0)]);
-      expect(decoded[4]).toEqual(onBehalfOf);
-      expect(decoded[5]).toEqual(params);
-      expect(decoded[6]).toEqual(Number(referralCode));
+      );
+      expect(decoded[3]).toEqual(params);
+      expect(decoded[4]).toEqual(Number(referralCode));
 
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
@@ -4515,15 +4435,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        [
-          'address',
-          'address[]',
-          'uint256[]',
-          'uint256[]',
-          'address',
-          'bytes',
-          'uint16',
-        ],
+        ['address', 'address', 'uint256', 'bytes', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
@@ -4553,14 +4465,12 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([assetToRepay]);
-      expect(decoded[2]).toEqual([
+      expect(decoded[1]).toEqual(assetToRepay);
+      expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(repayAmount, decimals)),
-      ]);
-      expect(decoded[3]).toEqual([BigNumber.from(0)]);
-      expect(decoded[4]).toEqual(onBehalfOf);
-      expect(decoded[5]).toEqual(params);
-      expect(decoded[6]).toEqual(Number(referralCode));
+      );
+      expect(decoded[3]).toEqual(params);
+      expect(decoded[4]).toEqual(Number(referralCode));
 
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
@@ -4729,29 +4639,6 @@ describe('Pool', () => {
         }),
       ).rejects.toThrowError(
         `Address: ${assetToRepay} is not a valid ethereum Address`,
-      );
-    });
-    it('Expects to fail when onBehalfOf not and eth address', async () => {
-      const poolInstance = new Pool(provider, config);
-      const onBehalfOf = 'asdf';
-      await expect(async () =>
-        poolInstance.repayWithCollateral({
-          user,
-          fromAsset,
-          fromAToken,
-          assetToRepay,
-          repayWithAmount,
-          repayAmount,
-          permitSignature,
-          repayAllDebt,
-          rateMode,
-          onBehalfOf,
-          referralCode,
-          flash,
-          useEthPath,
-        }),
-      ).rejects.toThrowError(
-        `Address: ${onBehalfOf} is not a valid ethereum Address`,
       );
     });
     it('Expects to fail when repayWithAmount not positive', async () => {
@@ -4939,15 +4826,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        [
-          'address',
-          'address[]',
-          'uint256[]',
-          'uint256[]',
-          'address',
-          'bytes',
-          'uint16',
-        ],
+        ['address', 'address', 'uint256', 'bytes', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
@@ -4979,14 +4858,12 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([fromAsset]);
-      expect(decoded[2]).toEqual([
+      expect(decoded[1]).toEqual(fromAsset);
+      expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
-      ]);
-      expect(decoded[3]).toEqual([BigNumber.from(0)]);
-      expect(decoded[4]).toEqual(onBehalfOf);
-      expect(decoded[5]).toEqual(params);
-      expect(decoded[6]).toEqual(Number(referralCode));
+      );
+      expect(decoded[3]).toEqual(params);
+      expect(decoded[4]).toEqual(Number(referralCode));
 
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
@@ -5038,15 +4915,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        [
-          'address',
-          'address[]',
-          'uint256[]',
-          'uint256[]',
-          'address',
-          'bytes',
-          'uint16',
-        ],
+        ['address', 'address', 'uint256', 'bytes', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
@@ -5078,14 +4947,12 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([fromAsset]);
-      expect(decoded[2]).toEqual([
+      expect(decoded[1]).toEqual(fromAsset);
+      expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
-      ]);
-      expect(decoded[3]).toEqual([BigNumber.from(0)]);
-      expect(decoded[4]).toEqual(onBehalfOf);
-      expect(decoded[5]).toEqual(params);
-      expect(decoded[6]).toEqual(Number(referralCode));
+      );
+      expect(decoded[3]).toEqual(params);
+      expect(decoded[4]).toEqual(Number(referralCode));
 
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
@@ -5135,15 +5002,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        [
-          'address',
-          'address[]',
-          'uint256[]',
-          'uint256[]',
-          'address',
-          'bytes',
-          'uint16',
-        ],
+        ['address', 'address', 'uint256', 'bytes', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
@@ -5175,14 +5034,12 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([fromAsset]);
-      expect(decoded[2]).toEqual([
+      expect(decoded[1]).toEqual(fromAsset);
+      expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
-      ]);
-      expect(decoded[3]).toEqual([BigNumber.from(0)]);
-      expect(decoded[4]).toEqual(onBehalfOf);
-      expect(decoded[5]).toEqual(params);
-      expect(decoded[6]).toEqual(Number(referralCode));
+      );
+      expect(decoded[3]).toEqual(params);
+      expect(decoded[4]).toEqual(Number(referralCode));
 
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
@@ -5231,15 +5088,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        [
-          'address',
-          'address[]',
-          'uint256[]',
-          'uint256[]',
-          'address',
-          'bytes',
-          'uint16',
-        ],
+        ['address', 'address', 'uint256', 'bytes', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
@@ -5271,14 +5120,12 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([fromAsset]);
-      expect(decoded[2]).toEqual([
+      expect(decoded[1]).toEqual(fromAsset);
+      expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
-      ]);
-      expect(decoded[3]).toEqual([BigNumber.from(0)]);
-      expect(decoded[4]).toEqual(user);
-      expect(decoded[5]).toEqual(params);
-      expect(decoded[6]).toEqual(Number(referralCode));
+      );
+      expect(decoded[3]).toEqual(params);
+      expect(decoded[4]).toEqual(Number(referralCode));
 
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
@@ -5327,15 +5174,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        [
-          'address',
-          'address[]',
-          'uint256[]',
-          'uint256[]',
-          'address',
-          'bytes',
-          'uint16',
-        ],
+        ['address', 'address', 'uint256', 'bytes', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
@@ -5367,14 +5206,12 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([fromAsset]);
-      expect(decoded[2]).toEqual([
+      expect(decoded[1]).toEqual(fromAsset);
+      expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
-      ]);
-      expect(decoded[3]).toEqual([BigNumber.from(0)]);
-      expect(decoded[4]).toEqual(onBehalfOf);
-      expect(decoded[5]).toEqual(params);
-      expect(decoded[6]).toEqual(0);
+      );
+      expect(decoded[3]).toEqual(params);
+      expect(decoded[4]).toEqual(0);
 
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
@@ -5423,15 +5260,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        [
-          'address',
-          'address[]',
-          'uint256[]',
-          'uint256[]',
-          'address',
-          'bytes',
-          'uint16',
-        ],
+        ['address', 'address', 'uint256', 'bytes', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
@@ -5463,14 +5292,12 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([fromAsset]);
-      expect(decoded[2]).toEqual([
+      expect(decoded[1]).toEqual(fromAsset);
+      expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(repayWithAmount, decimals)),
-      ]);
-      expect(decoded[3]).toEqual([BigNumber.from(0)]);
-      expect(decoded[4]).toEqual(onBehalfOf);
-      expect(decoded[5]).toEqual(params);
-      expect(decoded[6]).toEqual(Number(referralCode));
+      );
+      expect(decoded[3]).toEqual(params);
+      expect(decoded[4]).toEqual(Number(referralCode));
 
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
@@ -5712,30 +5539,6 @@ describe('Pool', () => {
         `Address: ${assetToRepay} is not a valid ethereum Address`,
       );
     });
-    it('Expects to fail when onBehalfOf not and eth address', async () => {
-      const poolInstance = new Pool(provider, config);
-      const onBehalfOf = 'asdf';
-      await expect(async () =>
-        poolInstance.paraswapRepayWithCollateral({
-          user,
-          fromAsset,
-          fromAToken,
-          assetToRepay,
-          repayWithAmount,
-          repayAmount,
-          permitSignature,
-          repayAllDebt,
-          rateMode,
-          onBehalfOf,
-          referralCode,
-          flash,
-          swapAndRepayCallData,
-          augustus,
-        }),
-      ).rejects.toThrowError(
-        `Address: ${onBehalfOf} is not a valid ethereum Address`,
-      );
-    });
     it('Expects to fail when repayWithAmount not positive', async () => {
       const poolInstance = new Pool(provider, config);
       const repayWithAmount = '0';
@@ -5884,15 +5687,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        [
-          'address',
-          'address[]',
-          'uint256[]',
-          'uint256[]',
-          'address',
-          'bytes',
-          'uint16',
-        ],
+        ['address', 'address', 'uint256', 'bytes', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
@@ -5908,14 +5703,12 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(FLASH_LIQUIDATION_ADAPTER);
-      expect(decoded[1]).toEqual([borrowedAsset]);
-      expect(decoded[2]).toEqual([
+      expect(decoded[1]).toEqual(borrowedAsset);
+      expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(amountSurplus, decimals)),
-      ]);
-      expect(decoded[3]).toEqual([BigNumber.from(0)]);
-      expect(decoded[4]).toEqual(initiator);
-      expect(decoded[5]).toEqual(params);
-      expect(decoded[6]).toEqual(0);
+      );
+      expect(decoded[3]).toEqual(params);
+      expect(decoded[4]).toEqual(0);
 
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
@@ -5952,15 +5745,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        [
-          'address',
-          'address[]',
-          'uint256[]',
-          'uint256[]',
-          'address',
-          'bytes',
-          'uint16',
-        ],
+        ['address', 'address', 'uint256', 'bytes', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
@@ -5976,14 +5761,12 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(FLASH_LIQUIDATION_ADAPTER);
-      expect(decoded[1]).toEqual([borrowedAsset]);
-      expect(decoded[2]).toEqual([
+      expect(decoded[1]).toEqual(borrowedAsset);
+      expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(amountSurplus, decimals)),
-      ]);
-      expect(decoded[3]).toEqual([BigNumber.from(0)]);
-      expect(decoded[4]).toEqual(initiator);
-      expect(decoded[5]).toEqual(params);
-      expect(decoded[6]).toEqual(0);
+      );
+      expect(decoded[3]).toEqual(params);
+      expect(decoded[4]).toEqual(0);
 
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
@@ -6021,15 +5804,7 @@ describe('Pool', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
-        [
-          'address',
-          'address[]',
-          'uint256[]',
-          'uint256[]',
-          'address',
-          'bytes',
-          'uint16',
-        ],
+        ['address', 'address', 'uint256', 'bytes', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
@@ -6045,14 +5820,12 @@ describe('Pool', () => {
       );
 
       expect(decoded[0]).toEqual(FLASH_LIQUIDATION_ADAPTER);
-      expect(decoded[1]).toEqual([borrowedAsset]);
-      expect(decoded[2]).toEqual([
+      expect(decoded[1]).toEqual(borrowedAsset);
+      expect(decoded[2]).toEqual(
         BigNumber.from(valueToWei(debtTokenCover, decimals)),
-      ]);
-      expect(decoded[3]).toEqual([BigNumber.from(0)]);
-      expect(decoded[4]).toEqual(initiator);
-      expect(decoded[5]).toEqual(params);
-      expect(decoded[6]).toEqual(0);
+      );
+      expect(decoded[3]).toEqual(params);
+      expect(decoded[4]).toEqual(0);
 
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
