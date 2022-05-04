@@ -1072,7 +1072,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     @isEthAddress('fromAsset')
     @isEthAddress('fromAToken')
     @isEthAddress('toAsset')
-    @isEthAddress('onBehalfOf')
     @isEthAddress('augustus')
     @isPositiveAmount('fromAmount')
     @isPositiveAmount('minToAmount')
@@ -1211,7 +1210,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     @isEthAddress('fromAsset')
     @isEthAddress('fromAToken')
     @isEthAddress('assetToRepay')
-    @isEthAddress('onBehalfOf')
     @isPositiveAmount('repayWithAmount')
     @isPositiveAmount('repayAmount')
     {
@@ -1224,7 +1222,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       permitSignature,
       repayAllDebt,
       rateMode,
-      onBehalfOf,
       referralCode,
       flash,
       useEthPath,
@@ -1357,7 +1354,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     @isEthAddress('fromAsset')
     @isEthAddress('fromAToken')
     @isEthAddress('assetToRepay')
-    @isEthAddress('onBehalfOf')
     @isPositiveAmount('repayWithAmount')
     @isPositiveAmount('repayAmount')
     @isEthAddress('augustus')
@@ -1371,7 +1367,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       permitSignature,
       repayAllDebt,
       rateMode,
-      onBehalfOf,
       referralCode,
       flash,
       swapAndRepayCallData,
