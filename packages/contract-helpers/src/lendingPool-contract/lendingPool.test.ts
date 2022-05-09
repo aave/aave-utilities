@@ -3960,7 +3960,7 @@ describe('LendingPool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([fromAsset]);
+      expect(decoded[1]).toEqual([assetToRepay]);
       expect(decoded[2]).toEqual([
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
       ]);
@@ -4059,7 +4059,7 @@ describe('LendingPool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([fromAsset]);
+      expect(decoded[1]).toEqual([assetToRepay]);
       expect(decoded[2]).toEqual([
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
       ]);
@@ -4156,7 +4156,7 @@ describe('LendingPool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([fromAsset]);
+      expect(decoded[1]).toEqual([assetToRepay]);
       expect(decoded[2]).toEqual([
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
       ]);
@@ -4252,7 +4252,7 @@ describe('LendingPool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([fromAsset]);
+      expect(decoded[1]).toEqual([assetToRepay]);
       expect(decoded[2]).toEqual([
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
       ]);
@@ -4348,7 +4348,7 @@ describe('LendingPool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([fromAsset]);
+      expect(decoded[1]).toEqual([assetToRepay]);
       expect(decoded[2]).toEqual([
         BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
       ]);
@@ -4444,7 +4444,7 @@ describe('LendingPool', () => {
       );
 
       expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual([fromAsset]);
+      expect(decoded[1]).toEqual([assetToRepay]);
       expect(decoded[2]).toEqual([
         BigNumber.from(valueToWei(repayWithAmount, decimals)),
       ]);
