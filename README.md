@@ -350,9 +350,8 @@ For ETH-based markets (all V2 markets except Avalanche):
 - `marketReferenceCurrencyDecimals` = 18
 
 For USD-based markets (Avalanche and all v3 markets):
-
-- `marketReferencePriceInUsd` = 1 / (queryResult.priceOracles[0].usdPriceEth /
-  (10 \*\* 8))
+    
+- `marketReferencePriceInUsd` = "100000000"
 
 - `marketReferenceCurrencyDecimals` = 8
 
@@ -477,20 +476,12 @@ and will input to the user formatters separately.
 
   <details>
     <summary>Base Currency Data</summary>
+    
+All V3 market use USD based oracles, so baseCurrencyData can be hardcoded:
 
-```graphql
-{
-  priceOracles {
-    usdPriceEth
-    baseCurrencyUnit
-  }
-}
-```
+- `marketReferencePriceInUsd` = "100000000"
 
-- `marketReferencePriceInUsd` = 1 / (queryResult.priceOracles[0].usdPriceEth /
-  (10 \*\* 8))
-- `marketReferenceCurrencyDecimals` =
-  queryResult.priceOracles[0].baseCurrencyUnit.toString().length
+- `marketReferenceCurrencyDecimals` = 8
 
   </details>
 
