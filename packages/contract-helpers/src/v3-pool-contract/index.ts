@@ -1475,7 +1475,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           rawTxMethod: async () =>
             poolContract.populateTransaction.flashLoan(
               this.repayWithCollateralAddress,
-              [fromAsset],
+              [assetToRepay],
               repayAllDebt
                 ? [convertedRepayWithAmountWithSurplus]
                 : [convertedRepayWithAmount],

@@ -1035,7 +1035,7 @@ export class LendingPool
           rawTxMethod: async () =>
             poolContract.populateTransaction.flashLoan(
               this.repayWithCollateralAddress,
-              [fromAsset],
+              [assetToRepay],
               repayAllDebt
                 ? [convertedRepayWithAmountWithSurplus]
                 : [convertedRepayWithAmount],
