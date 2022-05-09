@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.2.2 (2022-05-09)
+
+
+### Bug Fixes
+
+* **package:** url defect in manifest ([#322](https://github.com/aave/aave-utilities/issues/322)) ([582157a](https://github.com/aave/aave-utilities/commit/582157a019b7a2de32184e1c6726ad8daa3c5075))
+
+
+
+
+
 ## 1.2.1 (2022-04-21)
 
 **Note:** Version bump only for package @aave/contract-helpers
