@@ -169,12 +169,14 @@ const currentAccount = '';
 const poolDataProviderContract = new UiPoolDataProvider({
   uiPoolDataProviderAddress,
   provider,
+  chainId: ChainId.mainnet,
 });
 
 // View contract used to fetch all reserve incentives (APRs), and user incentives
 const incentiveDataProviderContract = new UiIncentiveDataProvider({
   uiIncentiveDataProviderAddress,
   provider,
+  chainId: ChainId.mainnet,
 });
 
 // Note, contract calls should be performed in an async block, and updated on interval or on network/market change
