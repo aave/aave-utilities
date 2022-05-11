@@ -2,11 +2,11 @@
 
 <h1 align="center">Aave Utilities</h1>
 
-The Aave Protocol is a decentralized non-custodial liquidity protocol where
-users can participate as suppliers or borrowers. The protocol is a set of open
-source smart contracts which facilitate the logic of user interactions. These
-contracts, and all user transactions/balances are stored on a public ledger
-called a blockchain, making them accessible to anyone
+The Aave Protocol is a decentralized non-custodial liquidity protocol
+where users can participate as suppliers or borrowers. The protocol is a set of
+open source smart contracts which facilitate the logic of user interactions. 
+These contracts, and all user transactions/balances are stored on a
+public ledger called a blockchain, making them accessible to anyone
 
 Aave Utilities is a JavaScript SDK for interacting with V2 and V3 of the Aave
 Protocol, an upgrade to the existing [aave-js](https://github.com/aave/aave-js)
@@ -352,7 +352,7 @@ For ETH-based markets (all V2 markets except Avalanche):
 - `marketReferenceCurrencyDecimals` = 18
 
 For USD-based markets (Avalanche and all v3 markets):
-
+    
 - `marketReferencePriceInUsd` = "100000000"
 
 - `marketReferenceCurrencyDecimals` = 8
