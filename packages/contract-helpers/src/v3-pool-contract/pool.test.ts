@@ -3207,7 +3207,6 @@ describe('Pool', () => {
     const fromAsset = '0x0000000000000000000000000000000000000007';
     const fromAToken = '0x0000000000000000000000000000000000000008';
     const toAsset = '0x0000000000000000000000000000000000000009';
-    const onBehalfOf = '0x0000000000000000000000000000000000000010';
     const augustus = '0x0000000000000000000000000000000000000011';
     const fromAmount = '12.34';
     const minToAmount = '13.56';
@@ -3263,7 +3262,6 @@ describe('Pool', () => {
         minToAmount,
         permitSignature,
         swapAll,
-        onBehalfOf,
         referralCode,
         augustus,
         swapCallData,
@@ -3430,7 +3428,6 @@ describe('Pool', () => {
         minToAmount,
         permitSignature,
         swapAll,
-        onBehalfOf,
         // referralCode,
         augustus,
         swapCallData,
@@ -3513,7 +3510,6 @@ describe('Pool', () => {
         minToAmount,
         permitSignature,
         swapAll,
-        onBehalfOf,
         referralCode,
         augustus,
         swapCallData,
@@ -3599,7 +3595,6 @@ describe('Pool', () => {
         minToAmount,
         // permitSignature,
         swapAll,
-        onBehalfOf,
         referralCode,
         augustus,
         swapCallData,
@@ -3622,7 +3617,6 @@ describe('Pool', () => {
         minToAmount,
         permitSignature,
         swapAll,
-        onBehalfOf,
         referralCode,
         augustus,
         swapCallData,
@@ -3641,7 +3635,6 @@ describe('Pool', () => {
         minToAmount,
         permitSignature,
         swapAll,
-        onBehalfOf,
         referralCode,
         augustus,
         swapCallData,
@@ -3662,7 +3655,6 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
-          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3685,7 +3677,6 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
-          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3708,7 +3699,6 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
-          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3731,7 +3721,6 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
-          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3754,7 +3743,6 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
-          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3777,7 +3765,6 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
-          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3800,7 +3787,6 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
-          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3823,7 +3809,6 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
-          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3846,7 +3831,6 @@ describe('Pool', () => {
           minToAmount,
           permitSignature,
           swapAll,
-          onBehalfOf,
           referralCode,
           augustus,
           swapCallData,
@@ -3856,890 +3840,11 @@ describe('Pool', () => {
       );
     });
   });
-  describe('repayWithCollateral', () => {
-    const user = '0x0000000000000000000000000000000000000006';
-    const fromAsset = '0x0000000000000000000000000000000000000007';
-    const fromAToken = '0x0000000000000000000000000000000000000008';
-    const assetToRepay = '0x0000000000000000000000000000000000000009';
-    const onBehalfOf = '0x0000000000000000000000000000000000000010';
-    const repayWithAmount = '12.34';
-    const repayAmount = '13.56';
-    const permitSignature = {
-      amount: '1',
-      deadline: '1',
-      v: 1,
-      r: '0x0000000000000000000000000000000000000000000000000000000000000001',
-      s: '0x0000000000000000000000000000000000000000000000000000000000000001',
-    };
-    const repayAllDebt = true;
-    const rateMode = InterestRate.None;
-    const referralCode = '1';
-    const flash = true;
-    const useEthPath = true;
-
-    const decimals = 18;
-
-    const config = { POOL, REPAY_WITH_COLLATERAL_ADAPTER };
-
-    const repayAmountWithSurplus: string = (
-      Number(repayAmount) +
-      (Number(repayAmount) * Number(SURPLUS)) / 100
-    ).toString();
-
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-    it('Expects the tx object passing all params and approval needed for flash with rate mode None', async () => {
-      const poolInstance = new Pool(provider, config);
-      const isApprovedSpy = jest
-        .spyOn(poolInstance.erc20Service, 'isApproved')
-        .mockImplementationOnce(async () => Promise.resolve(false));
-      const decimalsSpy = jest
-        .spyOn(poolInstance.erc20Service, 'decimalsOf')
-        .mockReturnValue(Promise.resolve(decimals));
-      const approveSpy = jest
-        .spyOn(poolInstance.erc20Service, 'approve')
-        .mockReturnValueOnce({
-          txType: eEthereumTxType.ERC20_APPROVAL,
-          tx: async () => ({}),
-          gas: async () => ({
-            gasLimit: '1',
-            gasPrice: '1',
-          }),
-        });
-
-      const repayWithCollateralTxObj = await poolInstance.repayWithCollateral({
-        user,
-        fromAsset,
-        fromAToken,
-        assetToRepay,
-        repayWithAmount,
-        repayAmount,
-        permitSignature,
-        repayAllDebt,
-        rateMode,
-        onBehalfOf,
-        referralCode,
-        flash,
-        useEthPath,
-      });
-
-      expect(approveSpy).toHaveBeenCalled();
-      expect(isApprovedSpy).toHaveBeenCalled();
-      expect(decimalsSpy).toHaveBeenCalled();
-
-      expect(repayWithCollateralTxObj.length).toEqual(2);
-      const txObj = repayWithCollateralTxObj[1];
-      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
-
-      const tx: transactionType = await txObj.tx();
-      expect(tx.to).toEqual(POOL);
-      expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
-      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
-
-      const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'address', 'uint256', 'bytes', 'uint16'],
-        utils.hexDataSlice(tx.data ?? '', 4),
-      );
-
-      const params: string = utils.defaultAbiCoder.encode(
-        [
-          'address',
-          'uint256',
-          'uint256',
-          'uint256',
-          'uint256',
-          'uint8',
-          'bytes32',
-          'bytes32',
-          'bool',
-        ],
-        [
-          fromAsset,
-          valueToWei(repayWithAmount, decimals),
-          2,
-          permitSignature.amount,
-          permitSignature.deadline,
-          permitSignature.v,
-          permitSignature.r,
-          permitSignature.s,
-          useEthPath,
-        ],
-      );
-
-      expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual(assetToRepay);
-      expect(decoded[2]).toEqual(
-        BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
-      );
-      expect(decoded[3]).toEqual(params);
-      expect(decoded[4]).toEqual(Number(referralCode));
-
-      // gas price
-      const gasPrice: GasType | null = await txObj.gas();
-      expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual(
-        gasLimitRecommendations[ProtocolAction.repayCollateral].limit,
-      );
-      expect(gasPrice?.gasPrice).toEqual('1');
-    });
-    it('Expects the tx object passing all params and no approval needed for flash with rate mode Stable', async () => {
-      const poolInstance = new Pool(provider, config);
-      const isApprovedSpy = jest
-        .spyOn(poolInstance.erc20Service, 'isApproved')
-        .mockImplementationOnce(async () => Promise.resolve(true));
-      const decimalsSpy = jest
-        .spyOn(poolInstance.erc20Service, 'decimalsOf')
-        .mockReturnValue(Promise.resolve(decimals));
-
-      const rateMode = InterestRate.Stable;
-      const repayWithCollateralTxObj = await poolInstance.repayWithCollateral({
-        user,
-        fromAsset,
-        fromAToken,
-        assetToRepay,
-        repayWithAmount,
-        repayAmount,
-        permitSignature,
-        repayAllDebt,
-        rateMode,
-        onBehalfOf,
-        referralCode,
-        flash,
-        useEthPath,
-      });
-
-      expect(isApprovedSpy).toHaveBeenCalled();
-      expect(decimalsSpy).toHaveBeenCalled();
-
-      expect(repayWithCollateralTxObj.length).toEqual(1);
-      const txObj = repayWithCollateralTxObj[0];
-      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
-
-      const tx: transactionType = await txObj.tx();
-      expect(tx.to).toEqual(POOL);
-      expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
-      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
-
-      const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'address', 'uint256', 'bytes', 'uint16'],
-        utils.hexDataSlice(tx.data ?? '', 4),
-      );
-
-      const params: string = utils.defaultAbiCoder.encode(
-        [
-          'address',
-          'uint256',
-          'uint256',
-          'uint256',
-          'uint256',
-          'uint8',
-          'bytes32',
-          'bytes32',
-          'bool',
-        ],
-        [
-          fromAsset,
-          valueToWei(repayWithAmount, decimals),
-          1,
-          permitSignature.amount,
-          permitSignature.deadline,
-          permitSignature.v,
-          permitSignature.r,
-          permitSignature.s,
-          useEthPath,
-        ],
-      );
-
-      expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual(assetToRepay);
-      expect(decoded[2]).toEqual(
-        BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
-      );
-      expect(decoded[3]).toEqual(params);
-      expect(decoded[4]).toEqual(Number(referralCode));
-
-      // gas price
-      const gasPrice: GasType | null = await txObj.gas();
-      expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
-      expect(gasPrice?.gasPrice).toEqual('1');
-    });
-    it('Expects the tx object passing all params and no approval needed for flash with rate mode Variable', async () => {
-      const poolInstance = new Pool(provider, config);
-      const isApprovedSpy = jest
-        .spyOn(poolInstance.erc20Service, 'isApproved')
-        .mockImplementationOnce(async () => Promise.resolve(true));
-      const decimalsSpy = jest
-        .spyOn(poolInstance.erc20Service, 'decimalsOf')
-        .mockReturnValue(Promise.resolve(decimals));
-
-      const rateMode = InterestRate.Variable;
-      const repayWithCollateralTxObj = await poolInstance.repayWithCollateral({
-        user,
-        fromAsset,
-        fromAToken,
-        assetToRepay,
-        repayWithAmount,
-        repayAmount,
-        permitSignature,
-        repayAllDebt,
-        rateMode,
-        onBehalfOf,
-        referralCode,
-        flash,
-        useEthPath,
-      });
-
-      expect(isApprovedSpy).toHaveBeenCalled();
-      expect(decimalsSpy).toHaveBeenCalled();
-
-      expect(repayWithCollateralTxObj.length).toEqual(1);
-      const txObj = repayWithCollateralTxObj[0];
-      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
-
-      const tx: transactionType = await txObj.tx();
-      expect(tx.to).toEqual(POOL);
-      expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
-      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
-
-      const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'address', 'uint256', 'bytes', 'uint16'],
-        utils.hexDataSlice(tx.data ?? '', 4),
-      );
-
-      const params: string = utils.defaultAbiCoder.encode(
-        [
-          'address',
-          'uint256',
-          'uint256',
-          'uint256',
-          'uint256',
-          'uint8',
-          'bytes32',
-          'bytes32',
-          'bool',
-        ],
-        [
-          fromAsset,
-          valueToWei(repayWithAmount, decimals),
-          2,
-          permitSignature.amount,
-          permitSignature.deadline,
-          permitSignature.v,
-          permitSignature.r,
-          permitSignature.s,
-          useEthPath,
-        ],
-      );
-
-      expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual(assetToRepay);
-      expect(decoded[2]).toEqual(
-        BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
-      );
-      expect(decoded[3]).toEqual(params);
-      expect(decoded[4]).toEqual(Number(referralCode));
-
-      // gas price
-      const gasPrice: GasType | null = await txObj.gas();
-      expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
-      expect(gasPrice?.gasPrice).toEqual('1');
-    });
-    it('Expects the tx object passing all params and no approval needed for flash without onBehalfOf', async () => {
-      const poolInstance = new Pool(provider, config);
-      const isApprovedSpy = jest
-        .spyOn(poolInstance.erc20Service, 'isApproved')
-        .mockImplementationOnce(async () => Promise.resolve(true));
-      const decimalsSpy = jest
-        .spyOn(poolInstance.erc20Service, 'decimalsOf')
-        .mockReturnValue(Promise.resolve(decimals));
-
-      const repayWithCollateralTxObj = await poolInstance.repayWithCollateral({
-        user,
-        fromAsset,
-        fromAToken,
-        assetToRepay,
-        repayWithAmount,
-        repayAmount,
-        permitSignature,
-        repayAllDebt,
-        rateMode,
-        // onBehalfOf,
-        referralCode,
-        flash,
-        useEthPath,
-      });
-
-      expect(isApprovedSpy).toHaveBeenCalled();
-      expect(decimalsSpy).toHaveBeenCalled();
-
-      expect(repayWithCollateralTxObj.length).toEqual(1);
-      const txObj = repayWithCollateralTxObj[0];
-      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
-
-      const tx: transactionType = await txObj.tx();
-      expect(tx.to).toEqual(POOL);
-      expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
-      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
-
-      const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'address', 'uint256', 'bytes', 'uint16'],
-        utils.hexDataSlice(tx.data ?? '', 4),
-      );
-
-      const params: string = utils.defaultAbiCoder.encode(
-        [
-          'address',
-          'uint256',
-          'uint256',
-          'uint256',
-          'uint256',
-          'uint8',
-          'bytes32',
-          'bytes32',
-          'bool',
-        ],
-        [
-          fromAsset,
-          valueToWei(repayWithAmount, decimals),
-          2,
-          permitSignature.amount,
-          permitSignature.deadline,
-          permitSignature.v,
-          permitSignature.r,
-          permitSignature.s,
-          useEthPath,
-        ],
-      );
-
-      expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual(assetToRepay);
-      expect(decoded[2]).toEqual(
-        BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
-      );
-      expect(decoded[3]).toEqual(params);
-      expect(decoded[4]).toEqual(Number(referralCode));
-
-      // gas price
-      const gasPrice: GasType | null = await txObj.gas();
-      expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
-      expect(gasPrice?.gasPrice).toEqual('1');
-    });
-    it('Expects the tx object passing all params and no approval needed for flash without referralCode', async () => {
-      const poolInstance = new Pool(provider, config);
-      const isApprovedSpy = jest
-        .spyOn(poolInstance.erc20Service, 'isApproved')
-        .mockImplementationOnce(async () => Promise.resolve(true));
-      const decimalsSpy = jest
-        .spyOn(poolInstance.erc20Service, 'decimalsOf')
-        .mockReturnValue(Promise.resolve(decimals));
-
-      const repayWithCollateralTxObj = await poolInstance.repayWithCollateral({
-        user,
-        fromAsset,
-        fromAToken,
-        assetToRepay,
-        repayWithAmount,
-        repayAmount,
-        permitSignature,
-        repayAllDebt,
-        rateMode,
-        onBehalfOf,
-        // referralCode,
-        flash,
-        useEthPath,
-      });
-
-      expect(isApprovedSpy).toHaveBeenCalled();
-      expect(decimalsSpy).toHaveBeenCalled();
-
-      expect(repayWithCollateralTxObj.length).toEqual(1);
-      const txObj = repayWithCollateralTxObj[0];
-      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
-
-      const tx: transactionType = await txObj.tx();
-      expect(tx.to).toEqual(POOL);
-      expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
-      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
-
-      const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'address', 'uint256', 'bytes', 'uint16'],
-        utils.hexDataSlice(tx.data ?? '', 4),
-      );
-
-      const params: string = utils.defaultAbiCoder.encode(
-        [
-          'address',
-          'uint256',
-          'uint256',
-          'uint256',
-          'uint256',
-          'uint8',
-          'bytes32',
-          'bytes32',
-          'bool',
-        ],
-        [
-          fromAsset,
-          valueToWei(repayWithAmount, decimals),
-          2,
-          permitSignature.amount,
-          permitSignature.deadline,
-          permitSignature.v,
-          permitSignature.r,
-          permitSignature.s,
-          useEthPath,
-        ],
-      );
-
-      expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual(assetToRepay);
-      expect(decoded[2]).toEqual(
-        BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
-      );
-      expect(decoded[3]).toEqual(params);
-      expect(decoded[4]).toEqual(0);
-
-      // gas price
-      const gasPrice: GasType | null = await txObj.gas();
-      expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
-      expect(gasPrice?.gasPrice).toEqual('1');
-    });
-    it('Expects the tx object passing all params and no approval needed for flash without useEthPath', async () => {
-      const poolInstance = new Pool(provider, config);
-      const isApprovedSpy = jest
-        .spyOn(poolInstance.erc20Service, 'isApproved')
-        .mockImplementationOnce(async () => Promise.resolve(true));
-      const decimalsSpy = jest
-        .spyOn(poolInstance.erc20Service, 'decimalsOf')
-        .mockReturnValue(Promise.resolve(decimals));
-
-      const repayWithCollateralTxObj = await poolInstance.repayWithCollateral({
-        user,
-        fromAsset,
-        fromAToken,
-        assetToRepay,
-        repayWithAmount,
-        repayAmount,
-        permitSignature,
-        repayAllDebt,
-        rateMode,
-        onBehalfOf,
-        referralCode,
-        flash,
-        // useEthPath,
-      });
-
-      expect(isApprovedSpy).toHaveBeenCalled();
-      expect(decimalsSpy).toHaveBeenCalled();
-
-      expect(repayWithCollateralTxObj.length).toEqual(1);
-      const txObj = repayWithCollateralTxObj[0];
-      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
-
-      const tx: transactionType = await txObj.tx();
-      expect(tx.to).toEqual(POOL);
-      expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
-      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
-
-      const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'address', 'uint256', 'bytes', 'uint16'],
-        utils.hexDataSlice(tx.data ?? '', 4),
-      );
-
-      const params: string = utils.defaultAbiCoder.encode(
-        [
-          'address',
-          'uint256',
-          'uint256',
-          'uint256',
-          'uint256',
-          'uint8',
-          'bytes32',
-          'bytes32',
-          'bool',
-        ],
-        [
-          fromAsset,
-          valueToWei(repayWithAmount, decimals),
-          2,
-          permitSignature.amount,
-          permitSignature.deadline,
-          permitSignature.v,
-          permitSignature.r,
-          permitSignature.s,
-          false,
-        ],
-      );
-
-      expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual(assetToRepay);
-      expect(decoded[2]).toEqual(
-        BigNumber.from(valueToWei(repayAmountWithSurplus, decimals)),
-      );
-      expect(decoded[3]).toEqual(params);
-      expect(decoded[4]).toEqual(Number(referralCode));
-
-      // gas price
-      const gasPrice: GasType | null = await txObj.gas();
-      expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
-      expect(gasPrice?.gasPrice).toEqual('1');
-    });
-    it('Expects the tx object passing all params and no approval needed without flash and not repayAllDebt', async () => {
-      const poolInstance = new Pool(provider, config);
-      const isApprovedSpy = jest
-        .spyOn(poolInstance.erc20Service, 'isApproved')
-        .mockImplementationOnce(async () => Promise.resolve(true));
-      const decimalsSpy = jest
-        .spyOn(poolInstance.erc20Service, 'decimalsOf')
-        .mockReturnValue(Promise.resolve(decimals));
-
-      const repayWithCollateralTxObj = await poolInstance.repayWithCollateral({
-        user,
-        fromAsset,
-        fromAToken,
-        assetToRepay,
-        repayWithAmount,
-        repayAmount,
-        permitSignature,
-        // repayAllDebt,
-        rateMode,
-        onBehalfOf,
-        referralCode,
-        flash,
-        useEthPath,
-      });
-
-      expect(isApprovedSpy).toHaveBeenCalled();
-      expect(decimalsSpy).toHaveBeenCalled();
-
-      expect(repayWithCollateralTxObj.length).toEqual(1);
-      const txObj = repayWithCollateralTxObj[0];
-      expect(txObj.txType).toEqual(eEthereumTxType.DLP_ACTION);
-
-      const tx: transactionType = await txObj.tx();
-      expect(tx.to).toEqual(POOL);
-      expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
-      expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
-
-      const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'address', 'uint256', 'bytes', 'uint16'],
-        utils.hexDataSlice(tx.data ?? '', 4),
-      );
-
-      const params: string = utils.defaultAbiCoder.encode(
-        [
-          'address',
-          'uint256',
-          'uint256',
-          'uint256',
-          'uint256',
-          'uint8',
-          'bytes32',
-          'bytes32',
-          'bool',
-        ],
-        [
-          fromAsset,
-          valueToWei(repayWithAmount, decimals),
-          2,
-          permitSignature.amount,
-          permitSignature.deadline,
-          permitSignature.v,
-          permitSignature.r,
-          permitSignature.s,
-          useEthPath,
-        ],
-      );
-
-      expect(decoded[0]).toEqual(REPAY_WITH_COLLATERAL_ADAPTER);
-      expect(decoded[1]).toEqual(assetToRepay);
-      expect(decoded[2]).toEqual(
-        BigNumber.from(valueToWei(repayAmount, decimals)),
-      );
-      expect(decoded[3]).toEqual(params);
-      expect(decoded[4]).toEqual(Number(referralCode));
-
-      // gas price
-      const gasPrice: GasType | null = await txObj.gas();
-      expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
-      expect(gasPrice?.gasPrice).toEqual('1');
-    });
-    it('Expects the tx object passing all params and no permitSignature, and no flash', async () => {
-      const poolInstance = new Pool(provider, config);
-      const isApprovedSpy = jest
-        .spyOn(poolInstance.erc20Service, 'isApproved')
-        .mockImplementationOnce(async () => Promise.resolve(true));
-      const decimalsSpy = jest
-        .spyOn(poolInstance.erc20Service, 'decimalsOf')
-        .mockReturnValue(Promise.resolve(decimals));
-
-      const repaySpy = jest
-        .spyOn(poolInstance.repayWithCollateralAdapterService, 'swapAndRepay')
-        .mockReturnValue({} as EthereumTransactionTypeExtended);
-
-      await poolInstance.repayWithCollateral({
-        user,
-        fromAsset,
-        fromAToken,
-        assetToRepay,
-        repayWithAmount,
-        repayAmount,
-        // permitSignature,
-        repayAllDebt,
-        rateMode,
-        onBehalfOf,
-        referralCode,
-        // flash,
-        useEthPath,
-      });
-
-      expect(isApprovedSpy).toHaveBeenCalled();
-      expect(decimalsSpy).toHaveBeenCalled();
-      expect(repaySpy).toHaveBeenCalled();
-    });
-    it('Expects to fail when PoolAddress not provided', async () => {
-      const poolInstance = new Pool(provider);
-      const txObj = await poolInstance.repayWithCollateral({
-        user,
-        fromAsset,
-        fromAToken,
-        assetToRepay,
-        repayWithAmount,
-        repayAmount,
-        permitSignature,
-        repayAllDebt,
-        rateMode,
-        onBehalfOf,
-        referralCode,
-        flash,
-        useEthPath,
-      });
-      expect(txObj).toEqual([]);
-    });
-    it('Expects to fail when REPAY_WITH_COLLATERAL_ADAPTER not provided', async () => {
-      const poolInstance = new Pool(provider, { POOL });
-      const txObj = await poolInstance.repayWithCollateral({
-        user,
-        fromAsset,
-        fromAToken,
-        assetToRepay,
-        repayWithAmount,
-        repayAmount,
-        permitSignature,
-        repayAllDebt,
-        rateMode,
-        onBehalfOf,
-        referralCode,
-        flash,
-        useEthPath,
-      });
-      expect(txObj).toEqual([]);
-    });
-    it('Expects to fail when user not and eth address', async () => {
-      const poolInstance = new Pool(provider, config);
-      const user = 'asdf';
-      await expect(async () =>
-        poolInstance.repayWithCollateral({
-          user,
-          fromAsset,
-          fromAToken,
-          assetToRepay,
-          repayWithAmount,
-          repayAmount,
-          permitSignature,
-          repayAllDebt,
-          rateMode,
-          onBehalfOf,
-          referralCode,
-          flash,
-          useEthPath,
-        }),
-      ).rejects.toThrowError(
-        `Address: ${user} is not a valid ethereum Address`,
-      );
-    });
-    it('Expects to fail when fromAsset not and eth address', async () => {
-      const poolInstance = new Pool(provider, config);
-      const fromAsset = 'asdf';
-      await expect(async () =>
-        poolInstance.repayWithCollateral({
-          user,
-          fromAsset,
-          fromAToken,
-          assetToRepay,
-          repayWithAmount,
-          repayAmount,
-          permitSignature,
-          repayAllDebt,
-          rateMode,
-          onBehalfOf,
-          referralCode,
-          flash,
-          useEthPath,
-        }),
-      ).rejects.toThrowError(
-        `Address: ${fromAsset} is not a valid ethereum Address`,
-      );
-    });
-    it('Expects to fail when fromAToken not and eth address', async () => {
-      const poolInstance = new Pool(provider, config);
-      const fromAToken = 'asdf';
-      await expect(async () =>
-        poolInstance.repayWithCollateral({
-          user,
-          fromAsset,
-          fromAToken,
-          assetToRepay,
-          repayWithAmount,
-          repayAmount,
-          permitSignature,
-          repayAllDebt,
-          rateMode,
-          onBehalfOf,
-          referralCode,
-          flash,
-          useEthPath,
-        }),
-      ).rejects.toThrowError(
-        `Address: ${fromAToken} is not a valid ethereum Address`,
-      );
-    });
-    it('Expects to fail when assetToRepay not and eth address', async () => {
-      const poolInstance = new Pool(provider, config);
-      const assetToRepay = 'asdf';
-      await expect(async () =>
-        poolInstance.repayWithCollateral({
-          user,
-          fromAsset,
-          fromAToken,
-          assetToRepay,
-          repayWithAmount,
-          repayAmount,
-          permitSignature,
-          repayAllDebt,
-          rateMode,
-          onBehalfOf,
-          referralCode,
-          flash,
-          useEthPath,
-        }),
-      ).rejects.toThrowError(
-        `Address: ${assetToRepay} is not a valid ethereum Address`,
-      );
-    });
-    it('Expects to fail when repayWithAmount not positive', async () => {
-      const poolInstance = new Pool(provider, config);
-      const repayWithAmount = '0';
-      await expect(async () =>
-        poolInstance.repayWithCollateral({
-          user,
-          fromAsset,
-          fromAToken,
-          assetToRepay,
-          repayWithAmount,
-          repayAmount,
-          permitSignature,
-          repayAllDebt,
-          rateMode,
-          onBehalfOf,
-          referralCode,
-          flash,
-          useEthPath,
-        }),
-      ).rejects.toThrowError(
-        `Amount: ${repayWithAmount} needs to be greater than 0`,
-      );
-    });
-    it('Expects to fail when repayWithAmount not number', async () => {
-      const poolInstance = new Pool(provider, config);
-      const repayWithAmount = 'asdf';
-      await expect(async () =>
-        poolInstance.repayWithCollateral({
-          user,
-          fromAsset,
-          fromAToken,
-          assetToRepay,
-          repayWithAmount,
-          repayAmount,
-          permitSignature,
-          repayAllDebt,
-          rateMode,
-          onBehalfOf,
-          referralCode,
-          flash,
-          useEthPath,
-        }),
-      ).rejects.toThrowError(
-        `Amount: ${repayWithAmount} needs to be greater than 0`,
-      );
-    });
-    it('Expects to fail when repayAmount not positive', async () => {
-      const poolInstance = new Pool(provider, config);
-      const repayAmount = '0';
-      await expect(async () =>
-        poolInstance.repayWithCollateral({
-          user,
-          fromAsset,
-          fromAToken,
-          assetToRepay,
-          repayWithAmount,
-          repayAmount,
-          permitSignature,
-          repayAllDebt,
-          rateMode,
-          onBehalfOf,
-          referralCode,
-          flash,
-          useEthPath,
-        }),
-      ).rejects.toThrowError(
-        `Amount: ${repayAmount} needs to be greater than 0`,
-      );
-    });
-    it('Expects to fail when repayAmount not number', async () => {
-      const poolInstance = new Pool(provider, config);
-      const repayAmount = 'adf';
-      await expect(async () =>
-        poolInstance.repayWithCollateral({
-          user,
-          fromAsset,
-          fromAToken,
-          assetToRepay,
-          repayWithAmount,
-          repayAmount,
-          permitSignature,
-          repayAllDebt,
-          rateMode,
-          onBehalfOf,
-          referralCode,
-          flash,
-          useEthPath,
-        }),
-      ).rejects.toThrowError(
-        `Amount: ${repayAmount} needs to be greater than 0`,
-      );
-    });
-  });
   describe('paraswapRepayWithCollateral', () => {
     const user = '0x0000000000000000000000000000000000000006';
     const fromAsset = '0x0000000000000000000000000000000000000007';
     const fromAToken = '0x0000000000000000000000000000000000000008';
     const assetToRepay = '0x0000000000000000000000000000000000000009';
-    const onBehalfOf = '0x0000000000000000000000000000000000000010';
     const augustus = '0x0000000000000000000000000000000000000011';
     const repayWithAmount = '12.34';
     const repayAmount = '13.56';
@@ -4804,7 +3909,6 @@ describe('Pool', () => {
           permitSignature,
           repayAllDebt,
           rateMode,
-          onBehalfOf,
           referralCode,
           flash,
           swapAndRepayCallData,
@@ -4894,7 +3998,6 @@ describe('Pool', () => {
           permitSignature,
           repayAllDebt,
           rateMode,
-          onBehalfOf,
           referralCode,
           flash,
           swapAndRepayCallData,
@@ -4981,7 +4084,6 @@ describe('Pool', () => {
           permitSignature,
           repayAllDebt,
           rateMode,
-          onBehalfOf,
           referralCode,
           flash,
           swapAndRepayCallData,
@@ -5067,7 +4169,6 @@ describe('Pool', () => {
           permitSignature,
           repayAllDebt,
           rateMode,
-          // onBehalfOf,
           referralCode,
           flash,
           swapAndRepayCallData,
@@ -5153,7 +4254,6 @@ describe('Pool', () => {
           permitSignature,
           repayAllDebt,
           rateMode,
-          onBehalfOf,
           // referralCode,
           flash,
           swapAndRepayCallData,
@@ -5239,7 +4339,6 @@ describe('Pool', () => {
           permitSignature,
           // repayAllDebt,
           rateMode,
-          onBehalfOf,
           referralCode,
           flash,
           swapAndRepayCallData,
@@ -5331,7 +4430,6 @@ describe('Pool', () => {
         // permitSignature,
         repayAllDebt,
         rateMode,
-        onBehalfOf,
         referralCode,
         // flash,
         swapAndRepayCallData,
@@ -5368,7 +4466,6 @@ describe('Pool', () => {
         permitSignature,
         // repayAllDebt,
         rateMode,
-        onBehalfOf,
         referralCode,
         // flash,
         swapAndRepayCallData,
@@ -5391,7 +4488,6 @@ describe('Pool', () => {
         permitSignature,
         repayAllDebt,
         rateMode,
-        onBehalfOf,
         referralCode,
         flash,
         swapAndRepayCallData,
@@ -5411,7 +4507,6 @@ describe('Pool', () => {
         permitSignature,
         repayAllDebt,
         rateMode,
-        onBehalfOf,
         referralCode,
         flash,
         swapAndRepayCallData,
@@ -5433,7 +4528,6 @@ describe('Pool', () => {
           permitSignature,
           repayAllDebt,
           rateMode,
-          onBehalfOf,
           referralCode,
           flash,
           swapAndRepayCallData,
@@ -5457,7 +4551,6 @@ describe('Pool', () => {
           permitSignature,
           repayAllDebt,
           rateMode,
-          onBehalfOf,
           referralCode,
           flash,
           swapAndRepayCallData,
@@ -5481,7 +4574,6 @@ describe('Pool', () => {
           permitSignature,
           repayAllDebt,
           rateMode,
-          onBehalfOf,
           referralCode,
           flash,
           swapAndRepayCallData,
@@ -5505,7 +4597,6 @@ describe('Pool', () => {
           permitSignature,
           repayAllDebt,
           rateMode,
-          onBehalfOf,
           referralCode,
           flash,
           swapAndRepayCallData,
@@ -5529,7 +4620,6 @@ describe('Pool', () => {
           permitSignature,
           repayAllDebt,
           rateMode,
-          onBehalfOf,
           referralCode,
           flash,
           swapAndRepayCallData,
@@ -5553,7 +4643,6 @@ describe('Pool', () => {
           permitSignature,
           repayAllDebt,
           rateMode,
-          onBehalfOf,
           referralCode,
           flash,
           swapAndRepayCallData,
@@ -5577,7 +4666,6 @@ describe('Pool', () => {
           permitSignature,
           repayAllDebt,
           rateMode,
-          onBehalfOf,
           referralCode,
           flash,
           swapAndRepayCallData,
@@ -5601,7 +4689,6 @@ describe('Pool', () => {
           permitSignature,
           repayAllDebt,
           rateMode,
-          onBehalfOf,
           referralCode,
           flash,
           swapAndRepayCallData,
@@ -5625,7 +4712,6 @@ describe('Pool', () => {
           permitSignature,
           repayAllDebt,
           rateMode,
-          onBehalfOf,
           referralCode,
           flash,
           swapAndRepayCallData,

@@ -78,26 +78,9 @@ export type LPSwapCollateral = {
   minToAmount: string;
   permitSignature?: PermitSignature;
   swapAll: boolean;
-  onBehalfOf?: tEthereumAddress;
   referralCode?: string;
   augustus: tEthereumAddress;
   swapCallData: BytesLike;
-};
-
-export type LPRepayWithCollateral = {
-  user: tEthereumAddress;
-  fromAsset: tEthereumAddress;
-  fromAToken: tEthereumAddress;
-  assetToRepay: tEthereumAddress; // List of addresses of the underlying asset to be swap from
-  repayWithAmount: string;
-  repayAmount: string; // List of amounts to be swapped. If the amount exceeds the balance, the total balance is used for the swap
-  permitSignature?: PermitSignature;
-  repayAllDebt?: boolean;
-  rateMode: InterestRate;
-  onBehalfOf?: tEthereumAddress;
-  referralCode?: string;
-  flash?: boolean;
-  useEthPath?: boolean;
 };
 
 export type LPParaswapRepayWithCollateral = {
@@ -110,7 +93,6 @@ export type LPParaswapRepayWithCollateral = {
   permitSignature?: PermitSignature;
   repayAllDebt?: boolean;
   rateMode: InterestRate;
-  onBehalfOf?: tEthereumAddress;
   referralCode?: string;
   flash?: boolean;
   swapAndRepayCallData: BytesLike;
