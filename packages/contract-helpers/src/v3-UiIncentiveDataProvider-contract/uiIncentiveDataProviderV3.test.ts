@@ -418,7 +418,7 @@ describe('UiIncentiveDataProvider', () => {
       expect(spy).toHaveBeenCalled();
       expect(response).toEqual([
         {
-          id: '137-0xb04aaa2a73ff3d88950bdf19eb4ac029630a2367-0x0000000000000000000000000000000000000002',
+          id: '137-0x0000000000000000000000000000000000000001-0xb04aaa2a73ff3d88950bdf19eb4ac029630a2367-0x0000000000000000000000000000000000000002',
           underlyingAsset:
             '0xb04Aaa2A73ff3D88950BdF19Eb4AC029630a2367'.toLowerCase(),
           aTokenIncentivesUserData: {
