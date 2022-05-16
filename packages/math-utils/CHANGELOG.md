@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.3.2 (2022-05-16)
+
+
+### Bug Fixes
+
+* make user incentives data id unique ([#346](https://github.com/@aave/aave-utilities/issues/346)) ([2fac5fd](https://github.com/@aave/aave-utilities/commit/2fac5fd24695f36f43a6c9a49875b6d01cf70413))
+
+
+
+
+
 ## 1.3.1 (2022-05-16)
 
 **Note:** Version bump only for package @aave/math-utils
