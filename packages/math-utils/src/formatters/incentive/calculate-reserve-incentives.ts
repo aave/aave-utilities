@@ -1,6 +1,6 @@
 import { normalize } from '../../bignumber';
 import { calculateIncentiveAPR } from './calculate-incentive-apr';
-import { ReservesIncentiveDataHumanized } from './types';
+import { ReservesIncentiveDataHumanized, RewardInfoHumanized } from './types';
 
 export interface CalculateReserveIncentivesRequest {
   reserves: Array<{
@@ -59,6 +59,15 @@ export function calculateRewardTokenPrice(
   return '0';
 }
 
+// Determine is reward emsission is active or distribution has ended
+const rewardEmissionActive = (reward: RewardInfoHumanized) => {
+  if (reward.emissionEndTimestamp > reward.incentivesLastUpdateTimestamp) {
+    return true;
+  }
+
+  return false;
+};
+
 // Calculate supply, variableBorrow, and stableBorrow incentives APR for a reserve asset
 export function calculateReserveIncentives({
   reserves,
@@ -71,19 +80,22 @@ export function calculateReserveIncentives({
 }: CalculateReserveIncentivesRequest): CalculateReserveIncentivesResponse {
   const aIncentivesData: ReserveIncentiveResponse[] =
     reserveIncentiveData.aIncentiveData.rewardsTokenInformation.map(reward => {
-      const aIncentivesAPR = calculateIncentiveAPR({
-        emissionPerSecond: reward.emissionPerSecond,
-        rewardTokenPriceInMarketReferenceCurrency: calculateRewardTokenPrice(
-          reserves,
-          reward.rewardTokenAddress,
-          reward.rewardPriceFeed,
-          reward.priceFeedDecimals,
-        ),
-        priceInMarketReferenceCurrency,
-        totalTokenSupply: totalLiquidity,
-        decimals,
-        rewardTokenDecimals: reward.rewardTokenDecimals,
-      });
+      const aIncentivesAPR = rewardEmissionActive(reward)
+        ? calculateIncentiveAPR({
+            emissionPerSecond: reward.emissionPerSecond,
+            rewardTokenPriceInMarketReferenceCurrency:
+              calculateRewardTokenPrice(
+                reserves,
+                reward.rewardTokenAddress,
+                reward.rewardPriceFeed,
+                reward.priceFeedDecimals,
+              ),
+            priceInMarketReferenceCurrency,
+            totalTokenSupply: totalLiquidity,
+            decimals,
+            rewardTokenDecimals: reward.rewardTokenDecimals,
+          })
+        : '0';
       const aIncentiveData: ReserveIncentiveResponse = {
         incentiveAPR: aIncentivesAPR,
         rewardTokenAddress: reward.rewardTokenAddress,
@@ -93,19 +105,22 @@ export function calculateReserveIncentives({
     });
   const vIncentivesData: ReserveIncentiveResponse[] =
     reserveIncentiveData.vIncentiveData.rewardsTokenInformation.map(reward => {
-      const vIncentivesAPR = calculateIncentiveAPR({
-        emissionPerSecond: reward.emissionPerSecond,
-        rewardTokenPriceInMarketReferenceCurrency: calculateRewardTokenPrice(
-          reserves,
-          reward.rewardTokenAddress,
-          reward.rewardPriceFeed,
-          reward.priceFeedDecimals,
-        ),
-        priceInMarketReferenceCurrency,
-        totalTokenSupply: totalVariableDebt,
-        decimals,
-        rewardTokenDecimals: reward.rewardTokenDecimals,
-      });
+      const vIncentivesAPR = rewardEmissionActive(reward)
+        ? calculateIncentiveAPR({
+            emissionPerSecond: reward.emissionPerSecond,
+            rewardTokenPriceInMarketReferenceCurrency:
+              calculateRewardTokenPrice(
+                reserves,
+                reward.rewardTokenAddress,
+                reward.rewardPriceFeed,
+                reward.priceFeedDecimals,
+              ),
+            priceInMarketReferenceCurrency,
+            totalTokenSupply: totalVariableDebt,
+            decimals,
+            rewardTokenDecimals: reward.rewardTokenDecimals,
+          })
+        : '0';
       const vIncentiveData: ReserveIncentiveResponse = {
         incentiveAPR: vIncentivesAPR,
         rewardTokenAddress: reward.rewardTokenAddress,
@@ -115,19 +130,22 @@ export function calculateReserveIncentives({
     });
   const sIncentivesData: ReserveIncentiveResponse[] =
     reserveIncentiveData.sIncentiveData.rewardsTokenInformation.map(reward => {
-      const sIncentivesAPR = calculateIncentiveAPR({
-        emissionPerSecond: reward.emissionPerSecond,
-        rewardTokenPriceInMarketReferenceCurrency: calculateRewardTokenPrice(
-          reserves,
-          reward.rewardTokenAddress,
-          reward.rewardPriceFeed,
-          reward.priceFeedDecimals,
-        ),
-        priceInMarketReferenceCurrency,
-        totalTokenSupply: totalStableDebt,
-        decimals,
-        rewardTokenDecimals: reward.rewardTokenDecimals,
-      });
+      const sIncentivesAPR = rewardEmissionActive(reward)
+        ? calculateIncentiveAPR({
+            emissionPerSecond: reward.emissionPerSecond,
+            rewardTokenPriceInMarketReferenceCurrency:
+              calculateRewardTokenPrice(
+                reserves,
+                reward.rewardTokenAddress,
+                reward.rewardPriceFeed,
+                reward.priceFeedDecimals,
+              ),
+            priceInMarketReferenceCurrency,
+            totalTokenSupply: totalStableDebt,
+            decimals,
+            rewardTokenDecimals: reward.rewardTokenDecimals,
+          })
+        : '0';
       const sIncentiveData: ReserveIncentiveResponse = {
         incentiveAPR: sIncentivesAPR,
         rewardTokenAddress: reward.rewardTokenAddress,
