@@ -208,7 +208,7 @@ export class ReserveIncentiveMock {
             emissionPerSecond: (10 ** 18).toString(), // 1
             incentivesLastUpdateTimestamp: 1,
             tokenIncentivesIndex: RAY.toString(),
-            emissionEndTimestamp: 1,
+            emissionEndTimestamp: 2,
             rewardTokenAddress: '0x0000000000000000000000000000000000000000',
             rewardTokenDecimals: 18,
             precision: 18,
@@ -228,7 +228,7 @@ export class ReserveIncentiveMock {
             emissionPerSecond: (10 ** 18).toString(), // 1
             incentivesLastUpdateTimestamp: 1,
             tokenIncentivesIndex: RAY.toString(),
-            emissionEndTimestamp: 1,
+            emissionEndTimestamp: 2,
             rewardTokenAddress: '0x0000000000000000000000000000000000000000',
             rewardTokenDecimals: 18,
             precision: 18,
@@ -248,7 +248,7 @@ export class ReserveIncentiveMock {
             emissionPerSecond: '0',
             incentivesLastUpdateTimestamp: 1,
             tokenIncentivesIndex: '0',
-            emissionEndTimestamp: 1,
+            emissionEndTimestamp: 2,
             rewardTokenAddress: '0x0000000000000000000000000000000000000000',
             rewardTokenDecimals: 18,
             precision: 18,
