@@ -21,6 +21,7 @@ export * from './governance-contract/types';
 export * from './governance-power-delegation-contract';
 export * from './v3-pool-contract';
 export * from './synthetix-contract';
+export * from './biconomy-forwarder';
 
 // commons
 export * from './commons/types';

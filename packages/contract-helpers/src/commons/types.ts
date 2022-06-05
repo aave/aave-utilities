@@ -136,6 +136,7 @@ export type transactionType = {
   gasPrice?: BigNumber;
   data?: string;
   chainId?: number;
+  signatureType?: string | number;
 };
 
 export type AddressModel = {
@@ -213,6 +214,7 @@ export type TransactionGenerationMethod = {
   value?: string;
   gasSurplus?: number;
   action?: ProtocolAction;
+  signatureType?: string
 };
 
 export type TransactionGasGenerationMethod = {
