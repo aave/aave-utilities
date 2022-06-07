@@ -1414,10 +1414,12 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
 
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>
-        poolContract.populateTransaction.flashLoanSimple(
+        poolContract.populateTransaction.flashLoan(
           this.flashLiquidationAddress,
-          borrowedAsset,
-          flashBorrowAmount,
+          [borrowedAsset],
+          [flashBorrowAmount],
+          [0],
+          initiator,
           params,
           '0',
         ),
