@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.3.4 (2022-06-07)
+
+
+### Bug Fixes
+
+* revert switch to simple flashloan ([#364](https://github.com/aave/aave-utilities/issues/364)) ([0627575](https://github.com/aave/aave-utilities/commit/0627575410a8e5dbe65dcc5a55d6f4057b6180f2))
+
+
+
+
+
 ## 1.3.3 (2022-05-24)
 
 **Note:** Version bump only for package @aave/contract-helpers
