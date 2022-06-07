@@ -78,6 +78,7 @@ export type LPSwapCollateral = {
   minToAmount: string;
   permitSignature?: PermitSignature;
   swapAll: boolean;
+  onBehalfOf?: tEthereumAddress;
   referralCode?: string;
   augustus: tEthereumAddress;
   swapCallData: BytesLike;
@@ -93,6 +94,7 @@ export type LPParaswapRepayWithCollateral = {
   permitSignature?: PermitSignature;
   repayAllDebt?: boolean;
   rateMode: InterestRate;
+  onBehalfOf?: tEthereumAddress;
   referralCode?: string;
   flash?: boolean;
   swapAndRepayCallData: BytesLike;
