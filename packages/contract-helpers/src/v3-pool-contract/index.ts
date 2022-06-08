@@ -1057,7 +1057,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     @isEthAddress('fromAsset')
     @isEthAddress('fromAToken')
     @isEthAddress('toAsset')
-    @isEthAddress('onBehalfOf')
     @isEthAddress('augustus')
     @isPositiveAmount('fromAmount')
     @isPositiveAmount('minToAmount')
@@ -1071,7 +1070,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       minToAmount,
       permitSignature,
       swapAll,
-      onBehalfOf,
       referralCode,
       augustus,
       swapCallData,
@@ -1148,12 +1146,10 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       const txCallback: () => Promise<transactionType> =
         this.generateTxCallback({
           rawTxMethod: async () =>
-            poolContract.populateTransaction.flashLoan(
+            poolContract.populateTransaction.flashLoanSimple(
               this.swapCollateralAddress,
-              [fromAsset],
-              swapAll ? [convertedAmountWithSurplus] : [convertedAmount],
-              [0], // interest rate mode to NONE for flashloan to not open debt
-              onBehalfOf ?? user,
+              fromAsset,
+              swapAll ? convertedAmountWithSurplus : convertedAmount,
               params,
               referralCode ?? '0',
             ),
@@ -1199,7 +1195,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     @isEthAddress('fromAsset')
     @isEthAddress('fromAToken')
     @isEthAddress('assetToRepay')
-    @isEthAddress('onBehalfOf')
     @isPositiveAmount('repayWithAmount')
     @isPositiveAmount('repayAmount')
     @isEthAddress('augustus')
@@ -1213,7 +1208,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       permitSignature,
       repayAllDebt,
       rateMode,
-      onBehalfOf,
       referralCode,
       flash,
       swapAndRepayCallData,
@@ -1310,14 +1304,12 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       const txCallback: () => Promise<transactionType> =
         this.generateTxCallback({
           rawTxMethod: async () =>
-            poolContract.populateTransaction.flashLoan(
+            poolContract.populateTransaction.flashLoanSimple(
               this.repayWithCollateralAddress,
-              [fromAsset],
+              fromAsset,
               repayAllDebt
-                ? [convertedRepayWithAmountWithSurplus]
-                : [convertedRepayWithAmount],
-              [0], // interest rate mode to NONE for flashloan to not open debt
-              onBehalfOf ?? user,
+                ? convertedRepayWithAmountWithSurplus
+                : convertedRepayWithAmount,
               params,
               referralCode ?? '0',
             ),
@@ -1414,12 +1406,10 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
 
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>
-        poolContract.populateTransaction.flashLoan(
+        poolContract.populateTransaction.flashLoanSimple(
           this.flashLiquidationAddress,
-          [borrowedAsset],
-          [flashBorrowAmount],
-          [0],
-          initiator,
+          borrowedAsset,
+          flashBorrowAmount,
           params,
           '0',
         ),
