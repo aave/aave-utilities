@@ -21,6 +21,6 @@ runs:
           await github.rest.issues.createComment({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            issue_number: Number(${{ inputs.PR_NUMBER }}),
+            issue_number: Number('${{ inputs.PR_NUMBER }}'),
             body: `🎉 Canary Release\nTo install use\n\`npm install @aave/math-utils@${version}\`\n\`npm install @aave/contract-helpers@${version}\``
           });
