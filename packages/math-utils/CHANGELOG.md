@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.3.6 (2022-06-14)
+
+
+### Reverts
+
+* Revert "fix: revert switch to simple flashloan (#364)" (#366) ([86364c0](https://github.com/@aave/aave-utilities/commit/86364c02bb63fc73f8d8211009ecf05f82a7aa39)), closes [#364](https://github.com/@aave/aave-utilities/issues/364) [#366](https://github.com/@aave/aave-utilities/issues/366)
+
+
+
+
+
 ## 1.3.5 (2022-06-10)
 
 **Note:** Version bump only for package @aave/math-utils
