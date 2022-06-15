@@ -132,7 +132,8 @@ export const augustusToAmountOffsetFromCalldata = (
       return 100; // 4 + 3 * 32
     case '0xb2f1e6db': // Augustus V5 buyOnUniswapV2Fork
       return 68; // 4 + 2 * 32
-    case '0xb66bcbac': // Augustus V5 buy
+    case '0xb66bcbac': // Augustus V5 buy (old)
+    case '0x35326910': // Augustus V5 buy
       return 164; // 4 + 5 * 32
     default:
       throw new Error('Unrecognized function selector for Augustus');
