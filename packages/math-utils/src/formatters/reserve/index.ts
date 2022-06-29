@@ -392,17 +392,17 @@ export function formatReserveUSD({
     // caps are already in absolutes
     borrowCapUSD: normalizedToUsd(
       new BigNumber(reserve.borrowCap),
-      marketReferencePriceInUsd,
+      reserve.priceInMarketReferenceCurrency,
       marketReferenceCurrencyDecimals,
     ).toString(),
     supplyCapUSD: normalizedToUsd(
       new BigNumber(reserve.supplyCap),
-      marketReferencePriceInUsd,
+      reserve.priceInMarketReferenceCurrency,
       marketReferenceCurrencyDecimals,
     ).toString(),
     unbackedUSD: normalizedToUsd(
       new BigNumber(reserve.unbacked),
-      marketReferencePriceInUsd,
+      reserve.priceInMarketReferenceCurrency,
       marketReferenceCurrencyDecimals,
     ).toString(),
     // debtCeilingUSD: normalizedToUsd(
