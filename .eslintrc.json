@@ -29,19 +29,9 @@
 
     // xo-typescript overrides
     "@typescript-eslint/explicit-function-return-type": "off",
-    "import/order": [
-      "error",
-      {
-        "alphabetize": {
-          "order": "asc"
-        }
-      }
-    ],
     "capitalized-comments": "off",
     "@typescript-eslint/naming-convention": "off",
-    "@typescript-eslint/ban-types": "off",
-    // turn on errors for missing imports
-    "import/no-unresolved": "error"
+    "@typescript-eslint/ban-types": "off"
   },
   "overrides": [
     {
