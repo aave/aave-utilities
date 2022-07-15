@@ -27,6 +27,7 @@ export const ChainIdToNetwork: Record<number, string> = {
   4002: 'fantom_testnet',
   10: 'optimism',
   69: 'optimism_kovan',
+  420: 'optimism_goerli',
   1666600000: 'harmony',
   1666700000: 'harmony_testnet',
 };
@@ -48,6 +49,7 @@ export enum ChainId {
   fantom_testnet = 4002,
   optimism = 10,
   optimism_kovan = 69,
+  optimism_goerli = 420,
   harmony = 1666600000,
   harmony_testnet = 1666700000,
 }
