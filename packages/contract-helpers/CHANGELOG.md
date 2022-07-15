@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.4.0 (2022-07-15)
+
+
+### Features
+
+* add optimism goerli chainId ([#386](https://github.com/aave/aave-utilities/issues/386)) ([0c569de](https://github.com/aave/aave-utilities/commit/0c569de6da072f25012850f5aaa6082badc5d488))
+
+
+
+
+
 ## 1.3.8 (2022-06-29)
 
 **Note:** Version bump only for package @aave/contract-helpers
