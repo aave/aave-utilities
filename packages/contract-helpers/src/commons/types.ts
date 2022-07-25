@@ -23,6 +23,7 @@ export const ChainIdToNetwork: Record<number, string> = {
   43113: 'fuji',
   42161: 'arbitrum_one',
   421611: 'arbitrum_rinkeby',
+  421613: 'arbitrum_goerli',
   250: 'fantom_opera',
   4002: 'fantom_testnet',
   10: 'optimism',
@@ -45,6 +46,7 @@ export enum ChainId {
   fuji = 43113, // avalanche test network
   arbitrum_one = 42161,
   arbitrum_rinkeby = 421611,
+  arbitrum_goerli = 421613,
   fantom = 250,
   fantom_testnet = 4002,
   optimism = 10,
