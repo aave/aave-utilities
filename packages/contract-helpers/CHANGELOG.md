@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.5.0 (2022-07-25)
+
+
+### Features
+
+* add arbitrum goerli chainId ([#392](https://github.com/aave/aave-utilities/issues/392)) ([7a25f29](https://github.com/aave/aave-utilities/commit/7a25f29bdf24166b15f5ce0889ab687a56584771))
+
+
+
+
+
 # 1.4.0 (2022-07-15)
 
 
