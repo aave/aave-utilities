@@ -29,14 +29,6 @@
 
     // xo-typescript overrides
     "@typescript-eslint/explicit-function-return-type": "off",
-    "import/order": [
-      "error",
-      {
-        "alphabetize": {
-          "order": "asc"
-        }
-      }
-    ],
     "capitalized-comments": "off",
     "@typescript-eslint/naming-convention": "off",
     "@typescript-eslint/ban-types": "off"
@@ -51,5 +43,13 @@
         "@typescript-eslint/no-explicit-any": "off"
       }
     }
-  ]
+  ],
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true, // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
+        "project": "packages/*/tsconfig.json"
+      }
+    }
+  }
 }
