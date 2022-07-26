@@ -3,6 +3,74 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.5.0 (2022-07-25)
+
+
+### Features
+
+* add arbitrum goerli chainId ([#392](https://github.com/@aave/aave-utilities/issues/392)) ([7a25f29](https://github.com/@aave/aave-utilities/commit/7a25f29bdf24166b15f5ce0889ab687a56584771))
+
+
+
+
+
+# 1.4.0 (2022-07-15)
+
+
+### Features
+
+* add optimism goerli chainId ([#386](https://github.com/@aave/aave-utilities/issues/386)) ([0c569de](https://github.com/@aave/aave-utilities/commit/0c569de6da072f25012850f5aaa6082badc5d488))
+
+
+
+
+
+## 1.3.8 (2022-06-29)
+
+**Note:** Version bump only for package @aave/math-utils
+
+
+
+
+
+## 1.3.7 (2022-06-15)
+
+**Note:** Version bump only for package @aave/math-utils
+
+
+
+
+
+## 1.3.6 (2022-06-14)
+
+
+### Reverts
+
+* Revert "fix: revert switch to simple flashloan (#364)" (#366) ([86364c0](https://github.com/@aave/aave-utilities/commit/86364c02bb63fc73f8d8211009ecf05f82a7aa39)), closes [#364](https://github.com/@aave/aave-utilities/issues/364) [#366](https://github.com/@aave/aave-utilities/issues/366)
+
+
+
+
+
+## 1.3.5 (2022-06-10)
+
+**Note:** Version bump only for package @aave/math-utils
+
+
+
+
+
+## 1.3.4 (2022-06-07)
+
+
+### Bug Fixes
+
+* revert switch to simple flashloan ([#364](https://github.com/@aave/aave-utilities/issues/364)) ([0627575](https://github.com/@aave/aave-utilities/commit/0627575410a8e5dbe65dcc5a55d6f4057b6180f2))
+
+
+
+
+
 ## 1.3.3 (2022-05-24)
 
 **Note:** Version bump only for package @aave/math-utils
