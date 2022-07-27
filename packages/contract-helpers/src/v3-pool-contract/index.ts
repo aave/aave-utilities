@@ -66,53 +66,6 @@ import {
 import { IPool } from './typechain/IPool';
 import { IPool__factory } from './typechain/IPool__factory';
 
-export interface PoolInterface {
-  deposit: (
-    args: LPSupplyParamsType,
-  ) => Promise<EthereumTransactionTypeExtended[]>;
-  supply: (
-    args: LPSupplyParamsType,
-  ) => Promise<EthereumTransactionTypeExtended[]>;
-  signERC20Approval: (args: LPSignERC20ApprovalType) => Promise<string>;
-  supplyWithPermit: (
-    args: LPSupplyWithPermitType,
-  ) => Promise<EthereumTransactionTypeExtended[]>;
-  withdraw: (
-    args: LPWithdrawParamsType,
-  ) => Promise<EthereumTransactionTypeExtended[]>;
-  borrow: (
-    args: LPBorrowParamsType,
-  ) => Promise<EthereumTransactionTypeExtended[]>;
-  repay: (
-    args: LPRepayParamsType,
-  ) => Promise<EthereumTransactionTypeExtended[]>;
-  repayWithPermit: (
-    args: LPRepayWithPermitParamsType,
-  ) => Promise<EthereumTransactionTypeExtended[]>;
-  swapBorrowRateMode: (
-    args: LPSwapBorrowRateMode,
-  ) => Promise<EthereumTransactionTypeExtended[]>;
-  setUsageAsCollateral: (
-    args: LPSetUsageAsCollateral,
-  ) => Promise<EthereumTransactionTypeExtended[]>;
-  swapCollateral: (
-    args: LPSwapCollateral,
-  ) => Promise<EthereumTransactionTypeExtended[]>;
-  flashLiquidation: (
-    args: LPFlashLiquidation,
-  ) => Promise<EthereumTransactionTypeExtended[]>;
-  repayWithATokens: (
-    args: LPRepayWithATokensType,
-  ) => Promise<EthereumTransactionTypeExtended[]>;
-  liquidationCall: (
-    args: LPLiquidationCall,
-  ) => Promise<EthereumTransactionTypeExtended[]>;
-  setUserEMode: (args: LPSetUserEModeType) => EthereumTransactionTypeExtended[];
-  paraswapRepayWithCollateral(
-    args: LPParaswapRepayWithCollateral,
-  ): Promise<EthereumTransactionTypeExtended[]>;
-}
-
 export type LendingPoolMarketConfigV3 = {
   POOL: tEthereumAddress;
   WETH_GATEWAY?: tEthereumAddress;
@@ -155,7 +108,7 @@ const buildParaSwapLiquiditySwapParams = (
   );
 };
 
-export class Pool extends BaseService<IPool> implements PoolInterface {
+export class Pool extends BaseService<IPool> {
   readonly erc20Service: IERC20ServiceInterface;
 
   readonly poolAddress: string;
@@ -890,11 +843,11 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
   }
 
   @LPValidatorV3
-  public async swapBorrowRateMode(
+  public swapBorrowRateMode(
     @isEthAddress('user')
     @isEthAddress('reserve')
     { user, reserve, interestRateMode, useOptimizedPath }: LPSwapBorrowRateMode,
-  ): Promise<EthereumTransactionTypeExtended[]> {
+  ) {
     const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
 
     if (useOptimizedPath) {
@@ -925,7 +878,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
   }
 
   @LPValidatorV3
-  public async setUsageAsCollateral(
+  public setUsageAsCollateral(
     @isEthAddress('user')
     @isEthAddress('reserve')
     {
@@ -934,7 +887,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       usageAsCollateral,
       useOptimizedPath,
     }: LPSetUsageAsCollateral,
-  ): Promise<EthereumTransactionTypeExtended[]> {
+  ) {
     const poolContract: IPool = this.getContractInstance(this.poolAddress);
 
     if (useOptimizedPath) {
