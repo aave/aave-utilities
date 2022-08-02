@@ -13,7 +13,7 @@ import {
   CalculateAccruedIncentivesRequest,
 } from './calculate-accrued-incentives';
 
-fdescribe('calculateAccruedIncentives', () => {
+describe('calculateAccruedIncentives', () => {
   const reserveMock = new ReserveMock()
     .addLiquidity(100)
     .addVariableDebt(200)
