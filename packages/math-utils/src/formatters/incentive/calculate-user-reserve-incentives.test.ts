@@ -56,7 +56,7 @@ describe('calculateUserReserveIncentives', () => {
         reward.tokenAddress === '0x0000000000000000000000000000000000000000',
     );
     if (aReward) {
-      expect(normalize(aReward.accruedRewards, 18)).toBe('100000000000'); // 1 from deposit
+      expect(normalize(aReward.accruedRewards, 18)).toBe('50000000000'); // 1 from deposit
     }
   });
 
