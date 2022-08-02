@@ -5,7 +5,7 @@ import {
 } from './formatters/incentive';
 import { FormatReserveUSDResponse, ReserveData } from './formatters/reserve';
 import { UserReserveData } from './formatters/user';
-import { RAY } from './ray.math';
+import { HALF_RAY, RAY } from './ray.math';
 
 export class ReserveMock {
   public reserve: ReserveData;
@@ -247,7 +247,7 @@ export class ReserveIncentiveMock {
             rewardTokenSymbol: 'Test',
             emissionPerSecond: '0',
             incentivesLastUpdateTimestamp: 1,
-            tokenIncentivesIndex: '0',
+            tokenIncentivesIndex: RAY.toString(),
             emissionEndTimestamp: 2,
             rewardTokenAddress: '0x0000000000000000000000000000000000000000',
             rewardTokenDecimals: 18,
@@ -274,7 +274,7 @@ export class UserIncentiveMock {
           '0x0000000000000000000000000000000000000000',
         userRewardsInformation: [
           {
-            tokenIncentivesUserIndex: '0',
+            tokenIncentivesUserIndex: HALF_RAY.toString(),
             userUnclaimedRewards: '1',
             rewardTokenAddress: '0x0000000000000000000000000000000000000000',
             rewardTokenDecimals: 18,
@@ -291,7 +291,7 @@ export class UserIncentiveMock {
           '0x0000000000000000000000000000000000000000',
         userRewardsInformation: [
           {
-            tokenIncentivesUserIndex: '0',
+            tokenIncentivesUserIndex: HALF_RAY.toString(),
             userUnclaimedRewards: '1',
             rewardTokenAddress: '0x0000000000000000000000000000000000000000',
             rewardTokenDecimals: 18,
@@ -308,7 +308,7 @@ export class UserIncentiveMock {
           '0x0000000000000000000000000000000000000000',
         userRewardsInformation: [
           {
-            tokenIncentivesUserIndex: '0',
+            tokenIncentivesUserIndex: HALF_RAY.toString(),
             userUnclaimedRewards: '1',
             rewardTokenAddress: '0x0000000000000000000000000000000000000000',
             rewardTokenDecimals: 18,
