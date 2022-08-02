@@ -47,7 +47,7 @@ describe('calculateAllUserIncentives', () => {
     const claimable =
       result['0x0000000000000000000000000000000000000000'].claimableRewards;
     // accrued + unclaimed rewards
-    expect(normalize(claimable, 18)).toBe('200000000000.000000000000000001');
+    expect(normalize(claimable, 18)).toBe('250000000000.000000000000000001');
   });
 
   it('should return empty if reserve incentives missing', () => {

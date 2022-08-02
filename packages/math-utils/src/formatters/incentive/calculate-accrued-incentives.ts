@@ -30,6 +30,13 @@ export function calculateAccruedIncentives({
     return new BigNumber(0);
   }
 
+  if (
+    principalUserBalance.gt(new BigNumber(0)) &&
+    userIndex.isEqualTo(new BigNumber(0))
+  ) {
+    return new BigNumber(0);
+  }
+
   const actualCurrentTimestamp =
     currentTimestamp > emissionEndTimestamp
       ? emissionEndTimestamp
