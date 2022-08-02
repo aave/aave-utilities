@@ -30,13 +30,6 @@ export function calculateAccruedIncentives({
     return new BigNumber(0);
   }
 
-  if (
-    principalUserBalance.gt(new BigNumber(0)) &&
-    userIndex.isEqualTo(new BigNumber(0))
-  ) {
-    return new BigNumber(0);
-  }
-
   const actualCurrentTimestamp =
     currentTimestamp > emissionEndTimestamp
       ? emissionEndTimestamp
@@ -58,8 +51,14 @@ export function calculateAccruedIncentives({
       .plus(reserveIndex);
   }
 
+  let formattedUserIndex = userIndex;
+
+  if (userIndex.isEqualTo(new BigNumber(0))) {
+    formattedUserIndex = currentReserveIndex;
+  }
+
   const reward = principalUserBalance
-    .multipliedBy(currentReserveIndex.minus(userIndex))
+    .multipliedBy(currentReserveIndex.minus(formattedUserIndex))
     .shiftedBy(precision * -1);
 
   return reward;
