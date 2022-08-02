@@ -53,7 +53,10 @@ export function calculateAccruedIncentives({
 
   let formattedUserIndex = userIndex;
 
-  if (userIndex.isEqualTo(new BigNumber(0))) {
+  if (
+    userIndex.isEqualTo(new BigNumber(0)) &&
+    currentTimestamp < emissionEndTimestamp
+  ) {
     formattedUserIndex = currentReserveIndex;
   }
 
