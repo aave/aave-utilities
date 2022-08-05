@@ -33,6 +33,7 @@ export const reservesMock: ReservesData = {
       isActive: true,
       isFrozen: false,
       isPaused: false,
+      isSiloedBorrowing: false,
       liquidityIndex: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
@@ -178,6 +179,7 @@ export const reservesMock: ReservesData = {
       isActive: true,
       isFrozen: false,
       isPaused: false,
+      isSiloedBorrowing: false,
       liquidityIndex: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
