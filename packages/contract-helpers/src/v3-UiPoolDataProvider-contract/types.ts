@@ -40,6 +40,7 @@ export interface ReservesData {
     baseVariableBorrowRate: BigNumber;
     optimalUsageRatio: BigNumber;
     isPaused: boolean;
+    isSiloedBorrowing: boolean;
     accruedToTreasury: BigNumber;
     unbacked: BigNumber;
     isolationModeTotalDebt: BigNumber;
@@ -123,6 +124,7 @@ export interface ReserveDataHumanized {
   optimalUsageRatio: string;
   // v3 only
   isPaused: boolean;
+  isSiloedBorrowing: boolean;
   accruedToTreasury: string;
   unbacked: string;
   isolationModeTotalDebt: string;
