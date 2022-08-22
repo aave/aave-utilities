@@ -812,7 +812,12 @@ Submit transaction(s) as shown [here](#submitting-transactions)
 This method is used to generate the raw signature data to be signed by the user.
 Once generated, a function is called to trigger a signature request from the
 users wallet. This signature can be passed a parameter to `supplyWithPermit` or
-`repayWithPermit` in place of an approval transaction
+`repayWithPermit` in place of an approval transaction.
+
+Note: Not all tokens are compatible with the ERC-2612 permit functionality. You
+can check the
+<a href="https://github.com/aave/interface/blob/main/src/ui-config/permitConfig.ts" target="_blank">Aave
+interface config</a> for an updated list of supported tokens by network.
 
 <details>
   <summary>Sample Code</summary>
