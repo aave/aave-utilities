@@ -1,6 +1,5 @@
 *.log
 npm-debug.log*
 coverage/
-packages/*/dist/
 node_modules
 package-lock.json
