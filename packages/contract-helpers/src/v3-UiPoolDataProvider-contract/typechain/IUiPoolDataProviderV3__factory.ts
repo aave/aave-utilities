@@ -212,6 +212,11 @@ const _abi = [
             type: 'bool',
           },
           {
+            internalType: 'bool',
+            name: 'isSiloedBorrowing',
+            type: 'bool',
+          },
+          {
             internalType: 'uint128',
             name: 'accruedToTreasury',
             type: 'uint128',
