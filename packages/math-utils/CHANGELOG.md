@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.5.2 (2022-08-26)
+
+
+### Bug Fixes
+
+* add missing parameter to signERC20Approval function ([#404](https://github.com/@aave/aave-utilities/issues/404)) ([961f37e](https://github.com/@aave/aave-utilities/commit/961f37ea3556e8afd3f89ae1aa232b8f1e96c6d5))
+
+
+
+
+
 ## 1.5.1 (2022-08-25)
 
 **Note:** Version bump only for package @aave/math-utils
