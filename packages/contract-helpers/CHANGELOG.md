@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.6.0 (2022-08-26)
+
+
+### Features
+
+* export debt token service ([#351](https://github.com/aave/aave-utilities/issues/351)) ([fab754f](https://github.com/aave/aave-utilities/commit/fab754f6a8b222815a48eb852bb740488607a7de))
+
+
+
+
+
 ## 1.5.2 (2022-08-26)
 
 
