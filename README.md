@@ -812,7 +812,12 @@ Submit transaction(s) as shown [here](#submitting-transactions)
 This method is used to generate the raw signature data to be signed by the user.
 Once generated, a function is called to trigger a signature request from the
 users wallet. This signature can be passed a parameter to `supplyWithPermit` or
-`repayWithPermit` in place of an approval transaction
+`repayWithPermit` in place of an approval transaction.
+
+Note: Not all tokens are compatible with the ERC-2612 permit functionality. You
+can check the
+<a href="https://github.com/aave/interface/blob/main/src/ui-config/permitConfig.ts" target="_blank">Aave
+interface config</a> for an updated list of supported tokens by network.
 
 <details>
   <summary>Sample Code</summary>
@@ -829,11 +834,13 @@ const pool = new Pool(provider, {
 - @param `user` The ethereum address that will make the deposit 
 - @param `reserve` The ethereum address of the reserve 
 - @param `amount` The amount to be deposited 
+- @param `deadline` Expiration of signature in seconds, for example, 1 hour = Math.floor(Date.now() / 1000 + 3600).toString()
 */
 const dataToSign: string = await pool.signERC20Approval({
   user,
   reserve,
   amount,
+  deadline
 });
 
 const signature = await provider.send('eth_signTypedData_v4', [
