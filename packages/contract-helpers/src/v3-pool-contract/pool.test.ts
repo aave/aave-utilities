@@ -3205,7 +3205,6 @@ describe('Pool', () => {
   describe('swapCollateral', () => {
     const user = '0x0000000000000000000000000000000000000006';
     const fromAsset = '0x0000000000000000000000000000000000000007';
-    const fromAToken = '0x0000000000000000000000000000000000000008';
     const toAsset = '0x0000000000000000000000000000000000000009';
     const augustus = '0x0000000000000000000000000000000000000011';
     const fromAmount = '12.34';
@@ -3256,7 +3255,7 @@ describe('Pool', () => {
         user,
         flash,
         fromAsset,
-        fromAToken,
+
         toAsset,
         fromAmount,
         minToAmount,
@@ -3340,7 +3339,7 @@ describe('Pool', () => {
         user,
         flash,
         fromAsset,
-        fromAToken,
+
         toAsset,
         fromAmount,
         minToAmount,
@@ -3422,7 +3421,7 @@ describe('Pool', () => {
         user,
         flash,
         fromAsset,
-        fromAToken,
+
         toAsset,
         fromAmount,
         minToAmount,
@@ -3504,7 +3503,7 @@ describe('Pool', () => {
         user,
         flash,
         fromAsset,
-        fromAToken,
+
         toAsset,
         fromAmount,
         minToAmount,
@@ -3589,7 +3588,7 @@ describe('Pool', () => {
         user,
         // flash,
         fromAsset,
-        fromAToken,
+
         toAsset,
         fromAmount,
         minToAmount,
@@ -3611,7 +3610,7 @@ describe('Pool', () => {
         user,
         flash,
         fromAsset,
-        fromAToken,
+
         toAsset,
         fromAmount,
         minToAmount,
@@ -3629,7 +3628,7 @@ describe('Pool', () => {
         user,
         flash,
         fromAsset,
-        fromAToken,
+
         toAsset,
         fromAmount,
         minToAmount,
@@ -3649,7 +3648,7 @@ describe('Pool', () => {
           user,
           flash,
           fromAsset,
-          fromAToken,
+
           toAsset,
           fromAmount,
           minToAmount,
@@ -3671,7 +3670,7 @@ describe('Pool', () => {
           user,
           flash,
           fromAsset,
-          fromAToken,
+
           toAsset,
           fromAmount,
           minToAmount,
@@ -3685,28 +3684,6 @@ describe('Pool', () => {
         `Address: ${fromAsset} is not a valid ethereum Address`,
       );
     });
-    it('Expects to fail when fromAToken not and eth address', async () => {
-      const poolInstance = new Pool(provider, config);
-      const fromAToken = 'asdf';
-      await expect(async () =>
-        poolInstance.swapCollateral({
-          user,
-          flash,
-          fromAsset,
-          fromAToken,
-          toAsset,
-          fromAmount,
-          minToAmount,
-          permitSignature,
-          swapAll,
-          referralCode,
-          augustus,
-          swapCallData,
-        }),
-      ).rejects.toThrowError(
-        `Address: ${fromAToken} is not a valid ethereum Address`,
-      );
-    });
     it('Expects to fail when toAsset not and eth address', async () => {
       const poolInstance = new Pool(provider, config);
       const toAsset = 'asdf';
@@ -3715,7 +3692,7 @@ describe('Pool', () => {
           user,
           flash,
           fromAsset,
-          fromAToken,
+
           toAsset,
           fromAmount,
           minToAmount,
@@ -3737,7 +3714,7 @@ describe('Pool', () => {
           user,
           flash,
           fromAsset,
-          fromAToken,
+
           toAsset,
           fromAmount,
           minToAmount,
@@ -3759,7 +3736,7 @@ describe('Pool', () => {
           user,
           flash,
           fromAsset,
-          fromAToken,
+
           toAsset,
           fromAmount,
           minToAmount,
@@ -3781,7 +3758,7 @@ describe('Pool', () => {
           user,
           flash,
           fromAsset,
-          fromAToken,
+
           toAsset,
           fromAmount,
           minToAmount,
@@ -3803,7 +3780,7 @@ describe('Pool', () => {
           user,
           flash,
           fromAsset,
-          fromAToken,
+
           toAsset,
           fromAmount,
           minToAmount,
@@ -3825,7 +3802,7 @@ describe('Pool', () => {
           user,
           flash,
           fromAsset,
-          fromAToken,
+
           toAsset,
           fromAmount,
           minToAmount,
@@ -3843,7 +3820,6 @@ describe('Pool', () => {
   describe('paraswapRepayWithCollateral', () => {
     const user = '0x0000000000000000000000000000000000000006';
     const fromAsset = '0x0000000000000000000000000000000000000007';
-    const fromAToken = '0x0000000000000000000000000000000000000008';
     const assetToRepay = '0x0000000000000000000000000000000000000009';
     const augustus = '0x0000000000000000000000000000000000000011';
     const repayWithAmount = '12.34';
@@ -3902,7 +3878,7 @@ describe('Pool', () => {
         await poolInstance.paraswapRepayWithCollateral({
           user,
           fromAsset,
-          fromAToken,
+
           assetToRepay,
           repayWithAmount,
           repayAmount,
@@ -3991,7 +3967,7 @@ describe('Pool', () => {
         await poolInstance.paraswapRepayWithCollateral({
           user,
           fromAsset,
-          fromAToken,
+
           assetToRepay,
           repayWithAmount,
           repayAmount,
@@ -4077,7 +4053,7 @@ describe('Pool', () => {
         await poolInstance.paraswapRepayWithCollateral({
           user,
           fromAsset,
-          fromAToken,
+
           assetToRepay,
           repayWithAmount,
           repayAmount,
@@ -4162,7 +4138,7 @@ describe('Pool', () => {
         await poolInstance.paraswapRepayWithCollateral({
           user,
           fromAsset,
-          fromAToken,
+
           assetToRepay,
           repayWithAmount,
           repayAmount,
@@ -4247,7 +4223,7 @@ describe('Pool', () => {
         await poolInstance.paraswapRepayWithCollateral({
           user,
           fromAsset,
-          fromAToken,
+
           assetToRepay,
           repayWithAmount,
           repayAmount,
@@ -4332,7 +4308,7 @@ describe('Pool', () => {
         await poolInstance.paraswapRepayWithCollateral({
           user,
           fromAsset,
-          fromAToken,
+
           assetToRepay,
           repayWithAmount,
           repayAmount,
@@ -4423,7 +4399,7 @@ describe('Pool', () => {
       await poolInstance.paraswapRepayWithCollateral({
         user,
         fromAsset,
-        fromAToken,
+
         assetToRepay,
         repayWithAmount,
         repayAmount,
@@ -4459,7 +4435,7 @@ describe('Pool', () => {
       await poolInstance.paraswapRepayWithCollateral({
         user,
         fromAsset,
-        fromAToken,
+
         assetToRepay,
         repayWithAmount,
         repayAmount,
@@ -4481,7 +4457,7 @@ describe('Pool', () => {
       const txObj = await poolInstance.paraswapRepayWithCollateral({
         user,
         fromAsset,
-        fromAToken,
+
         assetToRepay,
         repayWithAmount,
         repayAmount,
@@ -4500,7 +4476,7 @@ describe('Pool', () => {
       const txObj = await poolInstance.paraswapRepayWithCollateral({
         user,
         fromAsset,
-        fromAToken,
+
         assetToRepay,
         repayWithAmount,
         repayAmount,
@@ -4521,7 +4497,7 @@ describe('Pool', () => {
         poolInstance.paraswapRepayWithCollateral({
           user,
           fromAsset,
-          fromAToken,
+
           assetToRepay,
           repayWithAmount,
           repayAmount,
@@ -4544,7 +4520,7 @@ describe('Pool', () => {
         poolInstance.paraswapRepayWithCollateral({
           user,
           fromAsset,
-          fromAToken,
+
           assetToRepay,
           repayWithAmount,
           repayAmount,
@@ -4567,7 +4543,7 @@ describe('Pool', () => {
         poolInstance.paraswapRepayWithCollateral({
           user,
           fromAsset,
-          fromAToken,
+
           assetToRepay,
           repayWithAmount,
           repayAmount,
@@ -4583,29 +4559,6 @@ describe('Pool', () => {
         `Address: ${augustus} is not a valid ethereum Address`,
       );
     });
-    it('Expects to fail when fromAToken not and eth address', async () => {
-      const poolInstance = new Pool(provider, config);
-      const fromAToken = 'asdf';
-      await expect(async () =>
-        poolInstance.paraswapRepayWithCollateral({
-          user,
-          fromAsset,
-          fromAToken,
-          assetToRepay,
-          repayWithAmount,
-          repayAmount,
-          permitSignature,
-          repayAllDebt,
-          rateMode,
-          referralCode,
-          flash,
-          swapAndRepayCallData,
-          augustus,
-        }),
-      ).rejects.toThrowError(
-        `Address: ${fromAToken} is not a valid ethereum Address`,
-      );
-    });
     it('Expects to fail when assetToRepay not and eth address', async () => {
       const poolInstance = new Pool(provider, config);
       const assetToRepay = 'asdf';
@@ -4613,7 +4566,7 @@ describe('Pool', () => {
         poolInstance.paraswapRepayWithCollateral({
           user,
           fromAsset,
-          fromAToken,
+
           assetToRepay,
           repayWithAmount,
           repayAmount,
@@ -4636,7 +4589,7 @@ describe('Pool', () => {
         poolInstance.paraswapRepayWithCollateral({
           user,
           fromAsset,
-          fromAToken,
+
           assetToRepay,
           repayWithAmount,
           repayAmount,
@@ -4659,7 +4612,7 @@ describe('Pool', () => {
         poolInstance.paraswapRepayWithCollateral({
           user,
           fromAsset,
-          fromAToken,
+
           assetToRepay,
           repayWithAmount,
           repayAmount,
@@ -4682,7 +4635,7 @@ describe('Pool', () => {
         poolInstance.paraswapRepayWithCollateral({
           user,
           fromAsset,
-          fromAToken,
+
           assetToRepay,
           repayWithAmount,
           repayAmount,
@@ -4705,7 +4658,7 @@ describe('Pool', () => {
         poolInstance.paraswapRepayWithCollateral({
           user,
           fromAsset,
-          fromAToken,
+
           assetToRepay,
           repayWithAmount,
           repayAmount,

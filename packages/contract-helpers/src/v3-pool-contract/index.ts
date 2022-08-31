@@ -1055,7 +1055,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
   public async swapCollateral(
     @isEthAddress('user')
     @isEthAddress('fromAsset')
-    @isEthAddress('fromAToken')
     @isEthAddress('toAsset')
     @isEthAddress('augustus')
     @isPositiveAmount('fromAmount')
@@ -1064,7 +1063,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       user,
       flash,
       fromAsset,
-      fromAToken,
       toAsset,
       fromAmount,
       minToAmount,
@@ -1086,7 +1084,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     };
 
     const approved: boolean = await this.erc20Service.isApproved({
-      token: fromAToken,
+      token: fromAsset,
       user,
       spender: this.swapCollateralAddress,
       amount: fromAmount,
@@ -1096,7 +1094,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       const approveTx: EthereumTransactionTypeExtended =
         this.erc20Service.approve({
           user,
-          token: fromAToken,
+          token: fromAsset,
           spender: this.swapCollateralAddress,
           amount: constants.MaxUint256.toString(),
         });
@@ -1193,7 +1191,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
   public async paraswapRepayWithCollateral(
     @isEthAddress('user')
     @isEthAddress('fromAsset')
-    @isEthAddress('fromAToken')
     @isEthAddress('assetToRepay')
     @isPositiveAmount('repayWithAmount')
     @isPositiveAmount('repayAmount')
@@ -1201,7 +1198,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     {
       user,
       fromAsset,
-      fromAToken,
       assetToRepay,
       repayWithAmount,
       repayAmount,
@@ -1225,7 +1221,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     };
 
     const approved: boolean = await this.erc20Service.isApproved({
-      token: fromAToken,
+      token: fromAsset,
       user,
       spender: this.repayWithCollateralAddress,
       amount: repayWithAmount,
@@ -1235,7 +1231,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       const approveTx: EthereumTransactionTypeExtended =
         this.erc20Service.approve({
           user,
-          token: fromAToken,
+          token: fromAsset,
           spender: this.repayWithCollateralAddress,
           amount: constants.MaxUint256.toString(),
         });
