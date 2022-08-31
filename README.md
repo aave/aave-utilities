@@ -98,6 +98,8 @@ yarn add @aave/contract-helpers @aave/math-utils
       - [delegateByType](#delegateByType)
     - f. [Faucets](#faucets)
       - [mint](#mint)
+    - g. [Credit Delegation](#credit-delegation)
+      - [approveDelegation](#approveDelegation)
 
 <br />
 
@@ -2001,6 +2003,47 @@ const faucetService = new FaucetService(provider, faucetAddress);
 - @param `tokenSymbol` The symbol of the token you want to mint
 */
 const tx = faucet.mint({ userAddress, reserve, tokenSymbol });
+```
+
+Submit transaction as shown [here](#submitting-transactions)
+
+</details>
+
+
+<br />
+
+## Credit Delegation
+
+Credit delegation is performed on the debtToken contract through the `approveDelegation` function, which approves a spender to borrow a specified amount of that token.
+
+Accessing delegated credit is done by passing the delegator address as the `onBehalfOf` parameter when calling `borrow` on the `Pool` (V3) or `LendingPool` (V2).
+
+### approveDelegation
+
+
+<details>
+  <summary>Sample Code</summary>
+
+```ts
+import { BaseDebtToken, ERC20Service } from "@aave/contract-helpers";
+import { ethers } from "ethers";
+
+// Sample public RPC address for querying polygon mainnet
+const provider = new ethers.providers.JsonRpcProvider(
+  "https://polygon-rpc.com"
+);
+
+const delegationServicePolygonV2USDC = new BaseDebtToken(
+  provider,
+  new ERC20Service(provider) // This parameter will be removed in future utils version
+);
+
+const approveDelegation = delegationServicePolygonV2USDC.approveDelegation({
+  user: "...",  /// delegator
+  delegatee: "...",
+  debtTokenAddress: "...", // can be any V2 or V3 debt token
+  amount: 1, // in decimals of underlying token
+});
 ```
 
 Submit transaction as shown [here](#submitting-transactions)
