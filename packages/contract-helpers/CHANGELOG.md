@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.7.0 (2022-09-07)
+
+
+### Features
+
+* add credit delegation section to readme ([#413](https://github.com/aave/aave-utilities/issues/413)) ([5e091df](https://github.com/aave/aave-utilities/commit/5e091dfe9a4080ba5c2c03cdb226bf67b545bab5))
+
+
+
+
+
 # 1.6.0 (2022-08-26)
 
 
