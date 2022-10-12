@@ -54,6 +54,7 @@ export enum ChainId {
   optimism_goerli = 420,
   harmony = 1666600000,
   harmony_testnet = 1666700000,
+  zkevm_testnet = 1402,
 }
 export type ConstantAddressesByNetwork = Record<
   string,
