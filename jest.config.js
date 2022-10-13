@@ -1,4 +1,5 @@
 module.exports = {
+  preset: 'ts-jest',
   collectCoverageFrom: ['packages/*/src/**/*.ts'],
   coverageDirectory: 'coverage',
   coverageReporters: ['lcov', 'text'],
@@ -8,14 +9,6 @@ module.exports = {
       functions: 100,
       lines: 100,
       statements: 100,
-    },
-  },
-  globals: {
-    'ts-jest': {
-      diagnostics: {
-        '//': 'https://github.com/kulshekhar/ts-jest/issues/748#issuecomment-423528659',
-        ignoreCodes: [151001],
-      },
     },
   },
   coveragePathIgnorePatterns: [
