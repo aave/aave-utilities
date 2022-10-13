@@ -3,6 +3,7 @@ import { eEthereumTxType, transactionType } from '../commons/types';
 import {
   DEFAULT_NULL_VALUE_ON_TX,
   mintAmountsPerToken,
+  valueToWei,
 } from '../commons/utils';
 import { FaucetService } from './index';
 
@@ -71,12 +72,34 @@ describe('FaucetService', () => {
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
     });
-    it('Expects to get [] if token doesn`t exist', () => {
+    it('Expects to get default mint amount if token doesn`t exist', async () => {
       const tokenSymbol = 'asdf';
       const instance = new FaucetService(provider, faucetAddress);
       const faucetTxObj = instance.mint({ userAddress, reserve, tokenSymbol });
 
-      expect(faucetTxObj).toEqual([]);
+      expect(faucetTxObj.length).toEqual(1);
+      expect(faucetTxObj[0].txType).toEqual(eEthereumTxType.FAUCET_MINT);
+
+      const txObj: transactionType = await faucetTxObj[0].tx();
+      expect(txObj.to).toEqual(faucetAddress);
+      expect(txObj.from).toEqual(userAddress);
+      expect(txObj.gasLimit).toEqual(BigNumber.from(1));
+      expect(txObj.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
+
+      // parse data
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256'],
+        utils.hexDataSlice(txObj.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(reserve);
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei('1000', 18)));
+
+      // gas price
+      const gasPrice = await faucetTxObj[0].gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects to fail if faucet address not passed', () => {
       const instance = new FaucetService(provider);
