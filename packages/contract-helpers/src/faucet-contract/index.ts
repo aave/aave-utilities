@@ -10,6 +10,7 @@ import {
 import {
   mintAmountsPerToken,
   DEFAULT_NULL_VALUE_ON_TX,
+  valueToWei,
 } from '../commons/utils';
 import { FaucetValidator } from '../commons/validators/methodValidators';
 import { isEthAddress } from '../commons/validators/paramValidators';
@@ -46,13 +47,9 @@ export class FaucetService
     @isEthAddress('reserve')
     { userAddress, reserve, tokenSymbol }: FaucetParamsType,
   ): EthereumTransactionTypeExtended[] {
-    const amount: string = mintAmountsPerToken[tokenSymbol];
-    if (!amount) {
-      console.log(
-        `No amount predefined for minting for token : ${tokenSymbol}`,
-      );
-      return [];
-    }
+    const amount: string = mintAmountsPerToken[tokenSymbol]
+      ? mintAmountsPerToken[tokenSymbol]
+      : valueToWei('1000', 18);
 
     const faucetContract = this.getContractInstance(this.faucetAddress);
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
