@@ -1,5 +1,4 @@
 import { providers } from 'ethers';
-import { mocked } from 'ts-jest/utils';
 import { ChainlinkFeedsRegistry } from '../cl-feed-registry/index';
 import { Denominations } from '../cl-feed-registry/types/ChainlinkFeedsRegistryTypes';
 import {
@@ -191,9 +190,11 @@ describe('UiIncentiveDataProvider', () => {
       });
       const instance = createValidInstance();
 
-      mocked(clInstance).getPriceFeed.mockReturnValueOnce(Promise.reject());
+      jest
+        .mocked(clInstance)
+        .getPriceFeed.mockReturnValueOnce(Promise.reject());
 
-      mocked(clInstance).getPriceFeed.mockReturnValue(
+      jest.mocked(clInstance).getPriceFeed.mockReturnValue(
         Promise.resolve({
           answer: '2',
           updatedAt: 4,
@@ -318,7 +319,7 @@ describe('UiIncentiveDataProvider', () => {
       });
       const instance = createValidInstance();
 
-      mocked(clInstance).getPriceFeed.mockReturnValue(
+      jest.mocked(clInstance).getPriceFeed.mockReturnValue(
         Promise.resolve({
           answer: '2',
           updatedAt: 4,
@@ -443,7 +444,7 @@ describe('UiIncentiveDataProvider', () => {
       });
       const instance = createValidInstance();
 
-      mocked(clInstance).getPriceFeed.mockReturnValue(
+      jest.mocked(clInstance).getPriceFeed.mockReturnValue(
         Promise.resolve({
           answer: '2',
           updatedAt: 4,
@@ -567,7 +568,7 @@ describe('UiIncentiveDataProvider', () => {
       });
       const instance = createValidInstance();
 
-      mocked(clInstance).getPriceFeed.mockReturnValue(Promise.reject());
+      jest.mocked(clInstance).getPriceFeed.mockReturnValue(Promise.reject());
 
       const result: ReserveIncentiveWithFeedsResponse[] =
         await instance.getIncentivesDataWithPrice({
@@ -686,7 +687,7 @@ describe('UiIncentiveDataProvider', () => {
       });
       const instance = createValidInstance();
 
-      mocked(clInstance).getPriceFeed.mockReturnValue(Promise.reject());
+      jest.mocked(clInstance).getPriceFeed.mockReturnValue(Promise.reject());
 
       const result: ReserveIncentiveWithFeedsResponse[] =
         await instance.getIncentivesDataWithPrice({

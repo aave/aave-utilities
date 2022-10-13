@@ -1,5 +1,4 @@
 import { BigNumber, providers } from 'ethers';
-import { mocked } from 'ts-jest/utils';
 import { ChainlinkFeedsRegistry } from '../cl-feed-registry/index';
 import { Denominations } from '../cl-feed-registry/types/ChainlinkFeedsRegistryTypes';
 import {
@@ -529,7 +528,7 @@ describe('UiIncentiveDataProvider', () => {
         provider,
       });
 
-      mocked(clInstance).getPriceFeed.mockReturnValue(Promise.reject());
+      jest.mocked(clInstance).getPriceFeed.mockReturnValue(Promise.reject());
 
       const spy = jest
         .spyOn(IUiIncentiveDataProviderV3__factory, 'connect')
@@ -671,9 +670,11 @@ describe('UiIncentiveDataProvider', () => {
         provider,
       });
 
-      mocked(clInstance).getPriceFeed.mockReturnValueOnce(Promise.reject());
+      jest
+        .mocked(clInstance)
+        .getPriceFeed.mockReturnValueOnce(Promise.reject());
 
-      mocked(clInstance).getPriceFeed.mockReturnValue(
+      jest.mocked(clInstance).getPriceFeed.mockReturnValue(
         Promise.resolve({
           answer: '2',
           updatedAt: 4,
@@ -820,7 +821,7 @@ describe('UiIncentiveDataProvider', () => {
         provider: new providers.JsonRpcProvider(),
       });
 
-      mocked(clInstance).getPriceFeed.mockReturnValue(
+      jest.mocked(clInstance).getPriceFeed.mockReturnValue(
         Promise.resolve({
           answer: '2',
           updatedAt: 4,
@@ -958,7 +959,7 @@ describe('UiIncentiveDataProvider', () => {
         provider: new providers.JsonRpcProvider(),
       });
 
-      mocked(clInstance).getPriceFeed.mockReturnValue(
+      jest.mocked(clInstance).getPriceFeed.mockReturnValue(
         Promise.resolve({
           answer: '2',
           updatedAt: 4,
@@ -1094,7 +1095,7 @@ describe('UiIncentiveDataProvider', () => {
         provider: new providers.JsonRpcProvider(),
       });
 
-      mocked(clInstance).getPriceFeed.mockReturnValue(Promise.reject());
+      jest.mocked(clInstance).getPriceFeed.mockReturnValue(Promise.reject());
       jest
         .spyOn(IUiIncentiveDataProviderV3__factory, 'connect')
         .mockReturnValue({
