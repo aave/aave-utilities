@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.9.0 (2022-10-14)
+
+
+### Features
+
+* add default value to faucet mint instead of error ([#437](https://github.com/aave/aave-utilities/issues/437)) ([628e3a2](https://github.com/aave/aave-utilities/commit/628e3a2c62ccff84e703d0af8f79f26eadb98d9a))
+
+
+
+
+
 # 1.8.0 (2022-10-13)
 
 
