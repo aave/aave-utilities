@@ -47,9 +47,10 @@ export class FaucetService
     @isEthAddress('reserve')
     { userAddress, reserve, tokenSymbol }: FaucetParamsType,
   ): EthereumTransactionTypeExtended[] {
+    const defaultAmount = valueToWei('1000', 18);
     const amount: string = mintAmountsPerToken[tokenSymbol]
       ? mintAmountsPerToken[tokenSymbol]
-      : valueToWei('1000', 18);
+      : defaultAmount;
 
     const faucetContract = this.getContractInstance(this.faucetAddress);
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
