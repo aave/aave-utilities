@@ -1,5 +1,5 @@
-import { GhoDiscountRateService } from './GhoDiscountRateStrategy.service';
+import { GhoDiscountRateStrategyService } from './GhoDiscountRateStrategyService';
 
 export default {
-  GhoDiscountRateService,
+  GhoDiscountRateStrategyService,
 };
