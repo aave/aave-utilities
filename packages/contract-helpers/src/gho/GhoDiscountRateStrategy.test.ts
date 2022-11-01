@@ -11,10 +11,20 @@ jest.mock('../commons/gasStation', () => {
   };
 });
 
-const config = { DISCOUNT_RATE_STRATEGY_ADDRESS: '' };
+const config = {
+  // Deployed on the Goerli network
+  DISCOUNT_RATE_STRATEGY_ADDRESS: '0x91A534290666B817D986Ef70089f8Cc5bc241C34',
+};
 
 describe('GhoDiscountRateService', () => {
   const correctProvider: providers.Provider = new providers.JsonRpcProvider();
+  // Goerli
+  // const network = providers.getNetwork(5);
+  // const correctProvider: providers.Provider = new providers.JsonRpcProvider(
+  //   'https://goerli.optimism.io',
+  //   network.chainId,
+  // );
+
   jest
     .spyOn(correctProvider, 'getGasPrice')
     .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
@@ -27,15 +37,17 @@ describe('GhoDiscountRateService', () => {
   });
 
   describe('calculateDiscountRate', () => {
-    it.skip("calculates the discount rate based off a user's GHO debt token balance and their staked AAVE balance", async () => {
-      const contract = new GhoDiscountRateService(correctProvider, config);
-      const ghoBalance: BigNumberish = 1 ** 18;
-      const stakedAaveBalance: BigNumberish = 100 ** 18;
+    const contract = new GhoDiscountRateService(correctProvider, config);
+    // const user = '0x0000000000000000000000000000000000000001';
+
+    it("calculates the interest discount rate based off a user's GHO debt token balance and staked AAVE balance", async () => {
+      const ghoDebtTokenBalance: BigNumberish = 100;
+      const stakedAaveBalance: BigNumberish = 5;
       const result = await contract.calculateDiscountRate(
-        ghoBalance,
+        ghoDebtTokenBalance,
         stakedAaveBalance,
       );
-      const expected = 1 ** 18;
+      const expected = 0.2;
       expect(result).toEqual(expected);
     });
   });
