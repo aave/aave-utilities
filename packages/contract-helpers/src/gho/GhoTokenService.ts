@@ -11,7 +11,7 @@ interface IGhoTokenService {
 
 /**
  * The service for interacting with the GhoToken.sol smart contract.
- * This contract controls operations minting & burning the native GHO token as well as faciliator management.
+ * This contract controls operations minting & burning the native GHO token as well as facilitator management.
  * https://github.com/aave/gho/blob/main/src/contracts/gho/GhoToken.sol
  */
 export class GhoTokenService
