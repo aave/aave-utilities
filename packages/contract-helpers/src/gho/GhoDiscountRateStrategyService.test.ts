@@ -1,6 +1,8 @@
-import { BigNumber, BigNumberish, providers } from 'ethers';
+import { constants, BigNumber, BigNumberish, providers } from 'ethers';
 import { valueToWei } from '../commons/utils';
 import { GhoDiscountRateStrategyService } from './GhoDiscountRateStrategyService';
+import { GhoDiscountRateStrategy } from './typechain/GhoDiscountRateStrategy';
+import { GhoDiscountRateStrategy__factory } from './typechain/GhoDiscountRateStrategy__factory';
 
 jest.mock('../commons/gasStation', () => {
   return {
@@ -12,32 +14,25 @@ jest.mock('../commons/gasStation', () => {
   };
 });
 
-const config = {
-  // Deployed on the Goerli network
-  DISCOUNT_RATE_STRATEGY_ADDRESS: '0x91A534290666B817D986Ef70089f8Cc5bc241C34',
-};
-
 // Helper for contract call arguments
 const convertToBN = (n: string) => valueToWei(n, 18);
 
 describe('GhoDiscountRateStrategyService', () => {
-  // Goerli
-  const network = providers.getNetwork(5);
-  const correctProvider: providers.Provider =
-    new providers.StaticJsonRpcProvider(
-      'https://eth-goerli.alchemyapi.io/v2/demo',
-      network.chainId,
-    );
+  const DISCOUNT_RATE_STRATEGY_ADDRESS = constants.AddressZero;
+  const correctProvider: providers.Provider = new providers.JsonRpcProvider();
 
+  // Mocking
   jest
     .spyOn(correctProvider, 'getGasPrice')
     .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
+
+  afterEach(() => jest.clearAllMocks());
 
   describe('Create new GhoDiscountRateStrategyService', () => {
     it('Expects to be initialized correctly', () => {
       const instance = new GhoDiscountRateStrategyService(
         correctProvider,
-        config,
+        DISCOUNT_RATE_STRATEGY_ADDRESS,
       );
       expect(instance).toBeInstanceOf(GhoDiscountRateStrategyService);
     });
@@ -46,7 +41,7 @@ describe('GhoDiscountRateStrategyService', () => {
   describe('calculateDiscountRate', () => {
     const contract = new GhoDiscountRateStrategyService(
       correctProvider,
-      config,
+      DISCOUNT_RATE_STRATEGY_ADDRESS,
     );
 
     it('should return zero discount if discount token balance does not meet minimum requirements to gain a discount', async () => {
@@ -55,11 +50,23 @@ describe('GhoDiscountRateStrategyService', () => {
       const stakedAaveBalance: BigNumberish = convertToBN('0');
       const expected = BigNumber.from('0'); // 0%
 
+      // Mock it
+      const spy = jest
+        .spyOn(GhoDiscountRateStrategy__factory, 'connect')
+        .mockReturnValue({
+          calculateDiscountRate: async () => Promise.resolve(expected),
+        } as unknown as GhoDiscountRateStrategy);
+
+      // Call it
       const result = await contract.calculateDiscountRate(
         ghoDebtTokenBalance,
         stakedAaveBalance,
       );
 
+      // Assert it
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toBeCalledTimes(1);
+      // expect(spy).toHaveBeenCalledWith(ghoDebtTokenBalance, stakedAaveBalance);
       expect(result).toEqual(expected);
     });
 
@@ -69,12 +76,24 @@ describe('GhoDiscountRateStrategyService', () => {
       const stakedAaveBalance: BigNumberish = convertToBN('1');
       const expected = BigNumber.from('0'); // 0%
 
-      const result = await contract.calculateDiscountRate(
+      // Mock it
+      const spy = jest
+        .spyOn(GhoDiscountRateStrategy__factory, 'connect')
+        .mockReturnValue({
+          calculateDiscountRate: async () => Promise.resolve(expected),
+        } as unknown as GhoDiscountRateStrategy);
+
+      // Call it
+      await contract.calculateDiscountRate(
         ghoDebtTokenBalance,
         stakedAaveBalance,
       );
 
-      expect(result).toEqual(expected);
+      // Assert it
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toBeCalledTimes(1);
+      // expect(spy).toHaveBeenCalledWith(ghoDebtTokenBalance, stakedAaveBalance);
+      // expect(result).toEqual(expected);
     });
 
     // Discounted balance = discount token * 100
@@ -84,22 +103,39 @@ describe('GhoDiscountRateStrategyService', () => {
       let stakedAaveBalance: BigNumberish = convertToBN('1');
       const expected = BigNumber.from('2000'); // 20.00% discount
 
-      let result = await contract.calculateDiscountRate(
+      // Mock it
+      const spy = jest
+        .spyOn(GhoDiscountRateStrategy__factory, 'connect')
+        .mockReturnValue({
+          calculateDiscountRate: async () => Promise.resolve(expected),
+        } as unknown as GhoDiscountRateStrategy);
+
+      // Call it
+      await contract.calculateDiscountRate(
         ghoDebtTokenBalance,
         stakedAaveBalance,
       );
 
-      expect(result).toEqual(expected);
+      // Assert it
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toBeCalledTimes(1);
+      // expect(spy).toHaveBeenCalledWith(ghoDebtTokenBalance, stakedAaveBalance);
+      // expect(result).toEqual(expected);
 
       // Use case #2 - borrowing 100 GHO owning 5 stkAAVE
       stakedAaveBalance = convertToBN('5');
 
-      result = await contract.calculateDiscountRate(
+      // Call it
+      await contract.calculateDiscountRate(
         ghoDebtTokenBalance,
         stakedAaveBalance,
       );
 
-      expect(result).toEqual(expected);
+      // Assert it
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toBeCalledTimes(2);
+      // expect(spy).toHaveBeenCalledWith(ghoDebtTokenBalance, stakedAaveBalance);
+      // expect(result).toEqual(expected);
     });
 
     it('should return a sub-maximum discount if user borrows more GHO than can be discounted based off of the discount token balance', async () => {
@@ -108,12 +144,24 @@ describe('GhoDiscountRateStrategyService', () => {
       const stakedAaveBalance: BigNumberish = convertToBN('1');
       const expected = BigNumber.from('1333'); // 13.33% discount
 
-      const result = await contract.calculateDiscountRate(
+      // Mock it
+      const spy = jest
+        .spyOn(GhoDiscountRateStrategy__factory, 'connect')
+        .mockReturnValue({
+          calculateDiscountRate: async () => Promise.resolve(expected),
+        } as unknown as GhoDiscountRateStrategy);
+
+      // Call it
+      await contract.calculateDiscountRate(
         ghoDebtTokenBalance,
         stakedAaveBalance,
       );
 
-      expect(result).toEqual(expected);
+      // Assert it
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toBeCalledTimes(1);
+      // expect(spy).toHaveBeenCalledWith(ghoDebtTokenBalance, stakedAaveBalance);
+      // expect(result).toEqual(expected);
     });
   });
 });

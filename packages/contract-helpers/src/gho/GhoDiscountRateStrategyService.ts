@@ -3,11 +3,6 @@ import BaseService from '../commons/BaseService';
 import { GhoDiscountRateStrategy__factory } from './typechain/GhoDiscountRateStrategy__factory';
 import type { IGhoDiscountRateStrategy } from './typechain/IGhoDiscountRateStrategy';
 
-// Types
-type GhoServiceConfig = {
-  DISCOUNT_RATE_STRATEGY_ADDRESS: string;
-};
-
 export interface GhoDiscountRateServiceInterface {
   calculateDiscountRate: (
     ghoDebtTokenBalance: BigNumberish,
@@ -25,9 +20,12 @@ export class GhoDiscountRateStrategyService
 {
   readonly ghoDiscountRateStrategyAddress: string;
 
-  constructor(provider: providers.Provider, config: GhoServiceConfig) {
+  constructor(
+    provider: providers.Provider,
+    discountRateStrategyAddress: string,
+  ) {
     super(provider, GhoDiscountRateStrategy__factory);
-    this.ghoDiscountRateStrategyAddress = config.DISCOUNT_RATE_STRATEGY_ADDRESS;
+    this.ghoDiscountRateStrategyAddress = discountRateStrategyAddress;
   }
 
   /**
