@@ -31,13 +31,98 @@ describe('GhoTokenService', () => {
 
   describe('Create new GhoTokenService', () => {
     it('Expects to be initialized correctly', () => {
+      // Create Instance
       const instance = new GhoTokenService(correctProvider, GHO_TOKEN_ADDRESS);
+
+      // Assert it
       expect(instance).toBeInstanceOf(GhoTokenService);
     });
   });
 
+  describe('totalSupply', () => {
+    it('should return the total supply of GHO tokens', async () => {
+      // Create Instance
+      const contract = new GhoTokenService(correctProvider, GHO_TOKEN_ADDRESS);
+
+      // Setup
+      const mockTotalSupply = convertToBN('10000000'); // 10M
+
+      // Mock it
+      const spy = jest.spyOn(GhoToken__factory, 'connect').mockReturnValue({
+        totalSupply: async () => Promise.resolve(mockTotalSupply),
+      } as unknown as GhoToken);
+
+      // Call it
+      const result = await contract.totalSupply();
+
+      // Assert it
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toBeCalledTimes(1);
+      expect(result).toEqual(mockTotalSupply);
+    });
+  });
+
+  describe('getFacilitatorsList', () => {
+    it('should return the list of facilitators as an array of addresses', async () => {
+      // Create instance
+      const contract = new GhoTokenService(correctProvider, GHO_TOKEN_ADDRESS);
+
+      // Setup
+      const faciliatorAddress1: string = constants.AddressZero;
+      const faciliatorAddress2: string = constants.AddressZero;
+      const mockFacilitatorsList: string[] = [
+        faciliatorAddress1,
+        faciliatorAddress2,
+      ];
+
+      // Mock it
+      const spy = jest.spyOn(GhoToken__factory, 'connect').mockReturnValue({
+        getFacilitatorsList: async () => Promise.resolve(mockFacilitatorsList),
+      } as unknown as GhoToken);
+
+      // Call it
+      const result = await contract.getFacilitatorsList();
+
+      // Assert it
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toBeCalledTimes(1);
+      expect(result).toEqual(mockFacilitatorsList);
+    });
+  });
+
+  describe('getFacilitator', () => {
+    it('should return the facilitator instance for the provided facilitator address', async () => {
+      // Create instance
+      const contract = new GhoTokenService(correctProvider, GHO_TOKEN_ADDRESS);
+
+      // Setup
+      const faciliatorAddress: string = constants.AddressZero;
+      const mockBucket: IGhoToken.BucketStruct = {
+        maxCapacity: convertToBN('1000'),
+        level: convertToBN('500'),
+      };
+      const mockFacilitator: IGhoToken.FacilitatorStruct = {
+        bucket: mockBucket,
+        label: 'Aave Facilitator',
+      };
+
+      // Mock it
+      const spy = jest.spyOn(GhoToken__factory, 'connect').mockReturnValue({
+        getFacilitator: async () => Promise.resolve(mockFacilitator),
+      } as unknown as GhoToken);
+
+      // Call it
+      const result = await contract.getFacilitator(faciliatorAddress);
+
+      // Assert it
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toBeCalledTimes(1);
+      expect(result).toEqual(mockFacilitator);
+    });
+  });
+
   describe('getFacilitatorBucket', () => {
-    it('should return the bucket instance for the provided facilitator', async () => {
+    it('should return the bucket instance for the provided facilitator address', async () => {
       // Create instance
       const contract = new GhoTokenService(correctProvider, GHO_TOKEN_ADDRESS);
 
