@@ -1,6 +1,6 @@
 module.exports = {
   preset: 'ts-jest',
-  collectCoverageFrom: ['packages/*/src/**/*.ts'],
+  collectCoverageFrom: ['packages/*/src/**(!typechain)/*.ts'],
   coverageDirectory: 'coverage',
   coverageReporters: ['lcov', 'text'],
   coverageThreshold: {
@@ -43,7 +43,6 @@ module.exports = {
     'packages/math-utils/src/formatters/reserve/index.ts', // TODO: remove
   ],
   modulePathIgnorePatterns: ['node_modules'],
-  preset: 'ts-jest',
   testEnvironment: 'node',
   verbose: true,
   watchPlugins: [
