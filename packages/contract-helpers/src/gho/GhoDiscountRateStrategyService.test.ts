@@ -30,10 +30,13 @@ describe('GhoDiscountRateStrategyService', () => {
 
   describe('Create new GhoDiscountRateStrategyService', () => {
     it('Expects to be initialized correctly', () => {
+      // Create instance
       const instance = new GhoDiscountRateStrategyService(
         correctProvider,
         DISCOUNT_RATE_STRATEGY_ADDRESS,
       );
+
+      // Assert it
       expect(instance).toBeInstanceOf(GhoDiscountRateStrategyService);
     });
   });
