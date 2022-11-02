@@ -3,7 +3,7 @@ import BaseService from '../commons/BaseService';
 import { GhoDiscountRateStrategy__factory } from './typechain/GhoDiscountRateStrategy__factory';
 import type { IGhoDiscountRateStrategy } from './typechain/IGhoDiscountRateStrategy';
 
-export interface GhoDiscountRateServiceInterface {
+interface IGhoDiscountRateStrategyService {
   calculateDiscountRate: (
     ghoDebtTokenBalance: BigNumberish,
     skAaveBalance: BigNumberish,
@@ -16,7 +16,7 @@ export interface GhoDiscountRateServiceInterface {
  */
 export class GhoDiscountRateStrategyService
   extends BaseService<IGhoDiscountRateStrategy>
-  implements GhoDiscountRateServiceInterface
+  implements IGhoDiscountRateStrategyService
 {
   readonly ghoDiscountRateStrategyAddress: string;
 
