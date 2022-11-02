@@ -11,10 +11,7 @@ module.exports = {
       statements: 100,
     },
   },
-  coveragePathIgnorePatterns: [
-    '<rootDir>/packages/contract-helpers/src/index.ts',
-    '<rootDir>/packages/math-utils/src/formatters/reserve/index.ts', // TODO: remove
-  ],
+  coveragePathIgnorePatterns: [],
   modulePathIgnorePatterns: ['node_modules'],
   testEnvironment: 'node',
   verbose: true,
