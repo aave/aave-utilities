@@ -4,7 +4,7 @@ import { GhoDiscountRateStrategyService } from '../GhoDiscountRateStrategyServic
 import { GhoDiscountRateStrategy } from '../typechain/GhoDiscountRateStrategy';
 import { GhoDiscountRateStrategy__factory } from '../typechain/GhoDiscountRateStrategy__factory';
 
-jest.mock('../commons/gasStation', () => {
+jest.mock('../../commons/gasStation', () => {
   return {
     __esModule: true,
     estimateGasByNetwork: jest
