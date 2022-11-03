@@ -43,7 +43,7 @@ export class GhoTokenService
 
   /**
    * Gets the full list of facilitators for the GHO token
-   * @returns - An array of facilitator addresses, which can be used for querying in more detail
+   * @returns - An array of facilitator addresses as strings, which can be used for querying in more detail
    */
   public async getFacilitatorsList() {
     const contract = this.getContractInstance(this.ghoTokenAddress);
