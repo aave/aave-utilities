@@ -1,10 +1,10 @@
 import { constants, BigNumber, BigNumberish, providers } from 'ethers';
-import { valueToWei } from '../commons/utils';
-import { GhoDiscountRateStrategyService } from './GhoDiscountRateStrategyService';
-import { GhoDiscountRateStrategy } from './typechain/GhoDiscountRateStrategy';
-import { GhoDiscountRateStrategy__factory } from './typechain/GhoDiscountRateStrategy__factory';
+import { valueToWei } from '../../commons/utils';
+import { GhoDiscountRateStrategyService } from '../GhoDiscountRateStrategyService';
+import { GhoDiscountRateStrategy } from '../typechain/GhoDiscountRateStrategy';
+import { GhoDiscountRateStrategy__factory } from '../typechain/GhoDiscountRateStrategy__factory';
 
-jest.mock('../commons/gasStation', () => {
+jest.mock('../../commons/gasStation', () => {
   return {
     __esModule: true,
     estimateGasByNetwork: jest
@@ -38,6 +38,121 @@ describe('GhoDiscountRateStrategyService', () => {
 
       // Assert it
       expect(instance).toBeInstanceOf(GhoDiscountRateStrategyService);
+    });
+  });
+
+  describe('getGhoDiscountedPerDiscountToken', () => {
+    it('should return the amount of GHO eligible to be discounted per one discount token', async () => {
+      // Create instance
+      const contract = new GhoDiscountRateStrategyService(
+        correctProvider,
+        DISCOUNT_RATE_STRATEGY_ADDRESS,
+      );
+
+      // Setup
+      const mockGhoDiscountedPerDiscountToken = convertToBN('100');
+
+      // Mock it
+      const spy = jest
+        .spyOn(GhoDiscountRateStrategy__factory, 'connect')
+        .mockReturnValue({
+          GHO_DISCOUNTED_PER_DISCOUNT_TOKEN: async () =>
+            Promise.resolve(mockGhoDiscountedPerDiscountToken),
+        } as unknown as GhoDiscountRateStrategy);
+
+      // Call it
+      const result = await contract.getGhoDiscountedPerDiscountToken();
+
+      // Assert it
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toBeCalledTimes(1);
+      expect(result).toEqual(mockGhoDiscountedPerDiscountToken);
+    });
+  });
+
+  describe('getGhoDiscountRate', () => {
+    it('should return the current maximum discount rate against borrowing GHO, expressed in bps', async () => {
+      // Create instance
+      const contract = new GhoDiscountRateStrategyService(
+        correctProvider,
+        DISCOUNT_RATE_STRATEGY_ADDRESS,
+      );
+
+      // Setup
+      const mockDiscountRate = convertToBN('2000'); // 20.00%
+
+      // Mock it
+      const spy = jest
+        .spyOn(GhoDiscountRateStrategy__factory, 'connect')
+        .mockReturnValue({
+          DISCOUNT_RATE: async () => Promise.resolve(mockDiscountRate),
+        } as unknown as GhoDiscountRateStrategy);
+
+      // Call it
+      const result = await contract.getGhoDiscountRate();
+
+      // Assert it
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toBeCalledTimes(1);
+      expect(result).toEqual(mockDiscountRate);
+    });
+  });
+
+  describe('getGhoMinDiscountTokenBalance', () => {
+    it('should return the minimum amount of discount tokens needed to be eligible for a discount', async () => {
+      // Create instance
+      const contract = new GhoDiscountRateStrategyService(
+        correctProvider,
+        DISCOUNT_RATE_STRATEGY_ADDRESS,
+      );
+
+      // Setup
+      const mockMinDiscountTokenBalance = convertToBN('100');
+
+      // Mock it
+      const spy = jest
+        .spyOn(GhoDiscountRateStrategy__factory, 'connect')
+        .mockReturnValue({
+          MIN_DISCOUNT_TOKEN_BALANCE: async () =>
+            Promise.resolve(mockMinDiscountTokenBalance),
+        } as unknown as GhoDiscountRateStrategy);
+
+      // Call it
+      const result = await contract.getGhoMinDiscountTokenBalance();
+
+      // Assert it
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toBeCalledTimes(1);
+      expect(result).toEqual(mockMinDiscountTokenBalance);
+    });
+  });
+
+  describe('getGhoMinDebtTokenBalance', () => {
+    it('should return the minimum amount of debt tokens needed to be eligible for a discount', async () => {
+      // Create instance
+      const contract = new GhoDiscountRateStrategyService(
+        correctProvider,
+        DISCOUNT_RATE_STRATEGY_ADDRESS,
+      );
+
+      // Setup
+      const mockMinDebtTokenBalance = convertToBN('100');
+
+      // Mock it
+      const spy = jest
+        .spyOn(GhoDiscountRateStrategy__factory, 'connect')
+        .mockReturnValue({
+          MIN_DEBT_TOKEN_BALANCE: async () =>
+            Promise.resolve(mockMinDebtTokenBalance),
+        } as unknown as GhoDiscountRateStrategy);
+
+      // Call it
+      const result = await contract.getGhoMinDebtTokenBalance();
+
+      // Assert it
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toBeCalledTimes(1);
+      expect(result).toEqual(mockMinDebtTokenBalance);
     });
   });
 
