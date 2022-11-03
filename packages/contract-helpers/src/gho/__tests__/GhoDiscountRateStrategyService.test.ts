@@ -1,8 +1,8 @@
 import { constants, BigNumber, BigNumberish, providers } from 'ethers';
-import { valueToWei } from '../commons/utils';
-import { GhoDiscountRateStrategyService } from './GhoDiscountRateStrategyService';
-import { GhoDiscountRateStrategy } from './typechain/GhoDiscountRateStrategy';
-import { GhoDiscountRateStrategy__factory } from './typechain/GhoDiscountRateStrategy__factory';
+import { valueToWei } from '../../commons/utils';
+import { GhoDiscountRateStrategyService } from '../GhoDiscountRateStrategyService';
+import { GhoDiscountRateStrategy } from '../typechain/GhoDiscountRateStrategy';
+import { GhoDiscountRateStrategy__factory } from '../typechain/GhoDiscountRateStrategy__factory';
 
 jest.mock('../commons/gasStation', () => {
   return {

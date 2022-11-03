@@ -33,7 +33,7 @@ export class GhoDiscountRateStrategyService
    * updated anytime they send or receive the discount token (stkAAVE). Users are entitled to this discount for a given amount of time without needing to perform any additional actions (i.e. the discount lock period).
    * @param ghoDebtTokenBalance - The balance for the user's GhoVariableDebtToken, i.e. the amount they currently have borrowed from the protocol
    * @param stakedAaveBalance - The balance of the user's stkAAVE token balance
-   * @returns - The discounted interest rate charged on the borrowed native GHO token.
+   * @returns - The discounted interest rate charged on the borrowed native GHO token, expresed in bps
    */
   public async calculateDiscountRate(
     ghoDebtTokenBalance: BigNumberish,

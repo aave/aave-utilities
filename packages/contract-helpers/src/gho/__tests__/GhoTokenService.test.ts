@@ -1,9 +1,9 @@
 import { constants, BigNumber, providers } from 'ethers';
-import { valueToWei } from '../commons/utils';
-import { GhoTokenService } from './GhoTokenService';
-import { GhoToken } from './typechain/GhoToken';
-import { GhoToken__factory } from './typechain/GhoToken__factory';
-import { IGhoToken } from './typechain/IGhoToken';
+import { valueToWei } from '../../commons/utils';
+import { GhoTokenService } from '../GhoTokenService';
+import { GhoToken } from '../typechain/GhoToken';
+import { GhoToken__factory } from '../typechain/GhoToken__factory';
+import { IGhoToken } from '../typechain/IGhoToken';
 
 jest.mock('../commons/gasStation', () => {
   return {
