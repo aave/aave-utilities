@@ -158,4 +158,33 @@ describe('GhoVariableDebtTokenService', () => {
       expect(result).toEqual(mockUserRebalanceTimestamp);
     });
   });
+
+  describe('getDiscountRateStrategy', () => {
+    it('should return the current discount rate strategy address', async () => {
+      // Create instance
+      const contract = new GhoVariableDebtTokenService(
+        correctProvider,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
+      );
+
+      // Setup
+      const mockDiscountRateStrategy = constants.AddressZero;
+
+      // Mock it
+      const spy = jest
+        .spyOn(GhoVariableDebtToken__factory, 'connect')
+        .mockReturnValue({
+          getDiscountRateStrategy: async () =>
+            Promise.resolve(mockDiscountRateStrategy),
+        } as unknown as GhoVariableDebtToken);
+
+      // Call it
+      const result = await contract.getDiscountRateStrategy();
+
+      // Assert it
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toBeCalledTimes(1);
+      expect(result).toEqual(mockDiscountRateStrategy);
+    });
+  });
 });
