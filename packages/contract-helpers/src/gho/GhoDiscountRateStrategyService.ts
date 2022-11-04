@@ -1,5 +1,9 @@
 import { BigNumber, BigNumberish, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
+import {
+  GhoVariableDebtTokenService,
+  IGhoVariableDebtTokenService,
+} from './GhoVariableDebtTokenService';
 import type { GhoDiscountRateStrategy } from './typechain/GhoDiscountRateStrategy';
 import { GhoDiscountRateStrategy__factory } from './typechain/GhoDiscountRateStrategy__factory';
 
@@ -22,14 +26,17 @@ export class GhoDiscountRateStrategyService
   extends BaseService<GhoDiscountRateStrategy>
   implements IGhoDiscountRateStrategyService
 {
-  readonly ghoDiscountRateStrategyAddress: string;
+  readonly ghoVariableDebtTokenService: IGhoVariableDebtTokenService;
 
   constructor(
     provider: providers.Provider,
-    discountRateStrategyAddress: string,
+    ghoVariableDebtTokenAddress: string,
   ) {
     super(provider, GhoDiscountRateStrategy__factory);
-    this.ghoDiscountRateStrategyAddress = discountRateStrategyAddress;
+    this.ghoVariableDebtTokenService = new GhoVariableDebtTokenService(
+      provider,
+      ghoVariableDebtTokenAddress,
+    );
   }
 
   /**
@@ -37,9 +44,9 @@ export class GhoDiscountRateStrategyService
    * @returns - A BigNumber representing the amount of GHO tokens per discount token that are eligible to be discounted, expressed with the number of decimals of the discount token
    */
   public async getGhoDiscountedPerDiscountToken() {
-    const contract = this.getContractInstance(
-      this.ghoDiscountRateStrategyAddress,
-    );
+    const ghoDiscountRateStrategyAddress =
+      await this.ghoVariableDebtTokenService.getDiscountRateStrategy();
+    const contract = this.getContractInstance(ghoDiscountRateStrategyAddress);
     // eslint-disable-next-line new-cap
     const result = await contract.GHO_DISCOUNTED_PER_DISCOUNT_TOKEN();
     return result;
@@ -50,9 +57,9 @@ export class GhoDiscountRateStrategyService
    * @returns - A BigNumber representing the current maximum discount rate, expressed in bps, a value of 2000 results in 20.00%
    */
   public async getGhoDiscountRate() {
-    const contract = this.getContractInstance(
-      this.ghoDiscountRateStrategyAddress,
-    );
+    const ghoDiscountRateStrategyAddress =
+      await this.ghoVariableDebtTokenService.getDiscountRateStrategy();
+    const contract = this.getContractInstance(ghoDiscountRateStrategyAddress);
     // eslint-disable-next-line new-cap
     const result = await contract.DISCOUNT_RATE();
     return result;
@@ -63,9 +70,9 @@ export class GhoDiscountRateStrategyService
    * @returns - A BigNumber representing the minimum amount of discount tokens needed to be eligible for a discount, expressed with the number of decimals of the discount token
    */
   public async getGhoMinDiscountTokenBalance() {
-    const contract = this.getContractInstance(
-      this.ghoDiscountRateStrategyAddress,
-    );
+    const ghoDiscountRateStrategyAddress =
+      await this.ghoVariableDebtTokenService.getDiscountRateStrategy();
+    const contract = this.getContractInstance(ghoDiscountRateStrategyAddress);
     // eslint-disable-next-line new-cap
     const result = await contract.MIN_DISCOUNT_TOKEN_BALANCE();
     return result;
@@ -76,9 +83,9 @@ export class GhoDiscountRateStrategyService
    * @returns - A BigNumber representing the minimum amount of debt tokens needed to be eligible for a discount, expressed with the number of decimals of the debt token
    */
   public async getGhoMinDebtTokenBalance() {
-    const contract = this.getContractInstance(
-      this.ghoDiscountRateStrategyAddress,
-    );
+    const ghoDiscountRateStrategyAddress =
+      await this.ghoVariableDebtTokenService.getDiscountRateStrategy();
+    const contract = this.getContractInstance(ghoDiscountRateStrategyAddress);
     // eslint-disable-next-line new-cap
     const result = await contract.MIN_DEBT_TOKEN_BALANCE();
     return result;
@@ -94,9 +101,9 @@ export class GhoDiscountRateStrategyService
     ghoDebtTokenBalance: BigNumberish,
     stakedAaveBalance: BigNumberish,
   ) {
-    const contract = this.getContractInstance(
-      this.ghoDiscountRateStrategyAddress,
-    );
+    const ghoDiscountRateStrategyAddress =
+      await this.ghoVariableDebtTokenService.getDiscountRateStrategy();
+    const contract = this.getContractInstance(ghoDiscountRateStrategyAddress);
     const result = await contract.calculateDiscountRate(
       ghoDebtTokenBalance,
       stakedAaveBalance,
