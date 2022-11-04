@@ -3,6 +3,8 @@ import { valueToWei } from '../../commons/utils';
 import { GhoDiscountRateStrategyService } from '../GhoDiscountRateStrategyService';
 import { GhoDiscountRateStrategy } from '../typechain/GhoDiscountRateStrategy';
 import { GhoDiscountRateStrategy__factory } from '../typechain/GhoDiscountRateStrategy__factory';
+import { GhoVariableDebtToken } from '../typechain/GhoVariableDebtToken';
+import { GhoVariableDebtToken__factory } from '../typechain/GhoVariableDebtToken__factory';
 
 jest.mock('../../commons/gasStation', () => {
   return {
@@ -18,13 +20,18 @@ jest.mock('../../commons/gasStation', () => {
 const convertToBN = (n: string) => valueToWei(n, 18);
 
 describe('GhoDiscountRateStrategyService', () => {
-  const DISCOUNT_RATE_STRATEGY_ADDRESS = constants.AddressZero;
+  const GHO_VARIABLE_DEBT_TOKEN_ADDRESS = constants.AddressZero;
   const correctProvider: providers.Provider = new providers.JsonRpcProvider();
 
   // Mocking
   jest
     .spyOn(correctProvider, 'getGasPrice')
     .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
+
+  // Mock the response of GhoVariableDebtToken.getDiscountRateStrategy()
+  jest.spyOn(GhoVariableDebtToken__factory, 'connect').mockReturnValue({
+    getDiscountRateStrategy: async () => Promise.resolve(constants.AddressZero),
+  } as unknown as GhoVariableDebtToken);
 
   afterEach(() => jest.clearAllMocks());
 
@@ -33,7 +40,7 @@ describe('GhoDiscountRateStrategyService', () => {
       // Create instance
       const instance = new GhoDiscountRateStrategyService(
         correctProvider,
-        DISCOUNT_RATE_STRATEGY_ADDRESS,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
       );
 
       // Assert it
@@ -46,7 +53,7 @@ describe('GhoDiscountRateStrategyService', () => {
       // Create instance
       const contract = new GhoDiscountRateStrategyService(
         correctProvider,
-        DISCOUNT_RATE_STRATEGY_ADDRESS,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
       );
 
       // Setup
@@ -75,7 +82,7 @@ describe('GhoDiscountRateStrategyService', () => {
       // Create instance
       const contract = new GhoDiscountRateStrategyService(
         correctProvider,
-        DISCOUNT_RATE_STRATEGY_ADDRESS,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
       );
 
       // Setup
@@ -103,7 +110,7 @@ describe('GhoDiscountRateStrategyService', () => {
       // Create instance
       const contract = new GhoDiscountRateStrategyService(
         correctProvider,
-        DISCOUNT_RATE_STRATEGY_ADDRESS,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
       );
 
       // Setup
@@ -132,7 +139,7 @@ describe('GhoDiscountRateStrategyService', () => {
       // Create instance
       const contract = new GhoDiscountRateStrategyService(
         correctProvider,
-        DISCOUNT_RATE_STRATEGY_ADDRESS,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
       );
 
       // Setup
@@ -161,7 +168,7 @@ describe('GhoDiscountRateStrategyService', () => {
       // Create instance
       const contract = new GhoDiscountRateStrategyService(
         correctProvider,
-        DISCOUNT_RATE_STRATEGY_ADDRESS,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
       );
 
       // Use case - borrowing 100 GHO owning 0 skAAVE
@@ -192,7 +199,7 @@ describe('GhoDiscountRateStrategyService', () => {
       // Create instance
       const contract = new GhoDiscountRateStrategyService(
         correctProvider,
-        DISCOUNT_RATE_STRATEGY_ADDRESS,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
       );
 
       // Use case - borrowing 0 GHO owning 1 skAAVE
@@ -224,7 +231,7 @@ describe('GhoDiscountRateStrategyService', () => {
       // Create instance
       const contract = new GhoDiscountRateStrategyService(
         correctProvider,
-        DISCOUNT_RATE_STRATEGY_ADDRESS,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
       );
 
       // Use case #1 - borrowing 100 GHO owning 1 stkAAVE
@@ -269,7 +276,7 @@ describe('GhoDiscountRateStrategyService', () => {
       // Create instance
       const contract = new GhoDiscountRateStrategyService(
         correctProvider,
-        DISCOUNT_RATE_STRATEGY_ADDRESS,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
       );
 
       // Use case - borrowing 150 GHO owning 1 skAAVE
