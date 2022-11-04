@@ -303,4 +303,98 @@ describe('GhoDiscountRateStrategyService', () => {
       expect(result).toEqual(expected);
     });
   });
+  describe('ghoDiscountRateStrategy update on ghoVariableDebtToken contract', () => {
+    it('should return discount based on the active strategy on the ghoVariableDebtToken', async () => {
+      // Create different mocked return values for the two discount rate strategies when given the same input
+
+      // Constants
+      const ghoDiscountRateStrategyOne =
+        '0x0000000000000000000000000000000000000001';
+      const ghoDiscountRateStrategyTwo =
+        '0x0000000000000000000000000000000000000002';
+      const ghoDebtTokenBalance: BigNumberish = convertToBN('150');
+      const stakedAaveBalance: BigNumberish = convertToBN('1');
+      const expectedOne = BigNumber.from('1333'); // 13.33% discount
+      const expectedTwo = BigNumber.from('2000'); // 20% discount
+
+      // Mock services
+      const ghoDiscountRateStrategyServiceOne = {
+        calculateDiscountRate: jest.fn(),
+      };
+      ghoDiscountRateStrategyServiceOne.calculateDiscountRate.mockReturnValue(
+        Promise.resolve(expectedOne),
+      );
+      const ghoDiscountRateStrategyServiceTwo = {
+        calculateDiscountRate: jest.fn(),
+      };
+      ghoDiscountRateStrategyServiceTwo.calculateDiscountRate.mockReturnValue(
+        Promise.resolve(expectedTwo),
+      );
+
+      // Create a spy which will conditionally return the service based on the rate strategy address
+      const spy = jest
+        .spyOn(GhoDiscountRateStrategy__factory, 'connect')
+        .mockReturnValue({
+          calculateDiscountRate: async () => {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            const rateStrategyAddress =
+              await mockVariableDebtTokenService.getDiscountRateStrategy();
+            if (rateStrategyAddress === ghoDiscountRateStrategyOne) {
+              return Promise.resolve(
+                ghoDiscountRateStrategyServiceOne.calculateDiscountRate(),
+              );
+            }
+
+            return Promise.resolve(
+              ghoDiscountRateStrategyServiceTwo.calculateDiscountRate(),
+            );
+          },
+        } as unknown as GhoDiscountRateStrategy);
+
+      // Mock a variable debt service to return the first discount rate strategy
+      const mockVariableDebtTokenService = {
+        getDiscountRateStrategy: jest.fn(),
+      };
+
+      jest
+        .mocked(mockVariableDebtTokenService)
+        .getDiscountRateStrategy.mockResolvedValue(
+          Promise.resolve(ghoDiscountRateStrategyOne),
+        );
+
+      // Create a discount service which will be spied and trigger calls to ghoVariableDebtToken.getDiscountRateStrategy() -> ghoDiscountRateService.calculateDiscountRate()
+      const ghoDiscountRateStrategyServiceThree =
+        new GhoDiscountRateStrategyService(
+          correctProvider,
+          GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
+        );
+
+      // Call calculateDiscountRate with the first rate strategy
+      const resultOne =
+        await ghoDiscountRateStrategyServiceThree.calculateDiscountRate(
+          ghoDebtTokenBalance,
+          stakedAaveBalance,
+        );
+
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toBeCalledTimes(1);
+      expect(resultOne).toEqual(expectedOne);
+
+      // Simulates a ghoDiscountRateStrategy update
+      jest
+        .mocked(mockVariableDebtTokenService)
+        .getDiscountRateStrategy.mockResolvedValue(
+          Promise.resolve(ghoDiscountRateStrategyTwo),
+        );
+
+      // Call calculateDiscountRate with the updated rate strategy
+      const resultTwo =
+        await ghoDiscountRateStrategyServiceThree.calculateDiscountRate(
+          ghoDebtTokenBalance,
+          stakedAaveBalance,
+        );
+
+      expect(resultTwo).toEqual(expectedTwo);
+    });
+  });
 });
