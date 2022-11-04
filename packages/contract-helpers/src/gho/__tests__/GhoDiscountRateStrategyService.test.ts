@@ -3,6 +3,8 @@ import { valueToWei } from '../../commons/utils';
 import { GhoDiscountRateStrategyService } from '../GhoDiscountRateStrategyService';
 import { GhoDiscountRateStrategy } from '../typechain/GhoDiscountRateStrategy';
 import { GhoDiscountRateStrategy__factory } from '../typechain/GhoDiscountRateStrategy__factory';
+import { GhoVariableDebtToken } from '../typechain/GhoVariableDebtToken';
+import { GhoVariableDebtToken__factory } from '../typechain/GhoVariableDebtToken__factory';
 
 jest.mock('../../commons/gasStation', () => {
   return {
@@ -18,13 +20,18 @@ jest.mock('../../commons/gasStation', () => {
 const convertToBN = (n: string) => valueToWei(n, 18);
 
 describe('GhoDiscountRateStrategyService', () => {
-  const DISCOUNT_RATE_STRATEGY_ADDRESS = constants.AddressZero;
+  const GHO_VARIABLE_DEBT_TOKEN_ADDRESS = constants.AddressZero;
   const correctProvider: providers.Provider = new providers.JsonRpcProvider();
 
   // Mocking
   jest
     .spyOn(correctProvider, 'getGasPrice')
     .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
+
+  // Mock the response of GhoVariableDebtToken.getDiscountRateStrategy()
+  jest.spyOn(GhoVariableDebtToken__factory, 'connect').mockReturnValue({
+    getDiscountRateStrategy: async () => Promise.resolve(constants.AddressZero),
+  } as unknown as GhoVariableDebtToken);
 
   afterEach(() => jest.clearAllMocks());
 
@@ -33,7 +40,7 @@ describe('GhoDiscountRateStrategyService', () => {
       // Create instance
       const instance = new GhoDiscountRateStrategyService(
         correctProvider,
-        DISCOUNT_RATE_STRATEGY_ADDRESS,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
       );
 
       // Assert it
@@ -46,7 +53,7 @@ describe('GhoDiscountRateStrategyService', () => {
       // Create instance
       const contract = new GhoDiscountRateStrategyService(
         correctProvider,
-        DISCOUNT_RATE_STRATEGY_ADDRESS,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
       );
 
       // Setup
@@ -75,7 +82,7 @@ describe('GhoDiscountRateStrategyService', () => {
       // Create instance
       const contract = new GhoDiscountRateStrategyService(
         correctProvider,
-        DISCOUNT_RATE_STRATEGY_ADDRESS,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
       );
 
       // Setup
@@ -103,7 +110,7 @@ describe('GhoDiscountRateStrategyService', () => {
       // Create instance
       const contract = new GhoDiscountRateStrategyService(
         correctProvider,
-        DISCOUNT_RATE_STRATEGY_ADDRESS,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
       );
 
       // Setup
@@ -132,7 +139,7 @@ describe('GhoDiscountRateStrategyService', () => {
       // Create instance
       const contract = new GhoDiscountRateStrategyService(
         correctProvider,
-        DISCOUNT_RATE_STRATEGY_ADDRESS,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
       );
 
       // Setup
@@ -161,7 +168,7 @@ describe('GhoDiscountRateStrategyService', () => {
       // Create instance
       const contract = new GhoDiscountRateStrategyService(
         correctProvider,
-        DISCOUNT_RATE_STRATEGY_ADDRESS,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
       );
 
       // Use case - borrowing 100 GHO owning 0 skAAVE
@@ -192,7 +199,7 @@ describe('GhoDiscountRateStrategyService', () => {
       // Create instance
       const contract = new GhoDiscountRateStrategyService(
         correctProvider,
-        DISCOUNT_RATE_STRATEGY_ADDRESS,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
       );
 
       // Use case - borrowing 0 GHO owning 1 skAAVE
@@ -224,7 +231,7 @@ describe('GhoDiscountRateStrategyService', () => {
       // Create instance
       const contract = new GhoDiscountRateStrategyService(
         correctProvider,
-        DISCOUNT_RATE_STRATEGY_ADDRESS,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
       );
 
       // Use case #1 - borrowing 100 GHO owning 1 stkAAVE
@@ -269,7 +276,7 @@ describe('GhoDiscountRateStrategyService', () => {
       // Create instance
       const contract = new GhoDiscountRateStrategyService(
         correctProvider,
-        DISCOUNT_RATE_STRATEGY_ADDRESS,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
       );
 
       // Use case - borrowing 150 GHO owning 1 skAAVE
@@ -294,6 +301,100 @@ describe('GhoDiscountRateStrategyService', () => {
       expect(spy).toHaveBeenCalled();
       expect(spy).toBeCalledTimes(1);
       expect(result).toEqual(expected);
+    });
+  });
+  describe('ghoDiscountRateStrategy update on ghoVariableDebtToken contract', () => {
+    it('should return discount based on the active strategy on the ghoVariableDebtToken', async () => {
+      // Create different mocked return values for the two discount rate strategies when given the same input
+
+      // Constants
+      const ghoDiscountRateStrategyOne =
+        '0x0000000000000000000000000000000000000001';
+      const ghoDiscountRateStrategyTwo =
+        '0x0000000000000000000000000000000000000002';
+      const ghoDebtTokenBalance: BigNumberish = convertToBN('150');
+      const stakedAaveBalance: BigNumberish = convertToBN('1');
+      const expectedOne = BigNumber.from('1333'); // 13.33% discount
+      const expectedTwo = BigNumber.from('2000'); // 20% discount
+
+      // Mock services
+      const ghoDiscountRateStrategyServiceOne = {
+        calculateDiscountRate: jest.fn(),
+      };
+      ghoDiscountRateStrategyServiceOne.calculateDiscountRate.mockReturnValue(
+        Promise.resolve(expectedOne),
+      );
+      const ghoDiscountRateStrategyServiceTwo = {
+        calculateDiscountRate: jest.fn(),
+      };
+      ghoDiscountRateStrategyServiceTwo.calculateDiscountRate.mockReturnValue(
+        Promise.resolve(expectedTwo),
+      );
+
+      // Create a spy which will conditionally return the service based on the rate strategy address
+      const spy = jest
+        .spyOn(GhoDiscountRateStrategy__factory, 'connect')
+        .mockReturnValue({
+          calculateDiscountRate: async () => {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            const rateStrategyAddress =
+              await mockVariableDebtTokenService.getDiscountRateStrategy();
+            if (rateStrategyAddress === ghoDiscountRateStrategyOne) {
+              return Promise.resolve(
+                ghoDiscountRateStrategyServiceOne.calculateDiscountRate(),
+              );
+            }
+
+            return Promise.resolve(
+              ghoDiscountRateStrategyServiceTwo.calculateDiscountRate(),
+            );
+          },
+        } as unknown as GhoDiscountRateStrategy);
+
+      // Mock a variable debt service to return the first discount rate strategy
+      const mockVariableDebtTokenService = {
+        getDiscountRateStrategy: jest.fn(),
+      };
+
+      jest
+        .mocked(mockVariableDebtTokenService)
+        .getDiscountRateStrategy.mockResolvedValue(
+          Promise.resolve(ghoDiscountRateStrategyOne),
+        );
+
+      // Create a discount service which will be spied and trigger calls to ghoVariableDebtToken.getDiscountRateStrategy() -> ghoDiscountRateService.calculateDiscountRate()
+      const ghoDiscountRateStrategyServiceThree =
+        new GhoDiscountRateStrategyService(
+          correctProvider,
+          GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
+        );
+
+      // Call calculateDiscountRate with the first rate strategy
+      const resultOne =
+        await ghoDiscountRateStrategyServiceThree.calculateDiscountRate(
+          ghoDebtTokenBalance,
+          stakedAaveBalance,
+        );
+
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toBeCalledTimes(1);
+      expect(resultOne).toEqual(expectedOne);
+
+      // Simulates a ghoDiscountRateStrategy update
+      jest
+        .mocked(mockVariableDebtTokenService)
+        .getDiscountRateStrategy.mockResolvedValue(
+          Promise.resolve(ghoDiscountRateStrategyTwo),
+        );
+
+      // Call calculateDiscountRate with the updated rate strategy
+      const resultTwo =
+        await ghoDiscountRateStrategyServiceThree.calculateDiscountRate(
+          ghoDebtTokenBalance,
+          stakedAaveBalance,
+        );
+
+      expect(resultTwo).toEqual(expectedTwo);
     });
   });
 });

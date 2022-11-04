@@ -3,11 +3,12 @@ import BaseService from '../commons/BaseService';
 import { GhoVariableDebtToken__factory } from './typechain/GhoVariableDebtToken__factory';
 import type { IGhoVariableDebtToken } from './typechain/IGhoVariableDebtToken';
 
-interface IGhoVariableDebtTokenService {
+export interface IGhoVariableDebtTokenService {
   getDiscountToken: () => Promise<string>;
   getDiscountLockPeriod: () => Promise<BigNumber>;
   getUserDiscountPercent: (userAddress: string) => Promise<BigNumber>;
   getUserRebalanceTimestamp: (userAddress: string) => Promise<BigNumber>;
+  getDiscountRateStrategy: () => Promise<string>;
 }
 
 /**
@@ -68,6 +69,16 @@ export class GhoVariableDebtTokenService
   public async getUserRebalanceTimestamp(userAddress: string) {
     const contract = this.getContractInstance(this.ghoVariableDebtTokenAddress);
     const result = await contract.getUserRebalanceTimestamp(userAddress);
+    return result;
+  }
+
+  /**
+   * Gets the discount rate strategy currently in use
+   * @returns - Address of current GhoDiscountRateStrategy
+   */
+  public async getDiscountRateStrategy() {
+    const contract = this.getContractInstance(this.ghoVariableDebtTokenAddress);
+    const result = await contract.getDiscountRateStrategy();
     return result;
   }
 }
