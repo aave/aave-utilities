@@ -2,17 +2,22 @@ import { BigNumber, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
 import type { GhoToken } from './typechain/GhoToken';
 import { GhoToken__factory } from './typechain/GhoToken__factory';
-import type { IGhoToken } from './typechain/IGhoToken';
+
+interface BucketOutput {
+  maxCapacity: BigNumber;
+  level: BigNumber;
+}
+
+interface FacilitatorOutput {
+  bucket: BucketOutput;
+  label: string;
+}
 
 interface IGhoTokenService {
   totalSupply: () => Promise<BigNumber>;
   getFacilitatorsList: () => Promise<string[]>;
-  getFacilitator: (
-    facilitatorAddress: string,
-  ) => Promise<IGhoToken.FacilitatorStruct>;
-  getFacilitatorBucket: (
-    facilitatorAddress: string,
-  ) => Promise<IGhoToken.BucketStruct>;
+  getFacilitator: (facilitatorAddress: string) => Promise<FacilitatorOutput>;
+  getFacilitatorBucket: (facilitatorAddress: string) => Promise<BucketOutput>;
 }
 
 /**
