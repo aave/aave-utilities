@@ -63,7 +63,9 @@ export class GhoTokenService
    */
   public async getFacilitator(facilitatorAddress: string) {
     const contract = this.getContractInstance(this.ghoTokenAddress);
-    const result = await contract.getFacilitator(facilitatorAddress);
+    const result: FacilitatorOutput = await contract.getFacilitator(
+      facilitatorAddress,
+    );
     return result;
   }
 
@@ -74,7 +76,9 @@ export class GhoTokenService
    */
   public async getFacilitatorBucket(facilitatorAddress: string) {
     const contract = this.getContractInstance(this.ghoTokenAddress);
-    const result = await contract.getFacilitatorBucket(facilitatorAddress);
+    const result: BucketOutput = await contract.getFacilitatorBucket(
+      facilitatorAddress,
+    );
     return result;
   }
 }
