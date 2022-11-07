@@ -3,12 +3,12 @@ import BaseService from '../commons/BaseService';
 import type { GhoToken } from './typechain/GhoToken';
 import { GhoToken__factory } from './typechain/GhoToken__factory';
 
-interface BucketOutput {
+export interface BucketOutput {
   maxCapacity: BigNumber;
   level: BigNumber;
 }
 
-interface FacilitatorOutput {
+export interface FacilitatorOutput {
   bucket: BucketOutput;
   label: string;
 }
