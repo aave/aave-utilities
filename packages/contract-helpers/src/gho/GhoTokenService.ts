@@ -59,7 +59,7 @@ export class GhoTokenService
   /**
    * Gets the instance for a given facilitator
    * @param facilitatorAddress - The address for the currently deployed contract for the facilitator being queried
-   * @returns - The instance of the facilitator, which contains `bucket` and `label` fields
+   * @returns - The instance of the FacilitatorOutput interface, which contains `bucket` and `label` fields
    */
   public async getFacilitator(facilitatorAddress: string) {
     const contract = this.getContractInstance(this.ghoTokenAddress);
@@ -72,7 +72,7 @@ export class GhoTokenService
   /**
    * Gets the bucket instance for a given facilitator
    * @param facilitatorAddress - The address for the currently deployed contract for the facilitator being queried
-   * @returns - The instance of the facilitator bucket, which contains `maxCapacity` and `level` fields
+   * @returns - The instance of BucketOutput interface, which contains `maxCapacity` and `level` fields
    */
   public async getFacilitatorBucket(facilitatorAddress: string) {
     const contract = this.getContractInstance(this.ghoTokenAddress);
