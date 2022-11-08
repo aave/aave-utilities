@@ -68,7 +68,7 @@ import { IPool } from './typechain/IPool';
 import { IPool__factory } from './typechain/IPool__factory';
 
 export interface PoolInterface {
-  getReserveData: (reserveAddress: string) => Promise<LPReserveData>;
+  getReserveData: (reserve: tEthereumAddress) => Promise<LPReserveData>;
   deposit: (
     args: LPSupplyParamsType,
   ) => Promise<EthereumTransactionTypeExtended[]>;
@@ -230,7 +230,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
 
   @LPValidatorV3
   public async getReserveData(
-    @isEthAddress('reserve') reserve: string,
+    @isEthAddress('reserve') reserve: tEthereumAddress,
   ): Promise<LPReserveData> {
     const lendingPoolContract: IPool = this.getContractInstance(
       this.poolAddress,
