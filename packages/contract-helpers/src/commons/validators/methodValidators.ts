@@ -365,6 +365,8 @@ export function ERC20Validator(
 
     amountGtThan0OrMinus1(target, propertyName, arguments);
 
+    amount0OrPositiveValidator(target, propertyName, arguments);
+
     return method.apply(this, arguments);
   };
 }
