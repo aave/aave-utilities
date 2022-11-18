@@ -13,6 +13,7 @@ export * from './uiStakeDataProvider-contract';
 export * from './incentive-controller';
 export * from './incentive-controller-v2';
 export * from './erc20-contract';
+export * from './erc20-2612';
 export * from './lendingPool-contract';
 export * from './faucet-contract';
 export * from './staking-contract';
