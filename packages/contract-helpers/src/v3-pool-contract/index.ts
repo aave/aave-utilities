@@ -57,7 +57,6 @@ import {
   LPRepayWithPermitParamsType,
   LPSetUsageAsCollateral,
   LPSetUserEModeType,
-  LPSignERC20ApprovalType,
   LPSupplyWithPermitType,
   LPSwapBorrowRateMode,
   LPSwapCollateral,
@@ -73,7 +72,6 @@ export interface PoolInterface {
   supply: (
     args: LPSupplyParamsType,
   ) => Promise<EthereumTransactionTypeExtended[]>;
-  signERC20Approval: (args: LPSignERC20ApprovalType) => Promise<string>;
   supplyWithPermit: (
     args: LPSupplyWithPermitType,
   ) => Promise<EthereumTransactionTypeExtended[]>;
@@ -399,78 +397,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     });
 
     return txs;
-  }
-
-  // Sign permit supply
-  @LPValidatorV3
-  public async signERC20Approval(
-    @isEthAddress('user')
-    @isEthAddress('reserve')
-    @isPositiveOrMinusOneAmount('amount')
-    { user, reserve, amount, deadline }: LPSignERC20ApprovalType,
-  ): Promise<string> {
-    const { getTokenData, isApproved } = this.erc20Service;
-    const { name, decimals } = await getTokenData(reserve);
-
-    const convertedAmount =
-      amount === '-1'
-        ? constants.MaxUint256.toString()
-        : valueToWei(amount, decimals);
-
-    const approved = await isApproved({
-      token: reserve,
-      user,
-      spender: this.poolAddress,
-      amount,
-    });
-
-    if (approved) {
-      return '';
-    }
-
-    const { chainId } = await this.provider.getNetwork();
-
-    const nonce = await this.erc20_2612Service.getNonce({
-      token: reserve,
-      owner: user,
-    });
-
-    if (nonce === null) {
-      return '';
-    }
-
-    const typeData = {
-      types: {
-        EIP712Domain: [
-          { name: 'name', type: 'string' },
-          { name: 'version', type: 'string' },
-          { name: 'chainId', type: 'uint256' },
-          { name: 'verifyingContract', type: 'address' },
-        ],
-        Permit: [
-          { name: 'owner', type: 'address' },
-          { name: 'spender', type: 'address' },
-          { name: 'value', type: 'uint256' },
-          { name: 'nonce', type: 'uint256' },
-          { name: 'deadline', type: 'uint256' },
-        ],
-      },
-      primaryType: 'Permit',
-      domain: {
-        name,
-        version: '1',
-        chainId,
-        verifyingContract: reserve,
-      },
-      message: {
-        owner: user,
-        spender: this.poolAddress,
-        value: convertedAmount,
-        nonce,
-        deadline,
-      },
-    };
-    return JSON.stringify(typeData);
   }
 
   @LPValidatorV3

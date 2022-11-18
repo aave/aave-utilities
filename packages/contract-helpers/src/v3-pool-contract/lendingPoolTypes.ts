@@ -141,13 +141,6 @@ export type LPRepayWithPermitParamsType = {
   deadline: string;
 };
 
-export type LPSignERC20ApprovalType = {
-  user: tEthereumAddress;
-  reserve: tEthereumAddress;
-  amount: string;
-  deadline: string;
-};
-
 export type LPSetUserEModeType = {
   user: string;
   categoryId: number;
