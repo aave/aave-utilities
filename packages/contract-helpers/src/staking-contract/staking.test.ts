@@ -340,6 +340,12 @@ describe('StakingService', () => {
             gasLimit: '1',
             gasPrice: '1',
           }),
+          params: {
+            amount: '0',
+            owner: '0x0',
+            spender: '0x0',
+            token: '0x0',
+          },
         }));
 
       const stakeTxObj = await instance.stake(user, amount);

@@ -2,7 +2,7 @@ import { BigNumber, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
-  EthereumTransactionTypeExtended,
+  Erc20ApprovalTransactionType,
   tEthereumAddress,
   transactionType,
 } from '../commons/types';
@@ -24,7 +24,7 @@ export interface IERC20ServiceInterface {
   decimalsOf: (token: tEthereumAddress) => Promise<number>;
   getTokenData: (token: tEthereumAddress) => Promise<TokenMetadataType>;
   isApproved: (args: ApproveType) => Promise<boolean>;
-  approve: (args: ApproveType) => EthereumTransactionTypeExtended;
+  approve: (args: ApproveType) => Erc20ApprovalTransactionType;
 }
 
 export type ApproveType = {
@@ -66,7 +66,7 @@ export class ERC20Service
     @isEthAddress('spender')
     @isPositiveAmount('amount')
     { user, token, spender, amount }: ApproveType,
-  ): EthereumTransactionTypeExtended {
+  ): Erc20ApprovalTransactionType {
     const erc20Contract: IERC20Detailed = this.getContractInstance(token);
 
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
@@ -79,6 +79,12 @@ export class ERC20Service
       tx: txCallback,
       txType: eEthereumTxType.ERC20_APPROVAL,
       gas: this.generateTxPriceEstimation([], txCallback),
+      params: {
+        owner: user,
+        spender,
+        amount,
+        token,
+      },
     };
   }
 

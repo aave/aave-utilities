@@ -638,6 +638,12 @@ describe('WethGatewayService', () => {
             gasLimit: '1',
             gasPrice: '1',
           }),
+          params: {
+            amount: '0',
+            owner: '0x0',
+            spender: '0x0',
+            token: '0x0',
+          },
         }));
 
       const weth = new WETHGatewayService(

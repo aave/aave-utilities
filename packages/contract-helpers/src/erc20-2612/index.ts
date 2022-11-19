@@ -1,7 +1,6 @@
-import { BigNumber, constants, providers } from 'ethers';
+import { BigNumber, providers, constants } from 'ethers';
 import BaseService from '../commons/BaseService';
 import { tEthereumAddress } from '../commons/types';
-import { valueToWei } from '../commons/utils';
 import { ERC20Validator } from '../commons/validators/methodValidators';
 import {
   isEthAddress,
@@ -13,8 +12,8 @@ import { IERC202612__factory } from './typechain/IERC202612__factory';
 
 export type GetNonceType = { token: string; owner: string };
 export type SignERC20ApprovalType = {
-  user: tEthereumAddress;
-  reserve: tEthereumAddress;
+  owner: tEthereumAddress;
+  token: tEthereumAddress;
   spender: tEthereumAddress;
   amount: string;
   deadline: string;
@@ -65,36 +64,20 @@ export class ERC20_2612Service
   // Sign permit supply
   @ERC20Validator
   public async signERC20Approval(
-    @isEthAddress('user')
-    @isEthAddress('reserve')
+    @isEthAddress('owner')
+    @isEthAddress('token')
     @isEthAddress('spender')
     @isPositiveOrMinusOneAmount('amount')
-    { user, reserve, spender, amount, deadline }: SignERC20ApprovalType,
+    { owner, token, spender, amount, deadline }: SignERC20ApprovalType,
   ): Promise<string> {
-    const { getTokenData, isApproved } = this.erc20Service;
-    const { name, decimals } = await getTokenData(reserve);
-
-    const convertedAmount =
-      amount === '-1'
-        ? constants.MaxUint256.toString()
-        : valueToWei(amount, decimals);
-
-    const approved = await isApproved({
-      token: reserve,
-      user,
-      spender,
-      amount,
-    });
-
-    if (approved) {
-      return '';
-    }
-
     const { chainId } = await this.provider.getNetwork();
+    const { getTokenData } = this.erc20Service;
+
+    const { name } = await getTokenData(token);
 
     const nonce = await this.getNonce({
-      token: reserve,
-      owner: user,
+      token,
+      owner,
     });
 
     if (nonce === null) {
@@ -122,12 +105,12 @@ export class ERC20_2612Service
         name,
         version: '1',
         chainId,
-        verifyingContract: reserve,
+        verifyingContract: token,
       },
       message: {
-        owner: user,
+        owner,
         spender,
-        value: convertedAmount,
+        value: amount === '-1' ? constants.MaxUint256.toString() : amount,
         nonce,
         deadline,
       },

@@ -255,6 +255,12 @@ describe('Pool', () => {
             gasLimit: '1',
             gasPrice: '1',
           }),
+          params: {
+            amount: '0',
+            owner: '0x0',
+            spender: '0x0',
+            token: '0x0',
+          },
         });
       const synthetixSpy = jest
         .spyOn(poolInstance.synthetixService, 'synthetixValidation')
@@ -628,6 +634,12 @@ describe('Pool', () => {
             gasLimit: '1',
             gasPrice: '1',
           }),
+          params: {
+            amount: '0',
+            owner: '0x0',
+            spender: '0x0',
+            token: '0x0',
+          },
         });
       const synthetixSpy = jest
         .spyOn(poolInstance.synthetixService, 'synthetixValidation')
@@ -1828,6 +1840,12 @@ describe('Pool', () => {
             gasLimit: '1',
             gasPrice: '1',
           }),
+          params: {
+            amount: '0',
+            owner: '0x0',
+            spender: '0x0',
+            token: '0x0',
+          },
         });
       const synthetixSpy = jest
         .spyOn(poolInstance.synthetixService, 'synthetixValidation')
@@ -1893,6 +1911,12 @@ describe('Pool', () => {
             gasLimit: '1',
             gasPrice: '1',
           }),
+          params: {
+            amount: '0',
+            owner: '0x0',
+            spender: '0x0',
+            token: '0x0',
+          },
         });
       const synthetixSpy = jest
         .spyOn(poolInstance.synthetixService, 'synthetixValidation')
@@ -2851,6 +2875,12 @@ describe('Pool', () => {
             gasLimit: '1',
             gasPrice: '1',
           }),
+          params: {
+            amount: '0',
+            owner: '0x0',
+            spender: '0x0',
+            token: '0x0',
+          },
         });
 
       const liquidationCallTxObj = await poolInstance.liquidationCall({
@@ -3062,6 +3092,12 @@ describe('Pool', () => {
             gasLimit: '1',
             gasPrice: '1',
           }),
+          params: {
+            amount: '0',
+            owner: '0x0',
+            spender: '0x0',
+            token: '0x0',
+          },
         });
       const swapCollateralTxObj = await poolInstance.swapCollateral({
         user,
@@ -3707,6 +3743,12 @@ describe('Pool', () => {
             gasLimit: '1',
             gasPrice: '1',
           }),
+          params: {
+            amount: '0',
+            owner: '0x0',
+            spender: '0x0',
+            token: '0x0',
+          },
         });
 
       const repayWithCollateralTxObj =

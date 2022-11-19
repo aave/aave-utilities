@@ -84,7 +84,7 @@ describe('ERC20_2612', () => {
     const user = '0x0000000000000000000000000000000000000006';
     const reserve = '0x0000000000000000000000000000000000000007';
     const spender = '0x0000000000000000000000000000000000000008';
-    const amount = '123.456';
+    const amount = '123456000000000000000000';
     const decimals = 18;
     const deadline = Math.round(Date.now() / 1000 + 3600).toString();
     jest.spyOn(provider, 'getTransactionCount').mockResolvedValue(1);
@@ -115,8 +115,8 @@ describe('ERC20_2612', () => {
 
       jest.spyOn(instance, 'getNonce').mockReturnValue(Promise.resolve(1));
       const signature: string = await instance.signERC20Approval({
-        user,
-        reserve,
+        owner: user,
+        token: reserve,
         spender,
         amount,
         deadline,
@@ -130,7 +130,7 @@ describe('ERC20_2612', () => {
 
       expect(message.owner).toEqual(user);
       expect(message.spender).toEqual(spender);
-      expect(message.value).toEqual(valueToWei(amount, decimals));
+      expect(message.value).toEqual(amount);
       expect(message.nonce).toEqual(1);
       expect(message.deadline).toEqual(deadline);
     });
@@ -154,8 +154,8 @@ describe('ERC20_2612', () => {
 
       const amount = '-1';
       const signature: string = await instance.signERC20Approval({
-        user,
-        reserve,
+        owner: user,
+        token: reserve,
         spender,
         amount,
         deadline,
@@ -191,8 +191,8 @@ describe('ERC20_2612', () => {
       jest.spyOn(instance, 'getNonce').mockReturnValue(Promise.resolve(null));
 
       const signature: string = await instance.signERC20Approval({
-        user,
-        reserve,
+        owner: user,
+        token: reserve,
         spender,
         amount,
         deadline,
@@ -217,8 +217,8 @@ describe('ERC20_2612', () => {
         .mockReturnValue(Promise.resolve(true));
 
       const signature: string = await instance.signERC20Approval({
-        user,
-        reserve,
+        owner: user,
+        token: reserve,
         spender,
         amount,
         deadline,
@@ -232,8 +232,8 @@ describe('ERC20_2612', () => {
       const user = 'asdf';
       await expect(async () =>
         instance.signERC20Approval({
-          user,
-          reserve,
+          owner: user,
+          token: reserve,
           spender,
           amount,
           deadline,
@@ -248,8 +248,8 @@ describe('ERC20_2612', () => {
       const reserve = 'asdf';
       await expect(async () =>
         instance.signERC20Approval({
-          user,
-          reserve,
+          owner: user,
+          token: reserve,
           spender,
           amount,
           deadline,
@@ -264,8 +264,8 @@ describe('ERC20_2612', () => {
       const amount = '0';
       await expect(async () =>
         instance.signERC20Approval({
-          user,
-          reserve,
+          owner: user,
+          token: reserve,
           spender,
           amount,
           deadline,
@@ -278,8 +278,8 @@ describe('ERC20_2612', () => {
       const amount = 'asdf';
       await expect(async () =>
         instance.signERC20Approval({
-          user,
-          reserve,
+          owner: user,
+          token: reserve,
           spender,
           amount,
           deadline,
