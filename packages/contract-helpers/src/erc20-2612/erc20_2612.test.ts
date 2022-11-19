@@ -1,5 +1,4 @@
 import { BigNumber, constants, providers } from 'ethers';
-import { valueToWei } from '../commons/utils';
 import { IERC202612 } from './typechain/IERC202612';
 import { IERC202612__factory } from './typechain/IERC202612__factory';
 import { ERC20_2612Interface, ERC20_2612Service } from './index';
