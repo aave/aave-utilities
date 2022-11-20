@@ -14,6 +14,7 @@ export type GetNonceType = { token: string; owner: string };
 export type SignERC20ApprovalType = {
   owner: tEthereumAddress;
   token: tEthereumAddress;
+  tokenName: string;
   spender: tEthereumAddress;
   amount: string;
   deadline: string;
@@ -68,12 +69,16 @@ export class ERC20_2612Service
     @isEthAddress('token')
     @isEthAddress('spender')
     @isPositiveOrMinusOneAmount('amount')
-    { owner, token, spender, amount, deadline }: SignERC20ApprovalType,
+    {
+      owner,
+      token,
+      spender,
+      amount,
+      deadline,
+      tokenName,
+    }: SignERC20ApprovalType,
   ): Promise<string> {
     const { chainId } = await this.provider.getNetwork();
-    const { getTokenData } = this.erc20Service;
-
-    const { name } = await getTokenData(token);
 
     const nonce = await this.getNonce({
       token,
@@ -102,7 +107,7 @@ export class ERC20_2612Service
       },
       primaryType: 'Permit',
       domain: {
-        name,
+        name: tokenName,
         version: '1',
         chainId,
         verifyingContract: token,
