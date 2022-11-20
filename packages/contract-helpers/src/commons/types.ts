@@ -212,6 +212,18 @@ export type EthereumTransactionTypeExtended = {
   gas: GasResponse;
 };
 
+/**
+ * Extension of EthereumTransactionTypeExtended which allow building a permit with the raw parameters
+ */
+export type Erc20ApprovalTransactionType = EthereumTransactionTypeExtended & {
+  params: {
+    owner: tEthereumAddress;
+    spender: tEthereumAddress;
+    token: tEthereumAddress;
+    amount: string;
+  };
+};
+
 export type TransactionGenerationMethod = {
   rawTxMethod: () => Promise<PopulatedTransaction>;
   from: tEthereumAddress;
