@@ -89,6 +89,7 @@ export enum eEthereumTxType {
   MIGRATION_LEND_AAVE = 'MIGRATION_LEND_AAVE',
   FAUCET_MINT = 'FAUCET_MINT',
   REWARD_ACTION = 'REWARD_ACTION',
+  V3_MIGRATION_ACTION = 'V3_MIGRATION_ACTION',
 }
 
 export enum ProtocolAction {
