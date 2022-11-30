@@ -595,3 +595,17 @@ export function StackeUiDataProviderValidator(
     return method.apply(this, arguments);
   };
 }
+
+export function V3MigratorValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    isEthAddressValidator(target, propertyName, arguments);
+    isEthAddressArrayValidator(target, propertyName, arguments);
+
+    return method.apply(this, arguments);
+  };
+}

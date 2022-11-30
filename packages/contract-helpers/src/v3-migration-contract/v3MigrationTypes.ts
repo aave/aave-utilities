@@ -20,6 +20,7 @@ export type V3MigrationNoBorrowType = {
   user: tEthereumAddress;
   assets: Array<{
     aToken: tEthereumAddress;
+    underlyingAsset: tEthereumAddress;
     deadline: number;
     amount: string;
   }>;

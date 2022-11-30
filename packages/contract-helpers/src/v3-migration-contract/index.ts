@@ -6,6 +6,8 @@ import {
   tEthereumAddress,
   transactionType,
 } from '../commons/types';
+import { V3MigratorValidator } from '../commons/validators/methodValidators';
+import { isEthAddress } from '../commons/validators/paramValidators';
 import { ERC20Service } from '../erc20-contract';
 import { MigrationHelper__factory, MigrationHelper } from './typechain';
 import { IMigrationHelper } from './typechain/MigrationHelper';
@@ -21,7 +23,7 @@ export interface V3MigrationHelperInterface {
   migrateNoBorrow: (
     params: V3MigrationNoBorrowType,
   ) => Promise<EthereumTransactionTypeExtended[]>;
-  testDeployment: () => Promise<string>;
+  testDeployment: (address: string) => Promise<string>;
 }
 
 export class V3MigrationHelperService
@@ -40,13 +42,12 @@ export class V3MigrationHelperService
     this.erc20Service = new ERC20Service(provider);
   }
 
-  public async testDeployment(): Promise<string> {
-    const migrator = this.getContractInstance(this.MIGRATOR_ADDRESS);
-    // eslint-disable-next-line new-cap
-    return migrator.V2_POOL();
-  }
-
-  public async migrateNoBorrow({ assets, user }: V3MigrationNoBorrowType) {
+  @V3MigratorValidator
+  public async migrateNoBorrow(
+    // @isEthAddressArray('assets') how to check for assets name
+    @isEthAddress('user')
+    { assets, user }: V3MigrationNoBorrowType,
+  ) {
     const assetsApproved = await Promise.all(
       assets.map(async ({ amount, aToken }) => {
         return this.erc20Service.isApproved({
@@ -75,7 +76,7 @@ export class V3MigrationHelperService
       .filter((tx): tx is EthereumTransactionTypeExtended => Boolean(tx));
 
     const migrator = this.getContractInstance(this.MIGRATOR_ADDRESS);
-    const assetsAddresses = assets.map(asset => asset.aToken);
+    const assetsAddresses = assets.map(asset => asset.underlyingAsset);
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>
         migrator.populateTransaction.migrationNoBorrow(
@@ -95,6 +96,11 @@ export class V3MigrationHelperService
     return txs;
   }
 
+  public async testDeployment(address: string): Promise<string> {
+    const migrator = this.getContractInstance(this.MIGRATOR_ADDRESS);
+    return migrator.aTokens(address);
+  }
+
   public migrateNoBorrowWithPermits({
     user,
     assets,
@@ -104,8 +110,10 @@ export class V3MigrationHelperService
     // migrator.populateTransaction.migrationNoBorrow
     const permits = signedPermits.map(
       (permit): IMigrationHelper.PermitInputStruct => {
+        console.log(permit, 'permit');
         const { aToken, deadline, value, signedPermit } = permit;
         const signature = utils.splitSignature(signedPermit);
+        console.log(signature, aToken, assets, 'signature, aToken, asset');
         return {
           aToken,
           deadline,
@@ -116,7 +124,6 @@ export class V3MigrationHelperService
         };
       },
     );
-
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>
         migrator.populateTransaction.migrationNoBorrow(user, assets, permits),
