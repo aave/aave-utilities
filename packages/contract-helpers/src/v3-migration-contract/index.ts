@@ -3,17 +3,23 @@ import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
   EthereumTransactionTypeExtended,
+  InterestRate,
   tEthereumAddress,
   transactionType,
 } from '../commons/types';
+import { valueToWei } from '../commons/utils';
 import { V3MigratorValidator } from '../commons/validators/methodValidators';
 import { isEthAddress } from '../commons/validators/paramValidators';
 import { ERC20Service } from '../erc20-contract';
+import { Pool } from '../v3-pool-contract';
 import { MigrationHelper__factory, MigrationHelper } from './typechain';
 import { IMigrationHelper } from './typechain/MigrationHelper';
 import {
+  V3MigrateWithBorrowType,
+  V3MigrationHelperSignedPermit,
   V3MigrationNoBorrowType,
   V3MigrationNoBorrowWithPermitsType,
+  V3SupplyAsset,
 } from './v3MigrationTypes';
 
 export interface V3MigrationHelperInterface {
@@ -24,6 +30,9 @@ export interface V3MigrationHelperInterface {
     params: V3MigrationNoBorrowType,
   ) => Promise<EthereumTransactionTypeExtended[]>;
   testDeployment: (address: string) => Promise<string>;
+  migrateWithBorrow: (
+    params: V3MigrateWithBorrowType,
+  ) => Promise<EthereumTransactionTypeExtended[]>;
 }
 
 export class V3MigrationHelperService
@@ -33,13 +42,16 @@ export class V3MigrationHelperService
   readonly provider: providers.Provider;
   readonly MIGRATOR_ADDRESS: tEthereumAddress;
   readonly erc20Service: ERC20Service;
+  readonly pool: Pool;
   constructor(
     provider: providers.Provider,
     MIGRATOR_ADDRESS: tEthereumAddress,
+    pool: Pool,
   ) {
     super(provider, MigrationHelper__factory);
     this.MIGRATOR_ADDRESS = MIGRATOR_ADDRESS;
     this.erc20Service = new ERC20Service(provider);
+    this.pool = pool;
   }
 
   @V3MigratorValidator
@@ -48,32 +60,7 @@ export class V3MigrationHelperService
     @isEthAddress('user')
     { assets, user }: V3MigrationNoBorrowType,
   ) {
-    const assetsApproved = await Promise.all(
-      assets.map(async ({ amount, aToken }) => {
-        return this.erc20Service.isApproved({
-          amount,
-          spender: this.MIGRATOR_ADDRESS,
-          token: aToken,
-          user,
-        });
-      }),
-    );
-
-    const txs = assetsApproved
-      .map((approved, index) => {
-        if (approved) {
-          return;
-        }
-
-        const asset = assets[index];
-        return this.erc20Service.approve({
-          user,
-          token: asset.aToken,
-          spender: this.MIGRATOR_ADDRESS,
-          amount: constants.MaxUint256.toString(),
-        });
-      })
-      .filter((tx): tx is EthereumTransactionTypeExtended => Boolean(tx));
+    const txs = await this.approveSupplyAssets(user, assets);
 
     const migrator = this.getContractInstance(this.MIGRATOR_ADDRESS);
     const assetsAddresses = assets.map(asset => asset.underlyingAsset);
@@ -101,29 +88,71 @@ export class V3MigrationHelperService
     return migrator.aTokens(address);
   }
 
+  public async migrateWithBorrow({
+    user,
+    borrowedPositions,
+    suppliedPositions,
+    signedPermits,
+  }: V3MigrateWithBorrowType) {
+    const txs: EthereumTransactionTypeExtended[] =
+      await this.approveSupplyAssets(user, suppliedPositions);
+
+    const mappedBorrowPositions = await Promise.all(
+      borrowedPositions.map(async ({ interestRate, amount, ...borrow }) => {
+        const { decimals } = await this.erc20Service.getTokenData(
+          borrow.address,
+        );
+        const convertedAmount = valueToWei(amount, decimals);
+        return {
+          ...borrow,
+          rateMode: interestRate === InterestRate.Variable ? 2 : 1,
+          amount: convertedAmount,
+        };
+      }),
+    );
+
+    const borrowedAssets = mappedBorrowPositions.map(borrow => borrow.address);
+    const borrowedAmounts = mappedBorrowPositions.map(borrow => borrow.amount);
+    const interestRatesModes = mappedBorrowPositions.map(
+      borrow => borrow.rateMode,
+    );
+    const suppliedPositionsAddresses = suppliedPositions.map(
+      suppply => suppply.underlyingAsset,
+    );
+
+    const permits = this.splitSignedPermits(signedPermits);
+
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        this.pool.migrateV3({
+          migrator: this.MIGRATOR_ADDRESS,
+          borrowedAssets,
+          borrowedAmounts,
+          interestRatesModes,
+          user,
+          suppliedPositions: suppliedPositionsAddresses,
+          borrowedPositions: mappedBorrowPositions,
+        }),
+      from: user,
+    });
+
+    txs.push({
+      tx: txCallback,
+      txType: eEthereumTxType.V3_MIGRATION_ACTION,
+      gas: this.generateTxPriceEstimation([], txCallback),
+    });
+
+    return txs;
+  }
+
   public migrateNoBorrowWithPermits({
     user,
     assets,
     signedPermits,
   }: V3MigrationNoBorrowWithPermitsType) {
     const migrator = this.getContractInstance(this.MIGRATOR_ADDRESS);
-    // migrator.populateTransaction.migrationNoBorrow
-    const permits = signedPermits.map(
-      (permit): IMigrationHelper.PermitInputStruct => {
-        console.log(permit, 'permit');
-        const { aToken, deadline, value, signedPermit } = permit;
-        const signature = utils.splitSignature(signedPermit);
-        console.log(signature, aToken, assets, 'signature, aToken, asset');
-        return {
-          aToken,
-          deadline,
-          value,
-          v: signature.v,
-          r: signature.r,
-          s: signature.s,
-        };
-      },
-    );
+    const permits = this.splitSignedPermits(signedPermits);
+
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>
         migrator.populateTransaction.migrationNoBorrow(user, assets, permits),
@@ -136,5 +165,51 @@ export class V3MigrationHelperService
         gas: this.generateTxPriceEstimation([], txCallback),
       },
     ];
+  }
+
+  private async approveSupplyAssets(
+    user: string,
+    assets: V3SupplyAsset[],
+  ): Promise<EthereumTransactionTypeExtended[]> {
+    const assetsApproved = await Promise.all(
+      assets.map(async ({ amount, aToken }) => {
+        return this.erc20Service.isApproved({
+          amount,
+          spender: this.MIGRATOR_ADDRESS,
+          token: aToken,
+          user,
+        });
+      }),
+    );
+    return assetsApproved
+      .map((approved, index) => {
+        if (approved) {
+          return;
+        }
+
+        const asset = assets[index];
+        return this.erc20Service.approve({
+          user,
+          token: asset.aToken,
+          spender: this.MIGRATOR_ADDRESS,
+          amount: constants.MaxUint256.toString(),
+        });
+      })
+      .filter((tx): tx is EthereumTransactionTypeExtended => Boolean(tx));
+  }
+
+  private splitSignedPermits(signedPermits: V3MigrationHelperSignedPermit[]) {
+    return signedPermits.map((permit): IMigrationHelper.PermitInputStruct => {
+      const { aToken, deadline, value, signedPermit } = permit;
+      const signature = utils.splitSignature(signedPermit);
+      return {
+        aToken,
+        deadline,
+        value,
+        v: signature.v,
+        r: signature.r,
+        s: signature.s,
+      };
+    });
   }
 }

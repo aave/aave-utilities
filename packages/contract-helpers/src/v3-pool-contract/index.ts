@@ -41,6 +41,7 @@ import {
   ParaswapRepayWithCollateralInterface,
 } from '../paraswap-repayWithCollateralAdapter-contract';
 import { SynthetixInterface, SynthetixService } from '../synthetix-contract';
+import { IMigrationHelper } from '../v3-migration-contract/typechain/MigrationHelper';
 import { L2Pool, L2PoolInterface } from '../v3-pool-rollups';
 import {
   WETHGatewayInterface,
@@ -1520,5 +1521,66 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         ),
       },
     ];
+  }
+
+  public async migrateV3(migrateParams: {
+    migrator: string;
+    borrowedAssets: string[];
+    borrowedAmounts: BigNumberish[];
+    interestRatesModes: number[];
+    user: string;
+    suppliedPositions: string[];
+    borrowedPositions: Array<{
+      address: string;
+      amount: string;
+      rateMode: number;
+    }>;
+    permits: IMigrationHelper.PermitInputStruct[];
+  }) {
+    const poolContract = this.getContractInstance(this.poolAddress);
+    const {
+      migrator,
+      borrowedAssets,
+      borrowedAmounts,
+      interestRatesModes,
+      user,
+      suppliedPositions,
+      borrowedPositions,
+      permits,
+    } = migrateParams;
+
+    const mappedBorrowedPositions = borrowedPositions.map(borrowPosition => [
+      borrowPosition.address,
+      borrowPosition.amount,
+      borrowPosition.rateMode.toString(),
+    ]);
+
+    const mappedPermits = permits.map(permit => [
+      permit.aToken,
+      permit.value,
+      permit.deadline,
+      permit.v,
+      permit.r,
+      permit.s,
+    ]);
+
+    const params: string = utils.defaultAbiCoder.encode(
+      [
+        'address[]',
+        '(address, uint256, uint256)[]',
+        '(address, uint256, uint256, uint8, bytes32, bytes32)[]',
+      ],
+      [suppliedPositions, mappedBorrowedPositions, mappedPermits],
+    );
+
+    return poolContract.populateTransaction.flashLoan(
+      migrator,
+      borrowedAssets,
+      borrowedAmounts,
+      interestRatesModes,
+      user,
+      params,
+      '0',
+    );
   }
 }
