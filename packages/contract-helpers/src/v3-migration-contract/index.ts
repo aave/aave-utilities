@@ -132,6 +132,7 @@ export class V3MigrationHelperService
           user,
           suppliedPositions: suppliedPositionsAddresses,
           borrowedPositions: mappedBorrowPositions,
+          permits,
         }),
       from: user,
     });
