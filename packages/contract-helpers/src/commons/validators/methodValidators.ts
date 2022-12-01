@@ -256,6 +256,8 @@ export function LPValidatorV3(
 
     amount0OrPositiveValidator(target, propertyName, arguments);
 
+    isEthAddressArrayValidator(target, propertyName, arguments);
+
     return method.apply(this, arguments);
   };
 }
