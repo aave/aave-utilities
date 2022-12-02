@@ -30,7 +30,6 @@ export interface V3MigrationHelperInterface {
   migrateNoBorrow: (
     params: V3MigrationNoBorrowType,
   ) => Promise<EthereumTransactionTypeExtended[]>;
-  testDeployment: (address: string) => Promise<string>;
   migrateWithBorrow: (
     params: V3MigrateWithBorrowType,
   ) => Promise<EthereumTransactionTypeExtended[]>;
@@ -60,7 +59,7 @@ export class V3MigrationHelperService
     // @isEthAddressArray('assets') how to check for assets name
     @isEthAddress('user')
     { assets, user }: V3MigrationNoBorrowType,
-  ) {
+  ): Promise<EthereumTransactionTypeExtended[]> {
     const txs = await this.approveSupplyAssets(user, assets);
 
     const migrator = this.getContractInstance(this.MIGRATOR_ADDRESS);
@@ -79,7 +78,7 @@ export class V3MigrationHelperService
       tx: txCallback,
       txType: eEthereumTxType.V3_MIGRATION_ACTION,
       gas: this.generateTxPriceEstimation(
-        [],
+        txs,
         txCallback,
         ProtocolAction.migrateV3,
       ),
@@ -88,17 +87,16 @@ export class V3MigrationHelperService
     return txs;
   }
 
-  public async testDeployment(address: string): Promise<string> {
-    const migrator = this.getContractInstance(this.MIGRATOR_ADDRESS);
-    return migrator.aTokens(address);
-  }
-
-  public async migrateWithBorrow({
-    user,
-    borrowedPositions,
-    suppliedPositions,
-    signedPermits,
-  }: V3MigrateWithBorrowType) {
+  @V3MigratorValidator
+  public async migrateWithBorrow(
+    @isEthAddress('user')
+    {
+      user,
+      borrowedPositions,
+      suppliedPositions,
+      signedPermits,
+    }: V3MigrateWithBorrowType,
+  ): Promise<EthereumTransactionTypeExtended[]> {
     let txs: EthereumTransactionTypeExtended[] = [];
     const permits = this.splitSignedPermits(signedPermits);
     if (signedPermits.length === 0) {
@@ -156,11 +154,11 @@ export class V3MigrationHelperService
     return txs;
   }
 
-  public migrateNoBorrowWithPermits({
-    user,
-    assets,
-    signedPermits,
-  }: V3MigrationNoBorrowWithPermitsType) {
+  @V3MigratorValidator
+  public migrateNoBorrowWithPermits(
+    @isEthAddress('user')
+    { user, assets, signedPermits }: V3MigrationNoBorrowWithPermitsType,
+  ): EthereumTransactionTypeExtended[] {
     const migrator = this.getContractInstance(this.MIGRATOR_ADDRESS);
     const permits = this.splitSignedPermits(signedPermits);
 
