@@ -4,6 +4,7 @@ import {
   eEthereumTxType,
   EthereumTransactionTypeExtended,
   InterestRate,
+  ProtocolAction,
   tEthereumAddress,
   transactionType,
 } from '../commons/types';
@@ -77,7 +78,11 @@ export class V3MigrationHelperService
     txs.push({
       tx: txCallback,
       txType: eEthereumTxType.V3_MIGRATION_ACTION,
-      gas: this.generateTxPriceEstimation([], txCallback),
+      gas: this.generateTxPriceEstimation(
+        [],
+        txCallback,
+        ProtocolAction.migrateV3,
+      ),
     });
 
     return txs;
@@ -94,8 +99,11 @@ export class V3MigrationHelperService
     suppliedPositions,
     signedPermits,
   }: V3MigrateWithBorrowType) {
-    const txs: EthereumTransactionTypeExtended[] =
-      await this.approveSupplyAssets(user, suppliedPositions);
+    let txs: EthereumTransactionTypeExtended[] = [];
+    const permits = this.splitSignedPermits(signedPermits);
+    if (signedPermits.length === 0) {
+      txs = await this.approveSupplyAssets(user, suppliedPositions);
+    }
 
     const mappedBorrowPositions = await Promise.all(
       borrowedPositions.map(async ({ interestRate, amount, ...borrow }) => {
@@ -120,8 +128,6 @@ export class V3MigrationHelperService
       suppply => suppply.underlyingAsset,
     );
 
-    const permits = this.splitSignedPermits(signedPermits);
-
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>
         this.pool.migrateV3({
@@ -140,7 +146,11 @@ export class V3MigrationHelperService
     txs.push({
       tx: txCallback,
       txType: eEthereumTxType.V3_MIGRATION_ACTION,
-      gas: this.generateTxPriceEstimation([], txCallback),
+      gas: this.generateTxPriceEstimation(
+        txs,
+        txCallback,
+        ProtocolAction.migrateV3,
+      ),
     });
 
     return txs;
@@ -163,7 +173,11 @@ export class V3MigrationHelperService
       {
         tx: txCallback,
         txType: eEthereumTxType.V3_MIGRATION_ACTION,
-        gas: this.generateTxPriceEstimation([], txCallback),
+        gas: this.generateTxPriceEstimation(
+          [],
+          txCallback,
+          ProtocolAction.migrateV3,
+        ),
       },
     ];
   }
