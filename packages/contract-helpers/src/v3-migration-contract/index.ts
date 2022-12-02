@@ -94,8 +94,11 @@ export class V3MigrationHelperService
     suppliedPositions,
     signedPermits,
   }: V3MigrateWithBorrowType) {
-    const txs: EthereumTransactionTypeExtended[] =
-      await this.approveSupplyAssets(user, suppliedPositions);
+    let txs: EthereumTransactionTypeExtended[] = [];
+    const permits = this.splitSignedPermits(signedPermits);
+    if (signedPermits.length === 0) {
+      txs = await this.approveSupplyAssets(user, suppliedPositions);
+    }
 
     const mappedBorrowPositions = await Promise.all(
       borrowedPositions.map(async ({ interestRate, amount, ...borrow }) => {
@@ -119,8 +122,6 @@ export class V3MigrationHelperService
     const suppliedPositionsAddresses = suppliedPositions.map(
       suppply => suppply.underlyingAsset,
     );
-
-    const permits = this.splitSignedPermits(signedPermits);
 
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>
