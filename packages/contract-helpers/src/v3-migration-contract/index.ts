@@ -4,6 +4,7 @@ import {
   eEthereumTxType,
   EthereumTransactionTypeExtended,
   InterestRate,
+  ProtocolAction,
   tEthereumAddress,
   transactionType,
 } from '../commons/types';
@@ -77,7 +78,11 @@ export class V3MigrationHelperService
     txs.push({
       tx: txCallback,
       txType: eEthereumTxType.V3_MIGRATION_ACTION,
-      gas: this.generateTxPriceEstimation([], txCallback),
+      gas: this.generateTxPriceEstimation(
+        [],
+        txCallback,
+        ProtocolAction.migrateV3,
+      ),
     });
 
     return txs;
@@ -141,7 +146,11 @@ export class V3MigrationHelperService
     txs.push({
       tx: txCallback,
       txType: eEthereumTxType.V3_MIGRATION_ACTION,
-      gas: this.generateTxPriceEstimation([], txCallback),
+      gas: this.generateTxPriceEstimation(
+        txs,
+        txCallback,
+        ProtocolAction.migrateV3,
+      ),
     });
 
     return txs;
@@ -164,7 +173,11 @@ export class V3MigrationHelperService
       {
         tx: txCallback,
         txType: eEthereumTxType.V3_MIGRATION_ACTION,
-        gas: this.generateTxPriceEstimation([], txCallback),
+        gas: this.generateTxPriceEstimation(
+          [],
+          txCallback,
+          ProtocolAction.migrateV3,
+        ),
       },
     ];
   }

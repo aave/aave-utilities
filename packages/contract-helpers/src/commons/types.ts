@@ -104,6 +104,7 @@ export enum ProtocolAction {
   repayCollateral = 'repayCollateral',
   withdrawETH = 'withdrawETH',
   borrowETH = 'borrwoETH',
+  migrateV3 = 'migrateV3',
 }
 
 export enum GovernanceVote {
