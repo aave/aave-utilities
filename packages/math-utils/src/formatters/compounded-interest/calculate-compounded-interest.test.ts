@@ -1,39 +1,4 @@
-import {
-  calculateCompoundedInterestRate,
-  calculateCompoundedRate,
-} from './calculate-compounded-interest';
-
-describe('calculateCompoundedInterestRate', () => {
-  it('calculates compound interest', () => {
-    const result = calculateCompoundedInterestRate({
-      rate: '109284236984257451326752610',
-      currentTimestamp: 1606992401,
-      lastUpdateTimestamp: 1606992400,
-    });
-
-    expect(result.toFixed()).toEqual('1000000003465380421875236280');
-  });
-
-  it('calculates compound interest', () => {
-    const result = calculateCompoundedInterestRate({
-      rate: '38568743388028395681971229',
-      currentTimestamp: 1606992401,
-      lastUpdateTimestamp: 1606992400,
-    });
-
-    expect(result.toFixed()).toEqual('1000000001223006829909576220');
-  });
-
-  it('calculates compound interest', () => {
-    const result = calculateCompoundedInterestRate({
-      rate: '109284236984257451326752610',
-      currentTimestamp: 1606992401,
-      lastUpdateTimestamp: 1606992400,
-    });
-
-    expect(result.toFixed()).toEqual('1000000003465380421875236280');
-  });
-});
+import { calculateCompoundedRate } from './calculate-compounded-interest';
 
 describe('calculateCompoundedRate', () => {
   it('calculates compounded rate bignumber - 1 year', () => {

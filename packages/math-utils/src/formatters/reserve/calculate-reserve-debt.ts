@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
+import { calculateCompoundedInterest } from '../../pool-math';
 import { rayMul } from '../../ray.math';
-import { calculateCompoundedInterestRate } from '../compounded-interest/calculate-compounded-interest';
 
 export interface CalculateReserveDebtRequest {
   totalScaledVariableDebt: string;
@@ -45,7 +45,7 @@ function getTotalVariableDebt(
       reserveDebt.totalScaledVariableDebt,
       reserveDebt.variableBorrowIndex,
     ),
-    calculateCompoundedInterestRate({
+    calculateCompoundedInterest({
       rate: reserveDebt.variableBorrowRate,
       currentTimestamp,
       lastUpdateTimestamp: reserveDebt.lastUpdateTimestamp,
@@ -59,7 +59,7 @@ function getTotalStableDebt(
 ): BigNumber {
   return rayMul(
     reserveDebt.totalPrincipalStableDebt,
-    calculateCompoundedInterestRate({
+    calculateCompoundedInterest({
       rate: reserveDebt.averageStableRate,
       currentTimestamp,
       lastUpdateTimestamp: reserveDebt.stableDebtLastUpdateTimestamp,
