@@ -5324,4 +5324,14 @@ describe('Pool', () => {
       );
     });
   });
+  describe('getReserveData', () => {
+    const config = { POOL };
+
+    it('should fail when an invalid eth address is passed in', async () => {
+      const poolInstance = new Pool(provider, config);
+      await expect(async () =>
+        poolInstance.getReserveData('not an address'),
+      ).rejects.toThrowError();
+    });
+  });
 });
