@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { GhoData } from './formatters/gho';
 import {
   ReservesIncentiveDataHumanized,
   UserReservesIncentivesDataHumanized,
@@ -319,6 +320,25 @@ export class UserIncentiveMock {
           },
         ],
       },
+    };
+  }
+}
+
+export class GhoMock {
+  public ghoData: GhoData;
+
+  constructor() {
+    this.ghoData = {
+      baseVariableBorrowRate: RAY.toString(), // 10% (rates are given as percent so 1% would be value of 0.01)
+      ghoDiscountedPerToken: (10 ** 20).toString(), // 100
+      ghoDiscountRate: '2000', // 20%
+      ghoDiscountLockPeriod: '0',
+      facilitatorBucketLevel: (10 ** 19).toString(), // 10
+      facilitatorBucketMaxCapacity: (10 ** 20).toString(), // 100
+      ghoMinDebtTokenBalanceForDiscount: (10 ** 18).toString(), // 1
+      ghoMinDiscountTokenBalanceForDiscount: (10 ** 18).toString(), // 1
+      userGhoDiscountRate: '1000', // 10%
+      userDiscountTokenBalance: (10 ** 20).toString(), // 100
     };
   }
 }
