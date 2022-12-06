@@ -1,9 +1,3 @@
-import { GhoDiscountRateStrategyService } from './GhoDiscountRateStrategyService';
-import { GhoTokenService } from './GhoTokenService';
-import { GhoVariableDebtTokenService } from './GhoVariableDebtTokenService';
+import { GhoService } from './GhoService';
 
-export {
-  GhoDiscountRateStrategyService,
-  GhoTokenService,
-  GhoVariableDebtTokenService,
-};
+export { GhoService };
