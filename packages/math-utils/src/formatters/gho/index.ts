@@ -14,12 +14,22 @@ export interface GhoData {
   userDiscountTokenBalance: string;
 }
 
-export interface FormattedGhoData extends GhoData {
-  variableBorrowAPY: string;
-  discountableAmount: string;
-  facilitatorRemainingCapacity: string;
-  facilitatorMintedPercent: string;
-  borrowAPYWithMaxDiscount: string;
+export interface FormattedGhoData {
+  variableBorrowAPY: number;
+  discountableAmount: number;
+  facilitatorRemainingCapacity: number;
+  facilitatorMintedPercent: number;
+  borrowAPYWithMaxDiscount: number;
+  baseVariableBorrowRate: number;
+  ghoDiscountedPerToken: number;
+  ghoDiscountRate: number;
+  ghoDiscountLockPeriod: number;
+  facilitatorBucketLevel: number;
+  facilitatorBucketMaxCapacity: number;
+  ghoMinDebtTokenBalanceForDiscount: number;
+  ghoMinDiscountTokenBalanceForDiscount: number;
+  userGhoDiscountRate: number;
+  userDiscountTokenBalance: number;
 }
 
 export function formatGhoData({
@@ -27,64 +37,55 @@ export function formatGhoData({
 }: {
   ghoData: GhoData;
 }): FormattedGhoData {
-  const formattedGhoDiscountedPerToken = normalize(
-    ghoData.ghoDiscountedPerToken,
-    18,
+  const formattedGhoDiscountedPerToken = Number(
+    normalize(ghoData.ghoDiscountedPerToken, 18),
   );
-  const formattedUserDiscountTokenBalance = normalize(
-    ghoData.userDiscountTokenBalance,
-    18,
+  const formattedUserDiscountTokenBalance = Number(
+    normalize(ghoData.userDiscountTokenBalance, 18),
   );
-  const formattedFacilitatorBucketLevel = normalize(
-    ghoData.facilitatorBucketLevel,
-    18,
+  const formattedFacilitatorBucketLevel = Number(
+    normalize(ghoData.facilitatorBucketLevel, 18),
   );
-  const formattedFacilitatorBucketMaxCapacity = normalize(
-    ghoData.facilitatorBucketMaxCapacity,
-    18,
+  const formattedFacilitatorBucketMaxCapacity = Number(
+    normalize(ghoData.facilitatorBucketMaxCapacity, 18),
   );
   const formattedVariableBorrowAPY = calculateCompoundedRate({
     rate: ghoData.baseVariableBorrowRate,
     duration: SECONDS_PER_YEAR,
-  }).shiftedBy(-27);
-
-  const formattedGhoDiscountRate = normalize(ghoData.ghoDiscountRate, 4);
-  const bucketCapacityNumber = Number(formattedFacilitatorBucketMaxCapacity);
+  })
+    .shiftedBy(-27)
+    .toNumber();
+  const formattedGhoDiscountRate = Number(
+    normalize(ghoData.ghoDiscountRate, 4),
+  );
   return {
-    baseVariableBorrowRate: normalize(ghoData.baseVariableBorrowRate, 27),
+    baseVariableBorrowRate: Number(
+      normalize(ghoData.baseVariableBorrowRate, 27),
+    ),
     ghoDiscountedPerToken: formattedGhoDiscountedPerToken,
     ghoDiscountRate: formattedGhoDiscountRate,
-    ghoDiscountLockPeriod: ghoData.ghoDiscountLockPeriod,
+    ghoDiscountLockPeriod: Number(ghoData.ghoDiscountLockPeriod),
     facilitatorBucketLevel: formattedFacilitatorBucketLevel,
     facilitatorBucketMaxCapacity: formattedFacilitatorBucketMaxCapacity,
-    ghoMinDebtTokenBalanceForDiscount: normalize(
-      ghoData.ghoMinDebtTokenBalanceForDiscount,
-      18,
+    ghoMinDebtTokenBalanceForDiscount: Number(
+      normalize(ghoData.ghoMinDebtTokenBalanceForDiscount, 18),
     ),
-    ghoMinDiscountTokenBalanceForDiscount: normalize(
-      ghoData.ghoMinDiscountTokenBalanceForDiscount,
-      18,
+    ghoMinDiscountTokenBalanceForDiscount: Number(
+      normalize(ghoData.ghoMinDiscountTokenBalanceForDiscount, 18),
     ),
-    userGhoDiscountRate: normalize(ghoData.userGhoDiscountRate, 4),
+    userGhoDiscountRate: Number(normalize(ghoData.userGhoDiscountRate, 4)),
     userDiscountTokenBalance: formattedUserDiscountTokenBalance,
-    variableBorrowAPY: formattedVariableBorrowAPY.toString(),
-    discountableAmount: (
-      Number(formattedGhoDiscountedPerToken) *
-      Number(formattedUserDiscountTokenBalance)
-    ).toString(),
-    facilitatorRemainingCapacity: (
-      Number(formattedFacilitatorBucketMaxCapacity) -
-      Number(formattedFacilitatorBucketLevel)
-    ).toString(),
+    variableBorrowAPY: formattedVariableBorrowAPY,
+    discountableAmount:
+      formattedGhoDiscountedPerToken * formattedUserDiscountTokenBalance,
+    facilitatorRemainingCapacity:
+      formattedFacilitatorBucketMaxCapacity - formattedFacilitatorBucketLevel,
     facilitatorMintedPercent:
-      bucketCapacityNumber === 0
-        ? '0'
-        : (
-            Number(formattedFacilitatorBucketLevel) / bucketCapacityNumber
-          ).toString(),
-    borrowAPYWithMaxDiscount: (
-      formattedVariableBorrowAPY.toNumber() *
-      (1 - Number(formattedGhoDiscountRate))
-    ).toString(),
+      formattedFacilitatorBucketMaxCapacity === 0
+        ? 0
+        : formattedFacilitatorBucketLevel /
+          formattedFacilitatorBucketMaxCapacity,
+    borrowAPYWithMaxDiscount:
+      formattedVariableBorrowAPY * (1 - formattedGhoDiscountRate),
   };
 }
