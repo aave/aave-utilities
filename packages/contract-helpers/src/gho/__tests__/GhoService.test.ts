@@ -105,7 +105,7 @@ describe('GhoService', () => {
     });
 
     // mock GhoToken facilitator bucket info
-    const mockBucket = [zeroBN, zeroBN];
+    const mockBucket = { level: zeroBN, maxCapacity: zeroBN };
 
     // Mock it
     jest.spyOn(GhoToken__factory, 'connect').mockReturnValue({
