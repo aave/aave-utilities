@@ -61,7 +61,7 @@ export class GhoService implements IGhoService {
       ghoDiscountRateService.getGhoDiscountedPerDiscountToken(),
       ghoDiscountRateService.getGhoDiscountRate(),
       ghoVariableDebtTokenService.getDiscountLockPeriod(),
-      this.ghoTokenService.getFacilitatorBucket(this.ghoTokenAddress),
+      this.ghoTokenService.getFacilitatorBucket(reserve.aTokenAddress),
       ghoDiscountRateService.getGhoMinDebtTokenBalance(),
       ghoDiscountRateService.getGhoMinDiscountTokenBalance(),
       ghoVariableDebtTokenService.getDiscountToken(),
