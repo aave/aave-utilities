@@ -10,7 +10,7 @@ describe('formatGhoData', () => {
     expect(result.variableBorrowAPY).toEqual('1.718281785360970821260772864'); // 17.18%
     expect(result.ghoDiscountedPerToken).toEqual('100');
     expect(result.ghoDiscountRate).toEqual('0.2');
-    expect(result.ghoDiscountLockPeriod).toEqual('0');
+    expect(result.ghoDiscountLockPeriod).toEqual('1000');
     expect(result.facilitatorBucketLevel).toEqual('10');
     expect(result.facilitatorBucketMaxCapacity).toEqual('100');
     expect(result.facilitatorRemainingCapacity).toEqual('90');

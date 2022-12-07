@@ -332,7 +332,7 @@ export class GhoMock {
       baseVariableBorrowRate: RAY.toString(), // 10% (rates are given as percent so 1% would be value of 0.01)
       ghoDiscountedPerToken: (10 ** 20).toString(), // 100
       ghoDiscountRate: '2000', // 20%
-      ghoDiscountLockPeriod: '0',
+      ghoDiscountLockPeriod: '1000',
       facilitatorBucketLevel: (10 ** 19).toString(), // 10
       facilitatorBucketMaxCapacity: (10 ** 20).toString(), // 100
       ghoMinDebtTokenBalanceForDiscount: (10 ** 18).toString(), // 1

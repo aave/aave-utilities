@@ -52,7 +52,7 @@ export function formatGhoData({
     baseVariableBorrowRate: normalize(ghoData.baseVariableBorrowRate, 27),
     ghoDiscountedPerToken: formattedGhoDiscountedPerToken,
     ghoDiscountRate: formattedGhoDiscountRate,
-    ghoDiscountLockPeriod: normalize(ghoData.ghoDiscountLockPeriod, 18),
+    ghoDiscountLockPeriod: ghoData.ghoDiscountLockPeriod,
     facilitatorBucketLevel: formattedFacilitatorBucketLevel,
     facilitatorBucketMaxCapacity: formattedFacilitatorBucketMaxCapacity,
     ghoMinDebtTokenBalanceForDiscount: normalize(
