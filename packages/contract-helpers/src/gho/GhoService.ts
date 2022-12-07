@@ -109,8 +109,8 @@ export class GhoService implements IGhoService {
       ghoDiscountedPerToken: ghoDiscountedPerToken.toString(),
       ghoDiscountRate: ghoDiscountRate.toString(),
       ghoDiscountLockPeriod: ghoDiscountLockPeriod.toString(),
-      facilitatorBucketMaxCapacity: facilitatorInfo.level.toString(),
-      facilitatorBucketLevel: facilitatorInfo.maxCapacity.toString(),
+      facilitatorBucketMaxCapacity: facilitatorInfo.maxCapacity.toString(),
+      facilitatorBucketLevel: facilitatorInfo.level.toString(),
       ghoMinDebtTokenBalanceForDiscount:
         ghoMinDebtTokenBalanceForDiscount.toString(),
       ghoMinDiscountTokenBalanceForDiscount:
