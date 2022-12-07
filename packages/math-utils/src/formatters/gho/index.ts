@@ -18,6 +18,7 @@ export interface FormattedGhoData extends GhoData {
   variableBorrowAPY: string;
   discountableAmount: string;
   facilitatorRemainingCapacity: string;
+  facilitatorMintedPercent: string;
   borrowAPYWithMaxDiscount: string;
 }
 
@@ -48,6 +49,7 @@ export function formatGhoData({
   }).shiftedBy(-27);
 
   const formattedGhoDiscountRate = normalize(ghoData.ghoDiscountRate, 4);
+  const bucketCapacityNumber = Number(formattedFacilitatorBucketMaxCapacity);
   return {
     baseVariableBorrowRate: normalize(ghoData.baseVariableBorrowRate, 27),
     ghoDiscountedPerToken: formattedGhoDiscountedPerToken,
@@ -74,6 +76,12 @@ export function formatGhoData({
       Number(formattedFacilitatorBucketMaxCapacity) -
       Number(formattedFacilitatorBucketLevel)
     ).toString(),
+    facilitatorMintedPercent:
+      bucketCapacityNumber === 0
+        ? '0'
+        : (
+            Number(formattedFacilitatorBucketLevel) / bucketCapacityNumber
+          ).toString(),
     borrowAPYWithMaxDiscount: (
       formattedVariableBorrowAPY.toNumber() *
       (1 - Number(formattedGhoDiscountRate))

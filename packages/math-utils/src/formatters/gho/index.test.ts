@@ -14,6 +14,7 @@ describe('formatGhoData', () => {
     expect(result.facilitatorBucketLevel).toEqual('10');
     expect(result.facilitatorBucketMaxCapacity).toEqual('100');
     expect(result.facilitatorRemainingCapacity).toEqual('90');
+    expect(result.facilitatorMintedPercent).toEqual('0.1');
     expect(result.ghoMinDebtTokenBalanceForDiscount).toEqual('1');
     expect(result.ghoMinDiscountTokenBalanceForDiscount).toEqual('1');
     expect(result.userGhoDiscountRate).toEqual('0.1');
