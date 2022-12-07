@@ -6,8 +6,8 @@ describe('formatGhoData', () => {
   it('properly format gho data', () => {
     const result = formatGhoData({ ghoData: ghoMock.ghoData });
 
-    expect(result.baseVariableBorrowRate).toEqual(1); // 10%
-    expect(result.variableBorrowAPY).toBeCloseTo(1.71828, 5); // 17.18%
+    expect(result.ghoBaseVariableBorrowRate).toEqual(1); // 10%
+    expect(result.ghoVariableBorrowAPY).toBeCloseTo(1.71828, 5); // 17.18%
     expect(result.ghoDiscountedPerToken).toEqual(100);
     expect(result.ghoDiscountRate).toEqual(0.2);
     expect(result.ghoDiscountLockPeriod).toEqual(1000);
@@ -21,5 +21,6 @@ describe('formatGhoData', () => {
     expect(result.discountableAmount).toEqual(10000);
     expect(result.borrowAPYWithMaxDiscount).toEqual(1.3746254282887769); // 17.18% - 20% discount = 13.75%
     expect(result.userDiscountTokenBalance).toEqual(100);
+    expect(result.userGhoBorowBalance).toEqual(10);
   });
 });

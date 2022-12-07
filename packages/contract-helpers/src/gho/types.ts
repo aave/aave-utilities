@@ -1,5 +1,5 @@
 export interface GhoData {
-  baseVariableBorrowRate: string;
+  ghoBaseVariableBorrowRate: string;
   ghoDiscountedPerToken: string;
   ghoDiscountRate: string;
   ghoDiscountLockPeriod: string;
@@ -8,5 +8,6 @@ export interface GhoData {
   ghoMinDebtTokenBalanceForDiscount: string;
   ghoMinDiscountTokenBalanceForDiscount: string;
   userGhoDiscountRate: string;
+  userGhoBorowBalance: string;
   userDiscountTokenBalance: string;
 }

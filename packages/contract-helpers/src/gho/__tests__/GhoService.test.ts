@@ -8,9 +8,10 @@ import { GhoToken } from '../typechain/GhoToken';
 import { GhoToken__factory } from '../typechain/GhoToken__factory';
 import { GhoVariableDebtToken } from '../typechain/GhoVariableDebtToken';
 import { GhoVariableDebtToken__factory } from '../typechain/GhoVariableDebtToken__factory';
+import { GhoData } from '../types';
 
-const ghoDataMock = {
-  baseVariableBorrowRate: '0',
+const ghoDataMock: GhoData = {
+  ghoBaseVariableBorrowRate: '0',
   ghoDiscountedPerToken: '0',
   ghoDiscountRate: '0',
   ghoDiscountLockPeriod: '0',
@@ -20,6 +21,7 @@ const ghoDataMock = {
   ghoMinDiscountTokenBalanceForDiscount: '0',
   userGhoDiscountRate: '0',
   userDiscountTokenBalance: '0',
+  userGhoBorowBalance: '0',
 };
 
 describe('GhoService', () => {

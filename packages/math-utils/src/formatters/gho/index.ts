@@ -2,7 +2,7 @@ import { normalize } from '../../bignumber';
 import { SECONDS_PER_YEAR } from '../../constants';
 import { calculateCompoundedRate } from '../compounded-interest';
 export interface GhoData {
-  baseVariableBorrowRate: string;
+  ghoBaseVariableBorrowRate: string;
   ghoDiscountedPerToken: string;
   ghoDiscountRate: string;
   ghoDiscountLockPeriod: string;
@@ -11,16 +11,17 @@ export interface GhoData {
   ghoMinDebtTokenBalanceForDiscount: string;
   ghoMinDiscountTokenBalanceForDiscount: string;
   userGhoDiscountRate: string;
+  userGhoBorowBalance: string;
   userDiscountTokenBalance: string;
 }
 
 export interface FormattedGhoData {
-  variableBorrowAPY: number;
   discountableAmount: number;
   facilitatorRemainingCapacity: number;
   facilitatorMintedPercent: number;
   borrowAPYWithMaxDiscount: number;
-  baseVariableBorrowRate: number;
+  ghoBaseVariableBorrowRate: number;
+  ghoVariableBorrowAPY: number;
   ghoDiscountedPerToken: number;
   ghoDiscountRate: number;
   ghoDiscountLockPeriod: number;
@@ -30,6 +31,7 @@ export interface FormattedGhoData {
   ghoMinDiscountTokenBalanceForDiscount: number;
   userGhoDiscountRate: number;
   userDiscountTokenBalance: number;
+  userGhoBorowBalance: number;
 }
 
 export function formatGhoData({
@@ -50,7 +52,7 @@ export function formatGhoData({
     normalize(ghoData.facilitatorBucketMaxCapacity, 18),
   );
   const formattedVariableBorrowAPY = calculateCompoundedRate({
-    rate: ghoData.baseVariableBorrowRate,
+    rate: ghoData.ghoBaseVariableBorrowRate,
     duration: SECONDS_PER_YEAR,
   })
     .shiftedBy(-27)
@@ -59,8 +61,8 @@ export function formatGhoData({
     normalize(ghoData.ghoDiscountRate, 4),
   );
   return {
-    baseVariableBorrowRate: Number(
-      normalize(ghoData.baseVariableBorrowRate, 27),
+    ghoBaseVariableBorrowRate: Number(
+      normalize(ghoData.ghoBaseVariableBorrowRate, 27),
     ),
     ghoDiscountedPerToken: formattedGhoDiscountedPerToken,
     ghoDiscountRate: formattedGhoDiscountRate,
@@ -75,7 +77,7 @@ export function formatGhoData({
     ),
     userGhoDiscountRate: Number(normalize(ghoData.userGhoDiscountRate, 4)),
     userDiscountTokenBalance: formattedUserDiscountTokenBalance,
-    variableBorrowAPY: formattedVariableBorrowAPY,
+    ghoVariableBorrowAPY: formattedVariableBorrowAPY,
     discountableAmount:
       formattedGhoDiscountedPerToken * formattedUserDiscountTokenBalance,
     facilitatorRemainingCapacity:
@@ -87,5 +89,6 @@ export function formatGhoData({
           formattedFacilitatorBucketMaxCapacity,
     borrowAPYWithMaxDiscount:
       formattedVariableBorrowAPY * (1 - formattedGhoDiscountRate),
+    userGhoBorowBalance: Number(normalize(ghoData.userGhoBorowBalance, 18)),
   };
 }
