@@ -71,7 +71,6 @@ export class GhoService implements IGhoService {
     let userGhoData = {
       userDiscountRate: '0',
       userDiscountTokenBalance: '0',
-      userGhoBorrowBalance: '0',
     };
     if (userAddress) {
       // This is subotimal but will be unncessary once there's a helper contract, so probably not worth creating a new ERC20Service for this now
@@ -85,22 +84,13 @@ export class GhoService implements IGhoService {
         this.provider,
       ) as ERC20Contract;
 
-      const variableDebtTokenErc20: ERC20Contract = new ethers.Contract(
-        reserve.variableDebtTokenAddress,
-        abi,
-        this.provider,
-      ) as ERC20Contract;
-
-      const [userDiscountRate, userDiscountTokenBalance, userGhoBorrowBalance] =
-        await Promise.all([
-          ghoVariableDebtTokenService.getUserDiscountPercent(userAddress),
-          discountTokenErc20.balanceOf(userAddress),
-          variableDebtTokenErc20.balanceOf(userAddress),
-        ]);
+      const [userDiscountRate, userDiscountTokenBalance] = await Promise.all([
+        ghoVariableDebtTokenService.getUserDiscountPercent(userAddress),
+        discountTokenErc20.balanceOf(userAddress),
+      ]);
       userGhoData = {
         userDiscountRate: userDiscountRate.toString(),
         userDiscountTokenBalance: userDiscountTokenBalance.toString(),
-        userGhoBorrowBalance: userGhoBorrowBalance.toString(),
       };
     }
 
@@ -117,7 +107,6 @@ export class GhoService implements IGhoService {
         ghoMinDiscountTokenBalanceForDiscount.toString(),
       userGhoDiscountRate: userGhoData.userDiscountRate,
       userDiscountTokenBalance: userGhoData.userDiscountTokenBalance,
-      userGhoBorowBalance: userGhoData.userGhoBorrowBalance,
     };
   }
 }

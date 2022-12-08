@@ -8,6 +8,5 @@ export interface GhoData {
   ghoMinDebtTokenBalanceForDiscount: string;
   ghoMinDiscountTokenBalanceForDiscount: string;
   userGhoDiscountRate: string;
-  userGhoBorowBalance: string;
   userDiscountTokenBalance: string;
 }

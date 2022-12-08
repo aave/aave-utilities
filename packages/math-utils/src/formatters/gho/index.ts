@@ -11,7 +11,6 @@ export interface GhoData {
   ghoMinDebtTokenBalanceForDiscount: string;
   ghoMinDiscountTokenBalanceForDiscount: string;
   userGhoDiscountRate: string;
-  userGhoBorowBalance: string;
   userDiscountTokenBalance: string;
 }
 
@@ -31,7 +30,6 @@ export interface FormattedGhoData {
   ghoMinDiscountTokenBalanceForDiscount: number;
   userGhoDiscountRate: number;
   userDiscountTokenBalance: number;
-  userGhoBorowBalance: number;
 }
 
 export function formatGhoData({
@@ -89,6 +87,5 @@ export function formatGhoData({
           formattedFacilitatorBucketMaxCapacity,
     borrowAPYWithMaxDiscount:
       formattedVariableBorrowAPY * (1 - formattedGhoDiscountRate),
-    userGhoBorowBalance: Number(normalize(ghoData.userGhoBorowBalance, 18)),
   };
 }

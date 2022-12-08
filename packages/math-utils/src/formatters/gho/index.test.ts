@@ -21,6 +21,5 @@ describe('formatGhoData', () => {
     expect(result.discountableAmount).toEqual(10000);
     expect(result.borrowAPYWithMaxDiscount).toEqual(1.3746254282887769); // 17.18% - 20% discount = 13.75%
     expect(result.userDiscountTokenBalance).toEqual(100);
-    expect(result.userGhoBorowBalance).toEqual(10);
   });
 });

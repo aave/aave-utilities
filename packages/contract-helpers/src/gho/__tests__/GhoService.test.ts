@@ -21,7 +21,6 @@ const ghoDataMock: GhoData = {
   ghoMinDiscountTokenBalanceForDiscount: '0',
   userGhoDiscountRate: '0',
   userDiscountTokenBalance: '0',
-  userGhoBorowBalance: '0',
 };
 
 describe('GhoService', () => {
