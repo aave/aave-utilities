@@ -1,91 +1,142 @@
 import { normalize } from '../../bignumber';
 import { SECONDS_PER_YEAR } from '../../constants';
+import { getCompoundedBalance } from '../../pool-math';
+import { rayMul } from '../../ray.math';
 import { calculateCompoundedRate } from '../compounded-interest';
-export interface GhoData {
+
+export interface GhoReserveData {
   ghoBaseVariableBorrowRate: string;
+  ghoReserveLastUpdateTimestamp: string;
   ghoDiscountedPerToken: string;
   ghoDiscountRate: string;
   ghoDiscountLockPeriod: string;
-  facilitatorBucketLevel: string;
-  facilitatorBucketMaxCapacity: string;
   ghoMinDebtTokenBalanceForDiscount: string;
   ghoMinDiscountTokenBalanceForDiscount: string;
-  userGhoDiscountRate: string;
-  userDiscountTokenBalance: string;
+  ghoCurrentBorrowIndex: string;
+  aaveFacilitatorBucketLevel: string;
+  aaveFacilitatorBucketMaxCapacity: string;
 }
 
-export interface FormattedGhoData {
-  discountableAmount: number;
-  facilitatorRemainingCapacity: number;
-  facilitatorMintedPercent: number;
-  borrowAPYWithMaxDiscount: number;
+export interface GhoUserData {
+  userGhoDiscountRate: string;
+  userDiscountTokenBalance: string;
+  userPreviousGhoBorrowIndex: string;
+  userGhoScaledBorrowBalance: string;
+  userDiscountLockPeriodEndTimestamp: string;
+}
+
+export interface FormattedGhoReserveData {
+  aaveFacilitatorRemainingCapacity: number;
+  aaveFacilitatorMintedPercent: number;
+  aaveFacilitatorBucketLevel: number;
+  aaveFacilitatorBucketMaxCapacity: number;
+  ghoBorrowAPYWithMaxDiscount: number;
   ghoBaseVariableBorrowRate: number;
   ghoVariableBorrowAPY: number;
   ghoDiscountedPerToken: number;
   ghoDiscountRate: number;
   ghoDiscountLockPeriod: number;
-  facilitatorBucketLevel: number;
-  facilitatorBucketMaxCapacity: number;
   ghoMinDebtTokenBalanceForDiscount: number;
   ghoMinDiscountTokenBalanceForDiscount: number;
-  userGhoDiscountRate: number;
-  userDiscountTokenBalance: number;
 }
 
-export function formatGhoData({
-  ghoData,
+export interface FormattedGhoUserData {
+  userGhoDiscountRate: number;
+  userDiscountTokenBalance: number;
+  userGhoBorrowBalance: number;
+  userGhoAvailableToBorrowAtDiscount: number;
+  userDiscountLockPeriodEndTimestamp: number;
+}
+
+export function formatGhoReserveData({
+  ghoReserveData,
 }: {
-  ghoData: GhoData;
-}): FormattedGhoData {
+  ghoReserveData: GhoReserveData;
+}): FormattedGhoReserveData {
   const formattedGhoDiscountedPerToken = Number(
-    normalize(ghoData.ghoDiscountedPerToken, 18),
-  );
-  const formattedUserDiscountTokenBalance = Number(
-    normalize(ghoData.userDiscountTokenBalance, 18),
+    normalize(ghoReserveData.ghoDiscountedPerToken, 18),
   );
   const formattedFacilitatorBucketLevel = Number(
-    normalize(ghoData.facilitatorBucketLevel, 18),
+    normalize(ghoReserveData.aaveFacilitatorBucketLevel, 18),
   );
   const formattedFacilitatorBucketMaxCapacity = Number(
-    normalize(ghoData.facilitatorBucketMaxCapacity, 18),
+    normalize(ghoReserveData.aaveFacilitatorBucketMaxCapacity, 18),
   );
   const formattedVariableBorrowAPY = calculateCompoundedRate({
-    rate: ghoData.ghoBaseVariableBorrowRate,
+    rate: ghoReserveData.ghoBaseVariableBorrowRate,
     duration: SECONDS_PER_YEAR,
   })
     .shiftedBy(-27)
     .toNumber();
   const formattedGhoDiscountRate = Number(
-    normalize(ghoData.ghoDiscountRate, 4),
+    normalize(ghoReserveData.ghoDiscountRate, 4),
   );
   return {
     ghoBaseVariableBorrowRate: Number(
-      normalize(ghoData.ghoBaseVariableBorrowRate, 27),
+      normalize(ghoReserveData.ghoBaseVariableBorrowRate, 27),
     ),
     ghoDiscountedPerToken: formattedGhoDiscountedPerToken,
     ghoDiscountRate: formattedGhoDiscountRate,
-    ghoDiscountLockPeriod: Number(ghoData.ghoDiscountLockPeriod),
-    facilitatorBucketLevel: formattedFacilitatorBucketLevel,
-    facilitatorBucketMaxCapacity: formattedFacilitatorBucketMaxCapacity,
+    ghoDiscountLockPeriod: Number(ghoReserveData.ghoDiscountLockPeriod),
+    aaveFacilitatorBucketLevel: formattedFacilitatorBucketLevel,
+    aaveFacilitatorBucketMaxCapacity: formattedFacilitatorBucketMaxCapacity,
     ghoMinDebtTokenBalanceForDiscount: Number(
-      normalize(ghoData.ghoMinDebtTokenBalanceForDiscount, 18),
+      normalize(ghoReserveData.ghoMinDebtTokenBalanceForDiscount, 18),
     ),
     ghoMinDiscountTokenBalanceForDiscount: Number(
-      normalize(ghoData.ghoMinDiscountTokenBalanceForDiscount, 18),
+      normalize(ghoReserveData.ghoMinDiscountTokenBalanceForDiscount, 18),
     ),
-    userGhoDiscountRate: Number(normalize(ghoData.userGhoDiscountRate, 4)),
-    userDiscountTokenBalance: formattedUserDiscountTokenBalance,
     ghoVariableBorrowAPY: formattedVariableBorrowAPY,
-    discountableAmount:
-      formattedGhoDiscountedPerToken * formattedUserDiscountTokenBalance,
-    facilitatorRemainingCapacity:
+    aaveFacilitatorRemainingCapacity:
       formattedFacilitatorBucketMaxCapacity - formattedFacilitatorBucketLevel,
-    facilitatorMintedPercent:
+    aaveFacilitatorMintedPercent:
       formattedFacilitatorBucketMaxCapacity === 0
         ? 0
         : formattedFacilitatorBucketLevel /
           formattedFacilitatorBucketMaxCapacity,
-    borrowAPYWithMaxDiscount:
+    ghoBorrowAPYWithMaxDiscount:
       formattedVariableBorrowAPY * (1 - formattedGhoDiscountRate),
+  };
+}
+
+export function formatGhoUserData({
+  ghoReserveData,
+  ghoUserData,
+  currentTimestamp,
+}: {
+  ghoReserveData: GhoReserveData;
+  ghoUserData: GhoUserData;
+  currentTimestamp: number;
+}): FormattedGhoUserData {
+  const formattedUserDiscountTokenBalance = Number(
+    normalize(ghoUserData.userDiscountTokenBalance, 18),
+  );
+  const userBalancePreDiscount = getCompoundedBalance({
+    principalBalance: ghoUserData.userGhoScaledBorrowBalance,
+    reserveIndex: ghoReserveData.ghoCurrentBorrowIndex,
+    reserveRate: ghoReserveData.ghoBaseVariableBorrowRate,
+    lastUpdateTimestamp: Number(ghoReserveData.ghoReserveLastUpdateTimestamp),
+    currentTimestamp,
+  });
+  const accruedInterest = userBalancePreDiscount.minus(
+    rayMul(
+      ghoUserData.userGhoScaledBorrowBalance,
+      ghoUserData.userPreviousGhoBorrowIndex,
+    ),
+  );
+  const discount = accruedInterest.multipliedBy(
+    1 - Number(normalize(ghoUserData.userGhoDiscountRate, 4)),
+  );
+  const userBorrowBalance = userBalancePreDiscount.minus(discount);
+  return {
+    userGhoDiscountRate: Number(normalize(ghoUserData.userGhoDiscountRate, 4)),
+    userDiscountTokenBalance: formattedUserDiscountTokenBalance,
+    userGhoBorrowBalance: Number(normalize(userBorrowBalance, 18)),
+    userDiscountLockPeriodEndTimestamp: Number(
+      ghoUserData.userDiscountLockPeriodEndTimestamp,
+    ),
+    userGhoAvailableToBorrowAtDiscount:
+      Number(normalize(ghoReserveData.ghoDiscountedPerToken, 18)) *
+      formattedUserDiscountTokenBalance,
   };
 }
