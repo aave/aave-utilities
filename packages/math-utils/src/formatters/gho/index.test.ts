@@ -34,5 +34,6 @@ describe('formatGhoData', () => {
     expect(result.userDiscountTokenBalance).toEqual(100);
     expect(result.userDiscountLockPeriodEndTimestamp).toEqual(1);
     expect(result.userGhoBorrowBalance).toEqual(1.1000000063419584);
+    expect(result.userDiscountedGhoInterest).toEqual(0.9000000570776255);
   });
 });

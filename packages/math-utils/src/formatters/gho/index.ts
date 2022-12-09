@@ -44,6 +44,7 @@ export interface FormattedGhoUserData {
   userGhoDiscountRate: number;
   userDiscountTokenBalance: number;
   userGhoBorrowBalance: number;
+  userDiscountedGhoInterest: number;
   userGhoAvailableToBorrowAtDiscount: number;
   userDiscountLockPeriodEndTimestamp: number;
 }
@@ -138,5 +139,6 @@ export function formatGhoUserData({
     userGhoAvailableToBorrowAtDiscount:
       Number(normalize(ghoReserveData.ghoDiscountedPerToken, 18)) *
       formattedUserDiscountTokenBalance,
+    userDiscountedGhoInterest: Number(normalize(discount, 18)),
   };
 }
