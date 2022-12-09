@@ -107,13 +107,6 @@ export class GhoService implements IGhoService {
         await this.ghoVariableDebtTokenService.getDiscountToken();
     }
 
-    // Can use same service as VariableDebt token because scaledBalance and getPreviousIndex abi are identical
-    // Not worth refactoring as this will be unecessary when this call can be made inside of helper contract
-    const ghoATokenService = new GhoVariableDebtTokenService(
-      this.provider,
-      this.ghoATokenAddress,
-    );
-
     // This is subotimal but will be unncessary once there's a helper contract, so probably not worth creating a new ERC20Service for this now
     const abi = ['function balanceOf(address owner) view returns (uint256)'];
     interface ERC20Contract extends Contract {
@@ -134,8 +127,8 @@ export class GhoService implements IGhoService {
     ] = await Promise.all([
       this.ghoVariableDebtTokenService.getUserDiscountPercent(userAddress),
       discountTokenErc20.balanceOf(userAddress),
-      ghoATokenService.scaledBalanceof(userAddress),
-      ghoATokenService.getPreviousIndex(userAddress),
+      this.ghoVariableDebtTokenService.scaledBalanceof(userAddress),
+      this.ghoVariableDebtTokenService.getPreviousIndex(userAddress),
       this.ghoVariableDebtTokenService.getUserRebalanceTimestamp(userAddress),
     ]);
 
