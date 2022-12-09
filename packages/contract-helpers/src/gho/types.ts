@@ -1,12 +1,20 @@
-export interface GhoData {
+export interface GhoReserveData {
   ghoBaseVariableBorrowRate: string;
   ghoDiscountedPerToken: string;
   ghoDiscountRate: string;
   ghoDiscountLockPeriod: string;
-  facilitatorBucketLevel: string;
-  facilitatorBucketMaxCapacity: string;
   ghoMinDebtTokenBalanceForDiscount: string;
   ghoMinDiscountTokenBalanceForDiscount: string;
+  ghoReserveLastUpdateTimestamp: string;
+  ghoCurrentBorrowIndex: string;
+  aaveFacilitatorBucketLevel: string;
+  aaveFacilitatorBucketMaxCapacity: string;
+}
+
+export interface GhoUserData {
   userGhoDiscountRate: string;
   userDiscountTokenBalance: string;
+  userPreviousGhoBorrowIndex: string;
+  userGhoScaledBorrowBalance: string;
+  userDiscountLockPeriodEndTimestamp: string;
 }

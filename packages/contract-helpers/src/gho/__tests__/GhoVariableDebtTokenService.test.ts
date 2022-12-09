@@ -187,4 +187,62 @@ describe('GhoVariableDebtTokenService', () => {
       expect(result).toEqual(mockDiscountRateStrategy);
     });
   });
+
+  describe('scaledBalanceOf', () => {
+    it('should return the scaled balance of a user', async () => {
+      // Create instance
+      const contract = new GhoVariableDebtTokenService(
+        correctProvider,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
+      );
+
+      // Setup
+      const mockUserAddress = constants.AddressZero;
+      const mockScaledBalance = convertToBN('123456789');
+
+      // Mock it
+      const spy = jest
+        .spyOn(GhoVariableDebtToken__factory, 'connect')
+        .mockReturnValue({
+          scaledBalanceOf: async () => Promise.resolve(mockScaledBalance),
+        } as unknown as GhoVariableDebtToken);
+
+      // Call it
+      const result = await contract.scaledBalanceof(mockUserAddress);
+
+      // Assert it
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toBeCalledTimes(1);
+      expect(result).toEqual(mockScaledBalance);
+    });
+  });
+
+  describe('getPreviousIndex', () => {
+    it('should return the previous borrow index of a user', async () => {
+      // Create instance
+      const contract = new GhoVariableDebtTokenService(
+        correctProvider,
+        GHO_VARIABLE_DEBT_TOKEN_ADDRESS,
+      );
+
+      // Setup
+      const mockUserAddress = constants.AddressZero;
+      const mockPreviousIndex = convertToBN('123456789');
+
+      // Mock it
+      const spy = jest
+        .spyOn(GhoVariableDebtToken__factory, 'connect')
+        .mockReturnValue({
+          getPreviousIndex: async () => Promise.resolve(mockPreviousIndex),
+        } as unknown as GhoVariableDebtToken);
+
+      // Call it
+      const result = await contract.getPreviousIndex(mockUserAddress);
+
+      // Assert it
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toBeCalledTimes(1);
+      expect(result).toEqual(mockPreviousIndex);
+    });
+  });
 });

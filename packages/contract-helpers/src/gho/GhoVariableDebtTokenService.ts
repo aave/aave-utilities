@@ -9,6 +9,8 @@ export interface IGhoVariableDebtTokenService {
   getUserDiscountPercent: (userAddress: string) => Promise<BigNumber>;
   getUserRebalanceTimestamp: (userAddress: string) => Promise<BigNumber>;
   getDiscountRateStrategy: () => Promise<string>;
+  scaledBalanceof: (userAddress: string) => Promise<BigNumber>;
+  getPreviousIndex: (userAddress: string) => Promise<BigNumber>;
 }
 
 /**
@@ -79,6 +81,18 @@ export class GhoVariableDebtTokenService
   public async getDiscountRateStrategy() {
     const contract = this.getContractInstance(this.ghoVariableDebtTokenAddress);
     const result = await contract.getDiscountRateStrategy();
+    return result;
+  }
+
+  public async scaledBalanceof(userAddress: string) {
+    const contract = this.getContractInstance(this.ghoVariableDebtTokenAddress);
+    const result = await contract.scaledBalanceOf(userAddress);
+    return result;
+  }
+
+  public async getPreviousIndex(userAddress: string) {
+    const contract = this.getContractInstance(this.ghoVariableDebtTokenAddress);
+    const result = await contract.getPreviousIndex(userAddress);
     return result;
   }
 }
