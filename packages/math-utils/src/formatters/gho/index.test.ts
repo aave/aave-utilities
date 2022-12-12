@@ -1,5 +1,10 @@
-import { GhoMock } from '../../mocks';
-import { formatGhoReserveData, formatGhoUserData } from './index';
+import { GhoMock, UserReserveMock } from '../../mocks';
+import { formatUserSummary, FormatUserSummaryRequest } from '../user';
+import {
+  formatGhoReserveData,
+  formatGhoUserData,
+  formatUserSummaryWithDiscount,
+} from './index';
 
 describe('formatGhoData', () => {
   const ghoMock = new GhoMock();
@@ -35,5 +40,43 @@ describe('formatGhoData', () => {
     expect(result.userDiscountLockPeriodEndTimestamp).toEqual(1);
     expect(result.userGhoBorrowBalance).toEqual(1.1000000063419584);
     expect(result.userDiscountedGhoInterest).toEqual(0.9000000570776255);
+  });
+
+  it('properly formats user summary with GHO discount', () => {
+    const usdcUserMock = new UserReserveMock({ decimals: 6 })
+      .supply(200)
+      .variableBorrow(50)
+      .stableBorrow(10);
+    const marketReferencePriceInUsd = 10 ** 9; // 10
+    const marketReferenceCurrencyDecimals = 18;
+    const request: FormatUserSummaryRequest = {
+      userReserves: [usdcUserMock.userReserve],
+      formattedReserves: [usdcUserMock.reserve],
+      marketReferencePriceInUsd,
+      marketReferenceCurrencyDecimals,
+      currentTimestamp: 1,
+      userEmodeCategoryId: 0,
+    };
+    const userSummary = formatUserSummary(request);
+
+    expect(userSummary.totalBorrowsMarketReferenceCurrency).toEqual('600');
+    expect(userSummary.totalBorrowsUSD).toEqual('6000');
+    expect(userSummary.netWorthUSD).toEqual('14000');
+    expect(userSummary.availableBorrowsUSD).toEqual('4000');
+    expect(userSummary.availableBorrowsMarketReferenceCurrency).toEqual('400');
+    expect(userSummary.healthFactor).toEqual('2');
+
+    const result = formatUserSummaryWithDiscount({
+      userGhoDiscountedInterest: 100,
+      user: userSummary,
+      marketReferenceCurrencyPriceUSD: 10,
+    });
+
+    expect(result.totalBorrowsMarketReferenceCurrency).toEqual('590');
+    expect(result.totalBorrowsUSD).toEqual('5900');
+    expect(result.netWorthUSD).toEqual('14100');
+    expect(result.availableBorrowsUSD).toEqual('4100');
+    expect(result.availableBorrowsMarketReferenceCurrency).toEqual('410');
+    expect(result.healthFactor).toEqual('2.0338983050847457');
   });
 });

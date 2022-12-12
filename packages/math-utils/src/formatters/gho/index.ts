@@ -3,7 +3,6 @@ import { SECONDS_PER_YEAR } from '../../constants';
 import { getCompoundedBalance } from '../../pool-math';
 import { rayMul } from '../../ray.math';
 import { calculateCompoundedRate } from '../compounded-interest';
-import { FormatUserSummaryAndIncentivesResponse } from '../user';
 
 export interface GhoReserveData {
   ghoBaseVariableBorrowRate: string;
@@ -144,23 +143,35 @@ export function formatGhoUserData({
   };
 }
 
+interface FormattedUserSummarySubset {
+  totalBorrowsUSD: string;
+  totalBorrowsMarketReferenceCurrency: string;
+  netWorthUSD: string;
+  availableBorrowsMarketReferenceCurrency: string;
+  availableBorrowsUSD: string;
+  healthFactor: string;
+  currentLiquidationThreshold: string;
+  totalCollateralMarketReferenceCurrency: string;
+}
+
 export function formatUserSummaryWithDiscount({
-  ghoUserData,
+  userGhoDiscountedInterest,
   user,
   marketReferenceCurrencyPriceUSD,
 }: {
-  user: FormatUserSummaryAndIncentivesResponse;
-  ghoUserData: FormattedGhoUserData;
+  user: FormattedUserSummarySubset;
+  userGhoDiscountedInterest: number;
   marketReferenceCurrencyPriceUSD: number;
-}): FormatUserSummaryAndIncentivesResponse {
+}): FormattedUserSummarySubset {
   const totalBorrowsAfterDiscountUSD =
-    Number(user.totalBorrowsUSD) - ghoUserData.userDiscountedGhoInterest;
+    Number(user.totalBorrowsUSD) - userGhoDiscountedInterest;
 
   const availableBorrowsAfterDiscountUSD =
-    Number(user.availableBorrowsUSD) + ghoUserData.userDiscountedGhoInterest;
+    Number(user.availableBorrowsUSD) + userGhoDiscountedInterest;
 
   const totalBorrowsMarketReferenceCurrency =
-    totalBorrowsAfterDiscountUSD / marketReferenceCurrencyPriceUSD;
+    Number(user.totalBorrowsMarketReferenceCurrency) -
+    userGhoDiscountedInterest / marketReferenceCurrencyPriceUSD;
 
   const healthFactor =
     totalBorrowsMarketReferenceCurrency === 0
@@ -175,7 +186,7 @@ export function formatUserSummaryWithDiscount({
       totalBorrowsMarketReferenceCurrency.toString(),
     totalBorrowsUSD: totalBorrowsAfterDiscountUSD.toString(),
     netWorthUSD: (
-      Number(user.netWorthUSD) + ghoUserData.userDiscountedGhoInterest
+      Number(user.netWorthUSD) + userGhoDiscountedInterest
     ).toString(),
     availableBorrowsUSD: availableBorrowsAfterDiscountUSD.toString(),
     availableBorrowsMarketReferenceCurrency: (
