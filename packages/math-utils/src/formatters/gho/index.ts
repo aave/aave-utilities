@@ -3,6 +3,7 @@ import { SECONDS_PER_YEAR } from '../../constants';
 import { getCompoundedBalance } from '../../pool-math';
 import { rayMul } from '../../ray.math';
 import { calculateCompoundedRate } from '../compounded-interest';
+import { FormatUserSummaryAndIncentivesResponse } from '../user';
 
 export interface GhoReserveData {
   ghoBaseVariableBorrowRate: string;
@@ -140,5 +141,46 @@ export function formatGhoUserData({
       Number(normalize(ghoReserveData.ghoDiscountedPerToken, 18)) *
       formattedUserDiscountTokenBalance,
     userDiscountedGhoInterest: Number(normalize(discount, 18)),
+  };
+}
+
+export function formatUserSummaryWithDiscount({
+  ghoUserData,
+  user,
+  marketReferenceCurrencyPriceUSD,
+}: {
+  user: FormatUserSummaryAndIncentivesResponse;
+  ghoUserData: FormattedGhoUserData;
+  marketReferenceCurrencyPriceUSD: number;
+}): FormatUserSummaryAndIncentivesResponse {
+  const totalBorrowsAfterDiscountUSD =
+    Number(user.totalBorrowsUSD) - ghoUserData.userDiscountedGhoInterest;
+
+  const availableBorrowsAfterDiscountUSD =
+    Number(user.availableBorrowsUSD) + ghoUserData.userDiscountedGhoInterest;
+
+  const totalBorrowsMarketReferenceCurrency =
+    totalBorrowsAfterDiscountUSD / marketReferenceCurrencyPriceUSD;
+
+  const healthFactor =
+    totalBorrowsMarketReferenceCurrency === 0
+      ? '-1'
+      : (Number(user.totalCollateralMarketReferenceCurrency) *
+          Number(user.currentLiquidationThreshold)) /
+        totalBorrowsMarketReferenceCurrency;
+
+  return {
+    ...user,
+    totalBorrowsMarketReferenceCurrency:
+      totalBorrowsMarketReferenceCurrency.toString(),
+    totalBorrowsUSD: totalBorrowsAfterDiscountUSD.toString(),
+    netWorthUSD: (
+      Number(user.netWorthUSD) + ghoUserData.userDiscountedGhoInterest
+    ).toString(),
+    availableBorrowsUSD: availableBorrowsAfterDiscountUSD.toString(),
+    availableBorrowsMarketReferenceCurrency: (
+      availableBorrowsAfterDiscountUSD / marketReferenceCurrencyPriceUSD
+    ).toString(),
+    healthFactor: healthFactor.toString(),
   };
 }
