@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.10.0 (2022-12-14)
+
+
+### Features
+
+* add default gas estimation for permit actions ([#461](https://github.com/aave/aave-utilities/issues/461)) ([7342763](https://github.com/aave/aave-utilities/commit/734276326b1d6b0b2b9aa9965bbd3f310ae0ec37))
+
+
+
+
+
 # 1.9.0 (2022-10-14)
 
 
