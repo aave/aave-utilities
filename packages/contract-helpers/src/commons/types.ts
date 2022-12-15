@@ -105,6 +105,8 @@ export enum ProtocolAction {
   withdrawETH = 'withdrawETH',
   borrowETH = 'borrwoETH',
   migrateV3 = 'migrateV3',
+  supplyWithPermit = 'supplyWithPermit',
+  repayWithPermit = 'repayWithPermit',
 }
 
 export enum GovernanceVote {
