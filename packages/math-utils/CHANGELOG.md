@@ -1,5 +1,21 @@
 # Change Log
 
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# 1.11.0 (2022-12-21)
+
+
+### Features
+
+* v3 migration ([#465](https://github.com/aave/aave-utilities/issues/465)) ([ac9197f](https://github.com/aave/aave-utilities/commit/ac9197f6a2237b34e917d23bc79798efe3e04cb1))
+
+
+
+
+
+# Change Log
+
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
