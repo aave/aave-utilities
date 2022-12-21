@@ -1,5 +1,11 @@
 import { BytesLike, Signature, splitSignature } from '@ethersproject/bytes';
-import { BigNumberish, constants, providers, utils } from 'ethers';
+import {
+  BigNumberish,
+  constants,
+  PopulatedTransaction,
+  providers,
+  utils,
+} from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
@@ -28,6 +34,7 @@ import {
   isEthAddress,
   isPositiveAmount,
   isPositiveOrMinusOneAmount,
+  isEthAddressArray,
 } from '../commons/validators/paramValidators';
 import { ERC20_2612Service, ERC20_2612Interface } from '../erc20-2612';
 import { ERC20Service, IERC20ServiceInterface } from '../erc20-contract';
@@ -62,6 +69,7 @@ import {
   LPSwapBorrowRateMode,
   LPSwapCollateral,
   LPWithdrawParamsType,
+  LPV3MigrationParamsType,
 } from './lendingPoolTypes';
 import { IPool } from './typechain/IPool';
 import { IPool__factory } from './typechain/IPool__factory';
@@ -1520,5 +1528,58 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         ),
       },
     ];
+  }
+
+  @LPValidatorV3
+  public async migrateV3(
+    @isEthAddress('migrator')
+    @isEthAddress('user')
+    @isEthAddressArray('borrowedAssets')
+    {
+      migrator,
+      borrowedAssets,
+      borrowedAmounts,
+      interestRatesModes,
+      user,
+      suppliedPositions,
+      borrowedPositions,
+      permits,
+    }: LPV3MigrationParamsType,
+  ): Promise<PopulatedTransaction> {
+    const poolContract = this.getContractInstance(this.poolAddress);
+
+    const mappedBorrowedPositions = borrowedPositions.map(borrowPosition => [
+      borrowPosition.address,
+      borrowPosition.amount,
+      borrowPosition.rateMode.toString(),
+    ]);
+
+    const mappedPermits = permits.map(permit => [
+      permit.aToken,
+      permit.value,
+      permit.deadline,
+      permit.v,
+      permit.r,
+      permit.s,
+    ]);
+
+    const params: string = utils.defaultAbiCoder.encode(
+      [
+        'address[]',
+        '(address, uint256, uint256)[]',
+        '(address, uint256, uint256, uint8, bytes32, bytes32)[]',
+      ],
+      [suppliedPositions, mappedBorrowedPositions, mappedPermits],
+    );
+
+    return poolContract.populateTransaction.flashLoan(
+      migrator,
+      borrowedAssets,
+      borrowedAmounts,
+      interestRatesModes,
+      user,
+      params,
+      '0',
+    );
   }
 }
