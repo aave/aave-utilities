@@ -19,12 +19,13 @@
     "ethers": "^5.x",
     "reflect-metadata": "^0.1.x",
     "bignumber.js": "^9.x",
-    "tslib": "^2.4.x",
-    "isomorphic-unfetch": "^3.1.x"
+    "tslib": "^2.4.x"
   },
   "devDependencies": {
     "ethers": "5.4.7",
-    "reflect-metadata": "^0.1.13",
+    "reflect-metadata": "^0.1.13"
+  },
+  "dependencies": {
     "isomorphic-unfetch": "^3.1.0"
   },
   "main": "./dist/cjs/index.js",
