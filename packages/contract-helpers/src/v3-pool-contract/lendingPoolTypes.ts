@@ -177,7 +177,7 @@ export type LPV3MigrationParamsType = {
   suppliedPositions: string[];
   borrowedPositions: BorrowedPositionType[];
   permits: IMigrationHelper.PermitInputStruct[];
-}
+};
 
 export type LPReserveData = {
   configuration: [BigNumber] & { data: BigNumber };
