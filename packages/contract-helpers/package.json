@@ -1,6 +1,6 @@
 {
   "name": "@aave/contract-helpers",
-  "version": "1.11.0",
+  "version": "1.11.1",
   "sideEffects": false,
   "license": "MIT",
   "description": "",
@@ -16,9 +16,9 @@
     "prepublishOnly": "yarn build"
   },
   "peerDependencies": {
+    "bignumber.js": "^9.x",
     "ethers": "^5.x",
     "reflect-metadata": "^0.1.x",
-    "bignumber.js": "^9.x",
     "tslib": "^2.4.x"
   },
   "devDependencies": {
