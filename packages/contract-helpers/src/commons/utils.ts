@@ -78,6 +78,10 @@ export const gasLimitRecommendations: GasRecommendationType = {
     limit: '700000',
     recommended: '700000',
   },
+  [ProtocolAction.migrateV3]: {
+    limit: '700000',
+    recommended: '700000',
+  },
   [ProtocolAction.supplyWithPermit]: {
     limit: '350000',
     recommended: '350000',

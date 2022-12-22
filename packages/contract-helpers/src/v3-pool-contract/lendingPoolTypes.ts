@@ -1,10 +1,11 @@
 import { SignatureLike } from '@ethersproject/bytes';
-import { BytesLike } from 'ethers';
+import { BigNumberish, BytesLike } from 'ethers';
 import {
   tEthereumAddress,
   InterestRate,
   PermitSignature,
 } from '../commons/types';
+import { IMigrationHelper } from '../v3-migration-contract/typechain/MigrationHelper';
 
 export type LPSupplyParamsType = {
   user: tEthereumAddress;
@@ -159,4 +160,21 @@ export type LPRepayWithATokensType = {
   amount: string;
   rateMode: InterestRate;
   useOptimizedPath?: boolean;
+};
+
+export type BorrowedPositionType = {
+  address: string;
+  amount: string;
+  rateMode: number;
+};
+
+export type LPV3MigrationParamsType = {
+  migrator: string;
+  borrowedAssets: string[];
+  borrowedAmounts: BigNumberish[];
+  interestRatesModes: number[];
+  user: string;
+  suppliedPositions: string[];
+  borrowedPositions: BorrowedPositionType[];
+  permits: IMigrationHelper.PermitInputStruct[];
 };
