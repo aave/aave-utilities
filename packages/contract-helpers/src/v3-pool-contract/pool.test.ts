@@ -5334,4 +5334,132 @@ describe('Pool', () => {
       ).rejects.toThrowError();
     });
   });
+  describe('migrateV3', () => {
+    const config = { POOL };
+    const migrator = '0x0000000000000000000000000000000000000006';
+    const borrowedAssets = [
+      '0x0000000000000000000000000000000000000007',
+      '0x0000000000000000000000000000000000000008',
+    ];
+    const borrowedAmounts = ['1', '2'];
+    const interestRatesModes = [1, 2];
+    const user = '0x0000000000000000000000000000000000000009';
+    const suppliedPositions = [
+      '0x0000000000000000000000000000000000000010',
+      '0x0000000000000000000000000000000000000011',
+    ];
+    const borrowedPositions = [
+      {
+        address: '0x0000000000000000000000000000000000000007',
+        amount: '1',
+        rateMode: 1,
+      },
+      {
+        address: '0x0000000000000000000000000000000000000008',
+        amount: '2',
+        rateMode: 2,
+      },
+    ];
+    const permits = [
+      {
+        aToken: '0x0000000000000000000000000000000000000007',
+        value: '1',
+        deadline: '123',
+        v: 0,
+        r: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        s: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      },
+      {
+        aToken: '0x0000000000000000000000000000000000000007',
+        value: '1',
+        deadline: '123',
+        v: 0,
+        r: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        s: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      },
+    ];
+
+    it('Expects Populated Transaction when all params correct', async () => {
+      const poolInstance = new Pool(provider, config);
+      const tx = await poolInstance.migrateV3({
+        migrator,
+        borrowedAssets,
+        borrowedAmounts,
+        interestRatesModes,
+        user,
+        suppliedPositions,
+        borrowedPositions,
+        permits,
+      });
+
+      const decoded = utils.defaultAbiCoder.decode(
+        [
+          'address',
+          'address[]',
+          'uint256[]',
+          'uint256[]',
+          'address',
+          'bytes',
+          'uint256',
+        ],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(migrator);
+    });
+    it('Expects to fail when user not address', async () => {
+      const poolInstance = new Pool(provider, config);
+      const user = 'asdf';
+      await expect(async () =>
+        poolInstance.migrateV3({
+          migrator,
+          borrowedAssets,
+          borrowedAmounts,
+          interestRatesModes,
+          user,
+          suppliedPositions,
+          borrowedPositions,
+          permits,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${user} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when migrator not address', async () => {
+      const poolInstance = new Pool(provider, config);
+      const migrator = 'asdf';
+      await expect(async () =>
+        poolInstance.migrateV3({
+          migrator,
+          borrowedAssets,
+          borrowedAmounts,
+          interestRatesModes,
+          user,
+          suppliedPositions,
+          borrowedPositions,
+          permits,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${migrator} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when borrowedAssets not address', async () => {
+      const poolInstance = new Pool(provider, config);
+      const borrowedAssets = ['asdf', 'asdf'];
+      await expect(async () =>
+        poolInstance.migrateV3({
+          migrator,
+          borrowedAssets,
+          borrowedAmounts,
+          interestRatesModes,
+          user,
+          suppliedPositions,
+          borrowedPositions,
+          permits,
+        }),
+      ).rejects.toThrowError(
+        `Address: ${borrowedAssets[0]} is not a valid ethereum Address`,
+      );
+    });
+  });
 });
