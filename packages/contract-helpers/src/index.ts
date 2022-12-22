@@ -25,6 +25,7 @@ export * from './baseDebtToken-contract';
 export * from './gho';
 export * from './v3-migration-contract';
 export * from './erc20-2612';
+export * from './gho';
 
 // commons
 export * from './commons/types';
