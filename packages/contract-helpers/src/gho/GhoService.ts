@@ -37,8 +37,6 @@ export class GhoService implements IGhoService {
    * Fetches Gho reserve, discount, facilitator data
    * @returns - instance of GhoReserveData with reserve, discount, facilitator data
    */
-  // Below line is temporary, variableDebtToken mock functions are not working despite them working line for line in GhoVariableDebtTokenService.test.ts
-  /* istanbul ignore next */
   public async getGhoReserveData(): Promise<GhoReserveData> {
     const ghoReserveData =
       await this.ghoDataProviderService.getGhoReserveData();
