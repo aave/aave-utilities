@@ -1,4 +1,8 @@
 import { constants, providers, utils } from 'ethers';
+import {
+  BaseDebtToken,
+  BaseDebtTokenInterface,
+} from '../baseDebtToken-contract';
 import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
@@ -18,6 +22,7 @@ import {
   V3MigrationHelperSignedCreditDelegationPermit,
   V3MigrationHelperSignedPermit,
   V3MigrationType,
+  V3RepayAsset,
   V3SupplyAsset,
 } from './v3MigrationTypes';
 
@@ -31,6 +36,7 @@ export class V3MigrationHelperService
   extends BaseService<IMigrationHelper>
   implements V3MigrationHelperInterface
 {
+  readonly baseDebtTokenService: BaseDebtTokenInterface;
   readonly provider: providers.Provider;
   readonly MIGRATOR_ADDRESS: tEthereumAddress;
   readonly erc20Service: ERC20Service;
@@ -43,6 +49,7 @@ export class V3MigrationHelperService
     super(provider, IMigrationHelper__factory);
     this.MIGRATOR_ADDRESS = MIGRATOR_ADDRESS;
     this.erc20Service = new ERC20Service(provider);
+    this.baseDebtTokenService = new BaseDebtToken(provider, this.erc20Service);
     this.pool = pool;
   }
 
@@ -66,9 +73,22 @@ export class V3MigrationHelperService
       txs = await this.approveSupplyAssets(user, supplyAssets);
     }
 
-    const creditDelegationPermits = this.splitSignedCreditDelegationPermits(
-      signedCreditDelegationPermits,
-    );
+    let creditDelegationPermits: IMigrationHelper.CreditDelegationInputStruct[] =
+      [];
+    if (
+      signedCreditDelegationPermits &&
+      signedCreditDelegationPermits.length > 0
+    ) {
+      creditDelegationPermits = this.splitSignedCreditDelegationPermits(
+        signedCreditDelegationPermits,
+      );
+    } else {
+      const delegationApprovals = await this.approveDelegationTokens(
+        user,
+        repayAssets,
+      );
+      txs.push(...delegationApprovals);
+    }
 
     const assetsToMigrate = supplyAssets.map(
       supplyAsset => supplyAsset.underlyingAsset,
@@ -103,6 +123,37 @@ export class V3MigrationHelperService
     });
 
     return txs;
+  }
+
+  private async approveDelegationTokens(
+    user: string,
+    assets: V3RepayAsset[],
+  ): Promise<EthereumTransactionTypeExtended[]> {
+    const assetsApproved = await Promise.all(
+      assets.map(async ({ amount, debtToken }) => {
+        return this.baseDebtTokenService.isDelegationApproved({
+          debtTokenAddress: debtToken,
+          allowanceGiver: user,
+          allowanceReceiver: this.MIGRATOR_ADDRESS,
+          amount,
+        });
+      }),
+    );
+    return assetsApproved
+      .map((approved, index) => {
+        if (approved) {
+          return;
+        }
+
+        const asset = assets[index];
+        return this.baseDebtTokenService.approveDelegation({
+          user,
+          delegatee: this.MIGRATOR_ADDRESS,
+          debtTokenAddress: asset.debtToken,
+          amount: constants.MaxUint256.toString(),
+        });
+      })
+      .filter((tx): tx is EthereumTransactionTypeExtended => Boolean(tx));
   }
 
   private async approveSupplyAssets(

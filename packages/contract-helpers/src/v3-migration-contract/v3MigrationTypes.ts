@@ -24,6 +24,7 @@ export type V3SupplyAsset = {
 };
 
 export type V3RepayAsset = {
+  debtToken: tEthereumAddress;
   underlyingAsset: tEthereumAddress;
   rateMode: InterestRate;
   deadline: number;

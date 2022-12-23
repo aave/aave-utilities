@@ -79,6 +79,7 @@ describe('V3MigrationService', () => {
     ];
     const repayAssetsStable = [
       {
+        debtToken: '0x0000000000000000000000000000000000000003',
         rateMode: InterestRate.Stable,
         underlyingAsset: '0x0000000000000000000000000000000000000004',
         deadline: 123,
@@ -87,6 +88,7 @@ describe('V3MigrationService', () => {
     ];
     const repayAssetsVariable = [
       {
+        debtToken: '0x0000000000000000000000000000000000000003',
         rateMode: InterestRate.Variable,
         underlyingAsset: '0x0000000000000000000000000000000000000004',
         deadline: 123,
@@ -120,6 +122,9 @@ describe('V3MigrationService', () => {
       const isApprovedSpy = jest
         .spyOn(instance.erc20Service, 'isApproved')
         .mockImplementationOnce(async () => Promise.resolve(true));
+      const isApprovedDelegationSpy = jest
+        .spyOn(instance.baseDebtTokenService, 'isDelegationApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
 
       const migrateTxs = await instance.migrate({
         user,
@@ -129,6 +134,7 @@ describe('V3MigrationService', () => {
         signedCreditDelegationPermits: [],
       });
       expect(isApprovedSpy).toHaveBeenCalled();
+      expect(isApprovedDelegationSpy).toHaveBeenCalled();
 
       expect(migrateTxs.length).toEqual(1);
 
@@ -169,6 +175,10 @@ describe('V3MigrationService', () => {
         .spyOn(instance.erc20Service, 'isApproved')
         .mockImplementationOnce(async () => Promise.resolve(true));
 
+      const isApprovedDelegationSpy = jest
+        .spyOn(instance.baseDebtTokenService, 'isDelegationApproved')
+        .mockImplementationOnce(async () => Promise.resolve(true));
+
       const migrateTxs = await instance.migrate({
         user,
         supplyAssets,
@@ -177,6 +187,7 @@ describe('V3MigrationService', () => {
         signedCreditDelegationPermits: [],
       });
       expect(isApprovedSpy).toHaveBeenCalled();
+      expect(isApprovedDelegationSpy).toHaveBeenCalled();
 
       expect(migrateTxs.length).toEqual(1);
 
@@ -225,6 +236,20 @@ describe('V3MigrationService', () => {
             gasPrice: '1',
           }),
         });
+      const isApprovedDelegationSpy = jest
+        .spyOn(instance.baseDebtTokenService, 'isDelegationApproved')
+        .mockImplementationOnce(async () => Promise.resolve(false));
+      const approveDelegationSpy = jest
+        .spyOn(instance.baseDebtTokenService, 'approveDelegation')
+        .mockReturnValueOnce({
+          txType: eEthereumTxType.ERC20_APPROVAL,
+          tx: async () => ({}),
+          gas: async () => ({
+            gasLimit: '1',
+            gasPrice: '1',
+          }),
+        });
+
       const migrateTxs = await instance.migrate({
         user,
         supplyAssets,
@@ -235,10 +260,12 @@ describe('V3MigrationService', () => {
 
       expect(approveSpy).toHaveBeenCalled();
       expect(isApprovedSpy).toHaveBeenCalled();
+      expect(isApprovedDelegationSpy).toHaveBeenCalled();
+      expect(approveDelegationSpy).toHaveBeenCalled();
 
-      expect(migrateTxs.length).toEqual(2);
+      expect(migrateTxs.length).toEqual(3);
 
-      const txObj = migrateTxs[1];
+      const txObj = migrateTxs[2];
 
       expect(txObj.txType).toEqual(eEthereumTxType.V3_MIGRATION_ACTION);
 
