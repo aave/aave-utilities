@@ -9,11 +9,11 @@ export type V3MigrationHelperSignedPermit = {
   signedPermit: SignatureLike;
 };
 
-export type V3MigrationNoBorrowWithPermitsType = {
-  user: tEthereumAddress;
-  assets: tEthereumAddress[];
+export type V3MigrationHelperSignedCreditDelegationPermit = {
   deadline: BigNumberish;
-  signedPermits: V3MigrationHelperSignedPermit[];
+  debtToken: tEthereumAddress;
+  value: BigNumberish;
+  signedPermit: SignatureLike;
 };
 
 export type V3SupplyAsset = {
@@ -23,18 +23,17 @@ export type V3SupplyAsset = {
   amount: string;
 };
 
-export type V3MigrationNoBorrowType = {
-  user: tEthereumAddress;
-  assets: V3SupplyAsset[];
+export type V3RepayAsset = {
+  underlyingAsset: tEthereumAddress;
+  rateMode: InterestRate;
+  deadline: number;
+  amount: string;
 };
 
-export type V3MigrateWithBorrowType = {
-  borrowedPositions: Array<{
-    amount: string;
-    address: string;
-    interestRate: InterestRate;
-  }>;
-  user: string;
-  suppliedPositions: V3SupplyAsset[];
-  signedPermits: V3MigrationHelperSignedPermit[];
+export type V3MigrationType = {
+  user: tEthereumAddress;
+  supplyAssets: V3SupplyAsset[];
+  repayAssets: V3RepayAsset[];
+  signedSupplyPermits?: V3MigrationHelperSignedPermit[];
+  signedCreditDelegationPermits: V3MigrationHelperSignedCreditDelegationPermit[];
 };
