@@ -162,23 +162,6 @@ export type LPRepayWithATokensType = {
   useOptimizedPath?: boolean;
 };
 
-export type BorrowedPositionType = {
-  address: string;
-  amount: string;
-  rateMode: number;
-};
-
-export type LPV3MigrationParamsType = {
-  migrator: string;
-  borrowedAssets: string[];
-  borrowedAmounts: BigNumberish[];
-  interestRatesModes: number[];
-  user: string;
-  suppliedPositions: string[];
-  borrowedPositions: BorrowedPositionType[];
-  permits: IMigrationHelper.PermitInputStruct[];
-};
-
 export type LPReserveData = {
   configuration: [BigNumber] & { data: BigNumber };
   liquidityIndex: BigNumber;
@@ -195,4 +178,21 @@ export type LPReserveData = {
   accruedToTreasury: BigNumber;
   unbacked: BigNumber;
   isolationModeTotalDebt: BigNumber;
+};
+
+export type BorrowedPositionType = {
+  address: string;
+  amount: string;
+  rateMode: number;
+};
+
+export type LPV3MigrationParamsType = {
+  migrator: string;
+  borrowedAssets: string[];
+  borrowedAmounts: BigNumberish[];
+  interestRatesModes: number[];
+  user: string;
+  suppliedPositions: string[];
+  borrowedPositions: BorrowedPositionType[];
+  permits: IMigrationHelper.PermitInputStruct[];
 };

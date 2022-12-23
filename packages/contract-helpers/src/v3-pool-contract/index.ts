@@ -69,8 +69,8 @@ import {
   LPSwapBorrowRateMode,
   LPSwapCollateral,
   LPWithdrawParamsType,
-  LPV3MigrationParamsType,
   LPReserveData,
+  LPV3MigrationParamsType,
 } from './lendingPoolTypes';
 import { IPool } from './typechain/IPool';
 import { IPool__factory } from './typechain/IPool__factory';

@@ -7,3 +7,4 @@ export * from './formatters/reserve';
 export * from './formatters/incentive';
 export * from './formatters/usd/native-to-usd';
 export * from './formatters/compounded-interest';
+export * from './formatters/gho';
