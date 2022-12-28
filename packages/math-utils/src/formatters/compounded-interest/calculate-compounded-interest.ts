@@ -1,20 +1,15 @@
 import BigNumber from 'bignumber.js';
-import { BigNumberValue, valueToZDBigNumber } from '../../bignumber';
+import { valueToZDBigNumber } from '../../bignumber';
 import { SECONDS_PER_YEAR } from '../../constants';
-import { binomialApproximatedRayPow } from '../../ray.math';
+import { RAY, rayPow } from '../../ray.math';
+import { CalculateCompoundedRateRequest } from './types';
 
-export interface CalculateCompoundedInterestRequest {
-  rate: BigNumberValue;
-  currentTimestamp: number;
-  lastUpdateTimestamp: number;
-}
-
-export function calculateCompoundedInterest({
+export function calculateCompoundedRate({
   rate,
-  currentTimestamp,
-  lastUpdateTimestamp,
-}: CalculateCompoundedInterestRequest): BigNumber {
-  const timeDelta = valueToZDBigNumber(currentTimestamp - lastUpdateTimestamp);
-  const ratePerSecond = valueToZDBigNumber(rate).dividedBy(SECONDS_PER_YEAR);
-  return binomialApproximatedRayPow(ratePerSecond, timeDelta);
+  duration,
+}: CalculateCompoundedRateRequest): BigNumber {
+  return rayPow(
+    valueToZDBigNumber(rate).dividedBy(SECONDS_PER_YEAR).plus(RAY),
+    duration,
+  ).minus(RAY);
 }

@@ -1,26 +1,28 @@
 # Change Log
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 ## 1.11.1 (2022-12-21)
 
 **Note:** Version bump only for package @aave/contract-helpers
 
-
-
-
-
-# 1.11.0 (2022-12-21)
-
+# 1.10.0 (2022-12-14)
 
 ### Features
 
-* v3 migration ([#465](https://github.com/aave/aave-utilities/issues/465)) ([ac9197f](https://github.com/aave/aave-utilities/commit/ac9197f6a2237b34e917d23bc79798efe3e04cb1))
+- add default gas estimation for permit actions
+  ([#461](https://github.com/aave/aave-utilities/issues/461))
+  ([7342763](https://github.com/aave/aave-utilities/commit/734276326b1d6b0b2b9aa9965bbd3f310ae0ec37))
 
+# 1.11.0 (2022-12-21)
 
+# 1.9.0 (2022-10-14)
 
+### Features
 
+- v3 migration ([#465](https://github.com/aave/aave-utilities/issues/465))
+  ([ac9197f](https://github.com/aave/aave-utilities/commit/ac9197f6a2237b34e917d23bc79798efe3e04cb1))
 
 # Change Log
 

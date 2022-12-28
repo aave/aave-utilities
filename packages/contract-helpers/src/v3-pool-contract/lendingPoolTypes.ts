@@ -1,5 +1,5 @@
 import { SignatureLike } from '@ethersproject/bytes';
-import { BigNumberish, BytesLike } from 'ethers';
+import { BigNumber, BigNumberish, BytesLike } from 'ethers';
 import {
   tEthereumAddress,
   InterestRate,
@@ -160,6 +160,24 @@ export type LPRepayWithATokensType = {
   amount: string;
   rateMode: InterestRate;
   useOptimizedPath?: boolean;
+};
+
+export type LPReserveData = {
+  configuration: [BigNumber] & { data: BigNumber };
+  liquidityIndex: BigNumber;
+  currentLiquidityRate: BigNumber;
+  variableBorrowIndex: BigNumber;
+  currentVariableBorrowRate: BigNumber;
+  currentStableBorrowRate: BigNumber;
+  lastUpdateTimestamp: number;
+  id: number;
+  aTokenAddress: string;
+  stableDebtTokenAddress: string;
+  variableDebtTokenAddress: string;
+  interestRateStrategyAddress: string;
+  accruedToTreasury: BigNumber;
+  unbacked: BigNumber;
+  isolationModeTotalDebt: BigNumber;
 };
 
 export type BorrowedPositionType = {
