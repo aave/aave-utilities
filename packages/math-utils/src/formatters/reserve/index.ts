@@ -4,10 +4,10 @@ import {
   normalize,
   normalizeBN,
   valueToBigNumber,
-  valueToZDBigNumber,
 } from '../../bignumber';
 import { RAY_DECIMALS, SECONDS_PER_YEAR, USD_DECIMALS } from '../../constants';
-import { LTV_PRECISION, RAY, rayPow } from '../../index';
+import { LTV_PRECISION } from '../../index';
+import { calculateCompoundedRate } from '../compounded-interest/calculate-compounded-interest';
 import {
   calculateReserveIncentives,
   CalculateReserveIncentivesResponse,
@@ -146,26 +146,20 @@ function getComputedReserveFields({
           ),
         );
 
-  const supplyAPY = rayPow(
-    valueToZDBigNumber(reserve.liquidityRate)
-      .dividedBy(SECONDS_PER_YEAR)
-      .plus(RAY),
-    SECONDS_PER_YEAR,
-  ).minus(RAY);
+  const supplyAPY = calculateCompoundedRate({
+    rate: reserve.liquidityRate,
+    duration: SECONDS_PER_YEAR,
+  });
 
-  const variableBorrowAPY = rayPow(
-    valueToZDBigNumber(reserve.variableBorrowRate)
-      .dividedBy(SECONDS_PER_YEAR)
-      .plus(RAY),
-    SECONDS_PER_YEAR,
-  ).minus(RAY);
+  const variableBorrowAPY = calculateCompoundedRate({
+    rate: reserve.variableBorrowRate,
+    duration: SECONDS_PER_YEAR,
+  });
 
-  const stableBorrowAPY = rayPow(
-    valueToZDBigNumber(reserve.stableBorrowRate)
-      .dividedBy(SECONDS_PER_YEAR)
-      .plus(RAY),
-    SECONDS_PER_YEAR,
-  ).minus(RAY);
+  const stableBorrowAPY = calculateCompoundedRate({
+    rate: reserve.stableBorrowRate,
+    duration: SECONDS_PER_YEAR,
+  });
 
   return {
     totalDebt,
