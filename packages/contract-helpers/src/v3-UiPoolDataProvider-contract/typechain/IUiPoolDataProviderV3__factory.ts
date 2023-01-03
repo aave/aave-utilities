@@ -232,6 +232,11 @@ const _abi = [
             type: 'uint128',
           },
           {
+            internalType: 'bool',
+            name: 'flashLoanEnabled',
+            type: 'bool',
+          },
+          {
             internalType: 'uint256',
             name: 'debtCeiling',
             type: 'uint256',
