@@ -184,6 +184,10 @@ export function formatUserSummary<
   };
 }
 
+export interface FormatUserSummaryAndIncentivesResponseType
+  extends FormatUserSummaryResponse {
+  calculatedUserIncentives: UserIncentiveDict;
+}
 export function formatUserSummaryAndIncentives<
   T extends FormatReserveUSDResponse = FormatReserveUSDResponse,
 >({
@@ -195,7 +199,8 @@ export function formatUserSummaryAndIncentives<
   userEmodeCategoryId,
   reserveIncentives,
   userIncentives,
-}: FormatUserSummaryAndIncentivesRequest<T>): FormatUserSummaryAndIncentivesResponse<T> {
+}: FormatUserSummaryAndIncentivesRequest<T>): FormatUserSummaryAndIncentivesResponseType {
+  // FormatUserSummaryAndIncentivesResponse<T> {
   const formattedUserSummary = formatUserSummary({
     currentTimestamp,
     marketReferencePriceInUsd,
