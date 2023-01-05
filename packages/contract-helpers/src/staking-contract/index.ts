@@ -13,11 +13,11 @@ import {
   StakingValidator,
 } from '../commons/validators/methodValidators';
 import {
-  is0OrPositiveAmount,
   isEthAddress,
   isPositiveAmount,
   isPositiveOrMinusOneAmount,
 } from '../commons/validators/paramValidators';
+import { ERC20_2612Interface, ERC20_2612Service } from '../erc20-2612';
 import { ERC20Service, IERC20ServiceInterface } from '../erc20-contract';
 import { IAaveStakingHelper } from './typechain/IAaveStakingHelper';
 import { IAaveStakingHelper__factory } from './typechain/IAaveStakingHelper__factory';
@@ -41,11 +41,7 @@ export interface StakingInterface {
     user: tEthereumAddress,
     amount: string,
   ) => Promise<EthereumTransactionTypeExtended[]>;
-  signStaking: (
-    user: tEthereumAddress,
-    amount: string,
-    nonce: string,
-  ) => Promise<string>;
+  signStaking: (user: tEthereumAddress, amount: string) => Promise<string>;
   stakeWithPermit: (
     user: tEthereumAddress,
     amount: string,
@@ -70,6 +66,8 @@ export class StakingService
 
   readonly erc20Service: IERC20ServiceInterface;
 
+  readonly erc20_2612Service: ERC20_2612Interface;
+
   constructor(
     provider: providers.Provider,
     stakingServiceConfig: StakingServiceConfig,
@@ -77,6 +75,8 @@ export class StakingService
     super(provider, IStakedToken__factory);
 
     this.erc20Service = new ERC20Service(provider);
+
+    this.erc20_2612Service = new ERC20_2612Service(provider);
 
     this.stakingContractAddress = stakingServiceConfig.TOKEN_STAKING_ADDRESS;
     this.stakingHelperContractAddress =
@@ -94,7 +94,6 @@ export class StakingService
   public async signStaking(
     @isEthAddress() user: tEthereumAddress,
     @isPositiveAmount() amount: string,
-    @is0OrPositiveAmount() nonce: string,
   ): Promise<string> {
     const { getTokenData } = this.erc20Service;
     const stakingContract: IStakedToken = this.getContractInstance(
@@ -105,6 +104,15 @@ export class StakingService
     const { name, decimals } = await getTokenData(stakedToken);
     const convertedAmount: string = valueToWei(amount, decimals);
     const { chainId } = await this.provider.getNetwork();
+
+    const nonce = await this.erc20_2612Service.getNonce({
+      token: stakedToken,
+      owner: user,
+    });
+
+    if (nonce === null) {
+      return '';
+    }
 
     const typeData = {
       types: {
