@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.12.0 (2023-01-03)
+
+
+### Features
+
+* add V3Faucet service ([#475](https://github.com/aave/aave-utilities/issues/475)) ([1608398](https://github.com/aave/aave-utilities/commit/160839863a83955d54a4a1e727bb4a22f111c13e))
+
+
+
+
+
+## 1.11.2 (2022-12-29)
+
+
+### Bug Fixes
+
+* imports and file loaders ([#477](https://github.com/aave/aave-utilities/issues/477)) ([42e8530](https://github.com/aave/aave-utilities/commit/42e853041820a35696c1017eb2fb082aeb9e3c89))
+
+
+
+
+
 ## 1.11.1 (2022-12-21)
 
 **Note:** Version bump only for package @aave/math-utils
