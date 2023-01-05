@@ -41,7 +41,11 @@ export interface StakingInterface {
     user: tEthereumAddress,
     amount: string,
   ) => Promise<EthereumTransactionTypeExtended[]>;
-  signStaking: (user: tEthereumAddress, amount: string) => Promise<string>;
+  signStaking: (
+    user: tEthereumAddress,
+    amount: string,
+    deadline: string,
+  ) => Promise<string>;
   stakeWithPermit: (
     user: tEthereumAddress,
     amount: string,
@@ -94,6 +98,7 @@ export class StakingService
   public async signStaking(
     @isEthAddress() user: tEthereumAddress,
     @isPositiveAmount() amount: string,
+    deadline: string,
   ): Promise<string> {
     const { getTokenData } = this.erc20Service;
     const stakingContract: IStakedToken = this.getContractInstance(
@@ -142,7 +147,7 @@ export class StakingService
         spender: this.stakingHelperContractAddress,
         value: convertedAmount,
         nonce,
-        deadline: constants.MaxUint256.toString(),
+        deadline,
       },
     };
 
