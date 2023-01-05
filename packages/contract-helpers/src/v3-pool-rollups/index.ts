@@ -1,4 +1,5 @@
-import { providers } from 'ethers';
+import { providers, Signature } from 'ethers';
+import { splitSignature } from 'ethers/lib/utils';
 import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
@@ -126,41 +127,34 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
   @L2PValidator
   public async supplyWithPermit(
     @isDeadline32Bytes('deadline')
-    {
-      user,
-      reserve,
-      amount,
-      deadline,
-      referralCode,
-      permitR,
-      permitS,
-      permitV,
-    }: LPSupplyWithPermitType,
+    { user, reserve, amount, deadline, referralCode }: LPSupplyWithPermitType,
     txs: EthereumTransactionTypeExtended[],
   ): Promise<EthereumTransactionTypeExtended[]> {
     const encoder = this.getEncoder();
-
-    const encodedParams: string[] = await encoder.encodeSupplyWithPermitParams(
-      reserve,
-      amount,
-      referralCode ?? 0,
-      deadline,
-      permitV,
-      permitR,
-      permitS,
-    );
 
     const l2PoolContract: IL2Pool = this.getContractInstance(
       this.l2PoolAddress,
     );
 
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
-      rawTxMethod: async () =>
-        l2PoolContract.populateTransaction.supplyWithPermit(
+      rawTxMethod: async (signature?: SignatureLike) => {
+        const sig: Signature = splitSignature(signature);
+        const encodedParams: string[] =
+          await encoder.encodeSupplyWithPermitParams(
+            reserve,
+            amount,
+            referralCode ?? 0,
+            deadline,
+            sig.v,
+            sig.r,
+            sig.s,
+          );
+        return l2PoolContract.populateTransaction.supplyWithPermit(
           encodedParams[0],
-          permitR,
-          permitS,
-        ),
+          sig.r,
+          sig.s,
+        );
+      },
       from: user,
     });
 

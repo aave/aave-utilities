@@ -494,7 +494,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       onBehalfOf,
       amount,
       referralCode,
-      signature,
       useOptimizedPath,
       deadline,
     }: LPSupplyWithPermitType,
@@ -504,8 +503,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     const poolContract: IPool = this.getContractInstance(this.poolAddress);
     const stakedTokenDecimals: number = await decimalsOf(reserve);
     const convertedAmount: string = valueToWei(amount, stakedTokenDecimals);
-    // const sig: Signature = utils.splitSignature(signature);
-    const sig: Signature = splitSignature(signature);
     const fundsAvailable: boolean =
       await this.synthetixService.synthetixValidation({
         user,
@@ -516,6 +513,12 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       throw new Error('Not enough funds to execute operation');
     }
 
+    txs.push({
+      tx: this.signERC20Approval({ user, reserve, amount, deadline }),
+      txType: eEthereumTxType.ERC20_PERMIT,
+      gas: async () => ({ gasLimit: '0', gasPrice: '0' }),
+    });
+
     if (useOptimizedPath) {
       return this.l2PoolService.supplyWithPermit(
         {
@@ -524,17 +527,15 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           amount: convertedAmount,
           referralCode,
           deadline,
-          permitV: sig.v,
-          permitR: sig.r,
-          permitS: sig.s,
         },
         txs,
       );
     }
 
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
-      rawTxMethod: async () =>
-        poolContract.populateTransaction.supplyWithPermit(
+      rawTxMethod: async (signature?: SignatureLike) => {
+        const sig: Signature = splitSignature(signature);
+        return poolContract.populateTransaction.supplyWithPermit(
           reserve,
           convertedAmount,
           onBehalfOf ?? user,
@@ -543,7 +544,8 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           sig.v,
           sig.r,
           sig.s,
-        ),
+        );
+      },
       from: user,
     });
 
