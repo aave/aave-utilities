@@ -156,29 +156,35 @@ describe('StakingService', () => {
         instance.signStaking(user, amount, deadline),
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
-    it('Expects to fail when nonce not positive or 0', async () => {
+    it('Expects the permission string to be `` when no nonce', async () => {
       const instance = new StakingService(provider, {
         TOKEN_STAKING_ADDRESS,
         STAKING_HELPER_ADDRESS,
       });
-      const nonce = '-1';
-      await expect(async () =>
-        instance.signStaking(user, amount, deadline),
-      ).rejects.toThrowError(
-        `Amount: ${nonce} needs to be greater or equal than 0`,
+      jest.spyOn(instance.erc20Service, 'getTokenData').mockReturnValue(
+        Promise.resolve({
+          name: 'mockToken',
+          decimals,
+          symbol: 'MT',
+          address: '0x0000000000000000000000000000000000000006',
+        }),
       );
-    });
-    it('Expects to fail when nonce not number', async () => {
-      const instance = new StakingService(provider, {
-        TOKEN_STAKING_ADDRESS,
-        STAKING_HELPER_ADDRESS,
-      });
-      const nonce = 'asdf';
-      await expect(async () =>
-        instance.signStaking(user, amount, deadline),
-      ).rejects.toThrowError(
-        `Amount: ${nonce} needs to be greater or equal than 0`,
+      jest.spyOn(IStakedToken__factory, 'connect').mockReturnValue({
+        STAKED_TOKEN: async () =>
+          Promise.resolve('0x0000000000000000000000000000000000000006'),
+      } as unknown as IStakedToken);
+
+      jest
+        .spyOn(instance.erc20_2612Service, 'getNonce')
+        .mockReturnValue(Promise.resolve(null));
+
+      const signature: string = await instance.signStaking(
+        user,
+        amount,
+        deadline,
       );
+
+      expect(signature).toEqual('');
     });
   });
   describe('stakeWithPermit', () => {
