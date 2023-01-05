@@ -77,11 +77,11 @@ describe('StakingService', () => {
           Promise.resolve('0x0000000000000000000000000000000000000006'),
       } as unknown as IStakedToken);
 
-      const nonce = '1';
+      const nonce = 1;
 
       jest
         .spyOn(instance.erc20_2612Service, 'getNonce')
-        .mockReturnValue(Promise.resolve(Number(nonce)));
+        .mockReturnValue(Promise.resolve(nonce));
 
       const signature: string = await instance.signStaking(user, amount);
 
