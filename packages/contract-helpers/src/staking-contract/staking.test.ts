@@ -55,7 +55,6 @@ describe('StakingService', () => {
     });
   });
   describe('signStaking', () => {
-    const deadline = Math.floor(Date.now() / 1000 + 3600).toString();
     afterEach(() => {
       jest.clearAllMocks();
     });
@@ -84,11 +83,7 @@ describe('StakingService', () => {
         .spyOn(instance.erc20_2612Service, 'getNonce')
         .mockReturnValue(Promise.resolve(nonce));
 
-      const signature: string = await instance.signStaking(
-        user,
-        amount,
-        deadline,
-      );
+      const signature: string = await instance.signStaking(user, amount);
 
       expect(spy).toHaveBeenCalled();
 
@@ -102,26 +97,18 @@ describe('StakingService', () => {
       expect(message.spender).toEqual(STAKING_HELPER_ADDRESS);
       expect(message.nonce).toEqual(nonce);
       expect(message.value).toEqual(valueToWei(amount, decimals));
-      expect(message.deadline).toEqual(deadline);
+      expect(message.deadline).toEqual(constants.MaxUint256.toString());
     });
     it('Expects to fail when not initialized with TOKEN_STAKING_ADDRESS not address', async () => {
       const instance = new StakingService(provider, {
         TOKEN_STAKING_ADDRESS: 'asdf',
       });
-      const signature: string = await instance.signStaking(
-        user,
-        amount,
-        deadline,
-      );
+      const signature: string = await instance.signStaking(user, amount);
       expect(signature).toEqual([]);
     });
     it('Expects to fail when not initialized with STAKING_HELPER_ADDRESS', async () => {
       const instance = new StakingService(provider, { TOKEN_STAKING_ADDRESS });
-      const signature: string = await instance.signStaking(
-        user,
-        amount,
-        deadline,
-      );
+      const signature: string = await instance.signStaking(user, amount);
       expect(signature).toEqual([]);
     });
     it('Expects to fail when user not eth address', async () => {
@@ -131,7 +118,7 @@ describe('StakingService', () => {
       });
       const user = 'asdf';
       await expect(async () =>
-        instance.signStaking(user, amount, deadline),
+        instance.signStaking(user, amount),
       ).rejects.toThrowError(
         `Address: ${user} is not a valid ethereum Address`,
       );
@@ -143,7 +130,7 @@ describe('StakingService', () => {
       });
       const amount = '0';
       await expect(async () =>
-        instance.signStaking(user, amount, deadline),
+        instance.signStaking(user, amount),
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
     it('Expects to fail when amount not number', async () => {
@@ -153,7 +140,7 @@ describe('StakingService', () => {
       });
       const amount = 'asdf';
       await expect(async () =>
-        instance.signStaking(user, amount, deadline),
+        instance.signStaking(user, amount),
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
     it('Expects the permission string to be `` when no nonce', async () => {
@@ -178,11 +165,7 @@ describe('StakingService', () => {
         .spyOn(instance.erc20_2612Service, 'getNonce')
         .mockReturnValue(Promise.resolve(null));
 
-      const signature: string = await instance.signStaking(
-        user,
-        amount,
-        deadline,
-      );
+      const signature: string = await instance.signStaking(user, amount);
 
       expect(signature).toEqual('');
     });

@@ -98,7 +98,6 @@ export class StakingService
   public async signStaking(
     @isEthAddress() user: tEthereumAddress,
     @isPositiveAmount() amount: string,
-    deadline: string,
   ): Promise<string> {
     const { getTokenData } = this.erc20Service;
     const stakingContract: IStakedToken = this.getContractInstance(
@@ -147,7 +146,7 @@ export class StakingService
         spender: this.stakingHelperContractAddress,
         value: convertedAmount,
         nonce,
-        deadline,
+        deadline: constants.MaxUint256.toString(),
       },
     };
 
