@@ -119,9 +119,7 @@ export class V3MigrationHelperService
 
     const borrowedAssets = mappedBorrowPositions.map(borrow => borrow.address);
     const borrowedAmounts = mappedBorrowPositions.map(borrow => borrow.amount);
-    const interestRatesModes = mappedBorrowPositions.map(
-      borrow => borrow.rateMode,
-    );
+    const interestRatesModes = mappedBorrowPositions.map(() => 2);
     const suppliedPositionsAddresses = suppliedPositions.map(
       suppply => suppply.underlyingAsset,
     );
