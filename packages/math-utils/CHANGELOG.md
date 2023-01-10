@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.12.1 (2023-01-10)
+
+
+### Bug Fixes
+
+* change flashloan parameters to have variable debt on v3 instead of stable and variable ([#490](https://github.com/aave/aave-utilities/issues/490)) ([9b8a726](https://github.com/aave/aave-utilities/commit/9b8a7261ba9c3e123798d781312a5388271cef3b))
+
+
+
+
+
 # 1.12.0 (2023-01-03)
 
 
