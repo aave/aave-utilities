@@ -189,6 +189,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
         isolationModeTotalDebt: reserveRaw.isolationModeTotalDebt.toString(),
         debtCeilingDecimals: reserveRaw.debtCeilingDecimals.toNumber(),
         isSiloedBorrowing: reserveRaw.isSiloedBorrowing,
+        flashLoanEnabled: reserveRaw.flashLoanEnabled,
       }),
     );
 
