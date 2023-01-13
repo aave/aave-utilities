@@ -88,7 +88,6 @@ export class V3MigrationHelperService
         user,
         creditDelegationApprovals,
       );
-      console.log(delegationApprovals, 'delegationApprovals');
       txs.push(...delegationApprovals);
     }
 

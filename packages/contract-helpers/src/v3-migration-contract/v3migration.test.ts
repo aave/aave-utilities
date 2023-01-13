@@ -113,6 +113,12 @@ describe('V3MigrationService', () => {
           '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c',
       },
     ];
+    const creditDelegationApprovals = [
+      {
+        debtTokenAddress: '0x0000000000000000000000000000000000000003',
+        amount: '13451',
+      },
+    ];
     it('Exepects to work with params no sig no approvals and variable', async () => {
       const instance = new V3MigrationHelperService(
         provider,
@@ -132,6 +138,7 @@ describe('V3MigrationService', () => {
         repayAssets: repayAssetsVariable,
         signedSupplyPermits: [],
         signedCreditDelegationPermits: [],
+        creditDelegationApprovals,
       });
       expect(isApprovedSpy).toHaveBeenCalled();
       expect(isApprovedDelegationSpy).toHaveBeenCalled();
@@ -185,6 +192,7 @@ describe('V3MigrationService', () => {
         repayAssets: repayAssetsStable,
         signedSupplyPermits: [],
         signedCreditDelegationPermits: [],
+        creditDelegationApprovals,
       });
       expect(isApprovedSpy).toHaveBeenCalled();
       expect(isApprovedDelegationSpy).toHaveBeenCalled();
@@ -256,6 +264,7 @@ describe('V3MigrationService', () => {
         repayAssets: repayAssetsStable,
         signedSupplyPermits: [],
         signedCreditDelegationPermits: [],
+        creditDelegationApprovals,
       });
 
       expect(approveSpy).toHaveBeenCalled();
@@ -305,6 +314,7 @@ describe('V3MigrationService', () => {
         repayAssets: repayAssetsStable,
         signedSupplyPermits,
         signedCreditDelegationPermits,
+        creditDelegationApprovals,
       });
 
       const txObj = migrateTxs[0];
@@ -348,6 +358,7 @@ describe('V3MigrationService', () => {
           repayAssets: [],
           signedSupplyPermits: [],
           signedCreditDelegationPermits: [],
+          creditDelegationApprovals,
         }),
       ).rejects.toThrowError(
         `Address: ${user} is not a valid ethereum Address`,
