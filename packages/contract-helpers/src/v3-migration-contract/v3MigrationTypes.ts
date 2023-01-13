@@ -16,14 +16,14 @@ export type V3MigrationHelperSignedCreditDelegationPermit = {
   signedPermit: SignatureLike;
 };
 
-export type V3SupplyAsset = {
+export type MigrationSupplyAsset = {
   aToken: tEthereumAddress;
   underlyingAsset: tEthereumAddress;
   deadline: number;
   amount: string;
 };
 
-export type V3RepayAsset = {
+export type MigrationRepayAsset = {
   debtToken: tEthereumAddress;
   underlyingAsset: tEthereumAddress;
   rateMode: InterestRate;
@@ -31,10 +31,16 @@ export type V3RepayAsset = {
   amount: string;
 };
 
+export type MigrationDelegationApproval = {
+  debtTokenAddress: tEthereumAddress;
+  amount: string;
+};
+
 export type V3MigrationType = {
+  creditDelegationApprovals: MigrationDelegationApproval[];
   user: tEthereumAddress;
-  supplyAssets: V3SupplyAsset[];
-  repayAssets: V3RepayAsset[];
+  supplyAssets: MigrationSupplyAsset[];
+  repayAssets: MigrationRepayAsset[];
   signedSupplyPermits?: V3MigrationHelperSignedPermit[];
   signedCreditDelegationPermits: V3MigrationHelperSignedCreditDelegationPermit[];
 };

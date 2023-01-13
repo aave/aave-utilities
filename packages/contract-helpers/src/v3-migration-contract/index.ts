@@ -19,11 +19,11 @@ import { Pool } from '../v3-pool-contract';
 import { IMigrationHelper } from './typechain/IMigrationHelper';
 import { IMigrationHelper__factory } from './typechain/IMigrationHelper__factory';
 import {
+  MigrationDelegationApproval,
   V3MigrationHelperSignedCreditDelegationPermit,
   V3MigrationHelperSignedPermit,
   V3MigrationType,
-  V3RepayAsset,
-  V3SupplyAsset,
+  MigrationSupplyAsset,
 } from './v3MigrationTypes';
 
 export interface V3MigrationHelperInterface {
@@ -62,6 +62,7 @@ export class V3MigrationHelperService
       repayAssets,
       signedSupplyPermits,
       signedCreditDelegationPermits,
+      creditDelegationApprovals,
     }: V3MigrationType,
   ): Promise<EthereumTransactionTypeExtended[]> {
     let txs: EthereumTransactionTypeExtended[] = [];
@@ -85,8 +86,9 @@ export class V3MigrationHelperService
     } else {
       const delegationApprovals = await this.approveDelegationTokens(
         user,
-        repayAssets,
+        creditDelegationApprovals,
       );
+      console.log(delegationApprovals, 'delegationApprovals');
       txs.push(...delegationApprovals);
     }
 
@@ -127,18 +129,20 @@ export class V3MigrationHelperService
 
   private async approveDelegationTokens(
     user: string,
-    assets: V3RepayAsset[],
+    assets: MigrationDelegationApproval[],
   ): Promise<EthereumTransactionTypeExtended[]> {
+    console.log(assets, 'assets');
     const assetsApproved = await Promise.all(
-      assets.map(async ({ amount, debtToken }) => {
+      assets.map(async ({ amount, debtTokenAddress }) => {
         return this.baseDebtTokenService.isDelegationApproved({
-          debtTokenAddress: debtToken,
+          debtTokenAddress,
           allowanceGiver: user,
           allowanceReceiver: this.MIGRATOR_ADDRESS,
           amount,
         });
       }),
     );
+    console.log(assetsApproved, 'assetsApproved');
     return assetsApproved
       .map((approved, index) => {
         if (approved) {
@@ -149,8 +153,8 @@ export class V3MigrationHelperService
         return this.baseDebtTokenService.approveDelegation({
           user,
           delegatee: this.MIGRATOR_ADDRESS,
-          debtTokenAddress: asset.debtToken,
-          amount: constants.MaxUint256.toString(),
+          debtTokenAddress: asset.debtTokenAddress,
+          amount: asset.amount,
         });
       })
       .filter((tx): tx is EthereumTransactionTypeExtended => Boolean(tx));
@@ -158,7 +162,7 @@ export class V3MigrationHelperService
 
   private async approveSupplyAssets(
     user: string,
-    assets: V3SupplyAsset[],
+    assets: MigrationSupplyAsset[],
   ): Promise<EthereumTransactionTypeExtended[]> {
     const assetsApproved = await Promise.all(
       assets.map(async ({ amount, aToken }) => {
