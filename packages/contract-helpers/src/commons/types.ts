@@ -96,6 +96,7 @@ export enum eEthereumTxType {
 export enum ProtocolAction {
   default = 'default',
   supply = 'supply',
+  borrow = 'borrow',
   withdraw = 'withdraw',
   deposit = 'deposit',
   liquidationCall = 'liquidationCall',
