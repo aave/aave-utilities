@@ -833,7 +833,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     const { populateTransaction }: IPool = poolContract;
     const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
     const decimals: number = await decimalsOf(reserve);
-    const sig: Signature = utils.splitSignature(signature);
+    const sig: Signature = splitSignature(signature);
 
     const convertedAmount: string =
       amount === '-1'

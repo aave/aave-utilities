@@ -1,6 +1,6 @@
 {
   "name": "@aave/contract-helpers",
-  "version": "1.9.0",
+  "version": "1.12.2",
   "sideEffects": false,
   "license": "MIT",
   "description": "",
@@ -16,12 +16,17 @@
     "prepublishOnly": "yarn build"
   },
   "peerDependencies": {
-    "ethers": "5.x",
-    "reflect-metadata": "0.1.x"
+    "bignumber.js": "^9.x",
+    "ethers": "^5.x",
+    "reflect-metadata": "^0.1.x",
+    "tslib": "^2.4.x"
   },
   "devDependencies": {
     "ethers": "5.4.7",
     "reflect-metadata": "^0.1.13"
+  },
+  "dependencies": {
+    "isomorphic-unfetch": "^3.1.0"
   },
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -38,8 +43,5 @@
   "gitHead": "47a9a6d1f940185ab1e7f6c2bea61564b2abe47a",
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "isomorphic-unfetch": "^3.1.0"
   }
 }

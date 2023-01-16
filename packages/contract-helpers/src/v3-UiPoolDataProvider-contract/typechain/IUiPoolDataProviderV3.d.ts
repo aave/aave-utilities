@@ -145,6 +145,7 @@ export class IUiPoolDataProviderV3 extends BaseContract {
           BigNumber,
           BigNumber,
           BigNumber,
+          boolean,
           BigNumber,
           BigNumber,
           number,
@@ -199,6 +200,7 @@ export class IUiPoolDataProviderV3 extends BaseContract {
           accruedToTreasury: BigNumber;
           unbacked: BigNumber;
           isolationModeTotalDebt: BigNumber;
+          flashLoanEnabled: boolean;
           debtCeiling: BigNumber;
           debtCeilingDecimals: BigNumber;
           eModeCategoryId: number;
@@ -301,6 +303,7 @@ export class IUiPoolDataProviderV3 extends BaseContract {
         BigNumber,
         BigNumber,
         BigNumber,
+        boolean,
         BigNumber,
         BigNumber,
         number,
@@ -355,6 +358,7 @@ export class IUiPoolDataProviderV3 extends BaseContract {
         accruedToTreasury: BigNumber;
         unbacked: BigNumber;
         isolationModeTotalDebt: BigNumber;
+        flashLoanEnabled: boolean;
         debtCeiling: BigNumber;
         debtCeilingDecimals: BigNumber;
         eModeCategoryId: number;
@@ -457,6 +461,7 @@ export class IUiPoolDataProviderV3 extends BaseContract {
           BigNumber,
           BigNumber,
           BigNumber,
+          boolean,
           BigNumber,
           BigNumber,
           number,
@@ -511,6 +516,7 @@ export class IUiPoolDataProviderV3 extends BaseContract {
           accruedToTreasury: BigNumber;
           unbacked: BigNumber;
           isolationModeTotalDebt: BigNumber;
+          flashLoanEnabled: boolean;
           debtCeiling: BigNumber;
           debtCeilingDecimals: BigNumber;
           eModeCategoryId: number;

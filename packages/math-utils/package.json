@@ -1,6 +1,6 @@
 {
   "name": "@aave/math-utils",
-  "version": "1.9.0",
+  "version": "1.12.2",
   "license": "MIT",
   "description": "",
   "scripts": {
@@ -31,8 +31,12 @@
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {
-    "bignumber.js": "^9.0.1",
+  "peerDependencies": {
+    "bignumber.js": "^9.x",
+    "tslib": "^2.4.x"
+  },
+  "devDependencies": {
+    "bignumber.js": "^9.1",
     "tslib": "^2.4.0"
   },
   "repository": {

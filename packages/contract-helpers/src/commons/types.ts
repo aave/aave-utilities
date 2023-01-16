@@ -90,6 +90,7 @@ export enum eEthereumTxType {
   FAUCET_MINT = 'FAUCET_MINT',
   REWARD_ACTION = 'REWARD_ACTION',
   V3_MIGRATION_ACTION = 'V3_MIGRATION_ACTION',
+  FAUCET_V2_MINT = 'FAUCET_V2_MINT',
 }
 
 export enum ProtocolAction {
@@ -105,6 +106,8 @@ export enum ProtocolAction {
   withdrawETH = 'withdrawETH',
   borrowETH = 'borrwoETH',
   migrateV3 = 'migrateV3',
+  supplyWithPermit = 'supplyWithPermit',
+  repayWithPermit = 'repayWithPermit',
 }
 
 export enum GovernanceVote {
