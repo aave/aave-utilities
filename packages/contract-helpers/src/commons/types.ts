@@ -90,6 +90,7 @@ export enum eEthereumTxType {
   FAUCET_MINT = 'FAUCET_MINT',
   REWARD_ACTION = 'REWARD_ACTION',
   V3_MIGRATION_ACTION = 'V3_MIGRATION_ACTION',
+  FAUCET_V2_MINT = 'FAUCET_V2_MINT',
 }
 
 export enum ProtocolAction {

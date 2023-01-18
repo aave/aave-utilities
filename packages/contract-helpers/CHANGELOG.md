@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.12.2 (2023-01-12)
+
+**Note:** Version bump only for package @aave/contract-helpers
+
+
+
+
+
+## 1.12.1 (2023-01-10)
+
+
+### Bug Fixes
+
+* change flashloan parameters to have variable debt on v3 instead of stable and variable ([#490](https://github.com/aave/aave-utilities/issues/490)) ([9b8a726](https://github.com/aave/aave-utilities/commit/9b8a7261ba9c3e123798d781312a5388271cef3b))
+
+
+
+
+
+# 1.12.0 (2023-01-03)
+
+
+### Features
+
+* add V3Faucet service ([#475](https://github.com/aave/aave-utilities/issues/475)) ([1608398](https://github.com/aave/aave-utilities/commit/160839863a83955d54a4a1e727bb4a22f111c13e))
+
+
+
+
+
 ## 1.11.2 (2022-12-29)
 
 ### Bug Fixes

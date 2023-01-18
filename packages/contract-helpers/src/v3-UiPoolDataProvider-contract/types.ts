@@ -55,6 +55,7 @@ export interface ReservesData {
     eModePriceSource: string;
     eModeLabel: string;
     borrowableInIsolation: boolean;
+    flashLoanEnabled: boolean;
   }>;
   1: {
     marketReferenceCurrencyUnit: BigNumber;
@@ -139,6 +140,7 @@ export interface ReserveDataHumanized {
   eModePriceSource: string;
   eModeLabel: string;
   borrowableInIsolation: boolean;
+  flashLoanEnabled: boolean;
 }
 
 export interface ReservesDataHumanized {
