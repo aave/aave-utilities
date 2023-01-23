@@ -4,6 +4,7 @@ import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
   EthereumTransactionTypeExtended,
+  ProtocolAction,
   transactionType,
 } from '../commons/types';
 import {
@@ -119,7 +120,7 @@ export class AaveGovernanceService
     txs.push({
       tx: txCallback,
       txType: eEthereumTxType.GOVERNANCE_ACTION,
-      gas: this.generateTxPriceEstimation(txs, txCallback),
+      gas: this.generateTxPriceEstimation(txs, txCallback, ProtocolAction.vote),
     });
     return txs;
   }
