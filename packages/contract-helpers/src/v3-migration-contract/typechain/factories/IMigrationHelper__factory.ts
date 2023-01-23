@@ -6,7 +6,7 @@ import type { Provider } from '@ethersproject/providers';
 import type {
   IMigrationHelper,
   IMigrationHelperInterface,
-} from './IMigrationHelper';
+} from '../IMigrationHelper';
 
 const _abi = [
   {
@@ -92,6 +92,35 @@ const _abi = [
       },
     ],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'asset',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'getMigrationSupply',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -198,7 +227,37 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-] as const;
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: 'contract IERC20WithPermit',
+            name: 'asset',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'amount',
+            type: 'uint256',
+          },
+          {
+            internalType: 'address',
+            name: 'to',
+            type: 'address',
+          },
+        ],
+        internalType: 'struct IMigrationHelper.EmergencyTransferInput[]',
+        name: 'emergencyInput',
+        type: 'tuple[]',
+      },
+    ],
+    name: 'rescueFunds',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+];
 
 export class IMigrationHelper__factory {
   static readonly abi = _abi;

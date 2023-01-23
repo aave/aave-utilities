@@ -82,6 +82,18 @@ export declare namespace IMigrationHelper {
     r: string;
     s: string;
   };
+
+  export type EmergencyTransferInputStruct = {
+    asset: PromiseOrValue<string>;
+    amount: PromiseOrValue<BigNumberish>;
+    to: PromiseOrValue<string>;
+  };
+
+  export type EmergencyTransferInputStructOutput = [
+    string,
+    BigNumber,
+    string,
+  ] & { asset: string; amount: BigNumber; to: string };
 }
 
 export interface IMigrationHelperInterface extends utils.Interface {
@@ -91,7 +103,9 @@ export interface IMigrationHelperInterface extends utils.Interface {
     'V2_POOL()': FunctionFragment;
     'cacheATokens()': FunctionFragment;
     'executeOperation(address[],uint256[],uint256[],address,bytes)': FunctionFragment;
+    'getMigrationSupply(address,uint256)': FunctionFragment;
     'migrate(address[],(address,uint256)[],(address,uint256,uint256,uint8,bytes32,bytes32)[],(address,uint256,uint256,uint8,bytes32,bytes32)[])': FunctionFragment;
+    'rescueFunds((address,uint256,address)[])': FunctionFragment;
   };
 
   getFunction(
@@ -101,7 +115,9 @@ export interface IMigrationHelperInterface extends utils.Interface {
       | 'V2_POOL'
       | 'cacheATokens'
       | 'executeOperation'
-      | 'migrate',
+      | 'getMigrationSupply'
+      | 'migrate'
+      | 'rescueFunds',
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -125,6 +141,10 @@ export interface IMigrationHelperInterface extends utils.Interface {
     ],
   ): string;
   encodeFunctionData(
+    functionFragment: 'getMigrationSupply',
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>],
+  ): string;
+  encodeFunctionData(
     functionFragment: 'migrate',
     values: [
       PromiseOrValue<string>[],
@@ -132,6 +152,10 @@ export interface IMigrationHelperInterface extends utils.Interface {
       IMigrationHelper.PermitInputStruct[],
       IMigrationHelper.CreditDelegationInputStruct[],
     ],
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'rescueFunds',
+    values: [IMigrationHelper.EmergencyTransferInputStruct[]],
   ): string;
 
   decodeFunctionResult(
@@ -148,7 +172,15 @@ export interface IMigrationHelperInterface extends utils.Interface {
     functionFragment: 'executeOperation',
     data: BytesLike,
   ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getMigrationSupply',
+    data: BytesLike,
+  ): Result;
   decodeFunctionResult(functionFragment: 'migrate', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'rescueFunds',
+    data: BytesLike,
+  ): Result;
 
   events: {};
 }
@@ -201,11 +233,22 @@ export interface IMigrationHelper extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> },
     ): Promise<ContractTransaction>;
 
+    getMigrationSupply(
+      asset: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides,
+    ): Promise<[string, BigNumber]>;
+
     migrate(
       assetsToMigrate: PromiseOrValue<string>[],
       positionsToRepay: IMigrationHelper.RepaySimpleInputStruct[],
       permits: IMigrationHelper.PermitInputStruct[],
       creditDelegationPermits: IMigrationHelper.CreditDelegationInputStruct[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> },
+    ): Promise<ContractTransaction>;
+
+    rescueFunds(
+      emergencyInput: IMigrationHelper.EmergencyTransferInputStruct[],
       overrides?: Overrides & { from?: PromiseOrValue<string> },
     ): Promise<ContractTransaction>;
   };
@@ -231,11 +274,22 @@ export interface IMigrationHelper extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> },
   ): Promise<ContractTransaction>;
 
+  getMigrationSupply(
+    asset: PromiseOrValue<string>,
+    amount: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides,
+  ): Promise<[string, BigNumber]>;
+
   migrate(
     assetsToMigrate: PromiseOrValue<string>[],
     positionsToRepay: IMigrationHelper.RepaySimpleInputStruct[],
     permits: IMigrationHelper.PermitInputStruct[],
     creditDelegationPermits: IMigrationHelper.CreditDelegationInputStruct[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> },
+  ): Promise<ContractTransaction>;
+
+  rescueFunds(
+    emergencyInput: IMigrationHelper.EmergencyTransferInputStruct[],
     overrides?: Overrides & { from?: PromiseOrValue<string> },
   ): Promise<ContractTransaction>;
 
@@ -257,11 +311,22 @@ export interface IMigrationHelper extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<boolean>;
 
+    getMigrationSupply(
+      asset: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides,
+    ): Promise<[string, BigNumber]>;
+
     migrate(
       assetsToMigrate: PromiseOrValue<string>[],
       positionsToRepay: IMigrationHelper.RepaySimpleInputStruct[],
       permits: IMigrationHelper.PermitInputStruct[],
       creditDelegationPermits: IMigrationHelper.CreditDelegationInputStruct[],
+      overrides?: CallOverrides,
+    ): Promise<void>;
+
+    rescueFunds(
+      emergencyInput: IMigrationHelper.EmergencyTransferInputStruct[],
       overrides?: CallOverrides,
     ): Promise<void>;
   };
@@ -290,11 +355,22 @@ export interface IMigrationHelper extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> },
     ): Promise<BigNumber>;
 
+    getMigrationSupply(
+      asset: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides,
+    ): Promise<BigNumber>;
+
     migrate(
       assetsToMigrate: PromiseOrValue<string>[],
       positionsToRepay: IMigrationHelper.RepaySimpleInputStruct[],
       permits: IMigrationHelper.PermitInputStruct[],
       creditDelegationPermits: IMigrationHelper.CreditDelegationInputStruct[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> },
+    ): Promise<BigNumber>;
+
+    rescueFunds(
+      emergencyInput: IMigrationHelper.EmergencyTransferInputStruct[],
       overrides?: Overrides & { from?: PromiseOrValue<string> },
     ): Promise<BigNumber>;
   };
@@ -323,11 +399,22 @@ export interface IMigrationHelper extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> },
     ): Promise<PopulatedTransaction>;
 
+    getMigrationSupply(
+      asset: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides,
+    ): Promise<PopulatedTransaction>;
+
     migrate(
       assetsToMigrate: PromiseOrValue<string>[],
       positionsToRepay: IMigrationHelper.RepaySimpleInputStruct[],
       permits: IMigrationHelper.PermitInputStruct[],
       creditDelegationPermits: IMigrationHelper.CreditDelegationInputStruct[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> },
+    ): Promise<PopulatedTransaction>;
+
+    rescueFunds(
+      emergencyInput: IMigrationHelper.EmergencyTransferInputStruct[],
       overrides?: Overrides & { from?: PromiseOrValue<string> },
     ): Promise<PopulatedTransaction>;
   };

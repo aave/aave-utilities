@@ -16,14 +16,14 @@ import { V3MigratorValidator } from '../commons/validators/methodValidators';
 import { isEthAddress } from '../commons/validators/paramValidators';
 import { ERC20Service } from '../erc20-contract';
 import { Pool } from '../v3-pool-contract';
-import { IMigrationHelper } from './typechain/IMigrationHelper';
-import { IMigrationHelper__factory } from './typechain/IMigrationHelper__factory';
+import { IMigrationHelper, IMigrationHelper__factory } from './typechain';
 import {
   MigrationDelegationApproval,
   V3MigrationHelperSignedCreditDelegationPermit,
   V3MigrationHelperSignedPermit,
   V3MigrationType,
   MigrationSupplyAsset,
+  V3GetMigrationSupplyType,
 } from './v3MigrationTypes';
 
 export interface V3MigrationHelperInterface {
@@ -51,6 +51,14 @@ export class V3MigrationHelperService
     this.erc20Service = new ERC20Service(provider);
     this.baseDebtTokenService = new BaseDebtToken(provider, this.erc20Service);
     this.pool = pool;
+  }
+
+  @V3MigratorValidator
+  public async getMigrationSupply(
+    @isEthAddress('asset') { asset, amount }: V3GetMigrationSupplyType,
+  ) {
+    const migrator = this.getContractInstance(this.MIGRATOR_ADDRESS);
+    return migrator.getMigrationSupply(asset, amount);
   }
 
   @V3MigratorValidator

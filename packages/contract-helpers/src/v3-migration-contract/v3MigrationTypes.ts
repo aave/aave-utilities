@@ -44,3 +44,8 @@ export type V3MigrationType = {
   signedSupplyPermits?: V3MigrationHelperSignedPermit[];
   signedCreditDelegationPermits: V3MigrationHelperSignedCreditDelegationPermit[];
 };
+
+export type V3GetMigrationSupplyType = {
+  asset: tEthereumAddress;
+  amount: string;
+};
