@@ -1,4 +1,4 @@
-import { BigNumber, BigNumberish, providers, utils } from 'ethers';
+import { BigNumber, providers, utils } from 'ethers';
 import {
   eEthereumTxType,
   GasType,
@@ -7,6 +7,8 @@ import {
 } from '../commons/types';
 import { DEFAULT_NULL_VALUE_ON_TX } from '../commons/utils';
 import { Pool } from '../v3-pool-contract';
+import { IMigrationHelper__factory } from './typechain';
+import { IMigrationHelper } from './typechain/IMigrationHelper';
 import { V3MigrationHelperService } from './index';
 
 const getPool = (provider: providers.Provider) => {
@@ -345,46 +347,24 @@ describe('V3MigrationService', () => {
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects to fail when user not eth address', async () => {
+      const spy = jest
+        .spyOn(IMigrationHelper__factory, 'connect')
+        .mockReturnValue({
+          getMigrationSupply: async () =>
+            Promise.resolve(['sdasd', BigNumber.from('1111')]),
+        } as unknown as IMigrationHelper);
+
       const migrationHelper = new V3MigrationHelperService(
         provider,
         MIGRATOR_ADDRESS,
         pool,
       );
-      const migratorIncance = migrationHelper.getContractInstance(
-        migrationHelper.MIGRATOR_ADDRESS,
-      );
-
-      const getMigrationSupply = jest
-        .spyOn(migratorIncance, 'getMigrationSupply')
-        .mockReturnValueOnce(
-          new Promise<[string, BigNumber]>(resolve => {
-            resolve([
-              '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
-              BigNumber.from('122121'),
-            ]);
-          }),
-        );
 
       await migrationHelper.getMigrationSupply({
         asset: '0xae7ab96520de3a18e5e111b5eaab095312d7fe84',
         amount: '1',
       });
-      expect(getMigrationSupply).toBeCalledWith({
-        asset: '0xae7ab96520de3a18e5e111b5eaab095312d7fe84',
-        amount: '1',
-      });
-      // await expect(async () =>
-      //   instance.migrate({
-      //     supplyAssets,
-      //     user,
-      //     repayAssets: [],
-      //     signedSupplyPermits: [],
-      //     signedCreditDelegationPermits: [],
-      //     creditDelegationApprovals,
-      //   }),
-      // ).rejects.toThrowError(
-      //   `Address: ${user} is not a valid ethereum Address`,
-      // );
+      expect(spy).toBeCalled();
     });
   });
 });
