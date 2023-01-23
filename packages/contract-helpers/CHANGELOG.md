@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.13.0 (2023-01-23)
+
+
+### Features
+
+* add default gas estimation for borrow and vote ([#492](https://github.com/aave/aave-utilities/issues/492)) ([713ad36](https://github.com/aave/aave-utilities/commit/713ad361215f0fcbaaf07f7e374489459d1874ae))
+
+
+
+
+
 ## 1.12.2 (2023-01-12)
 
 **Note:** Version bump only for package @aave/contract-helpers
