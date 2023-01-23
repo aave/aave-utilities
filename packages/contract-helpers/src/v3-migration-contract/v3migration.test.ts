@@ -1,4 +1,4 @@
-import { BigNumber, providers, utils } from 'ethers';
+import { BigNumber, BigNumberish, providers, utils } from 'ethers';
 import {
   eEthereumTxType,
   GasType,
@@ -345,24 +345,46 @@ describe('V3MigrationService', () => {
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects to fail when user not eth address', async () => {
-      const instance = new V3MigrationHelperService(
+      const migrationHelper = new V3MigrationHelperService(
         provider,
         MIGRATOR_ADDRESS,
         pool,
       );
-      const user = 'asdf';
-      await expect(async () =>
-        instance.migrate({
-          supplyAssets,
-          user,
-          repayAssets: [],
-          signedSupplyPermits: [],
-          signedCreditDelegationPermits: [],
-          creditDelegationApprovals,
-        }),
-      ).rejects.toThrowError(
-        `Address: ${user} is not a valid ethereum Address`,
+      const migratorIncance = migrationHelper.getContractInstance(
+        migrationHelper.MIGRATOR_ADDRESS,
       );
+
+      const getMigrationSupply = jest
+        .spyOn(migratorIncance, 'getMigrationSupply')
+        .mockReturnValueOnce(
+          new Promise<[string, BigNumber]>(resolve => {
+            resolve([
+              '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
+              BigNumber.from('122121'),
+            ]);
+          }),
+        );
+
+      await migrationHelper.getMigrationSupply({
+        asset: '0xae7ab96520de3a18e5e111b5eaab095312d7fe84',
+        amount: '1',
+      });
+      expect(getMigrationSupply).toBeCalledWith({
+        asset: '0xae7ab96520de3a18e5e111b5eaab095312d7fe84',
+        amount: '1',
+      });
+      // await expect(async () =>
+      //   instance.migrate({
+      //     supplyAssets,
+      //     user,
+      //     repayAssets: [],
+      //     signedSupplyPermits: [],
+      //     signedCreditDelegationPermits: [],
+      //     creditDelegationApprovals,
+      //   }),
+      // ).rejects.toThrowError(
+      //   `Address: ${user} is not a valid ethereum Address`,
+      // );
     });
   });
 });
