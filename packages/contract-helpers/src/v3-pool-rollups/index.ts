@@ -108,7 +108,6 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
         l2PoolContract.populateTransaction.supply(encodedParams),
       from: user,
       value: getTxValue(reserve, amount),
-      action: ProtocolAction.supply,
     });
 
     txs.push({
@@ -163,17 +162,12 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
           permitS,
         ),
       from: user,
-      action: ProtocolAction.supplyWithPermit,
     });
 
     txs.push({
       tx: txCallback,
       txType: eEthereumTxType.DLP_ACTION,
-      gas: this.generateTxPriceEstimation(
-        txs,
-        txCallback,
-        ProtocolAction.supplyWithPermit,
-      ),
+      gas: this.generateTxPriceEstimation(txs, txCallback),
     });
 
     return txs;
@@ -210,7 +204,7 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
         gas: this.generateTxPriceEstimation(
           [],
           txCallback,
-          ProtocolAction.withdraw,
+          ProtocolAction.supply,
         ),
       },
     ];
@@ -241,18 +235,13 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
       rawTxMethod: async () =>
         l2PoolContract.populateTransaction.borrow(encodedParams),
       from: user,
-      action: ProtocolAction.borrow,
     });
 
     return [
       {
         tx: txCallback,
         txType: eEthereumTxType.DLP_ACTION,
-        gas: this.generateTxPriceEstimation(
-          [],
-          txCallback,
-          ProtocolAction.borrow,
-        ),
+        gas: this.generateTxPriceEstimation([], txCallback),
       },
     ];
   }
@@ -277,7 +266,6 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
         l2PoolContract.populateTransaction.repay(encodedParams),
       from: user,
       value: getTxValue(reserve, amount),
-      action: ProtocolAction.repay,
     });
 
     txs.push({
@@ -333,7 +321,6 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
         ),
       from: user,
       value: getTxValue(reserve, amount),
-      action: ProtocolAction.repayWithPermit,
     });
 
     txs.push({
@@ -369,7 +356,6 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
         l2PoolContract.populateTransaction.repayWithATokens(encodedParams),
       from: user,
       value: getTxValue(reserve, amount),
-      action: ProtocolAction.repay,
     });
 
     txs.push({
