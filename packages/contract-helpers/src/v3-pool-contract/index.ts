@@ -1162,6 +1162,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
               referralCode ?? '0',
             ),
           from: user,
+          action: ProtocolAction.swapCollateral,
         });
 
       txs.push({
@@ -1322,6 +1323,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
               referralCode ?? '0',
             ),
           from: user,
+          action: ProtocolAction.repayCollateral,
         });
 
       txs.push({
