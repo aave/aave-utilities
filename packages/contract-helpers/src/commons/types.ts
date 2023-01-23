@@ -109,6 +109,7 @@ export enum ProtocolAction {
   migrateV3 = 'migrateV3',
   supplyWithPermit = 'supplyWithPermit',
   repayWithPermit = 'repayWithPermit',
+  vote = 'vote',
 }
 
 export enum GovernanceVote {
