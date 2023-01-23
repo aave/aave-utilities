@@ -299,6 +299,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         ),
       from: user,
       value: getTxValue(reserve, convertedAmount),
+      action: ProtocolAction.supply,
     });
 
     txs.push({
@@ -394,6 +395,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         ),
       from: user,
       value: getTxValue(reserve, convertedAmount),
+      action: ProtocolAction.supply,
     });
 
     txs.push({
@@ -545,12 +547,17 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           sig.s,
         ),
       from: user,
+      action: ProtocolAction.supplyWithPermit,
     });
 
     txs.push({
       tx: txCallback,
       txType: eEthereumTxType.DLP_ACTION,
-      gas: this.generateTxPriceEstimation(txs, txCallback),
+      gas: this.generateTxPriceEstimation(
+        txs,
+        txCallback,
+        ProtocolAction.supplyWithPermit,
+      ),
     });
 
     return txs;
@@ -693,13 +700,18 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           onBehalfOf ?? user,
         ),
       from: user,
+      action: ProtocolAction.borrow,
     });
 
     return [
       {
         tx: txCallback,
         txType: eEthereumTxType.DLP_ACTION,
-        gas: this.generateTxPriceEstimation([], txCallback),
+        gas: this.generateTxPriceEstimation(
+          [],
+          txCallback,
+          ProtocolAction.borrow,
+        ),
       },
     ];
   }
@@ -794,6 +806,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         ),
       from: user,
       value: getTxValue(reserve, convertedAmount),
+      action: ProtocolAction.repay,
     });
 
     txs.push({
@@ -882,6 +895,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         ),
       from: user,
       value: getTxValue(reserve, convertedAmount),
+      action: ProtocolAction.repayWithPermit,
     });
 
     txs.push({
@@ -890,7 +904,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       gas: this.generateTxPriceEstimation(
         txs,
         txCallback,
-        ProtocolAction.repay,
+        ProtocolAction.repayWithPermit,
       ),
     });
 
