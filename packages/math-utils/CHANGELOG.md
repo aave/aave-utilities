@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.13.1 (2023-01-24)
+
+
+### Bug Fixes
+
+* apply default gas limit estimations ([#499](https://github.com/aave/aave-utilities/issues/499)) ([b377452](https://github.com/aave/aave-utilities/commit/b37745255194cc2f8c713bc3451a05dc8bab20a1))
+
+
+
+
+
 # 1.13.0 (2023-01-23)
 
 
