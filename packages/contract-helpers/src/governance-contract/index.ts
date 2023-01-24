@@ -115,6 +115,7 @@ export class AaveGovernanceService
       rawTxMethod: async () =>
         govContract.populateTransaction.submitVote(proposalId, support),
       from: user,
+      action: ProtocolAction.vote,
     });
 
     txs.push({
