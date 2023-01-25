@@ -5,7 +5,7 @@ import {
   InterestRate,
   PermitSignature,
 } from '../commons/types';
-import { IMigrationHelper } from '../v3-migration-contract/typechain/MigrationHelper';
+import { IMigrationHelper } from '../v3-migration-contract/typechain';
 
 export type LPSupplyParamsType = {
   user: tEthereumAddress;
