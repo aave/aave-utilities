@@ -38,12 +38,10 @@ module.exports = {
     'packages/contract-helpers/src/paraswap-repayWithCollateralAdapter-contract/typechain',
     'packages/contract-helpers/src/lendingPool-contract/typechain',
     'packages/contract-helpers/src/v3-migration-contract/typechain',
-    'packages/contract-helpers/src/v3-migration-contract/typechain/factories',
     'packages/contract-helpers/src/index.ts',
     'packages/math-utils/src/formatters/reserve/index.ts', // TODO: remove
   ],
   modulePathIgnorePatterns: ['node_modules'],
-  preset: 'ts-jest',
   testEnvironment: 'node',
   verbose: true,
   watchPlugins: [
