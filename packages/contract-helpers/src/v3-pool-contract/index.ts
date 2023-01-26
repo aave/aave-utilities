@@ -48,6 +48,7 @@ import {
   ParaswapRepayWithCollateralInterface,
 } from '../paraswap-repayWithCollateralAdapter-contract';
 import { SynthetixInterface, SynthetixService } from '../synthetix-contract';
+import { IMigrationHelper } from '../v3-migration-contract/typechain/IMigrationHelper';
 import { L2Pool, L2PoolInterface } from '../v3-pool-rollups';
 import {
   WETHGatewayInterface,
@@ -1570,14 +1571,16 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       borrowPosition.rateMode.toString(),
     ]);
 
-    const mappedPermits = permits.map(permit => [
-      permit.aToken,
-      permit.value,
-      permit.deadline,
-      permit.v,
-      permit.r,
-      permit.s,
-    ]);
+    const mappedPermits = permits.map(
+      (permit: IMigrationHelper.PermitInputStruct) => [
+        permit.aToken,
+        permit.value,
+        permit.deadline,
+        permit.v,
+        permit.r,
+        permit.s,
+      ],
+    );
 
     const params: string = utils.defaultAbiCoder.encode(
       [

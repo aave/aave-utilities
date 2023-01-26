@@ -7,8 +7,8 @@ import {
 } from '../commons/types';
 import { DEFAULT_NULL_VALUE_ON_TX } from '../commons/utils';
 import { Pool } from '../v3-pool-contract';
-import { IMigrationHelper__factory } from './typechain';
 import { IMigrationHelper } from './typechain/IMigrationHelper';
+import { IMigrationHelper__factory } from './typechain/IMigrationHelper__factory';
 import { V3MigrationHelperService } from './index';
 
 const getPool = (provider: providers.Provider) => {

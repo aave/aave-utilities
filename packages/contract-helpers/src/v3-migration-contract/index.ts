@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { constants, providers, utils } from 'ethers';
 import {
   BaseDebtToken,
@@ -16,7 +19,8 @@ import { V3MigratorValidator } from '../commons/validators/methodValidators';
 import { isEthAddress } from '../commons/validators/paramValidators';
 import { ERC20Service } from '../erc20-contract';
 import { Pool } from '../v3-pool-contract';
-import { IMigrationHelper, IMigrationHelper__factory } from './typechain';
+import { IMigrationHelper } from './typechain/IMigrationHelper';
+import { IMigrationHelper__factory } from './typechain/IMigrationHelper__factory';
 import {
   MigrationDelegationApproval,
   V3MigrationHelperSignedCreditDelegationPermit,

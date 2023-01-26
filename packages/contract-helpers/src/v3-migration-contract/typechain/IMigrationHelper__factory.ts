@@ -6,7 +6,7 @@ import type { Provider } from '@ethersproject/providers';
 import type {
   IMigrationHelper,
   IMigrationHelperInterface,
-} from '../IMigrationHelper';
+} from './IMigrationHelper';
 
 const _abi = [
   {
