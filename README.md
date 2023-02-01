@@ -1,24 +1,23 @@
-<p align="center"> <a href="https://aave.com/" rel="noopener" target="_blank"><img width="150" src="https://aave.com/static/media/ghostGradient.77808e40.svg" alt="Aave logo"></a></p>
+<p align="center"> <a href="https://aave.com/" rel="noopener" target="_blank"><img width="150" src="https://aave.com/governanceGhosts.svg" alt="Aave logo"></a></p>
 
 <h1 align="center">Aave Utilities</h1>
 
-The Aave Protocol is a decentralized non-custodial liquidity protocol
-where users can participate as suppliers or borrowers. The protocol is a set of
-open source smart contracts which facilitate the logic of user interactions. 
-These contracts, and all user transactions/balances are stored on a
-public ledger called a blockchain, making them accessible to anyone
+The Aave Protocol is a decentralized non-custodial liquidity protocol where
+users can participate as suppliers or borrowers. The protocol is a set of open
+source smart contracts which facilitate the logic of user interactions. These
+contracts, and all user transactions/balances are stored on a public ledger
+called a blockchain, making them accessible to anyone.
 
 Aave Utilities is a JavaScript SDK for interacting with V2 and V3 of the Aave
 Protocol, an upgrade to the existing [aave-js](https://github.com/aave/aave-js)
-library
+library.
 
-The `@aave/math-utils` package contains methods for formatting raw
-([ethers.js](#ethers.js)) or indexed ([subgraph](#subgraph),
-[caching server](#caching-server)) contract data for usage on a frontend
+The `@aave/math-utils` package contains methods for formatting raw contract data
+for usage on a frontend
 
-The `@aave/contract-helpers` package contains methods for generating trancations
-based on method and parameter inputs. Can be used to read and write data on the
-protocol contracts.
+The `@aave/contract-helpers` package contains methods for generating
+transactions based on method and parameter inputs. Can be used to read and write
+data on the protocol contracts.
 
 <br />
 
@@ -28,16 +27,11 @@ Aave utilities are available as npm packages,
 [contract helpers](https://www.npmjs.com/package/@aave/contract-helpers) and
 [math utils](https://www.npmjs.com/package/@aave/math-utils)
 
-[ethers v5](https://docs.ethers.io/v5/) and [reflect-metadata](reflect metadata)
-are peer dependencies of the contract-helpers package
-
 ```sh
 // with npm
-npm install --save-dev ethers reflect-metadata
 npm install @aave/contract-helpers @aave/math-utils
 
 // with yarn
-yarn add --dev ethers reflect-metadata
 yarn add @aave/contract-helpers @aave/math-utils
 ```
 
@@ -45,19 +39,12 @@ yarn add @aave/contract-helpers @aave/math-utils
 
 ## Features
 
-1.  [Data Formatting Methods](#data-formatting-methods)
-    - a. [Fetching Protocol Data](#fetching-protocol-data)
-      - [ethers](#ethersjs)
-      - [Subgraph](#subgraph)
-      - [Caching Server](#caching-server)
-    - b. [Format Reserve Data](#reserve-data)
-      - [formatReserves](#formatReserves)
-      - [formatReservesAndIncentives](#formatReservesAndIncentives)
-    - c. [Format User Data](#user-data)
-      - [formatUserSummary](#formatUserSummary)
-      - [formatUserSummaryAndIncentives](#formatUserSummaryAndIncentives)
+1.  [Data Methods](#data-formatting-methods)
+    - a. [Setup](#setup)
+    - a. [Reserve Data](#reserve-data)
+    - b. [User Data](#user-data)
 2.  [Transaction Methods](#transaction-methods)
-    - a. [Submitting Transactions](#submitting-transactions)
+    - a. [Overview](#overview)
     - b. [Pool V3](#pool-v3)
       - [supply](#supply)
       - [signERC20Approval](#signERC20Approval)
@@ -103,26 +90,13 @@ yarn add @aave/contract-helpers @aave/math-utils
 
 <br />
 
-# Data Formatting Methods
+# Data Methods
 
-Users interact with the Aave protocol through a set of smart contracts. The
-`@aave/math-utils` package is a collection of methods to take raw input data
-from these contracts, and format to use on a frontend interface such as
-[Aave Ui](https://github.com/aave/aave-ui) or
-[Aave info](https://github.com/sakulstra/info.aave)
+The `@aave/contract-helpers` and `@aave/math-utils` packages are utilities to
+fetch and format smart contract data respectively. The below sections will give
+complete examples on how to use these packages to fetch protocol and user data.
 
-## Fetching Protocol Data
-
-Input data for these methods can be obtained in a variety of ways with some
-samples below:
-
-- [ethers](#ethers.js)
-- [Subgraph](#subgraph)
-- [Caching Server](#caching-server)
-
-<br />
-
-### ethers.js
+## Setup
 
 [ethers.js](https://docs.ethers.io/v5/) is a library for interacting with
 Ethereum and other EVM compatible blockchains. To install:
@@ -215,317 +189,6 @@ and [user](#user-data) formatters to compute all of the fields needed for a
 frontend interface.
 
 </details>
-
-<br />
-
-### Subgraph
-
-A subgraph indexes events emitted from a smart contract and exposes a graphql
-endpoing to query data from. Each network where the protocol is deployed is a
-corresponding subgraph. Subgraph can be queried directly using the playground
-(links below) and integrated into applications directly via TheGraph API. Check
-out these guides from
-[Aave](https://docs.aave.com/developers/getting-started/using-graphql) and
-[TheGraph](https://thegraph.com/docs/en/developer/querying-from-your-app/) for
-resources on querying subgraph from a frontend application.
-
-Here are queries for fetching the data fields required for
-[data formatting methods](#data-formatting-methods). The formatting methods are
-the same for V2 and V3, but the queries required to fetch the input data are
-different. Queries will depend on two parameters:
-
-- `pool` : lendingPoolAddressProvider address for the market you are querying
-  data for
-- `user` : user to fetch account data for
-
-<details>
-	<summary>V2</summary>
-
-  <details>
-    <summary>Reserves</summary>
-
-```graphql
-{
-  reserves(
-    where: { pool: "insert_lowercase_lending_pool_address_provider_here" }
-  ) {
-    id
-    symbol
-    name
-    decimals
-    underlyingAsset
-    usageAsCollateralEnabled
-    reserveFactor
-    baseLTVasCollateral
-    averageStableRate
-    stableDebtLastUpdateTimestamp
-    liquidityIndex
-    reserveLiquidationThreshold
-    reserveLiquidationBonus
-    variableBorrowIndex
-    variableBorrowRate
-    liquidityRate
-    totalPrincipalStableDebt
-    totalScaledVariableDebt
-    lastUpdateTimestamp
-    availableLiquidity
-    stableBorrowRate
-    totalLiquidity
-    price {
-      priceInEth
-    }
-  }
-}
-```
-
-Then formatted to match expected input schema with:
-
-```ts
-const reserves = queryResult.reserves.map(reserve => {
-  return {
-    ...reserve,
-    priceInMarketReferenceCurrency: reserve.price.priceInEth,
-    eModeCategoryId: 0,
-    borrowCap: '',
-    supplyCap: '',
-    debtCeiling: '',
-    debtCeilingDecimals: 0,
-    isolationModeTotalDebt: '',
-    eModeLtv: 0,
-    eModeLiquidationThreshold: 0,
-    eModeLiquidationBonus: 0,
-  };
-});
-```
-
-  </details>
-
-  <details>
-    <summary>User Reserves</summary>
-
-```graphql
-{
-  userReserves(where: {pool: "insert_lowercase_lending_pool_address_provider_here", user: "insert_lowercase_user_address_here"}) {
-    reserve{
-      underlyingAsset
-    }
-    scaledATokenBalance
-    usageAsCollateralEnabledOnUser
-    stableBorrowRate
-    scaledVariableDebt
-    principalStableDebt
-    stableBorrowLastUpdateTimestamp
-  }
-  }
-}
-```
-
-Then formatted to match expected input schema with:
-
-```ts
-const userReserves = queryResults.userReserves.map(userReserve => {
-  return {
-    ...userReserve,
-    underlyingAsset: userReserve.reserve.underlyingAsset,
-  };
-});
-```
-
-The `userEmodeCategoryId` parameter will always be 0 for V2 markets.
-
-  </details>
-
-  <details>
-    <summary>Base Currency Data</summary>
-
-```graphql
-{
-  priceOracles {
-    usdPriceEth
-  }
-}
-```
-
-For ETH-based markets (all V2 markets except Avalanche):
-
-- `marketReferencePriceInUsd` = 1 / (queryResult.priceOracles[0].usdPriceEth /
-  (10 \*\* 18))
-
-- `marketReferenceCurrencyDecimals` = 18
-
-For USD-based markets (Avalanche and all v3 markets):
-    
-- `marketReferencePriceInUsd` = "100000000"
-
-- `marketReferenceCurrencyDecimals` = 8
-
-  </details>
-
-  <details>
-    <summary>Incentives</summary>
-
-Samples for incentives data coming soon. Uses `incentivesControlllers` field and
-maps incentives to reserves and userReserves.
-
-  </details>
-
-</details>
-
-<details>
-	<summary>V3</summary>
-
-  <details>
-    <summary>Reserves</summary>
-
-```graphql
-{
-  reserves(
-    where: { pool: "insert_lowercase_lending_pool_address_provider_here" }
-  ) {
-    id
-    symbol
-    name
-    decimals
-    underlyingAsset
-    usageAsCollateralEnabled
-    reserveFactor
-    baseLTVasCollateral
-    averageStableRate
-    stableDebtLastUpdateTimestamp
-    liquidityIndex
-    reserveLiquidationThreshold
-    reserveLiquidationBonus
-    variableBorrowIndex
-    variableBorrowRate
-    liquidityRate
-    totalPrincipalStableDebt
-    totalScaledVariableDebt
-    lastUpdateTimestamp
-    availableLiquidity
-    stableBorrowRate
-    totalLiquidity
-    price {
-      priceInEth
-    }
-    eModeCategoryId
-    borrowCap
-    supplyCap
-    debtCeiling
-    debtCeilingDecimals
-    isolationModeTotalDebt
-    eModeLtv
-    eModeLiquidationThreshold
-    eModeLiquidationBonus
-  }
-}
-```
-
-Then formatted to match expected input schema with:
-
-```ts
-const reserves = queryResults.map(queryResult => {
-  return {
-    ...queryResult,
-    priceInMarketReferenceCurrency: queryResult.price.priceInEth,
-  };
-});
-```
-
-  </details>
-
-  <details>
-    <summary>User Reserves</summary>
-
-```graphql
-{
-  userReserves(
-    where: {
-      pool: "insert_lowercase_lending_pool_address_provider_here"
-      user: "insert_lowercase_user_address_here"
-    }
-  ) {
-    reserve {
-      underlyingAsset
-    }
-    scaledATokenBalance
-    usageAsCollateralEnabledOnUser
-    stableBorrowRate
-    scaledVariableDebt
-    principalStableDebt
-    stableBorrowLastUpdateTimestamp
-    user {
-      eModeCategoryId {
-        id
-      }
-    }
-  }
-}
-```
-
-Then formatted to match expected input schema with:
-
-```ts
-const userReserves = queryResults.map(queryResult => {
-  return {
-    ...queryResult,
-    underlyingAsset: queryResult.reserve.underlyingAsset,
-  };
-});
-```
-
-The field `queryResults[0].user.eModeCategoryId.id` is the active eModeCategory
-and will input to the user formatters separately.
-
-  </details>
-
-  <details>
-    <summary>Base Currency Data</summary>
-    
-All V3 market use USD based oracles, so baseCurrencyData can be hardcoded:
-
-- `marketReferencePriceInUsd` = "100000000"
-
-- `marketReferenceCurrencyDecimals` = 8
-
-  </details>
-
-<details>
-    <summary>Incentives</summary>
-
-Samples for incentives data coming soon. Uses `incentivesControlllers` field and
-maps incentives to reserves and userReserves.
-
-</details>
-
-</details>
-
-<br />
-
-### Caching Server
-
-Given that the Aave Ui has decentralized hosting with IPFS, it makes sense to
-not require any API keys to run the UI, but this means only public rpc endpoints
-are used which are quickly rate limited. To account for this, Aave has publushed
-a [caching server](https://github.com/aave/aave-ui-caching-server) to perform
-contract queries on one server, then serve this data to all frontend users
-through a graphQL endpoint.
-
-The four queries to fetch input data (in both query and subscription form) are
-located
-[here](https://github.com/aave/aave-ui/tree/master/src/libs/caching-server-data-provider/graphql)
-in the follow files:
-
-- protocol-data.graphql
-- user-data.graphql
-- incentives-data.graphql
-- user-incentives-data.graphql
-
-Examples of hooks for fetching data with these queries are located
-[here](https://github.com/aave/aave-ui/tree/master/src/libs/caching-server-data-provider/hooks).
-
-<br />
-
-## Reserve Data
 
 Formatted reserve data is an array of tokens in the Aave market, containing
 realtime, human-readable data above asset configuration (maxLtv,
@@ -737,7 +400,7 @@ Once initialized this sdk can be used to generate the transaction data needed to
 perform an action. If an approval is required, the method will return an array
 with two transactions, or single transaction if no approval is needed.
 
-## Submitting Transactions
+## Pverview
 
 All transaction methods will return an array of transaction objects of this
 type:
@@ -842,7 +505,7 @@ const dataToSign: string = await pool.signERC20Approval({
   user,
   reserve,
   amount,
-  deadline
+  deadline,
 });
 
 const signature = await provider.send('eth_signTypedData_v4', [
@@ -2009,39 +1672,41 @@ Submit transaction as shown [here](#submitting-transactions)
 
 </details>
 
-
 <br />
 
 ## Credit Delegation
 
-Credit delegation is performed on the debtToken contract through the `approveDelegation` function, which approves a spender to borrow a specified amount of that token.
+Credit delegation is performed on the debtToken contract through the
+`approveDelegation` function, which approves a spender to borrow a specified
+amount of that token.
 
-Accessing delegated credit is done by passing the delegator address as the `onBehalfOf` parameter when calling `borrow` on the `Pool` (V3) or `LendingPool` (V2).
+Accessing delegated credit is done by passing the delegator address as the
+`onBehalfOf` parameter when calling `borrow` on the `Pool` (V3) or `LendingPool`
+(V2).
 
 ### approveDelegation
-
 
 <details>
   <summary>Sample Code</summary>
 
 ```ts
-import { BaseDebtToken, ERC20Service } from "@aave/contract-helpers";
-import { ethers } from "ethers";
+import { BaseDebtToken, ERC20Service } from '@aave/contract-helpers';
+import { ethers } from 'ethers';
 
 // Sample public RPC address for querying polygon mainnet
 const provider = new ethers.providers.JsonRpcProvider(
-  "https://polygon-rpc.com"
+  'https://polygon-rpc.com',
 );
 
 const delegationServicePolygonV2USDC = new BaseDebtToken(
   provider,
-  new ERC20Service(provider) // This parameter will be removed in future utils version
+  new ERC20Service(provider), // This parameter will be removed in future utils version
 );
 
 const approveDelegation = delegationServicePolygonV2USDC.approveDelegation({
-  user: "...",  /// delegator
-  delegatee: "...",
-  debtTokenAddress: "...", // can be any V2 or V3 debt token
+  user: '...', /// delegator
+  delegatee: '...',
+  debtTokenAddress: '...', // can be any V2 or V3 debt token
   amount: 1, // in decimals of underlying token
 });
 ```
