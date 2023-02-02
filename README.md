@@ -1,4 +1,4 @@
-<p align="center"> <a href="https://aave.com/" rel="noopener" target="_blank"><img width="150" src="https://aave.com/governanceGhosts.svg" alt="Aave logo"></a></p>
+<p align="center"> <a href="https://aave.com/" rel="noopener" target="_blank"><img width="250" src="https://aave.com/governanceGhosts.svg" alt="Aave logo"></a></p>
 
 <h1 align="center">Aave Utilities</h1>
 
@@ -10,14 +10,12 @@ called a blockchain, making them accessible to anyone.
 
 Aave Utilities is a JavaScript SDK for interacting with V2 and V3 of the Aave
 Protocol, an upgrade to the existing [aave-js](https://github.com/aave/aave-js)
-library.
+library. 
 
-The `@aave/math-utils` package contains methods for formatting raw contract data
-for usage on a frontend
+The library has two main features:
 
-The `@aave/contract-helpers` package contains methods for generating
-transactions based on method and parameter inputs. Can be used to read and write
-data on the protocol contracts.
+1.) Query live market and user data
+2.) Build transaction data for Aave Protocol methods: `supply`, `borrow`, etc.
 
 <br />
 
@@ -26,6 +24,13 @@ data on the protocol contracts.
 Aave utilities are available as npm packages,
 [contract helpers](https://www.npmjs.com/package/@aave/contract-helpers) and
 [math utils](https://www.npmjs.com/package/@aave/math-utils)
+
+The `@aave/math-utils` package contains methods for formatting raw contract data
+for usage on a frontend
+
+The `@aave/contract-helpers` package contains methods for generating
+transactions based on method and parameter inputs. Can be used to read and write
+data on the protocol contracts.
 
 ```sh
 // with npm
@@ -41,10 +46,10 @@ yarn add @aave/contract-helpers @aave/math-utils
 
 1.  [Data Methods](#data-formatting-methods)
     - a. [Setup](#setup)
-    - a. [Reserve Data](#reserve-data)
+    - a. [Markets Data](#markets-data)
     - b. [User Data](#user-data)
 2.  [Transaction Methods](#transaction-methods)
-    - a. [Overview](#overview)
+    - a. [Setup](#setup)
     - b. [Pool V3](#pool-v3)
       - [supply](#supply)
       - [signERC20Approval](#signERC20Approval)
@@ -75,7 +80,7 @@ yarn add @aave/contract-helpers @aave/math-utils
       - [redeem](#redeem)
       - [cooldown](#cooldown)
       - [claimRewards](#claimRewards)
-    - e. [Governance V2](#governancev2)
+    - e. [Governance](#governance)
       - [create](#create)
       - [cancel](#cancel)
       - [queue](#queue)
@@ -83,8 +88,6 @@ yarn add @aave/contract-helpers @aave/math-utils
       - [submitVote](#submitVote)
       - [delegate](#delegate)
       - [delegateByType](#delegateByType)
-    - f. [Faucets](#faucets)
-      - [mint](#mint)
     - g. [Credit Delegation](#credit-delegation)
       - [approveDelegation](#approveDelegation)
 
@@ -93,64 +96,63 @@ yarn add @aave/contract-helpers @aave/math-utils
 # Data Methods
 
 The `@aave/contract-helpers` and `@aave/math-utils` packages are utilities to
-fetch and format smart contract data respectively. The below sections will give
-complete examples on how to use these packages to fetch protocol and user data.
+fetch and format smart contract data respectively. This section will guide you
+to setup and use these packages to query Aave Protocol data.
 
 ## Setup
 
+After installing the aave-utilities packages, it's also recommended to add the
+[Aave Address Book](https://github.com/bgd-labs/aave-address-book#usage-with-node)
+package which will be used in the examples to import contract addresses
+directly.
+
+To initialize an instance of an `@aave/contract-helpers` service, an `ethers`
+provider is required to pass into the constructor.
 [ethers.js](https://docs.ethers.io/v5/) is a library for interacting with
-Ethereum and other EVM compatible blockchains. To install:
+Ethereum and other EVM compatible blockchains, our `ethers` provider instance
+will serve as an RPC connection to read data from the blockchain.
 
-The first step to query contract data with ethers is to inialize a `provider`,
-there are a [variety](https://docs.ethers.io/v5/api/providers/) to choose from,
-all of them requiring the an rpcURL
+The two services which will be used for all data fetching methods are:
 
-The sample code below includes an example of initializing a provider, and using
-it query the helper contract data which can be passed directly into data
-formatting methods.
+- `UiPoolDataProvider`: Used for querying reserve and user data
+- `UiIncentiveDataProvider`: Used for querying reward emissions and user
+  claimable rewards
+
+The sample code below shows a complete example of initializing and using these
+services to query Aave protocol data.
 
 <details>
-	<summary>Sample Code</summary>
+	<summary>Vanilla JavaScript</summary>
 
-```ts
+```js
 import { ethers } from 'ethers';
 import {
   UiPoolDataProvider,
   UiIncentiveDataProvider,
   ChainId,
 } from '@aave/contract-helpers';
+import * as markets from '@bgd-labs/aave-address-book';
 
 // Sample RPC address for querying ETH mainnet
 const provider = new ethers.providers.JsonRpcProvider(
   'https://eth-mainnet.alchemyapi.io/v2/demo',
 );
 
-// This is the provider used in Aave UI, it checks the chainId locally to reduce RPC calls with frequent network switches, but requires that the rpc url and chainId to remain consistent with the request being sent from the wallet (i.e. actively detecting the active chainId)
-const provider = new ethers.providers.StaticJsonRpcProvider(
-  'https://eth-mainnet.alchemyapi.io/v2/demo',
-  ChainId.mainnet,
-);
-
-// Aave protocol contract addresses, will be different for each market and can be found at https://docs.aave.com/developers/deployed-contracts/deployed-contracts
-// For V3 Testnet Release, contract addresses can be found here https://github.com/aave/aave-ui/blob/feat/arbitrum-clean/src/ui-config/markets/index.ts
-const uiPoolDataProviderAddress = '0xa2DC1422E0cE89E1074A6cd7e2481e8e9c4415A6';
-const uiIncentiveDataProviderAddress =
-  '0xD01ab9a6577E1D84F142e44D49380e23A340387d';
-const lendingPoolAddressProvider = '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5';
-
-// User address to fetch data for
+// User address to fetch data for, insert your address here
 const currentAccount = '';
 
 // View contract used to fetch all reserves data (including market base currency data), and user reserves
+// Using Aave V3 Eth Mainnet address for demo
 const poolDataProviderContract = new UiPoolDataProvider({
-  uiPoolDataProviderAddress,
+  uiPoolDataProviderAddress: markets.AaveV3Ethereum.UI_POOL_DATA_PROVIDER,
   provider,
   chainId: ChainId.mainnet,
 });
 
 // View contract used to fetch all reserve incentives (APRs), and user incentives
+// Using Aave V3 Eth Mainnet address for demo
 const incentiveDataProviderContract = new UiIncentiveDataProvider({
-  uiIncentiveDataProviderAddress,
+  uiIncentiveDataProviderAddress: markets.AaveV3Ethereum.UI_POOL_DATA_PROVIDER,
   provider,
   chainId: ChainId.mainnet,
 });
@@ -184,34 +186,94 @@ const userIncentives =
   });
 ```
 
-These four variables are passed as parameters into the [reserve](#reserve-data)
-and [user](#user-data) formatters to compute all of the fields needed for a
-frontend interface.
+</details>
+
+<details>
+	<summary>ES6 / React</summary>
+
+```js
+import { ethers } from 'ethers';
+import {
+  UiPoolDataProvider,
+  UiIncentiveDataProvider,
+  ChainId,
+} from '@aave/contract-helpers';
+import * as markets from '@bgd-labs/aave-address-book';
+
+// Sample RPC address for querying ETH mainnet
+const provider = new ethers.providers.JsonRpcProvider(
+  'https://eth-mainnet.alchemyapi.io/v2/demo',
+);
+
+// User address to fetch data for, insert your address here
+const currentAccount = '';
+
+// View contract used to fetch all reserves data (including market base currency data), and user reserves
+// Using Aave V3 Eth Mainnet address for demo
+const poolDataProviderContract = new UiPoolDataProvider({
+  uiPoolDataProviderAddress: markets.AaveV3Ethereum.UI_POOL_DATA_PROVIDER,
+  provider,
+  chainId: ChainId.mainnet,
+});
+
+// View contract used to fetch all reserve incentives (APRs), and user incentives
+// Using Aave V3 Eth Mainnet address for demo
+const incentiveDataProviderContract = new UiIncentiveDataProvider({
+  uiIncentiveDataProviderAddress: markets.AaveV3Ethereum.UI_POOL_DATA_PROVIDER,
+  provider,
+  chainId: ChainId.mainnet,
+});
+
+// Note, contract calls should be performed in an async block, and updated on interval or on network/market change
+
+// Object containing array of pool reserves and market base currency data
+// { reservesArray, baseCurrencyData }
+const reserves = await poolDataProviderContract.getReservesHumanized({
+  lendingPoolAddressProvider: markets.AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
+});
+
+// Object containing array or users aave positions and active eMode category
+// { userReserves, userEmodeCategoryId }
+const userReserves = await poolDataProviderContract.getUserReservesHumanized({
+  lendingPoolAddressProvider: markets.AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
+  currentAccount,
+});
+
+// Array of incentive tokens with price feed and emission APR
+const reserveIncentives =
+  await incentiveDataProviderContract.getReservesIncentivesDataHumanized({
+    lendingPoolAddressProvider: markets.AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
+  });
+
+// Dictionary of claimable user incentives
+const userIncentives =
+  await incentiveDataProviderContract.getUserReservesIncentivesDataHumanized({
+    lendingPoolAddressProvider: markets.AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
+    currentAccount,
+  });
+```
 
 </details>
 
-Formatted reserve data is an array of tokens in the Aave market, containing
-realtime, human-readable data above asset configuration (maxLtv,
-liquidationThreshold, usageAsCollateral, etc.) and current status (rates,
-liquidity, utilization, etc.)
+## Markets Data
 
-There are two formatter functions, one with incentives data and one without.
-Both require input data from the
-[fetching protocol data](#fetching-protocol-data) section
+Once you have successfully completed the Setup instructions and are querying on-chain data, the next step is to format this data into human readable format and compute helpful values. This is done using the formatter functions in the `@aave/math-utils` package. There are two formatters for market data, one with incentives data, and one without. Examples for both methods are shown below.
+
+The output of these methods is an array of formatted reserve data for each reserve in an Aave market.
 
 ### formatReserves
 
-formatReserves returns an array of formatted configuration and status data for
-each reserve in an Aave market
+formatReserves returns an array of formatted configuration and
+live usage data for each reserve in an Aave market
 
 <details>
   <summary>Sample Code</summary>
 
-```ts
+```js
 import { formatReserves } from '@aave/math-utils';
 import dayjs from 'dayjs';
 
-// reserves input from Fetching Protocol Data section
+// `reserves` variable here is input from Setup section
 
 const reservesArray = reserves.reservesData;
 const baseCurrencyData = reserves.baseCurrencyData;
@@ -240,7 +302,7 @@ const formattedPoolReserves = formatReserves({
 ### formatReservesAndIncentives
 
 formatReservesAndIncentives returns an array of formatted configuration and
-status data plus an object with supply, variable borrow, and stable borrow
+live usage data plus an object with supply, variable borrow, and stable borrow
 incentives for each reserve in an Aave market
 
 <details>
@@ -280,9 +342,11 @@ const formattedPoolReserves = formatReservesAndIncentives({
 
 ## User Data
 
-Formatted user data is an object containing cumulative metrics (healthFactor,
+Once you have successfully completed the Setup instructions and are querying on-chain data, the next step is to format this data into human readable format and compute cumulative user metrics. This is done using the formatter functions in the `@aave/math-utils` package. There are two formatters for user data, one with incentives data, and one without. Examples for both methods are shown below.
+
+The output of these methods is an object containing cumulative metrics (healthFactor,
 totalLiquidity, totalBorrows, etc.) and an array of formatted reserve data plus
-user holdings (aTokens, debtTokens) for each reserve in an Aave market
+user holdings (aTokens, debtTokens) for each reserve in an Aave market.
 
 ### formatUserSummary
 
@@ -297,7 +361,7 @@ factor, and available borrowing power
 import { formatUserSummary } from '@aave/math-utils';
 import dayjs from 'dayjs';
 
-// 'reserves' and 'userReserves' inputs from Fetching Protocol Data section
+// 'reserves' and 'userReserves' inputs from Setup section
 
 const reservesArray = reserves.reservesData;
 const baseCurrencyData = reserves.baseCurrencyData;
@@ -348,7 +412,7 @@ factor, available borrowing power, and dictionary of claimable incentives
 import { formatUserSummaryAndIncentives } from '@aave/math-utils';
 import dayjs from 'dayjs';
 
-// 'reserves', 'userReserves', 'reserveIncentives', and 'userIncentives' inputs from Fetching Protocol Data section
+// 'reserves', 'userReserves', 'reserveIncentives', and 'userIncentives' inputs from Setup section
 
 const reservesArray = reserves.reservesData;
 const baseCurrencyData = reserves.baseCurrencyData;
