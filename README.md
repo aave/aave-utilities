@@ -1,4 +1,4 @@
-<p align="center"> <a href="https://aave.com/" rel="noopener" target="_blank"><img width="250" src="https://aave.com/governanceGhosts.svg" alt="Aave logo"></a></p>
+<p align="center"> <a href="https://aave.com/" rel="noopener" target="_blank"><img width="300" src="https://aave.com/governanceGhosts.svg" alt="Aave logo"></a></p>
 
 <h1 align="center">Aave Utilities</h1>
 
@@ -10,27 +10,26 @@ called a blockchain, making them accessible to anyone.
 
 Aave Utilities is a JavaScript SDK for interacting with V2 and V3 of the Aave
 Protocol, an upgrade to the existing [aave-js](https://github.com/aave/aave-js)
-library. 
+library.
 
 The library has two main features:
 
-1.) Query live market and user data
-2.) Build transaction data for Aave Protocol methods: `supply`, `borrow`, etc.
+1.) Query live market and user data  
+2.) Build transactions
 
 <br />
 
 ## Installation
 
-Aave utilities are available as npm packages,
-[contract helpers](https://www.npmjs.com/package/@aave/contract-helpers) and
-[math utils](https://www.npmjs.com/package/@aave/math-utils)
+Aave utilities are available as npm packages:
 
-The `@aave/math-utils` package contains methods for formatting raw contract data
-for usage on a frontend
+The [`@aave/math-utils`](https://www.npmjs.com/package/@aave/math-utils) package
+contains methods for formatting raw contract data for usage on a frontend
 
-The `@aave/contract-helpers` package contains methods for generating
-transactions based on method and parameter inputs. Can be used to read and write
-data on the protocol contracts.
+The
+[`@aave/contract-helpers`](https://www.npmjs.com/package/@aave/contract-helpers)
+package contains methods for generating transactions based on method and
+parameter inputs. Can be used to read and write data on the protocol contracts.
 
 ```sh
 // with npm
@@ -257,14 +256,19 @@ const userIncentives =
 
 ## Markets Data
 
-Once you have successfully completed the Setup instructions and are querying on-chain data, the next step is to format this data into human readable format and compute helpful values. This is done using the formatter functions in the `@aave/math-utils` package. There are two formatters for market data, one with incentives data, and one without. Examples for both methods are shown below.
+Once you have successfully completed the Setup instructions and are querying
+on-chain data, the next step is to format this data into human readable format
+and compute helpful values. This is done using the formatter functions in the
+`@aave/math-utils` package. There are two formatters for market data, one with
+incentives data, and one without. Examples for both methods are shown below.
 
-The output of these methods is an array of formatted reserve data for each reserve in an Aave market.
+The output of these methods is an array of formatted reserve data for each
+reserve in an Aave market.
 
 ### formatReserves
 
-formatReserves returns an array of formatted configuration and
-live usage data for each reserve in an Aave market
+formatReserves returns an array of formatted configuration and live usage data
+for each reserve in an Aave market
 
 <details>
   <summary>Sample Code</summary>
@@ -301,8 +305,8 @@ const formattedPoolReserves = formatReserves({
 
 ### formatReservesAndIncentives
 
-formatReservesAndIncentives returns an array of formatted configuration and
-live usage data plus an object with supply, variable borrow, and stable borrow
+formatReservesAndIncentives returns an array of formatted configuration and live
+usage data plus an object with supply, variable borrow, and stable borrow
 incentives for each reserve in an Aave market
 
 <details>
@@ -342,11 +346,17 @@ const formattedPoolReserves = formatReservesAndIncentives({
 
 ## User Data
 
-Once you have successfully completed the Setup instructions and are querying on-chain data, the next step is to format this data into human readable format and compute cumulative user metrics. This is done using the formatter functions in the `@aave/math-utils` package. There are two formatters for user data, one with incentives data, and one without. Examples for both methods are shown below.
+Once you have successfully completed the Setup instructions and are querying
+on-chain data, the next step is to format this data into human readable format
+and compute cumulative user metrics. This is done using the formatter functions
+in the `@aave/math-utils` package. There are two formatters for user data, one
+with incentives data, and one without. Examples for both methods are shown
+below.
 
-The output of these methods is an object containing cumulative metrics (healthFactor,
-totalLiquidity, totalBorrows, etc.) and an array of formatted reserve data plus
-user holdings (aTokens, debtTokens) for each reserve in an Aave market.
+The output of these methods is an object containing cumulative metrics
+(healthFactor, totalLiquidity, totalBorrows, etc.) and an array of formatted
+reserve data plus user holdings (aTokens, debtTokens) for each reserve in an
+Aave market.
 
 ### formatUserSummary
 
