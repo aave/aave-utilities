@@ -121,7 +121,7 @@ The sample code below shows a complete example of initializing and using these
 services to query Aave protocol data.
 
 <details>
-	<summary>Vanilla JavaScript</summary>
+	<summary>Sample Code</summary>
 
 ```js
 import { ethers } from 'ethers';
@@ -132,13 +132,22 @@ import {
 } from '@aave/contract-helpers';
 import * as markets from '@bgd-labs/aave-address-book';
 
+// ES5 Alternative imports
+//  const {
+//    ChainId,
+//    UiIncentiveDataProvider,
+//    UiPoolDataProvider,
+//  } = require('@aave/contract-helpers');
+//  const markets = require('@bgd-labs/aave-address-book');
+//  const ethers = require('ethers');
+
 // Sample RPC address for querying ETH mainnet
 const provider = new ethers.providers.JsonRpcProvider(
-  'https://eth-mainnet.alchemyapi.io/v2/demo',
+  'https://eth-mainnet.public.blastapi.io',
 );
 
-// User address to fetch data for, insert your address here
-const currentAccount = '';
+// User address to fetch data for, insert address here
+const currentAccount = '0x464C71f6c2F760DdA6093dCB91C24c39e5d6e18c';
 
 // View contract used to fetch all reserves data (including market base currency data), and user reserves
 // Using Aave V3 Eth Mainnet address for demo
@@ -151,108 +160,46 @@ const poolDataProviderContract = new UiPoolDataProvider({
 // View contract used to fetch all reserve incentives (APRs), and user incentives
 // Using Aave V3 Eth Mainnet address for demo
 const incentiveDataProviderContract = new UiIncentiveDataProvider({
-  uiIncentiveDataProviderAddress: markets.AaveV3Ethereum.UI_POOL_DATA_PROVIDER,
+  uiIncentiveDataProviderAddress:
+    markets.AaveV3Ethereum.UI_INCENTIVE_DATA_PROVIDER,
   provider,
   chainId: ChainId.mainnet,
 });
 
-// Note, contract calls should be performed in an async block, and updated on interval or on network/market change
-
-// Object containing array of pool reserves and market base currency data
-// { reservesArray, baseCurrencyData }
-const reserves = await poolDataProviderContract.getReservesHumanized({
-  lendingPoolAddressProvider,
-});
-
-// Object containing array or users aave positions and active eMode category
-// { userReserves, userEmodeCategoryId }
-const userReserves = await poolDataProviderContract.getUserReservesHumanized({
-  lendingPoolAddressProvider,
-  currentAccount,
-});
-
-// Array of incentive tokens with price feed and emission APR
-const reserveIncentives =
-  await incentiveDataProviderContract.getReservesIncentivesDataHumanized({
-    lendingPoolAddressProvider,
-  });
-
-// Dictionary of claimable user incentives
-const userIncentives =
-  await incentiveDataProviderContract.getUserReservesIncentivesDataHumanized({
-    lendingPoolAddressProvider,
-    currentAccount,
-  });
-```
-
-</details>
-
-<details>
-	<summary>ES6 / React</summary>
-
-```js
-import { ethers } from 'ethers';
-import {
-  UiPoolDataProvider,
-  UiIncentiveDataProvider,
-  ChainId,
-} from '@aave/contract-helpers';
-import * as markets from '@bgd-labs/aave-address-book';
-
-// Sample RPC address for querying ETH mainnet
-const provider = new ethers.providers.JsonRpcProvider(
-  'https://eth-mainnet.alchemyapi.io/v2/demo',
-);
-
-// User address to fetch data for, insert your address here
-const currentAccount = '';
-
-// View contract used to fetch all reserves data (including market base currency data), and user reserves
-// Using Aave V3 Eth Mainnet address for demo
-const poolDataProviderContract = new UiPoolDataProvider({
-  uiPoolDataProviderAddress: markets.AaveV3Ethereum.UI_POOL_DATA_PROVIDER,
-  provider,
-  chainId: ChainId.mainnet,
-});
-
-// View contract used to fetch all reserve incentives (APRs), and user incentives
-// Using Aave V3 Eth Mainnet address for demo
-const incentiveDataProviderContract = new UiIncentiveDataProvider({
-  uiIncentiveDataProviderAddress: markets.AaveV3Ethereum.UI_POOL_DATA_PROVIDER,
-  provider,
-  chainId: ChainId.mainnet,
-});
-
-// Note, contract calls should be performed in an async block, and updated on interval or on network/market change
-
-// Object containing array of pool reserves and market base currency data
-// { reservesArray, baseCurrencyData }
-const reserves = await poolDataProviderContract.getReservesHumanized({
-  lendingPoolAddressProvider: markets.AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
-});
-
-// Object containing array or users aave positions and active eMode category
-// { userReserves, userEmodeCategoryId }
-const userReserves = await poolDataProviderContract.getUserReservesHumanized({
-  lendingPoolAddressProvider: markets.AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
-  currentAccount,
-});
-
-// Array of incentive tokens with price feed and emission APR
-const reserveIncentives =
-  await incentiveDataProviderContract.getReservesIncentivesDataHumanized({
+async function fetchContractData() {
+  // Object containing array of pool reserves and market base currency data
+  // { reservesArray, baseCurrencyData }
+  const reserves = await poolDataProviderContract.getReservesHumanized({
     lendingPoolAddressProvider: markets.AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
   });
 
-// Dictionary of claimable user incentives
-const userIncentives =
-  await incentiveDataProviderContract.getUserReservesIncentivesDataHumanized({
+  // Object containing array or users aave positions and active eMode category
+  // { userReserves, userEmodeCategoryId }
+  const userReserves = await poolDataProviderContract.getUserReservesHumanized({
     lendingPoolAddressProvider: markets.AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
-    currentAccount,
+    user: currentAccount,
   });
-```
 
-</details>
+  // Array of incentive tokens with price feed and emission APR
+  const reserveIncentives =
+    await incentiveDataProviderContract.getReservesIncentivesDataHumanized({
+      lendingPoolAddressProvider:
+        markets.AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
+    });
+
+  // Dictionary of claimable user incentives
+  const userIncentives =
+    await incentiveDataProviderContract.getUserReservesIncentivesDataHumanized({
+      lendingPoolAddressProvider:
+        markets.AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
+      user: currentAccount,
+    });
+
+  console.log({ reserves, userReserves, reserveIncentives, userIncentives });
+}
+
+fetchContractData();
+```
 
 ## Markets Data
 
@@ -627,7 +574,7 @@ const txs: EthereumTransactionTypeExtended[] = await pool.supplyWithPermit({
 });
 ```
 
-Submit transaction as shown [here](#submitting-transactions)
+Submit transaction as shown [here](#transactions-setup)
 
 </details>
 
