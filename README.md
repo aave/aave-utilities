@@ -43,12 +43,12 @@ yarn add @aave/contract-helpers @aave/math-utils
 
 ## Features
 
-1.  [Data Methods](#data-formatting-methods)
-    - a. [Setup](#setup)
+1.  [Data Methods](#data-methods)
+    - a. [Setup](#data-methods-setup)
     - a. [Markets Data](#markets-data)
     - b. [User Data](#user-data)
 2.  [Transaction Methods](#transaction-methods)
-    - a. [Setup](#setup)
+    - a. [Setup](#transactions-setup)
     - b. [Pool V3](#pool-v3)
       - [supply](#supply)
       - [signERC20Approval](#signERC20Approval)
@@ -98,7 +98,7 @@ The `@aave/contract-helpers` and `@aave/math-utils` packages are utilities to
 fetch and format smart contract data respectively. This section will guide you
 to setup and use these packages to query Aave Protocol data.
 
-## Setup
+## Data Methods Setup
 
 After installing the aave-utilities packages, it's also recommended to add the
 [Aave Address Book](https://github.com/bgd-labs/aave-address-book#usage-with-node)
@@ -468,13 +468,14 @@ const userSummary = formatUserSummaryAndIncentives({
 
 The transaction methods package provides an sdk to interact with Aave Protocol
 contracts. See [ethers.js](#ethers.js) for instructions on installing setting up
-and ethers provider
+an ethers provider
 
 Once initialized this sdk can be used to generate the transaction data needed to
-perform an action. If an approval is required, the method will return an array
-with two transactions, or single transaction if no approval is needed.
+perform protocol interactions. If an approval is required, the method will
+return an array with two transactions, or single transaction if no approval is
+needed.
 
-## Pverview
+## Transactions Setup
 
 All transaction methods will return an array of transaction objects of this
 type:
