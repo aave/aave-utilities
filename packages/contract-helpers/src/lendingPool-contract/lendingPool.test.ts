@@ -1053,7 +1053,7 @@ describe('LendingPool', () => {
         gasLimitRecommendations[ProtocolAction.repay].recommended,
       );
     });
-    it('Expects the tx object passing all params with amount -1 with approve needed and reate stable', async () => {
+    it('Expects the tx object passing all params with amount -1 with approve needed and rate stable', async () => {
       const lendingPoolInstance = new LendingPool(provider, config);
       const isApprovedSpy = jest
         .spyOn(lendingPoolInstance.erc20Service, 'isApproved')
@@ -1310,7 +1310,7 @@ describe('LendingPool', () => {
     afterEach(() => {
       jest.clearAllMocks();
     });
-    it('Expects the tx object passing all params with Inerest rate None', async () => {
+    it('Expects the tx object passing all params with Interest rate None', async () => {
       const lendingPoolInstance = new LendingPool(provider, config);
 
       const swapBorrowRateModeTxObj = lendingPoolInstance.swapBorrowRateMode({
@@ -1343,7 +1343,7 @@ describe('LendingPool', () => {
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
     });
-    it('Expects the tx object passing all params with Inerest rate Stable', async () => {
+    it('Expects the tx object passing all params with Interest rate Stable', async () => {
       const lendingPoolInstance = new LendingPool(provider, config);
       const interestRateMode = InterestRate.Stable;
       const swapBorrowRateModeTxObj = lendingPoolInstance.swapBorrowRateMode({
@@ -1376,7 +1376,7 @@ describe('LendingPool', () => {
       expect(gasPrice?.gasLimit).toEqual('1');
       expect(gasPrice?.gasPrice).toEqual('1');
     });
-    it('Expects the tx object passing all params with Inerest rate Variable', async () => {
+    it('Expects the tx object passing all params with Interest rate Variable', async () => {
       const lendingPoolInstance = new LendingPool(provider, config);
       const interestRateMode = InterestRate.Variable;
       const swapBorrowRateModeTxObj = lendingPoolInstance.swapBorrowRateMode({

@@ -2086,7 +2086,7 @@ describe('Pool', () => {
 
       expect(depositTxObj.length).toEqual(0);
     });
-    it('Expects the tx object passing all params with amount -1 with approve needed and reate stable', async () => {
+    it('Expects the tx object passing all params with amount -1 with approve needed and rate stable', async () => {
       const poolInstance = new Pool(provider, config);
       const isApprovedSpy = jest
         .spyOn(poolInstance.erc20Service, 'isApproved')
@@ -2444,7 +2444,7 @@ describe('Pool', () => {
 
       expect(depositTxObj.length).toEqual(0);
     });
-    it('Expects the tx object passing all params with amount -1 and reate stable', async () => {
+    it('Expects the tx object passing all params with amount -1 and rate stable', async () => {
       const poolInstance = new Pool(provider, config);
       const decimalsSpy = jest
         .spyOn(poolInstance.erc20Service, 'decimalsOf')
@@ -5244,7 +5244,7 @@ describe('Pool', () => {
         'Can not repay with aTokens with eth. Should be WETH instead',
       );
     });
-    it('Expects the tx object passing all params with amount -1 with reate stable', async () => {
+    it('Expects the tx object passing all params with amount -1 with rate stable', async () => {
       const poolInstance = new Pool(provider, config);
       const decimalsSpy = jest
         .spyOn(poolInstance.erc20Service, 'decimalsOf')
