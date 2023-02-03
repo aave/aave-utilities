@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.13.5 (2023-02-03)
+
+
+### Bug Fixes
+
+* Fix typos ([#486](https://github.com/aave/aave-utilities/issues/486)) ([db4cef5](https://github.com/aave/aave-utilities/commit/db4cef584a68f951183df25ffa2e8f2042893d21))
+
+
+
+
+
 ## 1.13.4 (2023-02-03)
 
 
