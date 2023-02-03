@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.13.4 (2023-02-03)
+
+
+### Bug Fixes
+
+* check for liq threshold in place of ltv for user collateral check ([#505](https://github.com/aave/aave-utilities/issues/505)) ([7c776d2](https://github.com/aave/aave-utilities/commit/7c776d23c50ff0d5240151a922c64e837818283d))
+
+
+
+
+
 ## 1.13.3 (2023-01-26)
 
 
