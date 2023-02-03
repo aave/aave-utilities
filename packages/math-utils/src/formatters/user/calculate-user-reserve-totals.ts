@@ -40,7 +40,8 @@ export function calculateUserReserveTotals({
       .plus(userReserveSummary.stableBorrowsMarketReferenceCurrency);
 
     if (
-      userReserveSummary.userReserve.reserve.usageAsCollateralEnabled &&
+      userReserveSummary.userReserve.reserve.reserveLiquidationThreshold !==
+        '0' &&
       userReserveSummary.userReserve.usageAsCollateralEnabledOnUser
     ) {
       if (userReserveSummary.userReserve.reserve.debtCeiling !== '0') {
