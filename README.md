@@ -1,4 +1,4 @@
-<p align="center"> <a href="https://aave.com/" rel="noopener" target="_blank"><img width="150" src="https://aave.com/static/media/ghostGradient.77808e40.svg" alt="Aave logo"></a></p>
+<p align="center"> <a href="https://aave.com/" rel="noopener" target="_blank"><img width="250" src="https://bafybeigdkkhqiv756fo5mvuabazdg4o3adxqfungen5yan6ogdahf2alem.ipfs.dweb.link/aavepng.png" alt="Aave logo"></a></p>
 
 <h1 align="center">Aave Utilities</h1>
 
