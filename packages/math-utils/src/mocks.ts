@@ -343,7 +343,7 @@ export class GhoMock {
     };
 
     this.ghoUserData = {
-      userGhoDiscountRate: '1000', // 10%
+      userGhoDiscountPercent: '1000', // 10%
       userDiscountTokenBalance: (10 ** 20).toString(), // 100
       userPreviousGhoBorrowIndex: RAY.toString(),
       userGhoScaledBorrowBalance: (10 ** 18).toString(), // 1

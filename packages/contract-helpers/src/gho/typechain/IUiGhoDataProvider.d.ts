@@ -17,20 +17,21 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-} from '../../../../common';
+  PromiseOrValue,
+} from '../../../../../../common';
 
 export declare namespace IUiGhoDataProvider {
   export type GhoReserveDataStruct = {
-    ghoBaseVariableBorrowRate: BigNumberish;
-    ghoDiscountedPerToken: BigNumberish;
-    ghoDiscountRate: BigNumberish;
-    ghoDiscountLockPeriod: BigNumberish;
-    ghoMinDebtTokenBalanceForDiscount: BigNumberish;
-    ghoMinDiscountTokenBalanceForDiscount: BigNumberish;
-    ghoReserveLastUpdateTimestamp: BigNumberish;
-    ghoCurrentBorrowIndex: BigNumberish;
-    aaveFacilitatorBucketLevel: BigNumberish;
-    aaveFacilitatorBucketMaxCapacity: BigNumberish;
+    ghoBaseVariableBorrowRate: PromiseOrValue<BigNumberish>;
+    ghoDiscountedPerToken: PromiseOrValue<BigNumberish>;
+    ghoDiscountRate: PromiseOrValue<BigNumberish>;
+    ghoDiscountLockPeriod: PromiseOrValue<BigNumberish>;
+    ghoMinDebtTokenBalanceForDiscount: PromiseOrValue<BigNumberish>;
+    ghoMinDiscountTokenBalanceForDiscount: PromiseOrValue<BigNumberish>;
+    ghoReserveLastUpdateTimestamp: PromiseOrValue<BigNumberish>;
+    ghoCurrentBorrowIndex: PromiseOrValue<BigNumberish>;
+    aaveFacilitatorBucketLevel: PromiseOrValue<BigNumberish>;
+    aaveFacilitatorBucketMaxCapacity: PromiseOrValue<BigNumberish>;
   };
 
   export type GhoReserveDataStructOutput = [
@@ -58,11 +59,11 @@ export declare namespace IUiGhoDataProvider {
   };
 
   export type GhoUserDataStruct = {
-    userGhoDiscountRate: BigNumberish;
-    userDiscountTokenBalance: BigNumberish;
-    userPreviousGhoBorrowIndex: BigNumberish;
-    userGhoScaledBorrowBalance: BigNumberish;
-    userDiscountLockPeriodEndTimestamp: BigNumberish;
+    userGhoDiscountPercent: PromiseOrValue<BigNumberish>;
+    userDiscountTokenBalance: PromiseOrValue<BigNumberish>;
+    userPreviousGhoBorrowIndex: PromiseOrValue<BigNumberish>;
+    userGhoScaledBorrowBalance: PromiseOrValue<BigNumberish>;
+    userDiscountLockPeriodEndTimestamp: PromiseOrValue<BigNumberish>;
   };
 
   export type GhoUserDataStructOutput = [
@@ -72,7 +73,7 @@ export declare namespace IUiGhoDataProvider {
     BigNumber,
     BigNumber,
   ] & {
-    userGhoDiscountRate: BigNumber;
+    userGhoDiscountPercent: BigNumber;
     userDiscountTokenBalance: BigNumber;
     userPreviousGhoBorrowIndex: BigNumber;
     userGhoScaledBorrowBalance: BigNumber;
@@ -96,7 +97,7 @@ export interface IUiGhoDataProviderInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getGhoUserData',
-    values: [string],
+    values: [PromiseOrValue<string>],
   ): string;
 
   decodeFunctionResult(
@@ -143,7 +144,7 @@ export interface IUiGhoDataProvider extends BaseContract {
     ): Promise<[IUiGhoDataProvider.GhoReserveDataStructOutput]>;
 
     getGhoUserData(
-      user: string,
+      user: PromiseOrValue<string>,
       overrides?: CallOverrides,
     ): Promise<[IUiGhoDataProvider.GhoUserDataStructOutput]>;
   };
@@ -153,7 +154,7 @@ export interface IUiGhoDataProvider extends BaseContract {
   ): Promise<IUiGhoDataProvider.GhoReserveDataStructOutput>;
 
   getGhoUserData(
-    user: string,
+    user: PromiseOrValue<string>,
     overrides?: CallOverrides,
   ): Promise<IUiGhoDataProvider.GhoUserDataStructOutput>;
 
@@ -163,7 +164,7 @@ export interface IUiGhoDataProvider extends BaseContract {
     ): Promise<IUiGhoDataProvider.GhoReserveDataStructOutput>;
 
     getGhoUserData(
-      user: string,
+      user: PromiseOrValue<string>,
       overrides?: CallOverrides,
     ): Promise<IUiGhoDataProvider.GhoUserDataStructOutput>;
   };
@@ -173,14 +174,17 @@ export interface IUiGhoDataProvider extends BaseContract {
   estimateGas: {
     getGhoReserveData(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getGhoUserData(user: string, overrides?: CallOverrides): Promise<BigNumber>;
+    getGhoUserData(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides,
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     getGhoReserveData(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getGhoUserData(
-      user: string,
+      user: PromiseOrValue<string>,
       overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
   };

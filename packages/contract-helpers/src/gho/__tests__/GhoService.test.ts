@@ -18,7 +18,7 @@ const ghoReserveDataMock: GhoReserveData = {
 };
 
 const ghoUserDataMock: GhoUserData = {
-  userGhoDiscountRate: '0',
+  userGhoDiscountPercent: '0',
   userDiscountTokenBalance: '0',
   userGhoScaledBorrowBalance: '0',
   userPreviousGhoBorrowIndex: '0',

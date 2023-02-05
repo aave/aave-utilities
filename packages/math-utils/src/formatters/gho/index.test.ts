@@ -34,7 +34,7 @@ describe('formatGhoData', () => {
       currentTimestamp: 2,
     });
 
-    expect(result.userGhoDiscountRate).toEqual(0.1);
+    expect(result.userGhoDiscountPercent).toEqual(0.1);
     expect(result.userGhoAvailableToBorrowAtDiscount).toEqual(10000);
     expect(result.userDiscountTokenBalance).toEqual(100);
     expect(result.userDiscountLockPeriodEndTimestamp).toEqual(1);

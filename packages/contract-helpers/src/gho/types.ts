@@ -12,7 +12,7 @@ export interface GhoReserveData {
 }
 
 export interface GhoUserData {
-  userGhoDiscountRate: string;
+  userGhoDiscountPercent: string;
   userDiscountTokenBalance: string;
   userPreviousGhoBorrowIndex: string;
   userGhoScaledBorrowBalance: string;
