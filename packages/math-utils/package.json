@@ -1,6 +1,6 @@
 {
   "name": "@aave/math-utils",
-  "version": "1.13.5",
+  "version": "1.0.0-gho-beta",
   "license": "MIT",
   "description": "",
   "scripts": {
