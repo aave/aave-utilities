@@ -48,6 +48,7 @@ import {
   ParaswapRepayWithCollateralInterface,
 } from '../paraswap-repayWithCollateralAdapter-contract';
 import { SynthetixInterface, SynthetixService } from '../synthetix-contract';
+import { IMigrationHelper } from '../v3-migration-contract/typechain/IMigrationHelper';
 import { L2Pool, L2PoolInterface } from '../v3-pool-rollups';
 import {
   WETHGatewayInterface,
@@ -312,6 +313,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         ),
       from: user,
       value: getTxValue(reserve, convertedAmount),
+      action: ProtocolAction.supply,
     });
 
     txs.push({
@@ -407,6 +409,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         ),
       from: user,
       value: getTxValue(reserve, convertedAmount),
+      action: ProtocolAction.supply,
     });
 
     txs.push({
@@ -558,12 +561,17 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           sig.s,
         ),
       from: user,
+      action: ProtocolAction.supplyWithPermit,
     });
 
     txs.push({
       tx: txCallback,
       txType: eEthereumTxType.DLP_ACTION,
-      gas: this.generateTxPriceEstimation(txs, txCallback),
+      gas: this.generateTxPriceEstimation(
+        txs,
+        txCallback,
+        ProtocolAction.supplyWithPermit,
+      ),
     });
 
     return txs;
@@ -706,13 +714,18 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           onBehalfOf ?? user,
         ),
       from: user,
+      action: ProtocolAction.borrow,
     });
 
     return [
       {
         tx: txCallback,
         txType: eEthereumTxType.DLP_ACTION,
-        gas: this.generateTxPriceEstimation([], txCallback),
+        gas: this.generateTxPriceEstimation(
+          [],
+          txCallback,
+          ProtocolAction.borrow,
+        ),
       },
     ];
   }
@@ -807,6 +820,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         ),
       from: user,
       value: getTxValue(reserve, convertedAmount),
+      action: ProtocolAction.repay,
     });
 
     txs.push({
@@ -895,6 +909,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         ),
       from: user,
       value: getTxValue(reserve, convertedAmount),
+      action: ProtocolAction.repayWithPermit,
     });
 
     txs.push({
@@ -903,7 +918,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       gas: this.generateTxPriceEstimation(
         txs,
         txCallback,
-        ProtocolAction.repay,
+        ProtocolAction.repayWithPermit,
       ),
     });
 
@@ -1175,6 +1190,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
               referralCode ?? '0',
             ),
           from: user,
+          action: ProtocolAction.swapCollateral,
         });
 
       txs.push({
@@ -1335,6 +1351,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
               referralCode ?? '0',
             ),
           from: user,
+          action: ProtocolAction.repayCollateral,
         });
 
       txs.push({
@@ -1567,14 +1584,16 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       borrowPosition.rateMode.toString(),
     ]);
 
-    const mappedPermits = permits.map(permit => [
-      permit.aToken,
-      permit.value,
-      permit.deadline,
-      permit.v,
-      permit.r,
-      permit.s,
-    ]);
+    const mappedPermits = permits.map(
+      (permit: IMigrationHelper.PermitInputStruct) => [
+        permit.aToken,
+        permit.value,
+        permit.deadline,
+        permit.v,
+        permit.r,
+        permit.s,
+      ],
+    );
 
     const params: string = utils.defaultAbiCoder.encode(
       [

@@ -121,7 +121,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.supply].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -137,7 +141,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.supply].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object passing all parameters but not onBehalfOf', async () => {
@@ -170,7 +176,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.supply].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -186,7 +196,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.supply].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object passing all parameters but not referral', async () => {
@@ -219,7 +231,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.supply].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -235,7 +251,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.supply].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object passing all parameters and needing approval', async () => {
@@ -280,7 +298,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.supply].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -463,7 +485,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.supply].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -479,7 +505,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.supply].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object passing all parameters with optimal path enabled', async () => {
@@ -543,7 +571,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.supply].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -559,7 +591,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.supply].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object passing all parameters but not referral', async () => {
@@ -592,7 +626,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.supply].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -608,7 +646,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.supply].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object passing all parameters and needing approval', async () => {
@@ -653,7 +693,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.supply].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -1009,7 +1053,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.supplyWithPermit].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -1042,7 +1090,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.supplyWithPermit].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object if all params ok and optimal path chosen', async () => {
@@ -1088,7 +1138,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.supplyWithPermit].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -1121,7 +1175,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.supplyWithPermit].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object if all params ok, without referralCode', async () => {
@@ -1145,7 +1201,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.supplyWithPermit].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -1178,7 +1238,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.supplyWithPermit].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects to fail when sythetix is not validated', async () => {
@@ -1632,7 +1694,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.borrow].recommended,
+        ),
+      );
 
       const decoded = utils.defaultAbiCoder.decode(
         ['address', 'uint256', 'uint256', 'uint16', 'address'],
@@ -1648,7 +1714,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.borrow].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object passing all parameters with optimal path selected', async () => {
@@ -1700,7 +1768,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.borrow].recommended,
+        ),
+      );
 
       const decoded = utils.defaultAbiCoder.decode(
         ['address', 'uint256', 'uint256', 'uint16', 'address'],
@@ -1716,7 +1788,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.borrow].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object passing all parameters with Interest rate Variable', async () => {
@@ -1744,7 +1818,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.borrow].recommended,
+        ),
+      );
 
       const decoded = utils.defaultAbiCoder.decode(
         ['address', 'uint256', 'uint256', 'uint16', 'address'],
@@ -1760,7 +1838,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.borrow].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects to fail when borrowing eth and not passing debtTokenAddress', async () => {
@@ -1951,7 +2031,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.repay].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -1967,7 +2051,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.repay].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object passing all params without onBehalfOf and no approval', async () => {
@@ -2000,7 +2086,7 @@ describe('Pool', () => {
 
       expect(depositTxObj.length).toEqual(0);
     });
-    it('Expects the tx object passing all params with amount -1 with approve needed and reate stable', async () => {
+    it('Expects the tx object passing all params with amount -1 with approve needed and rate stable', async () => {
       const poolInstance = new Pool(provider, config);
       const isApprovedSpy = jest
         .spyOn(poolInstance.erc20Service, 'isApproved')
@@ -2044,7 +2130,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.repay].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -2108,7 +2198,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.repay].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -2280,7 +2374,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.repayWithPermit].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -2313,7 +2411,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.repayWithPermit].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object passing all params with optimal path', async () => {
@@ -2344,7 +2444,7 @@ describe('Pool', () => {
 
       expect(depositTxObj.length).toEqual(0);
     });
-    it('Expects the tx object passing all params with amount -1 and reate stable', async () => {
+    it('Expects the tx object passing all params with amount -1 and rate stable', async () => {
       const poolInstance = new Pool(provider, config);
       const decimalsSpy = jest
         .spyOn(poolInstance.erc20Service, 'decimalsOf')
@@ -2376,7 +2476,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.repayWithPermit].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -2409,7 +2513,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.repayWithPermit].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object passing all params with with specific amount and synthetix repayment with valid amount and rate variable', async () => {
@@ -2442,7 +2548,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.repayWithPermit].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -2475,7 +2585,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.repayWithPermit].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects to fail passing all params with with specific amount and synthetix repayment but not valid amount', async () => {
@@ -3278,7 +3390,12 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.swapCollateral].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -3362,7 +3479,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.swapCollateral].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -3406,7 +3527,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.swapCollateral].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object passing all params without referralCode and no approval needed for flash', async () => {
@@ -3443,7 +3566,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.swapCollateral].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -3487,7 +3614,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.swapCollateral].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object passing all params and no approval needed with flash and no swapAll', async () => {
@@ -3525,7 +3654,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.swapCollateral].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -3569,7 +3702,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.swapCollateral].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object passing all params without permitSignature and no approval needed without flash', async () => {
@@ -3926,7 +4061,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.repayCollateral].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -4014,7 +4153,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.repayCollateral].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -4060,7 +4203,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.repayCollateral].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object passing all params and no approval needed for flash with rate mode Variable', async () => {
@@ -4100,7 +4245,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.repayCollateral].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -4146,7 +4295,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.repayCollateral].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object passing all params and no approval needed for flash without onBehalfOf', async () => {
@@ -4185,7 +4336,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.repayCollateral].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -4231,7 +4386,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.repayCollateral].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object passing all params and no approval needed for flash without referralCode', async () => {
@@ -4270,7 +4427,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.repayCollateral].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -4316,7 +4477,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.repayCollateral].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object passing all params and no approval needed without flash and not repayAllDebt', async () => {
@@ -4355,7 +4518,11 @@ describe('Pool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.repayCollateral].recommended,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -4401,7 +4568,9 @@ describe('Pool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.repayCollateral].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object passing all params and no permitSignature, and no flash', async () => {
@@ -5075,7 +5244,7 @@ describe('Pool', () => {
         'Can not repay with aTokens with eth. Should be WETH instead',
       );
     });
-    it('Expects the tx object passing all params with amount -1 with reate stable', async () => {
+    it('Expects the tx object passing all params with amount -1 with rate stable', async () => {
       const poolInstance = new Pool(provider, config);
       const decimalsSpy = jest
         .spyOn(poolInstance.erc20Service, 'decimalsOf')

@@ -35,7 +35,7 @@ describe('BaseService', () => {
     afterEach(() => {
       jest.clearAllMocks();
     });
-    it('Expects to initalize new instance', () => {
+    it('Expects to initialize new instance', () => {
       const spy = jest.spyOn(Test__factory, 'connect');
 
       const baseService = new BaseService(provider, Test__factory);
@@ -90,7 +90,7 @@ describe('BaseService', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
       expect(tx.gasLimit).toEqual(BigNumber.from(1));
     });
-    it('Expects a tx object with recomended gas limit', async () => {
+    it('Expects a tx object with recommended gas limit', async () => {
       const txCallback = baseService.generateTxCallback({
         rawTxMethod,
         from,

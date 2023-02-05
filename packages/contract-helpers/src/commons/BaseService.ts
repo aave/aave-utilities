@@ -93,7 +93,7 @@ export default class BaseService<T extends Contract> {
         const { gasLimit, gasPrice: gasPriceProv }: transactionType =
           await txCallback();
         if (!gasLimit) {
-          // If we don't recieve the correct gas we throw a error
+          // If we don't receive the correct gas we throw an error
           throw new Error('Transaction calculation error');
         }
 

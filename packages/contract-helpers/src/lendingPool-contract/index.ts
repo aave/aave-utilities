@@ -261,6 +261,7 @@ export class LendingPool
         ),
       from: user,
       value: getTxValue(reserve, convertedAmount),
+      action: ProtocolAction.deposit,
     });
 
     txs.push({
@@ -391,13 +392,18 @@ export class LendingPool
           onBehalfOf ?? user,
         ),
       from: user,
+      action: ProtocolAction.borrow,
     });
 
     return [
       {
         tx: txCallback,
         txType: eEthereumTxType.DLP_ACTION,
-        gas: this.generateTxPriceEstimation([], txCallback),
+        gas: this.generateTxPriceEstimation(
+          [],
+          txCallback,
+          ProtocolAction.borrow,
+        ),
       },
     ];
   }
@@ -475,6 +481,7 @@ export class LendingPool
         ),
       from: user,
       value: getTxValue(reserve, convertedAmount),
+      action: ProtocolAction.repay,
     });
 
     txs.push({
@@ -731,6 +738,7 @@ export class LendingPool
               referralCode ?? '0',
             ),
           from: user,
+          action: ProtocolAction.swapCollateral,
         });
 
       txs.push({
@@ -881,6 +889,7 @@ export class LendingPool
               referralCode ?? '0',
             ),
           from: user,
+          action: ProtocolAction.repayCollateral,
         });
 
       txs.push({
@@ -1045,6 +1054,7 @@ export class LendingPool
               referralCode ?? '0',
             ),
           from: user,
+          action: ProtocolAction.repayCollateral,
         });
 
       txs.push({
