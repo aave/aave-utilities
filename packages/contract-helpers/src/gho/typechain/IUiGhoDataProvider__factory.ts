@@ -56,14 +56,14 @@ const _abi = [
             type: 'uint128',
           },
           {
-            internalType: 'uint128',
+            internalType: 'uint256',
             name: 'aaveFacilitatorBucketLevel',
-            type: 'uint128',
+            type: 'uint256',
           },
           {
-            internalType: 'uint128',
+            internalType: 'uint256',
             name: 'aaveFacilitatorBucketMaxCapacity',
-            type: 'uint128',
+            type: 'uint256',
           },
         ],
         internalType: 'struct IUiGhoDataProvider.GhoReserveData',
@@ -88,7 +88,7 @@ const _abi = [
         components: [
           {
             internalType: 'uint256',
-            name: 'userGhoDiscountRate',
+            name: 'userGhoDiscountPercent',
             type: 'uint256',
           },
           {
@@ -120,7 +120,7 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class IUiGhoDataProvider__factory {
   static readonly abi = _abi;
