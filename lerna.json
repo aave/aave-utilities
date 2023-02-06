@@ -6,8 +6,9 @@
   "private": true,
   "command": {
     "publish": {
-      "allowBranch": ["master", "feat/gho-testnet"],
+      "allowBranch": ["master"],
       "commitHooks": false,
+      "conventionalCommits": true,
       "message": "chore(release): [skip ci]"
     }
   }
