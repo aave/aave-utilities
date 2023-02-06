@@ -153,7 +153,6 @@ const provider = new ethers.providers.StaticJsonRpcProvider(
 );
 
 // Aave protocol contract addresses, will be different for each market and can be found at https://docs.aave.com/developers/deployed-contracts/deployed-contracts
-// For V3 Testnet Release, contract addresses can be found here https://github.com/aave/aave-ui/blob/feat/arbitrum-clean/src/ui-config/markets/index.ts
 const uiPoolDataProviderAddress = '0xa2DC1422E0cE89E1074A6cd7e2481e8e9c4415A6';
 const uiIncentiveDataProviderAddress =
   '0xD01ab9a6577E1D84F142e44D49380e23A340387d';
