@@ -78,7 +78,7 @@ export class GhoService implements IGhoService {
     );
 
     return {
-      userGhoDiscountRate: ghoUserData.userGhoDiscountRate.toString(),
+      userGhoDiscountPercent: ghoUserData.userGhoDiscountPercent.toString(),
       userDiscountTokenBalance: ghoUserData.userDiscountTokenBalance.toString(),
       userGhoScaledBorrowBalance:
         ghoUserData.userGhoScaledBorrowBalance.toString(),

@@ -18,7 +18,7 @@ export interface GhoReserveData {
 }
 
 export interface GhoUserData {
-  userGhoDiscountRate: string;
+  userGhoDiscountPercent: string;
   userDiscountTokenBalance: string;
   userPreviousGhoBorrowIndex: string;
   userGhoScaledBorrowBalance: string;
@@ -41,7 +41,7 @@ export interface FormattedGhoReserveData {
 }
 
 export interface FormattedGhoUserData {
-  userGhoDiscountRate: number;
+  userGhoDiscountPercent: number;
   userDiscountTokenBalance: number;
   userGhoBorrowBalance: number;
   userDiscountedGhoInterest: number;
@@ -126,11 +126,13 @@ export function formatGhoUserData({
     ),
   );
   const discount = accruedInterest.multipliedBy(
-    1 - Number(normalize(ghoUserData.userGhoDiscountRate, 4)),
+    1 - Number(normalize(ghoUserData.userGhoDiscountPercent, 4)),
   );
   const userBorrowBalance = userBalancePreDiscount.minus(discount);
   return {
-    userGhoDiscountRate: Number(normalize(ghoUserData.userGhoDiscountRate, 4)),
+    userGhoDiscountPercent: Number(
+      normalize(ghoUserData.userGhoDiscountPercent, 4),
+    ),
     userDiscountTokenBalance: formattedUserDiscountTokenBalance,
     userGhoBorrowBalance: Number(normalize(userBorrowBalance, 18)),
     userDiscountLockPeriodEndTimestamp: Number(

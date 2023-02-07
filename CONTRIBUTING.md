@@ -116,5 +116,5 @@ also in the package.json paste these in:
 "types": "./dist/esm/index.d.ts",
 ```
 
-Thats it now start writing your logic, you must write your typescript code in
+That's it. Now start writing your logic. You must write your typescript code in
 the `src` folder in your package.

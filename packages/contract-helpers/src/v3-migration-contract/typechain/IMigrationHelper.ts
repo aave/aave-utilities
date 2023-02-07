@@ -23,6 +23,16 @@ import type {
 } from './common';
 
 export declare namespace IMigrationHelper {
+  export type RepaySimpleInputStruct = {
+    asset: PromiseOrValue<string>;
+    rateMode: PromiseOrValue<BigNumberish>;
+  };
+
+  export type RepaySimpleInputStructOutput = [string, BigNumber] & {
+    asset: string;
+    rateMode: BigNumber;
+  };
+
   export type PermitInputStruct = {
     aToken: PromiseOrValue<string>;
     value: PromiseOrValue<BigNumberish>;
@@ -47,17 +57,55 @@ export declare namespace IMigrationHelper {
     r: string;
     s: string;
   };
+
+  export type CreditDelegationInputStruct = {
+    debtToken: PromiseOrValue<string>;
+    value: PromiseOrValue<BigNumberish>;
+    deadline: PromiseOrValue<BigNumberish>;
+    v: PromiseOrValue<BigNumberish>;
+    r: PromiseOrValue<BytesLike>;
+    s: PromiseOrValue<BytesLike>;
+  };
+
+  export type CreditDelegationInputStructOutput = [
+    string,
+    BigNumber,
+    BigNumber,
+    number,
+    string,
+    string,
+  ] & {
+    debtToken: string;
+    value: BigNumber;
+    deadline: BigNumber;
+    v: number;
+    r: string;
+    s: string;
+  };
+
+  export type EmergencyTransferInputStruct = {
+    asset: PromiseOrValue<string>;
+    amount: PromiseOrValue<BigNumberish>;
+    to: PromiseOrValue<string>;
+  };
+
+  export type EmergencyTransferInputStructOutput = [
+    string,
+    BigNumber,
+    string,
+  ] & { asset: string; amount: BigNumber; to: string };
 }
 
-export interface MigrationHelperInterface extends utils.Interface {
+export interface IMigrationHelperInterface extends utils.Interface {
   functions: {
     'ADDRESSES_PROVIDER()': FunctionFragment;
     'POOL()': FunctionFragment;
     'V2_POOL()': FunctionFragment;
-    'aTokens(address)': FunctionFragment;
     'cacheATokens()': FunctionFragment;
     'executeOperation(address[],uint256[],uint256[],address,bytes)': FunctionFragment;
-    'migrationNoBorrow(address,address[],(address,uint256,uint256,uint8,bytes32,bytes32)[])': FunctionFragment;
+    'getMigrationSupply(address,uint256)': FunctionFragment;
+    'migrate(address[],(address,uint256)[],(address,uint256,uint256,uint8,bytes32,bytes32)[],(address,uint256,uint256,uint8,bytes32,bytes32)[])': FunctionFragment;
+    'rescueFunds((address,uint256,address)[])': FunctionFragment;
   };
 
   getFunction(
@@ -65,10 +113,11 @@ export interface MigrationHelperInterface extends utils.Interface {
       | 'ADDRESSES_PROVIDER'
       | 'POOL'
       | 'V2_POOL'
-      | 'aTokens'
       | 'cacheATokens'
       | 'executeOperation'
-      | 'migrationNoBorrow',
+      | 'getMigrationSupply'
+      | 'migrate'
+      | 'rescueFunds',
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -77,10 +126,6 @@ export interface MigrationHelperInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: 'POOL', values?: undefined): string;
   encodeFunctionData(functionFragment: 'V2_POOL', values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: 'aTokens',
-    values: [PromiseOrValue<string>],
-  ): string;
   encodeFunctionData(
     functionFragment: 'cacheATokens',
     values?: undefined,
@@ -96,12 +141,21 @@ export interface MigrationHelperInterface extends utils.Interface {
     ],
   ): string;
   encodeFunctionData(
-    functionFragment: 'migrationNoBorrow',
+    functionFragment: 'getMigrationSupply',
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>],
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'migrate',
     values: [
-      PromiseOrValue<string>,
       PromiseOrValue<string>[],
+      IMigrationHelper.RepaySimpleInputStruct[],
       IMigrationHelper.PermitInputStruct[],
+      IMigrationHelper.CreditDelegationInputStruct[],
     ],
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'rescueFunds',
+    values: [IMigrationHelper.EmergencyTransferInputStruct[]],
   ): string;
 
   decodeFunctionResult(
@@ -110,7 +164,6 @@ export interface MigrationHelperInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'POOL', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'V2_POOL', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'aTokens', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'cacheATokens',
     data: BytesLike,
@@ -120,19 +173,24 @@ export interface MigrationHelperInterface extends utils.Interface {
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'migrationNoBorrow',
+    functionFragment: 'getMigrationSupply',
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(functionFragment: 'migrate', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'rescueFunds',
     data: BytesLike,
   ): Result;
 
   events: {};
 }
 
-export interface MigrationHelper extends BaseContract {
+export interface IMigrationHelper extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: MigrationHelperInterface;
+  interface: IMigrationHelperInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -158,30 +216,39 @@ export interface MigrationHelper extends BaseContract {
 
     POOL(overrides?: CallOverrides): Promise<[string]>;
 
-    V2_POOL(overrides?: CallOverrides): Promise<[string]>;
-
-    aTokens(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides,
-    ): Promise<[string]>;
+    V2_POOL(
+      overrides?: Overrides & { from?: PromiseOrValue<string> },
+    ): Promise<ContractTransaction>;
 
     cacheATokens(
       overrides?: Overrides & { from?: PromiseOrValue<string> },
     ): Promise<ContractTransaction>;
 
     executeOperation(
-      arg0: PromiseOrValue<string>[],
-      arg1: PromiseOrValue<BigNumberish>[],
-      arg2: PromiseOrValue<BigNumberish>[],
+      assets: PromiseOrValue<string>[],
+      amounts: PromiseOrValue<BigNumberish>[],
+      premiums: PromiseOrValue<BigNumberish>[],
       initiator: PromiseOrValue<string>,
       params: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> },
     ): Promise<ContractTransaction>;
 
-    migrationNoBorrow(
-      user: PromiseOrValue<string>,
-      assets: PromiseOrValue<string>[],
+    getMigrationSupply(
+      asset: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides,
+    ): Promise<[string, BigNumber]>;
+
+    migrate(
+      assetsToMigrate: PromiseOrValue<string>[],
+      positionsToRepay: IMigrationHelper.RepaySimpleInputStruct[],
       permits: IMigrationHelper.PermitInputStruct[],
+      creditDelegationPermits: IMigrationHelper.CreditDelegationInputStruct[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> },
+    ): Promise<ContractTransaction>;
+
+    rescueFunds(
+      emergencyInput: IMigrationHelper.EmergencyTransferInputStruct[],
       overrides?: Overrides & { from?: PromiseOrValue<string> },
     ): Promise<ContractTransaction>;
   };
@@ -190,30 +257,39 @@ export interface MigrationHelper extends BaseContract {
 
   POOL(overrides?: CallOverrides): Promise<string>;
 
-  V2_POOL(overrides?: CallOverrides): Promise<string>;
-
-  aTokens(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides,
-  ): Promise<string>;
+  V2_POOL(
+    overrides?: Overrides & { from?: PromiseOrValue<string> },
+  ): Promise<ContractTransaction>;
 
   cacheATokens(
     overrides?: Overrides & { from?: PromiseOrValue<string> },
   ): Promise<ContractTransaction>;
 
   executeOperation(
-    arg0: PromiseOrValue<string>[],
-    arg1: PromiseOrValue<BigNumberish>[],
-    arg2: PromiseOrValue<BigNumberish>[],
+    assets: PromiseOrValue<string>[],
+    amounts: PromiseOrValue<BigNumberish>[],
+    premiums: PromiseOrValue<BigNumberish>[],
     initiator: PromiseOrValue<string>,
     params: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> },
   ): Promise<ContractTransaction>;
 
-  migrationNoBorrow(
-    user: PromiseOrValue<string>,
-    assets: PromiseOrValue<string>[],
+  getMigrationSupply(
+    asset: PromiseOrValue<string>,
+    amount: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides,
+  ): Promise<[string, BigNumber]>;
+
+  migrate(
+    assetsToMigrate: PromiseOrValue<string>[],
+    positionsToRepay: IMigrationHelper.RepaySimpleInputStruct[],
     permits: IMigrationHelper.PermitInputStruct[],
+    creditDelegationPermits: IMigrationHelper.CreditDelegationInputStruct[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> },
+  ): Promise<ContractTransaction>;
+
+  rescueFunds(
+    emergencyInput: IMigrationHelper.EmergencyTransferInputStruct[],
     overrides?: Overrides & { from?: PromiseOrValue<string> },
   ): Promise<ContractTransaction>;
 
@@ -224,26 +300,33 @@ export interface MigrationHelper extends BaseContract {
 
     V2_POOL(overrides?: CallOverrides): Promise<string>;
 
-    aTokens(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides,
-    ): Promise<string>;
-
     cacheATokens(overrides?: CallOverrides): Promise<void>;
 
     executeOperation(
-      arg0: PromiseOrValue<string>[],
-      arg1: PromiseOrValue<BigNumberish>[],
-      arg2: PromiseOrValue<BigNumberish>[],
+      assets: PromiseOrValue<string>[],
+      amounts: PromiseOrValue<BigNumberish>[],
+      premiums: PromiseOrValue<BigNumberish>[],
       initiator: PromiseOrValue<string>,
       params: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides,
     ): Promise<boolean>;
 
-    migrationNoBorrow(
-      user: PromiseOrValue<string>,
-      assets: PromiseOrValue<string>[],
+    getMigrationSupply(
+      asset: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides,
+    ): Promise<[string, BigNumber]>;
+
+    migrate(
+      assetsToMigrate: PromiseOrValue<string>[],
+      positionsToRepay: IMigrationHelper.RepaySimpleInputStruct[],
       permits: IMigrationHelper.PermitInputStruct[],
+      creditDelegationPermits: IMigrationHelper.CreditDelegationInputStruct[],
+      overrides?: CallOverrides,
+    ): Promise<void>;
+
+    rescueFunds(
+      emergencyInput: IMigrationHelper.EmergencyTransferInputStruct[],
       overrides?: CallOverrides,
     ): Promise<void>;
   };
@@ -255,11 +338,8 @@ export interface MigrationHelper extends BaseContract {
 
     POOL(overrides?: CallOverrides): Promise<BigNumber>;
 
-    V2_POOL(overrides?: CallOverrides): Promise<BigNumber>;
-
-    aTokens(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides,
+    V2_POOL(
+      overrides?: Overrides & { from?: PromiseOrValue<string> },
     ): Promise<BigNumber>;
 
     cacheATokens(
@@ -267,18 +347,30 @@ export interface MigrationHelper extends BaseContract {
     ): Promise<BigNumber>;
 
     executeOperation(
-      arg0: PromiseOrValue<string>[],
-      arg1: PromiseOrValue<BigNumberish>[],
-      arg2: PromiseOrValue<BigNumberish>[],
+      assets: PromiseOrValue<string>[],
+      amounts: PromiseOrValue<BigNumberish>[],
+      premiums: PromiseOrValue<BigNumberish>[],
       initiator: PromiseOrValue<string>,
       params: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> },
     ): Promise<BigNumber>;
 
-    migrationNoBorrow(
-      user: PromiseOrValue<string>,
-      assets: PromiseOrValue<string>[],
+    getMigrationSupply(
+      asset: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides,
+    ): Promise<BigNumber>;
+
+    migrate(
+      assetsToMigrate: PromiseOrValue<string>[],
+      positionsToRepay: IMigrationHelper.RepaySimpleInputStruct[],
       permits: IMigrationHelper.PermitInputStruct[],
+      creditDelegationPermits: IMigrationHelper.CreditDelegationInputStruct[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> },
+    ): Promise<BigNumber>;
+
+    rescueFunds(
+      emergencyInput: IMigrationHelper.EmergencyTransferInputStruct[],
       overrides?: Overrides & { from?: PromiseOrValue<string> },
     ): Promise<BigNumber>;
   };
@@ -290,11 +382,8 @@ export interface MigrationHelper extends BaseContract {
 
     POOL(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    V2_POOL(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    aTokens(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides,
+    V2_POOL(
+      overrides?: Overrides & { from?: PromiseOrValue<string> },
     ): Promise<PopulatedTransaction>;
 
     cacheATokens(
@@ -302,18 +391,30 @@ export interface MigrationHelper extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     executeOperation(
-      arg0: PromiseOrValue<string>[],
-      arg1: PromiseOrValue<BigNumberish>[],
-      arg2: PromiseOrValue<BigNumberish>[],
+      assets: PromiseOrValue<string>[],
+      amounts: PromiseOrValue<BigNumberish>[],
+      premiums: PromiseOrValue<BigNumberish>[],
       initiator: PromiseOrValue<string>,
       params: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> },
     ): Promise<PopulatedTransaction>;
 
-    migrationNoBorrow(
-      user: PromiseOrValue<string>,
-      assets: PromiseOrValue<string>[],
+    getMigrationSupply(
+      asset: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides,
+    ): Promise<PopulatedTransaction>;
+
+    migrate(
+      assetsToMigrate: PromiseOrValue<string>[],
+      positionsToRepay: IMigrationHelper.RepaySimpleInputStruct[],
       permits: IMigrationHelper.PermitInputStruct[],
+      creditDelegationPermits: IMigrationHelper.CreditDelegationInputStruct[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> },
+    ): Promise<PopulatedTransaction>;
+
+    rescueFunds(
+      emergencyInput: IMigrationHelper.EmergencyTransferInputStruct[],
       overrides?: Overrides & { from?: PromiseOrValue<string> },
     ): Promise<PopulatedTransaction>;
   };

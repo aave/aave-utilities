@@ -1,5 +1,11 @@
 import { BigNumber, providers, utils } from 'ethers';
-import { eEthereumTxType, GasType, transactionType } from '../commons/types';
+import {
+  eEthereumTxType,
+  GasType,
+  ProtocolAction,
+  transactionType,
+} from '../commons/types';
+import { gasLimitRecommendations } from '../commons/utils';
 import { IAaveGovernanceV2 } from './typechain/IAaveGovernanceV2';
 import { IAaveGovernanceV2__factory } from './typechain/IAaveGovernanceV2__factory';
 import { IGovernanceStrategy } from './typechain/IGovernanceStrategy';
@@ -153,7 +159,11 @@ describe('GovernanceService', () => {
       const tx: transactionType = await voteTxObj[0].tx();
       expect(tx.to).toEqual(GOVERNANCE_ADDRESS);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.vote].recommended,
+        ),
+      );
 
       const decoded = utils.defaultAbiCoder.decode(
         ['uint256', 'bool'],
@@ -166,7 +176,9 @@ describe('GovernanceService', () => {
       // gas price
       const gasPrice: GasType | null = await voteTxObj[0].gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.vote].recommended,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects to fail when gov address not eth address', () => {

@@ -96,6 +96,7 @@ export enum eEthereumTxType {
 export enum ProtocolAction {
   default = 'default',
   supply = 'supply',
+  borrow = 'borrow',
   withdraw = 'withdraw',
   deposit = 'deposit',
   liquidationCall = 'liquidationCall',
@@ -110,6 +111,7 @@ export enum ProtocolAction {
   repayWithPermit = 'repayWithPermit',
   stake = 'stake',
   stakeWithPermit = 'stakeWithPermit',
+  vote = 'vote',
 }
 
 export enum GovernanceVote {
