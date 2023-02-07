@@ -39,41 +39,17 @@ All notable changes to this project will be documented in this file. See
 
 ### Bug Fixes
 
-<<<<<<< HEAD
-
-- imports and file loaders
-  ([#477](https://github.com/aave/aave-utilities/issues/477))
-  ([42e8530](https://github.com/aave/aave-utilities/commit/42e853041820a35696c1017eb2fb082aeb9e3c89))
-  =======
-
-* apply default gas limit estimations
+- apply default gas limit estimations
   ([#499](https://github.com/aave/aave-utilities/issues/499))
   ([b377452](https://github.com/aave/aave-utilities/commit/b37745255194cc2f8c713bc3451a05dc8bab20a1))
 
-> > > > > > > master
-
 # 1.13.0 (2023-01-23)
-
-<<<<<<< HEAD
-
-# 1.10.0 (2022-12-14)
-
-### Features
-
-=======
 
 ### Features
 
 - add default gas estimation for borrow and vote
   ([#492](https://github.com/aave/aave-utilities/issues/492))
   ([713ad36](https://github.com/aave/aave-utilities/commit/713ad361215f0fcbaaf07f7e374489459d1874ae))
-  > > > > > > > master
-
-* add default gas estimation for permit actions
-  ([#461](https://github.com/aave/aave-utilities/issues/461))
-  ([7342763](https://github.com/aave/aave-utilities/commit/734276326b1d6b0b2b9aa9965bbd3f310ae0ec37))
-
-# 1.9.0 (2022-10-14)
 
 ## 1.12.2 (2023-01-12)
 
@@ -90,8 +66,6 @@ All notable changes to this project will be documented in this file. See
 # 1.12.0 (2023-01-03)
 
 ### Features
-
-# <<<<<<< HEAD
 
 - add V3Faucet service
   ([#475](https://github.com/aave/aave-utilities/issues/475))
@@ -112,8 +86,6 @@ All notable changes to this project will be documented in this file. See
 # 1.11.0 (2022-12-21)
 
 ### Features
-
-> > > > > > > master
 
 - v3 migration ([#465](https://github.com/aave/aave-utilities/issues/465))
   ([ac9197f](https://github.com/aave/aave-utilities/commit/ac9197f6a2237b34e917d23bc79798efe3e04cb1))

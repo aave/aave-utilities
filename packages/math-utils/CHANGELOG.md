@@ -51,12 +51,6 @@ All notable changes to this project will be documented in this file. See
   ([#492](https://github.com/aave/aave-utilities/issues/492))
   ([713ad36](https://github.com/aave/aave-utilities/commit/713ad361215f0fcbaaf07f7e374489459d1874ae))
 
-* add default gas estimation for permit actions
-  ([#461](https://github.com/aave/aave-utilities/issues/461))
-  ([7342763](https://github.com/aave/aave-utilities/commit/734276326b1d6b0b2b9aa9965bbd3f310ae0ec37))
-
-# 1.9.0 (2022-10-14)
-
 ## 1.12.2 (2023-01-12)
 
 **Note:** Version bump only for package @aave/math-utils
