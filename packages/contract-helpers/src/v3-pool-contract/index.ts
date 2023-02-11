@@ -455,7 +455,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       nonce += 1;
     }
 
-
     const typeData = {
       types: {
         EIP712Domain: [
