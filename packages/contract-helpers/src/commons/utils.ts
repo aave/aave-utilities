@@ -159,3 +159,6 @@ export const augustusToAmountOffsetFromCalldata = (
       throw new Error('Unrecognized function selector for Augustus');
   }
 };
+
+// reserve address + chainId
+export const nonstandardPermitNonce = ['0x420000000000000000000000000000000000004210', '0x76fb31fb4af56892a25e32cfc43de717950c927810', '0xda10009cbd5d07dd0cecc66161fc93d7c9000da110', '0xda10009cbd5d07dd0cecc66161fc93d7c9000da142161', '0xd22a58f79e9481d1a88e00c343885a588b34b68b42161', '0xd24c2ad096400b6fbcd2ad8b24e7acbc21a1da6443114', '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e43114', '0x2791bca1f2de4661ed88a30c99a7a9449aa84174137', '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB481'];

@@ -20,6 +20,7 @@ import {
   augustusToAmountOffsetFromCalldata,
   DEFAULT_APPROVE_AMOUNT,
   getTxValue,
+  nonstandardPermitNonce,
   SURPLUS,
   valueToWei,
 } from '../commons/utils';
@@ -441,7 +442,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
 
     const { chainId } = await this.provider.getNetwork();
 
-    const nonce = await this.erc20_2612Service.getNonce({
+    let nonce = await this.erc20_2612Service.getNonce({
       token: reserve,
       owner: user,
     });
@@ -449,6 +450,11 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     if (nonce === null) {
       return '';
     }
+
+    if(nonstandardPermitNonce.includes(reserve + chainId.toString())){
+      nonce += 1;
+    }
+
 
     const typeData = {
       types: {
