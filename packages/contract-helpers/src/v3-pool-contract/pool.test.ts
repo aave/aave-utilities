@@ -916,6 +916,46 @@ describe('Pool', () => {
       expect(message.nonce).toEqual(1);
       expect(message.deadline).toEqual(deadline);
     });
+    it('Expects the nonce to be incremented with nonstandard token', async () => {
+      const poolInstance = new Pool(provider, config);
+
+      jest.spyOn(poolInstance.erc20Service, 'getTokenData').mockReturnValue(
+        Promise.resolve({
+          name: 'mockToken',
+          decimals,
+          symbol: 'MT',
+          address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC on ETH mainnet is nonstandard
+        }),
+      );
+
+      jest
+        .spyOn(poolInstance.erc20Service, 'isApproved')
+        .mockReturnValue(Promise.resolve(false));
+
+      jest
+        .spyOn(poolInstance.erc20_2612Service, 'getNonce')
+        .mockReturnValue(Promise.resolve(1));
+
+      const amount = '-1';
+      const signature: string = await poolInstance.signERC20Approval({
+        user,
+        reserve: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        amount,
+        deadline,
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const { primaryType, domain, message } = await JSON.parse(signature);
+      expect(primaryType).toEqual('Permit');
+      expect(domain.name).toEqual('mockToken');
+      expect(domain.chainId).toEqual(1);
+
+      expect(message.owner).toEqual(user);
+      expect(message.spender).toEqual(POOL);
+      expect(message.value).toEqual(constants.MaxUint256.toString());
+      expect(message.nonce).toEqual(2); // increment token nonce by 1
+      expect(message.deadline).toEqual(deadline);
+    });
     it('Expects the permission string to be `` when no nonce', async () => {
       const poolInstance = new Pool(provider, config);
 
