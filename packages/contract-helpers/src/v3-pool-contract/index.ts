@@ -451,7 +451,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       return '';
     }
 
-    if(nonstandardPermitNonce.includes(reserve + chainId.toString())){
+    if (nonstandardPermitNonce.includes(reserve + chainId.toString())) {
       nonce += 1;
     }
 
