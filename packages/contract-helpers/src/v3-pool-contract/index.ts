@@ -451,8 +451,12 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       return '';
     }
 
-    if (nonstandardPermitNonce.includes(reserve.toLowerCase() + chainId.toString())) {
-      nonce = nonce + 1;
+    if (
+      nonstandardPermitNonce.includes(
+        reserve.toLowerCase() + chainId.toString(),
+      )
+    ) {
+      nonce += 1;
     }
 
     const typeData = {
