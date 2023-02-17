@@ -8,11 +8,17 @@ import {
 } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
+  ActionBundle,
+  DefaultAction,
+  DEFAULT_DEADLINE,
   eEthereumTxType,
   EthereumTransactionTypeExtended,
   InterestRate,
   ProtocolAction,
+  RefreshRequest,
+  SignedActionRequest,
   tEthereumAddress,
+  Transaction,
   transactionType,
 } from '../commons/types';
 import {
@@ -82,6 +88,9 @@ export interface PoolInterface {
   supply: (
     args: LPSupplyParamsType,
   ) => Promise<EthereumTransactionTypeExtended[]>;
+  supplyBundle: (
+    args: LPSupplyParamsType,
+  ) => Promise<ActionBundle>
   signERC20Approval: (args: LPSignERC20ApprovalType) => Promise<string>;
   supplyWithPermit: (
     args: LPSupplyWithPermitType,
@@ -314,6 +323,251 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     });
 
     return txs;
+  }
+
+  @LPValidatorV3
+  public async supplyBundle(
+    @isEthAddress('user')
+    @isEthAddress('reserve')
+    @isPositiveAmount('amount')
+    @isEthAddress('onBehalfOf')
+    {
+      user,
+      reserve,
+      amount,
+      onBehalfOf,
+      referralCode,
+      useOptimizedPath,
+    }: LPSupplyParamsType,
+  ): Promise<ActionBundle> {
+    let [action, approvals, signatureRequests] = [DefaultAction, [] as Transaction[], [] as string[]];
+    const txs: EthereumTransactionTypeExtended[] = [];
+    if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
+      const depositEth = this.wethGatewayService.depositETH({
+        lendingPool: this.poolAddress,
+        user,
+        amount,
+        onBehalfOf,
+        referralCode,
+      });
+      action = {
+        tx: await depositEth[0].tx(),
+        gas: await depositEth[0].gas() || undefined,
+        txType: depositEth[0].txType,
+      }
+    } else {
+      const { isApproved, approve, decimalsOf }: IERC20ServiceInterface =
+        this.erc20Service;
+      const reserveDecimals: number = await decimalsOf(reserve);
+      const convertedAmount: string = valueToWei(amount, reserveDecimals);
+
+      const fundsAvailable: boolean =
+        await this.synthetixService.synthetixValidation({
+          user,
+          reserve,
+          amount: convertedAmount,
+        });
+      if (!fundsAvailable) {
+        throw new Error('Not enough funds to execute operation');
+      }
+
+      const approved = await isApproved({
+        token: reserve,
+        user,
+        spender: this.poolAddress,
+        amount,
+      });
+
+      if (!approved) {
+        const approveTx: EthereumTransactionTypeExtended = approve({
+          user,
+          token: reserve,
+          spender: this.poolAddress,
+          amount: DEFAULT_APPROVE_AMOUNT,
+        });
+        const parsedApproveTx: Transaction = {
+          tx: await approveTx.tx(),
+          gas: await approveTx.gas() || undefined,
+          txType: await approveTx.txType,
+        }
+        const signatureRequest = await this.signERC20Approval({ user, reserve, amount, deadline: DEFAULT_DEADLINE })
+        txs.push(approveTx); // TODO: remove this
+        approvals.push(parsedApproveTx);
+        signatureRequests.push(signatureRequest)
+      }
+
+
+      const lendingPoolContract: IPool = this.getContractInstance(
+        this.poolAddress,
+      );
+
+      // TODO: parse this into seperate functions
+      // use optimized path
+      if (useOptimizedPath) {
+        //     const l2Supply = this.l2PoolService.supply(
+        //       { user, reserve, amount: convertedAmount, referralCode },
+        //         txs,
+        //      );
+        //
+        //
+      }
+
+      const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+        rawTxMethod: async () =>
+          lendingPoolContract.populateTransaction.supply(
+            reserve,
+            convertedAmount,
+            onBehalfOf ?? user,
+            referralCode ?? '0',
+          ),
+        from: user,
+        value: getTxValue(reserve, convertedAmount),
+        action: ProtocolAction.supply,
+      });
+
+      // TODO: remove this
+      const tx = {
+        tx: txCallback,
+        txType: eEthereumTxType.DLP_ACTION,
+        gas: this.generateTxPriceEstimation(
+          txs,
+          txCallback,
+          ProtocolAction.supply,
+        ),
+      }
+      txs.push(tx);
+
+      const gasResponse = tx.gas;
+      const parsedTx = await txCallback();
+      action = { tx: parsedTx, gas: await gasResponse() || undefined, txType: eEthereumTxType.DLP_ACTION }
+    }
+
+    const refreshTxData = async (args: RefreshRequest): Promise<Transaction> => {
+      const { amount: amountArg, user: userArg, referralCode: referralCodeArg, onBehalfOf: onBehalfOfArg, reserve: reserveArg } = args;
+      const { decimalsOf }: IERC20ServiceInterface = this.erc20Service;
+      const lendingPoolContract: IPool = this.getContractInstance(
+        this.poolAddress,
+      );
+      const convertedAmount: string = valueToWei(amountArg ?? amount, await decimalsOf(reserve));
+      const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+        rawTxMethod: async () =>
+          lendingPoolContract.populateTransaction.supply(
+            reserveArg ?? reserve,
+            convertedAmount,
+            onBehalfOfArg ?? userArg ?? user,
+            referralCodeArg ?? '0',
+          ),
+        from: user,
+        value: getTxValue(reserve, amountArg),
+        action: ProtocolAction.supply,
+      });
+      const resolvedTx = await txCallback();
+      // TODO: Perform gas estimation with Transaction directly
+      const tx = {
+        tx: txCallback,
+        txType: eEthereumTxType.DLP_ACTION,
+        gas: this.generateTxPriceEstimation(
+          txs,
+          txCallback,
+          ProtocolAction.supply,
+        ),
+      }
+      const gasResponse = tx.gas;
+
+
+      return { tx: resolvedTx, gas: await gasResponse() || undefined, txType: eEthereumTxType.DLP_ACTION };
+    }
+
+    const refreshSignedTxData = async (args: RefreshRequest): Promise<Transaction> => {
+      const { amount: amountArg, user: userArg, referralCode: referralCodeArg, onBehalfOf: onBehalfOfArg, reserve: reserveArg, signature: signatureArg, deadline: deadlineArg } = args;
+      const { decimalsOf }: IERC20ServiceInterface = this.erc20Service;
+      const lendingPoolContract: IPool = this.getContractInstance(
+        this.poolAddress,
+      );
+      const convertedAmount: string = valueToWei(amountArg ?? amount, await decimalsOf(reserve));
+      const sig: Signature = splitSignature(signatureArg);
+      const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+        rawTxMethod: async () =>
+          lendingPoolContract.populateTransaction.supplyWithPermit(
+            reserveArg ?? reserve,
+            convertedAmount,
+            onBehalfOfArg ?? userArg ?? user,
+            referralCodeArg ?? referralCode ?? '0',
+            deadlineArg,
+            sig.v,
+            sig.r,
+            sig.s
+          ),
+        from: user,
+        value: getTxValue(reserve, amountArg),
+        action: ProtocolAction.supplyWithPermit,
+      });
+      const resolvedTx = await txCallback();
+      // TODO: Perform gas estimation with Transaction directly
+      const tx = {
+        tx: txCallback,
+        txType: eEthereumTxType.DLP_ACTION,
+        gas: this.generateTxPriceEstimation(
+          txs,
+          txCallback,
+          ProtocolAction.supplyWithPermit,
+        ),
+      }
+      const gasResponse = tx.gas;
+
+
+      return { tx: resolvedTx, gas: await gasResponse() || undefined, txType: eEthereumTxType.DLP_ACTION };
+    }
+
+    const generateSignedAction = async ({ signatures }: SignedActionRequest) => {
+      const { decimalsOf }: IERC20ServiceInterface = this.erc20Service;
+      const lendingPoolContract: IPool = this.getContractInstance(
+        this.poolAddress,
+      );
+      const convertedAmount: string = valueToWei(amount, await decimalsOf(reserve));
+      const sig: Signature = splitSignature(signatures[0]);
+      const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+        rawTxMethod: async () =>
+          lendingPoolContract.populateTransaction.supplyWithPermit(
+            reserve,
+            convertedAmount,
+            onBehalfOf ?? user,
+            referralCode ?? '0',
+            DEFAULT_DEADLINE,
+            sig.v,
+            sig.r,
+            sig.s
+          ),
+        from: user,
+        value: getTxValue(reserve, amount),
+        action: ProtocolAction.supplyWithPermit,
+      });
+      const resolvedTx = await txCallback();
+      // TODO: Perform gas estimation with Transaction directly
+      const tx = {
+        tx: txCallback,
+        txType: eEthereumTxType.DLP_ACTION,
+        gas: this.generateTxPriceEstimation(
+          txs,
+          txCallback,
+          ProtocolAction.supplyWithPermit,
+        ),
+      }
+      const gasResponse = tx.gas;
+
+
+      return { tx: resolvedTx, gas: await gasResponse() || undefined, txType: eEthereumTxType.DLP_ACTION };
+    }
+
+    return {
+      action: action,
+      refreshTxData,
+      refreshSignedTxData,
+      approvals,
+      signatureRequests,
+      generateSignedAction,
+
+    }
   }
 
   @LPValidatorV3
