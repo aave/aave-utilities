@@ -281,3 +281,33 @@ export type FlashLoanParams = {
   r: BytesLike[]; // List of r param for the permit signature
   s: BytesLike[]; // List of s param for the permit signature
 };
+
+export interface SignedActionRequest {
+  signatures: string[];
+}
+
+export interface RefreshRequest {
+  [key: string]: any;
+}
+
+export type Transaction = {
+  txType: eEthereumTxType;
+  tx: transactionType;
+  gas?: GasType;
+};
+
+export type ActionBundle = {
+  approvals: Transaction[];
+  signatureRequests: string[];
+  action: Transaction;
+  generateSignedAction?: ({ signatures }: SignedActionRequest) => Promise<Transaction>;
+  refreshTxData: (args: RefreshRequest) => Promise<Transaction>;
+  refreshSignedTxData?: (args: RefreshRequest) => Promise<Transaction>;
+}
+
+export const DEFAULT_DEADLINE = Math.floor(Date.now() / 1000 + 3600).toString();
+
+export const DefaultAction: Transaction =
+{
+  txType: eEthereumTxType.DLP_ACTION, tx: {}
+}
