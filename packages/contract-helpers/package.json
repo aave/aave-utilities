@@ -17,7 +17,7 @@
   },
   "peerDependencies": {
     "bignumber.js": "^9.x",
-    "ethers": "^5.x",
+    "ethers": ">=5.0.0 <6.0.0",
     "reflect-metadata": "^0.1.x",
     "tslib": "^2.4.x"
   },
