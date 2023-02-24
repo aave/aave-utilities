@@ -341,7 +341,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     }: LPSupplyParamsType,
   ): Promise<ActionBundle> {
     let [action, approvals, signatureRequests] = [DefaultAction, [] as Transaction[], [] as string[]];
-    const txs: EthereumTransactionTypeExtended[] = [];
     if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
       const depositEth = this.wethGatewayService.depositETH({
         lendingPool: this.poolAddress,
@@ -350,9 +349,11 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         onBehalfOf,
         referralCode,
       });
+      const txData = await depositEth[0].tx();
+      const gasLimit = await this.estimateGasLimit({ tx: txData })
       action = {
-        tx: await depositEth[0].tx(),
-        gas: await depositEth[0].gas() || undefined,
+        tx: txData,
+        gasLimit,
         txType: depositEth[0].txType,
       }
     } else {
@@ -385,13 +386,14 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           spender: this.poolAddress,
           amount: DEFAULT_APPROVE_AMOUNT,
         });
+        const approveTxData = await approveTx.tx();
+        const gasLimit = await this.estimateGasLimit({ tx: approveTxData });
         const parsedApproveTx: Transaction = {
-          tx: await approveTx.tx(),
-          gas: await approveTx.gas() || undefined,
+          tx: approveTxData,
+          gasLimit,
           txType: await approveTx.txType,
         }
         const signatureRequest = await this.signERC20Approval({ user, reserve, amount, deadline: DEFAULT_DEADLINE })
-        txs.push(approveTx); // TODO: remove this
         approvals.push(parsedApproveTx);
         signatureRequests.push(signatureRequest)
       }
@@ -425,21 +427,9 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         action: ProtocolAction.supply,
       });
 
-      // TODO: remove this
-      const tx = {
-        tx: txCallback,
-        txType: eEthereumTxType.DLP_ACTION,
-        gas: this.generateTxPriceEstimation(
-          txs,
-          txCallback,
-          ProtocolAction.supply,
-        ),
-      }
-      txs.push(tx);
-
-      const gasResponse = tx.gas;
       const parsedTx = await txCallback();
-      action = { tx: parsedTx, gas: await gasResponse() || undefined, txType: eEthereumTxType.DLP_ACTION }
+      const gasLimit = await this.estimateGasLimit({ tx: parsedTx, action: ProtocolAction.supply });
+      action = { tx: parsedTx, gasLimit, txType: eEthereumTxType.DLP_ACTION }
     }
 
     const refreshTxData = async (args: RefreshRequest): Promise<Transaction> => {
@@ -448,6 +438,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       const lendingPoolContract: IPool = this.getContractInstance(
         this.poolAddress,
       );
+      const action = ProtocolAction.supply;
       const convertedAmount: string = valueToWei(amountArg ?? amount, await decimalsOf(reserve));
       const txCallback: () => Promise<transactionType> = this.generateTxCallback({
         rawTxMethod: async () =>
@@ -459,23 +450,11 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           ),
         from: user,
         value: getTxValue(reserve, amountArg),
-        action: ProtocolAction.supply,
+        action,
       });
       const resolvedTx = await txCallback();
-      // TODO: Perform gas estimation with Transaction directly
-      const tx = {
-        tx: txCallback,
-        txType: eEthereumTxType.DLP_ACTION,
-        gas: this.generateTxPriceEstimation(
-          txs,
-          txCallback,
-          ProtocolAction.supply,
-        ),
-      }
-      const gasResponse = tx.gas;
-
-
-      return { tx: resolvedTx, gas: await gasResponse() || undefined, txType: eEthereumTxType.DLP_ACTION };
+      const gasLimit = await this.estimateGasLimit({ tx: resolvedTx, action })
+      return { tx: resolvedTx, gasLimit, txType: eEthereumTxType.DLP_ACTION };
     }
 
     const refreshSignedTxData = async (args: RefreshRequest): Promise<Transaction> => {
@@ -486,6 +465,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       );
       const convertedAmount: string = valueToWei(amountArg ?? amount, await decimalsOf(reserve));
       const sig: Signature = splitSignature(signatureArg);
+      const action = ProtocolAction.supplyWithPermit;
       const txCallback: () => Promise<transactionType> = this.generateTxCallback({
         rawTxMethod: async () =>
           lendingPoolContract.populateTransaction.supplyWithPermit(
@@ -500,23 +480,13 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           ),
         from: user,
         value: getTxValue(reserve, amountArg),
-        action: ProtocolAction.supplyWithPermit,
+        action,
       });
       const resolvedTx = await txCallback();
-      // TODO: Perform gas estimation with Transaction directly
-      const tx = {
-        tx: txCallback,
-        txType: eEthereumTxType.DLP_ACTION,
-        gas: this.generateTxPriceEstimation(
-          txs,
-          txCallback,
-          ProtocolAction.supplyWithPermit,
-        ),
-      }
-      const gasResponse = tx.gas;
+      const gasLimit = await this.estimateGasLimit({ tx: resolvedTx, action })
 
 
-      return { tx: resolvedTx, gas: await gasResponse() || undefined, txType: eEthereumTxType.DLP_ACTION };
+      return { tx: resolvedTx, gasLimit, txType: eEthereumTxType.DLP_ACTION };
     }
 
     const generateSignedAction = async ({ signatures }: SignedActionRequest) => {
@@ -526,6 +496,7 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
       );
       const convertedAmount: string = valueToWei(amount, await decimalsOf(reserve));
       const sig: Signature = splitSignature(signatures[0]);
+      const action = ProtocolAction.supplyWithPermit;
       const txCallback: () => Promise<transactionType> = this.generateTxCallback({
         rawTxMethod: async () =>
           lendingPoolContract.populateTransaction.supplyWithPermit(
@@ -540,23 +511,13 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
           ),
         from: user,
         value: getTxValue(reserve, amount),
-        action: ProtocolAction.supplyWithPermit,
+        action,
       });
       const resolvedTx = await txCallback();
-      // TODO: Perform gas estimation with Transaction directly
-      const tx = {
-        tx: txCallback,
-        txType: eEthereumTxType.DLP_ACTION,
-        gas: this.generateTxPriceEstimation(
-          txs,
-          txCallback,
-          ProtocolAction.supplyWithPermit,
-        ),
-      }
-      const gasResponse = tx.gas;
+      const gasLimit = await this.estimateGasLimit({ tx: resolvedTx, action })
 
 
-      return { tx: resolvedTx, gas: await gasResponse() || undefined, txType: eEthereumTxType.DLP_ACTION };
+      return { tx: resolvedTx, gasLimit, txType: eEthereumTxType.DLP_ACTION };
     }
 
     return {
