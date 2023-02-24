@@ -227,6 +227,12 @@ export type TransactionGenerationMethod = {
   action?: ProtocolAction;
 };
 
+export type TransactionGenerationMethodNew = {
+  tx: transactionType;
+  gasSurplus?: number;
+  action?: ProtocolAction;
+};
+
 export type TransactionGasGenerationMethod = {
   txCallback: () => Promise<transactionType>;
   action?: ProtocolAction;
@@ -293,7 +299,7 @@ export interface RefreshRequest {
 export type Transaction = {
   txType: eEthereumTxType;
   tx: transactionType;
-  gas?: GasType;
+  gasLimit?: string;
 };
 
 export type ActionBundle = {
