@@ -15,6 +15,7 @@ import {
   ProtocolAction,
   EthereumTransactionTypeExtended,
   eEthereumTxType,
+  TransactionGenerationMethodNew,
 } from './types';
 import { DEFAULT_NULL_VALUE_ON_TX, gasLimitRecommendations } from './utils';
 
@@ -110,4 +111,24 @@ export default class BaseService<T extends Contract> {
         gasPrice: gasPrice.toString(),
       };
     };
+
+  readonly estimateGasLimit =
+  async ({
+    tx,
+    gasSurplus,
+    action,
+  }: TransactionGenerationMethodNew): Promise<string> => {
+    let gasLimit = await estimateGasByNetwork(tx, this.provider, gasSurplus);
+    if (
+      action &&
+      gasLimitRecommendations[action] &&
+      gasLimit.lte(BigNumber.from(gasLimitRecommendations[action].limit))
+    ) {
+      gasLimit = BigNumber.from(
+        gasLimitRecommendations[action].recommended,
+      );
+    }
+
+    return gasLimit.toString();
+  };
 }
