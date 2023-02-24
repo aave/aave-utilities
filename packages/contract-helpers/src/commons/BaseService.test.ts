@@ -1,7 +1,7 @@
 import { Provider } from '@ethersproject/providers';
 import { BigNumber, Contract, providers, Signer } from 'ethers';
 import BaseService from './BaseService';
-import { eEthereumTxType, ProtocolAction } from './types';
+import { DefaultAction, eEthereumTxType, ProtocolAction, Transaction } from './types';
 import { DEFAULT_NULL_VALUE_ON_TX } from './utils';
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
@@ -231,6 +231,38 @@ describe('BaseService', () => {
       await expect(async () => gasObj()).rejects.toThrowError(
         'Transaction calculation error',
       );
+    });
+  });
+  describe('estimateGasLimit', () => {
+    const baseService = new BaseService(provider, Test__factory);
+    const estimateTx: Transaction = DefaultAction;
+
+    it('Estimate gas limit with default tx', async () => {
+      const gasLimit = await baseService.estimateGasLimit({
+        tx: estimateTx.tx,
+      });
+      expect(gasLimit).toEqual('1')
+    });
+    it('Estimate gas limit with surplus', async () => {
+      const gasSurplus = 10;
+      const gasLimit = await baseService.estimateGasLimit({
+        tx: estimateTx.tx,
+        gasSurplus,
+      });
+      expect(gasLimit).toEqual('1')
+    });
+    it('Estimate gas limit with undefined value', async () => {
+      const gasLimit = await baseService.estimateGasLimit({
+        tx: { ...estimateTx.tx, value: undefined },
+      });
+      expect(gasLimit).toEqual('1')
+    });
+    it('Estimate gas limit with action', async () => {
+      const gasLimit = await baseService.estimateGasLimit({
+        tx: { ...estimateTx.tx, value: undefined },
+        action: ProtocolAction.supply,
+      });
+      expect(gasLimit).toEqual('300000')
     });
   });
 });
