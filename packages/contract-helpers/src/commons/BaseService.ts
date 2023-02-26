@@ -118,7 +118,7 @@ export default class BaseService<T extends Contract> {
     gasSurplus,
     action,
   }: TransactionGenerationMethodNew): Promise<string> => {
-    let gasLimit = await estimateGasByNetwork(tx, this.provider, gasSurplus);
+    let gasLimit = await estimateGasByNetwork({...tx, value: tx.value ? tx.value.toHexString() : undefined }, this.provider, gasSurplus);
     if (
       action &&
       gasLimitRecommendations[action] &&
