@@ -228,7 +228,7 @@ export type TransactionGenerationMethod = {
 };
 
 export type TransactionGenerationMethodNew = {
-  tx: transactionType;
+  tx: PopulatedTransaction;
   gasSurplus?: number;
   action?: ProtocolAction;
 };
@@ -297,8 +297,7 @@ export interface RefreshRequest {
 }
 
 export type Transaction = {
-  txType: eEthereumTxType;
-  tx: transactionType;
+  tx: PopulatedTransaction;
   gasLimit?: string;
 };
 
@@ -307,13 +306,11 @@ export type ActionBundle = {
   signatureRequests: string[];
   action: Transaction;
   generateSignedAction?: ({ signatures }: SignedActionRequest) => Promise<Transaction>;
-  refreshTxData: (args: RefreshRequest) => Promise<Transaction>;
-  refreshSignedTxData?: (args: RefreshRequest) => Promise<Transaction>;
 }
 
 export const DEFAULT_DEADLINE = Math.floor(Date.now() / 1000 + 3600).toString();
 
 export const DefaultAction: Transaction =
 {
-  txType: eEthereumTxType.DLP_ACTION, tx: {}
+  tx: {}
 }
