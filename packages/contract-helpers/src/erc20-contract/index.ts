@@ -1,4 +1,4 @@
-import { BigNumber, providers } from 'ethers';
+import { BigNumber, PopulatedTransaction, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
@@ -25,6 +25,7 @@ export interface IERC20ServiceInterface {
   getTokenData: (token: tEthereumAddress) => Promise<TokenMetadataType>;
   isApproved: (args: ApproveType) => Promise<boolean>;
   approve: (args: ApproveType) => EthereumTransactionTypeExtended;
+  approveTxData: (args: ApproveType) => PopulatedTransaction;
 }
 
 export type ApproveType = {
@@ -42,8 +43,7 @@ export type TokenMetadataType = {
 };
 export class ERC20Service
   extends BaseService<IERC20Detailed>
-  implements IERC20ServiceInterface
-{
+  implements IERC20ServiceInterface {
   readonly tokenDecimals: Record<string, number>;
 
   readonly tokenMetadata: Record<string, TokenMetadataType>;
@@ -79,6 +79,23 @@ export class ERC20Service
       tx: txCallback,
       txType: eEthereumTxType.ERC20_APPROVAL,
       gas: this.generateTxPriceEstimation([], txCallback),
+    };
+  }
+
+  @ERC20Validator
+  public approveTxData(
+    @isEthAddress('user')
+    @isEthAddress('token')
+    @isEthAddress('spender')
+    @isPositiveAmount('amount')
+    { user, token, spender, amount }: ApproveType,
+  ): PopulatedTransaction {
+    const erc20Contract: IERC20Detailed = this.getContractInstance(token);
+
+    const txData = erc20Contract.populateTransaction.approve(spender, amount);
+
+    return {
+      ...txData, from: user,
     };
   }
 
