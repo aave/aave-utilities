@@ -1,8 +1,5 @@
 import { Signature, splitSignature } from '@ethersproject/bytes';
-import {
-  PopulatedTransaction,
-  providers,
-} from 'ethers';
+import { PopulatedTransaction, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
   ActionBundle,
@@ -17,9 +14,7 @@ import {
   DEFAULT_APPROVE_AMOUNT,
   valueToWei,
 } from '../commons/utils';
-import {
-  LPValidatorV3,
-} from '../commons/validators/methodValidators';
+import { LPValidatorV3 } from '../commons/validators/methodValidators';
 import {
   isEthAddress,
   isPositiveAmount,
@@ -40,17 +35,13 @@ import {
   WETHGatewayInterface,
   WETHGatewayService,
 } from '../wethgateway-contract';
-import {
-  LPSupplyParamsType,
-} from '../v3-pool-contract/lendingPoolTypes';
+import { LPSupplyParamsType } from '../v3-pool-contract/lendingPoolTypes';
 import { IPool } from '../v3-pool-contract/typechain/IPool';
 import { IPool__factory } from '../v3-pool-contract/typechain/IPool__factory';
 import { Pool, PoolInterface as V3PoolInterface } from '../v3-pool-contract';
 
 export interface PoolInterface {
-  supplyBundle: (
-    args: LPSupplyParamsBundleType,
-  ) => Promise<ActionBundle>
+  supplyBundle: (args: LPSupplyParamsBundleType) => Promise<ActionBundle>;
 }
 
 export type LendingPoolMarketConfigV3 = {
@@ -63,7 +54,11 @@ export type LendingPoolMarketConfigV3 = {
   L2_POOL?: tEthereumAddress;
 };
 
-type LPSupplyParamsBundleType = LPSupplyParamsType & { skipApprovalChecks?: boolean, skipGasEstimation?: boolean, deadline?: string };
+type LPSupplyParamsBundleType = LPSupplyParamsType & {
+  skipApprovalChecks?: boolean;
+  skipGasEstimation?: boolean;
+  deadline?: string;
+};
 
 export class PoolBundle extends BaseService<IPool> implements PoolInterface {
   readonly erc20Service: IERC20ServiceInterface;
@@ -157,17 +152,21 @@ export class PoolBundle extends BaseService<IPool> implements PoolInterface {
       deadline,
     }: LPSupplyParamsBundleType,
   ): Promise<ActionBundle> {
-
-    let actionTx: PopulatedTransaction = {}
+    let actionTx: PopulatedTransaction = {};
     let approvals: PopulatedTransaction[] = [];
     let signatureRequests: string[] = [];
 
-    const generateSignedAction = async ({ signatures }: SignedActionRequest) => {
+    const generateSignedAction = async ({
+      signatures,
+    }: SignedActionRequest) => {
       const { decimalsOf }: IERC20ServiceInterface = this.erc20Service;
       const lendingPoolContract: IPool = this.getContractInstance(
         this.poolAddress,
       );
-      const convertedAmount: string = valueToWei(amount, await decimalsOf(reserve));
+      const convertedAmount: string = valueToWei(
+        amount,
+        await decimalsOf(reserve),
+      );
       const sig: Signature = splitSignature(signatures[0]);
       const fundsAvailable: boolean =
         await this.synthetixService.synthetixValidation({
@@ -197,23 +196,27 @@ export class PoolBundle extends BaseService<IPool> implements PoolInterface {
         const executedTx = await legacyTx[0].tx();
         populatedTx = convertPopulatedTx(executedTx);
       } else {
-        populatedTx = await lendingPoolContract.populateTransaction.supplyWithPermit(
-          reserve,
-          convertedAmount,
-          onBehalfOf ?? user,
-          referralCode ?? '0',
-          DEFAULT_DEADLINE,
-          sig.v,
-          sig.r,
-          sig.s
-        );
+        populatedTx =
+          await lendingPoolContract.populateTransaction.supplyWithPermit(
+            reserve,
+            convertedAmount,
+            onBehalfOf ?? user,
+            referralCode ?? '0',
+            DEFAULT_DEADLINE,
+            sig.v,
+            sig.r,
+            sig.s,
+          );
         populatedTx.from = user;
       }
       if (!skipGasEstimation) {
-        populatedTx = await this.estimateGasLimit({ tx: populatedTx, action: ProtocolAction.supplyWithPermit })
+        populatedTx = await this.estimateGasLimit({
+          tx: populatedTx,
+          action: ProtocolAction.supplyWithPermit,
+        });
       }
       return populatedTx;
-    }
+    };
 
     // Base asset supplies are routed to WETHGateway
     if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
@@ -223,13 +226,15 @@ export class PoolBundle extends BaseService<IPool> implements PoolInterface {
         amount,
         onBehalfOf,
         referralCode,
-      })
+      });
       const txData = await depositEth[0].tx();
       actionTx = convertPopulatedTx(txData);
       if (!skipGasEstimation) {
-        actionTx = await this.estimateGasLimit({ tx: actionTx, action: ProtocolAction.default })
+        actionTx = await this.estimateGasLimit({
+          tx: actionTx,
+          action: ProtocolAction.default,
+        });
       }
-
     } else {
       // Handle mon-base asset supplies
       const { isApproved, decimalsOf, approveTxData }: IERC20ServiceInterface =
@@ -267,9 +272,14 @@ export class PoolBundle extends BaseService<IPool> implements PoolInterface {
             approveTx = await this.estimateGasLimit({ tx: approveTx });
           }
 
-          const signatureRequest = await this.v3PoolService.signERC20Approval({ user, reserve, amount, deadline: deadline ?? DEFAULT_DEADLINE })
+          const signatureRequest = await this.v3PoolService.signERC20Approval({
+            user,
+            reserve,
+            amount,
+            deadline: deadline ?? DEFAULT_DEADLINE,
+          });
           approvals.push(approveTx);
-          signatureRequests.push(signatureRequest)
+          signatureRequests.push(signatureRequest);
         }
       }
 
@@ -297,7 +307,10 @@ export class PoolBundle extends BaseService<IPool> implements PoolInterface {
         actionTx.from = user;
       }
       if (!skipGasEstimation) {
-        actionTx = await this.estimateGasLimit({ tx: actionTx, action: ProtocolAction.supply });
+        actionTx = await this.estimateGasLimit({
+          tx: actionTx,
+          action: ProtocolAction.supply,
+        });
       }
     }
 
@@ -306,6 +319,6 @@ export class PoolBundle extends BaseService<IPool> implements PoolInterface {
       approvals,
       signatureRequests,
       generateSignedAction,
-    }
+    };
   }
 }

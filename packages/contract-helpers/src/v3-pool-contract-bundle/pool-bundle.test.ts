@@ -71,7 +71,9 @@ describe('PoolBundle', () => {
       const poolBundleInstance = new PoolBundle(provider, config);
       const supplyEthSpy = jest
         .spyOn(poolBundleInstance.wethGatewayService, 'depositETH')
-        .mockReturnValue([{ tx: () => Promise.resolve({}) } as EthereumTransactionTypeExtended]);
+        .mockReturnValue([
+          { tx: () => Promise.resolve({}) } as EthereumTransactionTypeExtended,
+        ]);
       await poolBundleInstance.supplyBundle({
         user,
         reserve,
@@ -107,7 +109,11 @@ describe('PoolBundle', () => {
 
       expect(supplyTxObj.action.to).toEqual(POOL);
       expect(supplyTxObj.action.from).toEqual(user);
-      expect(supplyTxObj.action.gasLimit).toEqual(BigNumber.from(gasLimitRecommendations[ProtocolAction.supply].recommended));
+      expect(supplyTxObj.action.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.supply].recommended,
+        ),
+      );
       expect(supplyTxObj.action.value).toEqual(undefined);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -136,17 +142,18 @@ describe('PoolBundle', () => {
         .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
       const approveSpy = jest
         .spyOn(poolInstance.erc20Service, 'approveTxData')
-        .mockReturnValue(
-          Promise.resolve({})
-        );
+        .mockReturnValue(Promise.resolve({}));
       jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
         decimals: async () => Promise.resolve(18),
-        allowance: async () => Promise.resolve(BigNumber.from('100000000000000000')),
+        allowance: async () =>
+          Promise.resolve(BigNumber.from('100000000000000000')),
         name: async () => Promise.resolve(''),
         symbol: async () => Promise.resolve(''),
-        approve: async () => { }
+        approve: async () => {},
       } as unknown as IERC20Detailed);
-      jest.spyOn(poolInstance.v3PoolService, 'signERC20Approval').mockReturnValue(Promise.resolve(''))
+      jest
+        .spyOn(poolInstance.v3PoolService, 'signERC20Approval')
+        .mockReturnValue(Promise.resolve(''));
 
       const supplyTxObj = await poolInstance.supplyBundle({
         user,
@@ -193,17 +200,18 @@ describe('PoolBundle', () => {
         .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
       jest
         .spyOn(poolInstance.erc20Service, 'approveTxData')
-        .mockReturnValue(
-          Promise.resolve({})
-        );
+        .mockReturnValue(Promise.resolve({}));
       jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
         decimals: async () => Promise.resolve(18),
-        allowance: async () => Promise.resolve(BigNumber.from('100000000000000000')),
+        allowance: async () =>
+          Promise.resolve(BigNumber.from('100000000000000000')),
         name: async () => Promise.resolve(''),
         symbol: async () => Promise.resolve(''),
-        approve: async () => { }
+        approve: async () => {},
       } as unknown as IERC20Detailed);
-      jest.spyOn(poolInstance.v3PoolService, 'signERC20Approval').mockReturnValue(Promise.resolve(''))
+      jest
+        .spyOn(poolInstance.v3PoolService, 'signERC20Approval')
+        .mockReturnValue(Promise.resolve(''));
 
       const supplyTxObj = await poolInstance.supplyBundle({
         user,
@@ -213,7 +221,11 @@ describe('PoolBundle', () => {
         referralCode,
       });
 
-      expect(supplyTxObj.action.gasLimit).toEqual(BigNumber.from(gasLimitRecommendations[ProtocolAction.supply].recommended));
+      expect(supplyTxObj.action.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.supply].recommended,
+        ),
+      );
     });
     it('Expects the tx object passing all parameters with optimal path enabled', async () => {
       const poolInstance = new PoolBundle(provider, config);
@@ -228,7 +240,13 @@ describe('PoolBundle', () => {
         .mockReturnValue(Promise.resolve(true));
       const optimalPoolSpy = jest
         .spyOn(poolInstance.l2PoolService, 'supply')
-        .mockReturnValue(Promise.resolve([{ tx: () => Promise.resolve({}) } as EthereumTransactionTypeExtended]));
+        .mockReturnValue(
+          Promise.resolve([
+            {
+              tx: () => Promise.resolve({}),
+            } as EthereumTransactionTypeExtended,
+          ]),
+        );
 
       await poolInstance.supplyBundle({
         user,
@@ -267,12 +285,13 @@ describe('PoolBundle', () => {
       expect(isApprovedSpy).toHaveBeenCalled();
       expect(decimalsSpy).toHaveBeenCalled();
 
-
       const tx: PopulatedTransaction = supplyTxObj.action;
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
       expect(supplyTxObj.action.gasLimit).toEqual(
-        BigNumber.from(gasLimitRecommendations[ProtocolAction.supply].recommended),
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.supply].recommended,
+        ),
       );
       expect(tx.value).toEqual(undefined);
 
@@ -287,11 +306,12 @@ describe('PoolBundle', () => {
       expect(decoded[3]).toEqual(Number(referralCode));
 
       // gas price
-      const gasLimit = supplyTxObj.action.gasLimit
+      const gasLimit = supplyTxObj.action.gasLimit;
       expect(gasLimit).toEqual(
-        BigNumber.from(gasLimitRecommendations[ProtocolAction.supply].recommended)
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.supply].recommended,
+        ),
       );
-
     });
     it('Expects the tx object passing all parameters but not referral', async () => {
       const poolInstance = new PoolBundle(provider, config);
@@ -320,7 +340,9 @@ describe('PoolBundle', () => {
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
       expect(tx.gasLimit).toEqual(
-        BigNumber.from(gasLimitRecommendations[ProtocolAction.supply].recommended)
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.supply].recommended,
+        ),
       );
       expect(tx.value).toEqual(undefined);
 
@@ -334,9 +356,11 @@ describe('PoolBundle', () => {
       expect(decoded[2]).toEqual(onBehalfOf);
       expect(decoded[3]).toEqual(0);
 
-      const gasLimit = supplyTxObj.action.gasLimit
+      const gasLimit = supplyTxObj.action.gasLimit;
       expect(gasLimit).toEqual(
-        BigNumber.from(gasLimitRecommendations[ProtocolAction.supply].recommended)
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.supply].recommended,
+        ),
       );
     });
     it('Expects the tx object passing all parameters and needing approval', async () => {
@@ -366,9 +390,9 @@ describe('PoolBundle', () => {
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);
       expect(tx.gasLimit).toEqual(
-
-        BigNumber.from(gasLimitRecommendations[ProtocolAction.supply].recommended)
-
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.supply].recommended,
+        ),
       );
       expect(tx.value).toEqual(undefined);
 
@@ -489,17 +513,18 @@ describe('PoolBundle', () => {
         .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
       const approveSpy = jest
         .spyOn(poolInstance.erc20Service, 'approveTxData')
-        .mockReturnValue(
-          Promise.resolve({})
-        );
+        .mockReturnValue(Promise.resolve({}));
       jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
         decimals: async () => Promise.resolve(18),
-        allowance: async () => Promise.resolve(BigNumber.from('100000000000000000')),
+        allowance: async () =>
+          Promise.resolve(BigNumber.from('100000000000000000')),
         name: async () => Promise.resolve(''),
         symbol: async () => Promise.resolve(''),
-        approve: async () => { }
+        approve: async () => {},
       } as unknown as IERC20Detailed);
-      jest.spyOn(poolInstance.v3PoolService, 'signERC20Approval').mockReturnValue(Promise.resolve(''))
+      jest
+        .spyOn(poolInstance.v3PoolService, 'signERC20Approval')
+        .mockReturnValue(Promise.resolve(''));
 
       const supplyBundle = await poolInstance.supplyBundle({
         user,
@@ -515,7 +540,9 @@ describe('PoolBundle', () => {
       expect(decimalsSpy).toHaveBeenCalled();
       const signature =
         '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c';
-      const signedAction = await supplyBundle.generateSignedAction({ signatures: [signature] });
+      const signedAction = await supplyBundle.generateSignedAction({
+        signatures: [signature],
+      });
       expect(signedAction.from).toEqual(user);
       expect(signedAction.to).toEqual(POOL);
     });
@@ -535,17 +562,18 @@ describe('PoolBundle', () => {
         .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
       const approveSpy = jest
         .spyOn(poolInstance.erc20Service, 'approveTxData')
-        .mockReturnValue(
-          Promise.resolve({})
-        );
+        .mockReturnValue(Promise.resolve({}));
       jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
         decimals: async () => Promise.resolve(18),
-        allowance: async () => Promise.resolve(BigNumber.from('100000000000000000')),
+        allowance: async () =>
+          Promise.resolve(BigNumber.from('100000000000000000')),
         name: async () => Promise.resolve(''),
         symbol: async () => Promise.resolve(''),
-        approve: async () => { }
+        approve: async () => {},
       } as unknown as IERC20Detailed);
-      jest.spyOn(poolInstance.v3PoolService, 'signERC20Approval').mockReturnValue(Promise.resolve(''))
+      jest
+        .spyOn(poolInstance.v3PoolService, 'signERC20Approval')
+        .mockReturnValue(Promise.resolve(''));
 
       const supplyBundle = await poolInstance.supplyBundle({
         user,
@@ -585,23 +613,36 @@ describe('PoolBundle', () => {
         .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
       const approveSpy = jest
         .spyOn(poolInstance.erc20Service, 'approveTxData')
-        .mockReturnValue(
-          Promise.resolve({})
-        );
+        .mockReturnValue(Promise.resolve({}));
       jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
         decimals: async () => Promise.resolve(18),
-        allowance: async () => Promise.resolve(BigNumber.from('100000000000000000')),
+        allowance: async () =>
+          Promise.resolve(BigNumber.from('100000000000000000')),
         name: async () => Promise.resolve(''),
         symbol: async () => Promise.resolve(''),
-        approve: async () => { }
+        approve: async () => {},
       } as unknown as IERC20Detailed);
-      jest.spyOn(poolInstance.v3PoolService, 'signERC20Approval').mockReturnValue(Promise.resolve(''))
+      jest
+        .spyOn(poolInstance.v3PoolService, 'signERC20Approval')
+        .mockReturnValue(Promise.resolve(''));
       const l2PoolSupplyWithPermitSpy = jest
         .spyOn(poolInstance.l2PoolService, 'supplyWithPermit')
-        .mockReturnValue(Promise.resolve([{ tx: () => Promise.resolve({}) } as EthereumTransactionTypeExtended]));
+        .mockReturnValue(
+          Promise.resolve([
+            {
+              tx: () => Promise.resolve({}),
+            } as EthereumTransactionTypeExtended,
+          ]),
+        );
       const l2PoolSupplySpy = jest
         .spyOn(poolInstance.l2PoolService, 'supply')
-        .mockReturnValue(Promise.resolve([{ tx: () => Promise.resolve({}) } as EthereumTransactionTypeExtended]));
+        .mockReturnValue(
+          Promise.resolve([
+            {
+              tx: () => Promise.resolve({}),
+            } as EthereumTransactionTypeExtended,
+          ]),
+        );
 
       const supplyBundle = await poolInstance.supplyBundle({
         user,
@@ -642,17 +683,18 @@ describe('PoolBundle', () => {
         .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
       const approveSpy = jest
         .spyOn(poolInstance.erc20Service, 'approveTxData')
-        .mockReturnValue(
-          Promise.resolve({})
-        );
+        .mockReturnValue(Promise.resolve({}));
       jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
         decimals: async () => Promise.resolve(18),
-        allowance: async () => Promise.resolve(BigNumber.from('100000000000000000')),
+        allowance: async () =>
+          Promise.resolve(BigNumber.from('100000000000000000')),
         name: async () => Promise.resolve(''),
         symbol: async () => Promise.resolve(''),
-        approve: async () => { }
+        approve: async () => {},
       } as unknown as IERC20Detailed);
-      jest.spyOn(poolInstance.v3PoolService, 'signERC20Approval').mockReturnValue(Promise.resolve(''))
+      jest
+        .spyOn(poolInstance.v3PoolService, 'signERC20Approval')
+        .mockReturnValue(Promise.resolve(''));
 
       const supplyBundle = await poolInstance.supplyBundle({
         user,
@@ -667,13 +709,14 @@ describe('PoolBundle', () => {
       expect(isApprovedSpy).toHaveBeenCalled();
       expect(decimalsSpy).toHaveBeenCalled();
 
-
       const signature =
         '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c';
-      const signedAction = await supplyBundle.generateSignedAction({ signatures: [signature] });
+      const signedAction = await supplyBundle.generateSignedAction({
+        signatures: [signature],
+      });
 
       expect(signedAction.to).toEqual(POOL);
-      expect(signedAction.gasLimit).toEqual(BigNumber.from('350000'))
+      expect(signedAction.gasLimit).toEqual(BigNumber.from('350000'));
     });
     it('generates gas estimation for supplyWithPermit on L2Pool', async () => {
       const poolInstance = new PoolBundle(provider, config);
@@ -691,23 +734,36 @@ describe('PoolBundle', () => {
         .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
       const approveSpy = jest
         .spyOn(poolInstance.erc20Service, 'approveTxData')
-        .mockReturnValue(
-          Promise.resolve({})
-        );
+        .mockReturnValue(Promise.resolve({}));
       jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
         decimals: async () => Promise.resolve(18),
-        allowance: async () => Promise.resolve(BigNumber.from('100000000000000000')),
+        allowance: async () =>
+          Promise.resolve(BigNumber.from('100000000000000000')),
         name: async () => Promise.resolve(''),
         symbol: async () => Promise.resolve(''),
-        approve: async () => { }
+        approve: async () => {},
       } as unknown as IERC20Detailed);
-      jest.spyOn(poolInstance.v3PoolService, 'signERC20Approval').mockReturnValue(Promise.resolve(''))
+      jest
+        .spyOn(poolInstance.v3PoolService, 'signERC20Approval')
+        .mockReturnValue(Promise.resolve(''));
       const l2PoolSupplyWithPermitSpy = jest
         .spyOn(poolInstance.l2PoolService, 'supplyWithPermit')
-        .mockReturnValue(Promise.resolve([{ tx: () => Promise.resolve({}) } as EthereumTransactionTypeExtended]));
+        .mockReturnValue(
+          Promise.resolve([
+            {
+              tx: () => Promise.resolve({}),
+            } as EthereumTransactionTypeExtended,
+          ]),
+        );
       const l2PoolSupplySpy = jest
         .spyOn(poolInstance.l2PoolService, 'supply')
-        .mockReturnValue(Promise.resolve([{ tx: () => Promise.resolve({}) } as EthereumTransactionTypeExtended]));
+        .mockReturnValue(
+          Promise.resolve([
+            {
+              tx: () => Promise.resolve({}),
+            } as EthereumTransactionTypeExtended,
+          ]),
+        );
 
       const supplyBundle = await poolInstance.supplyBundle({
         user,
@@ -727,9 +783,11 @@ describe('PoolBundle', () => {
 
       const signature =
         '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c';
-      const signedAction = await supplyBundle.generateSignedAction({ signatures: [signature] });
+      const signedAction = await supplyBundle.generateSignedAction({
+        signatures: [signature],
+      });
 
-      expect(signedAction.gasLimit).toEqual(BigNumber.from('350000'))
+      expect(signedAction.gasLimit).toEqual(BigNumber.from('350000'));
 
       expect(l2PoolSupplyWithPermitSpy).toHaveBeenCalled();
     });

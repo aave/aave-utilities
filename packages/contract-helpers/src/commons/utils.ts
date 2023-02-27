@@ -1,6 +1,10 @@
 import { BigNumber as BigNumberJs } from 'bignumber.js';
 import { BigNumber, constants, PopulatedTransaction } from 'ethers';
-import { GasRecommendationType, ProtocolAction, transactionType } from './types';
+import {
+  GasRecommendationType,
+  ProtocolAction,
+  transactionType,
+} from './types';
 
 export const valueToWei = (value: string, decimals: number): string => {
   return new BigNumberJs(value).shiftedBy(decimals).toFixed(0);
@@ -160,10 +164,11 @@ export const augustusToAmountOffsetFromCalldata = (
   }
 };
 
-
-export const convertPopulatedTx = (tx: transactionType): PopulatedTransaction => {
+export const convertPopulatedTx = (
+  tx: transactionType,
+): PopulatedTransaction => {
   return {
     ...tx,
     value: tx.value ? BigNumber.from(tx.value) : BigNumber.from('0'),
-  }
-}
+  };
+};

@@ -300,7 +300,9 @@ export type ActionBundle = {
   approvals: PopulatedTransaction[];
   signatureRequests: string[];
   action: PopulatedTransaction;
-  generateSignedAction: ({ signatures }: SignedActionRequest) => Promise<PopulatedTransaction>;
-}
+  generateSignedAction: ({
+    signatures,
+  }: SignedActionRequest) => Promise<PopulatedTransaction>;
+};
 
 export const DEFAULT_DEADLINE = Math.floor(Date.now() / 1000 + 3600).toString();

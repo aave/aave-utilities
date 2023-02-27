@@ -240,7 +240,7 @@ describe('BaseService', () => {
       const tx = await baseService.estimateGasLimit({
         tx: {},
       });
-      expect(tx.gasLimit).toEqual(BigNumber.from('1'))
+      expect(tx.gasLimit).toEqual(BigNumber.from('1'));
     });
     it('Estimate gas limit with surplus', async () => {
       const gasSurplus = 10;
@@ -248,20 +248,20 @@ describe('BaseService', () => {
         tx: {},
         gasSurplus,
       });
-      expect(tx.gasLimit).toEqual(BigNumber.from('1'))
+      expect(tx.gasLimit).toEqual(BigNumber.from('1'));
     });
     it('Estimate gas limit with defined value', async () => {
       const tx = await baseService.estimateGasLimit({
         tx: { value: BigNumber.from('1') },
       });
-      expect(tx.gasLimit).toEqual(BigNumber.from('1'))
+      expect(tx.gasLimit).toEqual(BigNumber.from('1'));
     });
     it('Estimate gas limit with action', async () => {
       const tx = await baseService.estimateGasLimit({
         tx: { value: undefined },
         action: ProtocolAction.supply,
       });
-      expect(tx.gasLimit).toEqual(BigNumber.from('300000'))
+      expect(tx.gasLimit).toEqual(BigNumber.from('300000'));
     });
   });
 });

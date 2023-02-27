@@ -49,7 +49,7 @@ describe('ERC20Service', () => {
         spender,
         amount,
         skipGasEstimation: true,
-      })
+      });
       expect(txData.to).toEqual(token);
       expect(txData.from).toEqual(user);
 
@@ -67,10 +67,10 @@ describe('ERC20Service', () => {
         token,
         spender,
         amount,
-      })
+      });
       expect(txData.to).toEqual(token);
       expect(txData.from).toEqual(user);
-      expect(txData.gasLimit).toEqual(BigNumber.from('1'))
+      expect(txData.gasLimit).toEqual(BigNumber.from('1'));
 
       const decoded = utils.defaultAbiCoder.decode(
         ['address', 'uint256'],

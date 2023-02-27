@@ -112,21 +112,25 @@ export default class BaseService<T extends Contract> {
       };
     };
 
-  readonly estimateGasLimit =
-  async ({
+  readonly estimateGasLimit = async ({
     tx,
     gasSurplus,
     action,
   }: TransactionGenerationMethodNew): Promise<PopulatedTransaction> => {
-    tx.gasLimit = await estimateGasByNetwork({...tx, value: tx.value ? tx.value.toHexString() : DEFAULT_NULL_VALUE_ON_TX}, this.provider, gasSurplus);
+    tx.gasLimit = await estimateGasByNetwork(
+      {
+        ...tx,
+        value: tx.value ? tx.value.toHexString() : DEFAULT_NULL_VALUE_ON_TX,
+      },
+      this.provider,
+      gasSurplus,
+    );
     if (
       action &&
       gasLimitRecommendations[action] &&
       tx.gasLimit.lte(BigNumber.from(gasLimitRecommendations[action].limit))
     ) {
-      tx.gasLimit = BigNumber.from(
-        gasLimitRecommendations[action].recommended,
-      );
+      tx.gasLimit = BigNumber.from(gasLimitRecommendations[action].recommended);
     }
 
     return tx;

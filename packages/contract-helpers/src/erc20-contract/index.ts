@@ -25,7 +25,9 @@ export interface IERC20ServiceInterface {
   getTokenData: (token: tEthereumAddress) => Promise<TokenMetadataType>;
   isApproved: (args: ApproveType) => Promise<boolean>;
   approve: (args: ApproveType) => EthereumTransactionTypeExtended;
-  approveTxData: (args: ApproveType & { skipGasEstimation?: boolean }) => Promise<PopulatedTransaction>;
+  approveTxData: (
+    args: ApproveType & { skipGasEstimation?: boolean },
+  ) => Promise<PopulatedTransaction>;
 }
 
 export type ApproveType = {
@@ -43,7 +45,8 @@ export type TokenMetadataType = {
 };
 export class ERC20Service
   extends BaseService<IERC20Detailed>
-  implements IERC20ServiceInterface {
+  implements IERC20ServiceInterface
+{
   readonly tokenDecimals: Record<string, number>;
 
   readonly tokenMetadata: Record<string, TokenMetadataType>;
@@ -88,16 +91,26 @@ export class ERC20Service
     @isEthAddress('token')
     @isEthAddress('spender')
     @isPositiveAmount('amount')
-    { user, token, spender, amount, skipGasEstimation }: ApproveType & { skipGasEstimation?: boolean },
+    {
+      user,
+      token,
+      spender,
+      amount,
+      skipGasEstimation,
+    }: ApproveType & { skipGasEstimation?: boolean },
   ): Promise<PopulatedTransaction> {
     const erc20Contract: IERC20Detailed = this.getContractInstance(token);
 
-    let txData = await erc20Contract.populateTransaction.approve(spender, amount);
+    let txData = await erc20Contract.populateTransaction.approve(
+      spender,
+      amount,
+    );
     if (!skipGasEstimation) {
       txData = await this.estimateGasLimit({ tx: txData });
     }
     return {
-      ...txData, from: user,
+      ...txData,
+      from: user,
     };
   }
 

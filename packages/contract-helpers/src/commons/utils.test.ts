@@ -82,7 +82,7 @@ describe('Utils', () => {
 
   describe('convertPopulatedTxData', () => {
     it('Converts tx', () => {
-      const tx: transactionType = { to: 'a', from: 'b', data: 'c', value: '1' }
+      const tx: transactionType = { to: 'a', from: 'b', data: 'c', value: '1' };
       const convertedTx = convertPopulatedTx(tx);
 
       expect(convertedTx.to).toEqual('a');
@@ -91,13 +91,13 @@ describe('Utils', () => {
       expect(convertedTx.value).toEqual(BigNumber.from('1'));
     });
     it('Converts tx with null tx value', () => {
-      const tx: transactionType = { to: 'a', from: 'b', data: 'c' }
+      const tx: transactionType = { to: 'a', from: 'b', data: 'c' };
       const convertedTx = convertPopulatedTx(tx);
 
       expect(convertedTx.to).toEqual('a');
       expect(convertedTx.from).toEqual('b');
       expect(convertedTx.data).toEqual('c');
       expect(convertedTx.value).toEqual(BigNumber.from('0'));
-    })
+    });
   });
 });
