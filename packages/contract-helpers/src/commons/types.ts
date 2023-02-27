@@ -296,21 +296,11 @@ export interface RefreshRequest {
   [key: string]: any;
 }
 
-export type Transaction = {
-  tx: PopulatedTransaction;
-  gasLimit?: string;
-};
-
 export type ActionBundle = {
-  approvals: Transaction[];
+  approvals: PopulatedTransaction[];
   signatureRequests: string[];
-  action: Transaction;
-  generateSignedAction?: ({ signatures }: SignedActionRequest) => Promise<Transaction>;
+  action: PopulatedTransaction;
+  generateSignedAction: ({ signatures }: SignedActionRequest) => Promise<PopulatedTransaction>;
 }
 
 export const DEFAULT_DEADLINE = Math.floor(Date.now() / 1000 + 3600).toString();
-
-export const DefaultAction: Transaction =
-{
-  tx: {}
-}

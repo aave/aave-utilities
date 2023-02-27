@@ -117,18 +117,18 @@ export default class BaseService<T extends Contract> {
     tx,
     gasSurplus,
     action,
-  }: TransactionGenerationMethodNew): Promise<string> => {
-    let gasLimit = await estimateGasByNetwork({...tx, value: tx.value ? tx.value.toHexString() : undefined }, this.provider, gasSurplus);
+  }: TransactionGenerationMethodNew): Promise<PopulatedTransaction> => {
+    tx.gasLimit = await estimateGasByNetwork({...tx, value: tx.value ? tx.value.toHexString() : DEFAULT_NULL_VALUE_ON_TX}, this.provider, gasSurplus);
     if (
       action &&
       gasLimitRecommendations[action] &&
-      gasLimit.lte(BigNumber.from(gasLimitRecommendations[action].limit))
+      tx.gasLimit.lte(BigNumber.from(gasLimitRecommendations[action].limit))
     ) {
-      gasLimit = BigNumber.from(
+      tx.gasLimit = BigNumber.from(
         gasLimitRecommendations[action].recommended,
       );
     }
 
-    return gasLimit.toString();
+    return tx;
   };
 }
