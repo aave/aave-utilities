@@ -1,4 +1,4 @@
-import { BigNumber, constants, PopulatedTransaction, providers, utils } from 'ethers';
+import { BigNumber, constants, providers, utils } from 'ethers';
 import {
   eEthereumTxType,
   EthereumTransactionTypeExtended,
@@ -31,6 +31,118 @@ describe('ERC20Service', () => {
       expect(instance instanceof ERC20Service).toEqual(true);
     });
   });
+  describe('approveTxData', () => {
+    const provider: providers.Provider = new providers.JsonRpcProvider();
+    jest
+      .spyOn(provider, 'getGasPrice')
+      .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
+    const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
+    const user = '0x0000000000000000000000000000000000000001';
+    const token = '0x0000000000000000000000000000000000000002';
+    const spender = '0x0000000000000000000000000000000000000003';
+    const amount = '1000000000000000000';
+
+    it('Expects to get the approval txObj with correct params', async () => {
+      const txData = await erc20Service.approveTxData({
+        user,
+        token,
+        spender,
+        amount,
+        skipGasEstimation: true,
+      })
+      expect(txData.to).toEqual(token);
+      expect(txData.from).toEqual(user);
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256'],
+        utils.hexDataSlice(txData.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(spender);
+      expect(decoded[1]).toEqual(BigNumber.from(amount));
+    });
+    it('Expects to get the approval txObj with correct params and gas limit', async () => {
+      const txData = await erc20Service.approveTxData({
+        user,
+        token,
+        spender,
+        amount,
+      })
+      expect(txData.to).toEqual(token);
+      expect(txData.from).toEqual(user);
+      expect(txData.gasLimit).toEqual(BigNumber.from('1'))
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256'],
+        utils.hexDataSlice(txData.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(spender);
+      expect(decoded[1]).toEqual(BigNumber.from(amount));
+    });
+    it('Expects to fail when user is not address', () => {
+      const user = 'asdf';
+      expect(() =>
+        erc20Service.approveTxData({
+          user,
+          token,
+          spender,
+          amount,
+        }),
+      ).toThrowError(
+        new Error(`Address: ${user} is not a valid ethereum Address`),
+      );
+    });
+    it('Expects to fail when token is not address', () => {
+      const token = 'asdf';
+      expect(() =>
+        erc20Service.approveTxData({
+          user,
+          token,
+          spender,
+          amount,
+        }),
+      ).toThrowError(
+        new Error(`Address: ${token} is not a valid ethereum Address`),
+      );
+    });
+    it('Expects to fail when spender is not address', () => {
+      const spender = 'asdf';
+      expect(() =>
+        erc20Service.approveTxData({
+          user,
+          token,
+          spender,
+          amount,
+        }),
+      ).toThrowError(
+        new Error(`Address: ${spender} is not a valid ethereum Address`),
+      );
+    });
+    it('Expects to fail when amount is not positive > 0', () => {
+      const amount = '0';
+      expect(() =>
+        erc20Service.approveTxData({
+          user,
+          token,
+          spender,
+          amount,
+        }),
+      ).toThrowError(new Error(`Amount: ${amount} needs to be greater than 0`));
+    });
+    it('Expects to fail when amount is not a number', () => {
+      const amount = 'asdf';
+      expect(() =>
+        erc20Service.approveTxData({
+          user,
+          token,
+          spender,
+          amount,
+        }),
+      ).toThrowError(new Error(`Amount: ${amount} needs to be greater than 0`));
+    });
+  });
+
   describe('approve', () => {
     const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
     const user = '0x0000000000000000000000000000000000000001';
@@ -377,96 +489,6 @@ describe('ERC20Service', () => {
       expect(tokenData2.symbol).toEqual('AMPL');
       expect(tokenData2.decimals).toEqual(18);
       expect(tokenData2.address).toEqual(token);
-    });
-  });
-  describe('approveTxData', () => {
-    const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
-    const user = '0x0000000000000000000000000000000000000001';
-    const token = '0x0000000000000000000000000000000000000002';
-    const spender = '0x0000000000000000000000000000000000000003';
-    const amount = '1000000000000000000';
-
-    it('Expects to get the approval txObj with correct params', async () => {
-      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
-      const tx: PopulatedTransaction = erc20Service.approveTxData({
-        user,
-        token,
-        spender,
-        amount,
-      });
-
-      expect(tx.to).toEqual(token);
-      expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
-
-      const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'uint256'],
-        utils.hexDataSlice(tx.data ?? '', 4),
-      );
-
-      expect(decoded[0]).toEqual(spender);
-      expect(decoded[1]).toEqual(BigNumber.from(amount));
-    });
-    it('Expects to fail when user is not address', () => {
-      const user = 'asdf';
-      expect(() =>
-        erc20Service.approveTxData({
-          user,
-          token,
-          spender,
-          amount,
-        }),
-      ).toThrowError(
-        new Error(`Address: ${user} is not a valid ethereum Address`),
-      );
-    });
-    it('Expects to fail when token is not address', () => {
-      const token = 'asdf';
-      expect(() =>
-        erc20Service.approveTxData({
-          user,
-          token,
-          spender,
-          amount,
-        }),
-      ).toThrowError(
-        new Error(`Address: ${token} is not a valid ethereum Address`),
-      );
-    });
-    it('Expects to fail when spender is not address', () => {
-      const spender = 'asdf';
-      expect(() =>
-        erc20Service.approveTxData({
-          user,
-          token,
-          spender,
-          amount,
-        }),
-      ).toThrowError(
-        new Error(`Address: ${spender} is not a valid ethereum Address`),
-      );
-    });
-    it('Expects to fail when amount is not positive > 0', () => {
-      const amount = '0';
-      expect(() =>
-        erc20Service.approveTxData({
-          user,
-          token,
-          spender,
-          amount,
-        }),
-      ).toThrowError(new Error(`Amount: ${amount} needs to be greater than 0`));
-    });
-    it('Expects to fail when amount is not a number', () => {
-      const amount = 'asdf';
-      expect(() =>
-        erc20Service.approveTxData({
-          user,
-          token,
-          spender,
-          amount,
-        }),
-      ).toThrowError(new Error(`Amount: ${amount} needs to be greater than 0`));
     });
   });
 });
