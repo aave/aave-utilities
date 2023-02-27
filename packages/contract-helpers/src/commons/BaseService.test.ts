@@ -250,9 +250,9 @@ describe('BaseService', () => {
       });
       expect(tx.gasLimit).toEqual(BigNumber.from('1'))
     });
-    it('Estimate gas limit with undefined value', async () => {
+    it('Estimate gas limit with defined value', async () => {
       const tx = await baseService.estimateGasLimit({
-        tx: { value: undefined },
+        tx: { value: BigNumber.from('1') },
       });
       expect(tx.gasLimit).toEqual(BigNumber.from('1'))
     });
