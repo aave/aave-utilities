@@ -8,17 +8,11 @@ import {
 } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
-  ActionBundle,
-  DefaultAction,
-  DEFAULT_DEADLINE,
   eEthereumTxType,
   EthereumTransactionTypeExtended,
   InterestRate,
   ProtocolAction,
-  RefreshRequest,
-  SignedActionRequest,
   tEthereumAddress,
-  Transaction,
   transactionType,
 } from '../commons/types';
 import {
@@ -88,9 +82,6 @@ export interface PoolInterface {
   supply: (
     args: LPSupplyParamsType,
   ) => Promise<EthereumTransactionTypeExtended[]>;
-  supplyBundle: (
-    args: LPSupplyParamsType,
-  ) => Promise<ActionBundle>
   signERC20Approval: (args: LPSignERC20ApprovalType) => Promise<string>;
   supplyWithPermit: (
     args: LPSupplyWithPermitType,
@@ -323,212 +314,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
     });
 
     return txs;
-  }
-
-  @LPValidatorV3
-  public async supplyBundle(
-    @isEthAddress('user')
-    @isEthAddress('reserve')
-    @isPositiveAmount('amount')
-    @isEthAddress('onBehalfOf')
-    {
-      user,
-      reserve,
-      amount,
-      onBehalfOf,
-      referralCode,
-      useOptimizedPath,
-    }: LPSupplyParamsType,
-  ): Promise<ActionBundle> {
-    let [action, approvals, signatureRequests] = [DefaultAction, [] as Transaction[], [] as string[]];
-    if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
-      const depositEth = this.wethGatewayService.depositETH({
-        lendingPool: this.poolAddress,
-        user,
-        amount,
-        onBehalfOf,
-        referralCode,
-      });
-      const txData = await depositEth[0].tx();
-      const gasLimit = await this.estimateGasLimit({ tx: txData })
-      action = {
-        tx: txData,
-        gasLimit,
-        txType: depositEth[0].txType,
-      }
-    } else {
-      const { isApproved, approve, decimalsOf }: IERC20ServiceInterface =
-        this.erc20Service;
-      const reserveDecimals: number = await decimalsOf(reserve);
-      const convertedAmount: string = valueToWei(amount, reserveDecimals);
-
-      const fundsAvailable: boolean =
-        await this.synthetixService.synthetixValidation({
-          user,
-          reserve,
-          amount: convertedAmount,
-        });
-      if (!fundsAvailable) {
-        throw new Error('Not enough funds to execute operation');
-      }
-
-      const approved = await isApproved({
-        token: reserve,
-        user,
-        spender: this.poolAddress,
-        amount,
-      });
-
-      if (!approved) {
-        const approveTx: EthereumTransactionTypeExtended = approve({
-          user,
-          token: reserve,
-          spender: this.poolAddress,
-          amount: DEFAULT_APPROVE_AMOUNT,
-        });
-        const approveTxData = await approveTx.tx();
-        const gasLimit = await this.estimateGasLimit({ tx: approveTxData });
-        const parsedApproveTx: Transaction = {
-          tx: approveTxData,
-          gasLimit,
-          txType: await approveTx.txType,
-        }
-        const signatureRequest = await this.signERC20Approval({ user, reserve, amount, deadline: DEFAULT_DEADLINE })
-        approvals.push(parsedApproveTx);
-        signatureRequests.push(signatureRequest)
-      }
-
-
-      const lendingPoolContract: IPool = this.getContractInstance(
-        this.poolAddress,
-      );
-
-      // TODO: parse this into seperate functions
-      // use optimized path
-      if (useOptimizedPath) {
-        //     const l2Supply = this.l2PoolService.supply(
-        //       { user, reserve, amount: convertedAmount, referralCode },
-        //         txs,
-        //      );
-        //
-        //
-      }
-
-      const txCallback: () => Promise<transactionType> = this.generateTxCallback({
-        rawTxMethod: async () =>
-          lendingPoolContract.populateTransaction.supply(
-            reserve,
-            convertedAmount,
-            onBehalfOf ?? user,
-            referralCode ?? '0',
-          ),
-        from: user,
-        value: getTxValue(reserve, convertedAmount),
-        action: ProtocolAction.supply,
-      });
-
-      const parsedTx = await txCallback();
-      const gasLimit = await this.estimateGasLimit({ tx: parsedTx, action: ProtocolAction.supply });
-      action = { tx: parsedTx, gasLimit, txType: eEthereumTxType.DLP_ACTION }
-    }
-
-    const refreshTxData = async (args: RefreshRequest): Promise<Transaction> => {
-      const { amount: amountArg, user: userArg, referralCode: referralCodeArg, onBehalfOf: onBehalfOfArg, reserve: reserveArg } = args;
-      const { decimalsOf }: IERC20ServiceInterface = this.erc20Service;
-      const lendingPoolContract: IPool = this.getContractInstance(
-        this.poolAddress,
-      );
-      const action = ProtocolAction.supply;
-      const convertedAmount: string = valueToWei(amountArg ?? amount, await decimalsOf(reserve));
-      const txCallback: () => Promise<transactionType> = this.generateTxCallback({
-        rawTxMethod: async () =>
-          lendingPoolContract.populateTransaction.supply(
-            reserveArg ?? reserve,
-            convertedAmount,
-            onBehalfOfArg ?? userArg ?? user,
-            referralCodeArg ?? '0',
-          ),
-        from: user,
-        value: getTxValue(reserve, amountArg),
-        action,
-      });
-      const resolvedTx = await txCallback();
-      const gasLimit = await this.estimateGasLimit({ tx: resolvedTx, action })
-      return { tx: resolvedTx, gasLimit, txType: eEthereumTxType.DLP_ACTION };
-    }
-
-    const refreshSignedTxData = async (args: RefreshRequest): Promise<Transaction> => {
-      const { amount: amountArg, user: userArg, referralCode: referralCodeArg, onBehalfOf: onBehalfOfArg, reserve: reserveArg, signature: signatureArg, deadline: deadlineArg } = args;
-      const { decimalsOf }: IERC20ServiceInterface = this.erc20Service;
-      const lendingPoolContract: IPool = this.getContractInstance(
-        this.poolAddress,
-      );
-      const convertedAmount: string = valueToWei(amountArg ?? amount, await decimalsOf(reserve));
-      const sig: Signature = splitSignature(signatureArg);
-      const action = ProtocolAction.supplyWithPermit;
-      const txCallback: () => Promise<transactionType> = this.generateTxCallback({
-        rawTxMethod: async () =>
-          lendingPoolContract.populateTransaction.supplyWithPermit(
-            reserveArg ?? reserve,
-            convertedAmount,
-            onBehalfOfArg ?? userArg ?? user,
-            referralCodeArg ?? referralCode ?? '0',
-            deadlineArg,
-            sig.v,
-            sig.r,
-            sig.s
-          ),
-        from: user,
-        value: getTxValue(reserve, amountArg),
-        action,
-      });
-      const resolvedTx = await txCallback();
-      const gasLimit = await this.estimateGasLimit({ tx: resolvedTx, action })
-
-
-      return { tx: resolvedTx, gasLimit, txType: eEthereumTxType.DLP_ACTION };
-    }
-
-    const generateSignedAction = async ({ signatures }: SignedActionRequest) => {
-      const { decimalsOf }: IERC20ServiceInterface = this.erc20Service;
-      const lendingPoolContract: IPool = this.getContractInstance(
-        this.poolAddress,
-      );
-      const convertedAmount: string = valueToWei(amount, await decimalsOf(reserve));
-      const sig: Signature = splitSignature(signatures[0]);
-      const action = ProtocolAction.supplyWithPermit;
-      const txCallback: () => Promise<transactionType> = this.generateTxCallback({
-        rawTxMethod: async () =>
-          lendingPoolContract.populateTransaction.supplyWithPermit(
-            reserve,
-            convertedAmount,
-            onBehalfOf ?? user,
-            referralCode ?? '0',
-            DEFAULT_DEADLINE,
-            sig.v,
-            sig.r,
-            sig.s
-          ),
-        from: user,
-        value: getTxValue(reserve, amount),
-        action,
-      });
-      const resolvedTx = await txCallback();
-      const gasLimit = await this.estimateGasLimit({ tx: resolvedTx, action })
-
-
-      return { tx: resolvedTx, gasLimit, txType: eEthereumTxType.DLP_ACTION };
-    }
-
-    return {
-      action: action,
-      refreshTxData,
-      refreshSignedTxData,
-      approvals,
-      signatureRequests,
-      generateSignedAction,
-
-    }
   }
 
   @LPValidatorV3
