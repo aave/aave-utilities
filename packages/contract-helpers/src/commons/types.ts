@@ -292,10 +292,6 @@ export interface SignedActionRequest {
   signatures: string[];
 }
 
-export interface RefreshRequest {
-  [key: string]: any;
-}
-
 export type ActionBundle = {
   approvals: PopulatedTransaction[];
   signatureRequests: string[];

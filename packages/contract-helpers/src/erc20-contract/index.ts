@@ -108,6 +108,7 @@ export class ERC20Service
     if (!skipGasEstimation) {
       txData = await this.estimateGasLimit({ tx: txData });
     }
+
     return {
       ...txData,
       from: user,

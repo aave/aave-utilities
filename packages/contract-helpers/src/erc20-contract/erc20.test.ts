@@ -82,7 +82,7 @@ describe('ERC20Service', () => {
     });
     it('Expects to fail when user is not address', () => {
       const user = 'asdf';
-      expect(() =>
+      expect(async () =>
         erc20Service.approveTxData({
           user,
           token,
@@ -95,7 +95,7 @@ describe('ERC20Service', () => {
     });
     it('Expects to fail when token is not address', () => {
       const token = 'asdf';
-      expect(() =>
+      expect(async () =>
         erc20Service.approveTxData({
           user,
           token,
@@ -108,7 +108,7 @@ describe('ERC20Service', () => {
     });
     it('Expects to fail when spender is not address', () => {
       const spender = 'asdf';
-      expect(() =>
+      expect(async () =>
         erc20Service.approveTxData({
           user,
           token,
@@ -121,7 +121,7 @@ describe('ERC20Service', () => {
     });
     it('Expects to fail when amount is not positive > 0', () => {
       const amount = '0';
-      expect(() =>
+      expect(async () =>
         erc20Service.approveTxData({
           user,
           token,
@@ -132,7 +132,7 @@ describe('ERC20Service', () => {
     });
     it('Expects to fail when amount is not a number', () => {
       const amount = 'asdf';
-      expect(() =>
+      expect(async () =>
         erc20Service.approveTxData({
           user,
           token,

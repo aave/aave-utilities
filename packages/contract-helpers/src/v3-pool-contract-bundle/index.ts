@@ -30,15 +30,15 @@ import {
   ParaswapRepayWithCollateralInterface,
 } from '../paraswap-repayWithCollateralAdapter-contract';
 import { SynthetixInterface, SynthetixService } from '../synthetix-contract';
+import { Pool, PoolInterface as V3PoolInterface } from '../v3-pool-contract';
+import { LPSupplyParamsType } from '../v3-pool-contract/lendingPoolTypes';
+import { IPool } from '../v3-pool-contract/typechain/IPool';
+import { IPool__factory } from '../v3-pool-contract/typechain/IPool__factory';
 import { L2Pool, L2PoolInterface } from '../v3-pool-rollups';
 import {
   WETHGatewayInterface,
   WETHGatewayService,
 } from '../wethgateway-contract';
-import { LPSupplyParamsType } from '../v3-pool-contract/lendingPoolTypes';
-import { IPool } from '../v3-pool-contract/typechain/IPool';
-import { IPool__factory } from '../v3-pool-contract/typechain/IPool__factory';
-import { Pool, PoolInterface as V3PoolInterface } from '../v3-pool-contract';
 
 export interface PoolInterface {
   supplyBundle: (args: LPSupplyParamsBundleType) => Promise<ActionBundle>;
@@ -153,8 +153,8 @@ export class PoolBundle extends BaseService<IPool> implements PoolInterface {
     }: LPSupplyParamsBundleType,
   ): Promise<ActionBundle> {
     let actionTx: PopulatedTransaction = {};
-    let approvals: PopulatedTransaction[] = [];
-    let signatureRequests: string[] = [];
+    const approvals: PopulatedTransaction[] = [];
+    const signatureRequests: string[] = [];
 
     const generateSignedAction = async ({
       signatures,
@@ -177,6 +177,7 @@ export class PoolBundle extends BaseService<IPool> implements PoolInterface {
       if (!fundsAvailable) {
         throw new Error('Not enough funds to execute operation');
       }
+
       let populatedTx: PopulatedTransaction = {};
       if (useOptimizedPath) {
         // TODO: Use new Transaction type in L2Service
@@ -209,12 +210,14 @@ export class PoolBundle extends BaseService<IPool> implements PoolInterface {
           );
         populatedTx.from = user;
       }
+
       if (!skipGasEstimation) {
         populatedTx = await this.estimateGasLimit({
           tx: populatedTx,
           action: ProtocolAction.supplyWithPermit,
         });
       }
+
       return populatedTx;
     };
 
@@ -306,6 +309,7 @@ export class PoolBundle extends BaseService<IPool> implements PoolInterface {
         );
         actionTx.from = user;
       }
+
       if (!skipGasEstimation) {
         actionTx = await this.estimateGasLimit({
           tx: actionTx,
