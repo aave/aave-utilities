@@ -29,7 +29,11 @@ import {
   ParaswapRepayWithCollateralInterface,
 } from '../paraswap-repayWithCollateralAdapter-contract';
 import { SynthetixInterface, SynthetixService } from '../synthetix-contract';
-import { LendingPoolMarketConfigV3, Pool, PoolInterface as V3PoolInterface } from '../v3-pool-contract';
+import {
+  LendingPoolMarketConfigV3,
+  Pool,
+  PoolInterface as V3PoolInterface,
+} from '../v3-pool-contract';
 import { LPSupplyParamsType } from '../v3-pool-contract/lendingPoolTypes';
 import { IPool } from '../v3-pool-contract/typechain/IPool';
 import { IPool__factory } from '../v3-pool-contract/typechain/IPool__factory';
@@ -49,7 +53,10 @@ export type LPSupplyParamsBundleType = LPSupplyParamsType & {
   deadline?: string;
 };
 
-export class PoolBundle extends BaseService<IPool> implements PoolBundleInterface {
+export class PoolBundle
+  extends BaseService<IPool>
+  implements PoolBundleInterface
+{
   readonly erc20Service: IERC20ServiceInterface;
 
   readonly poolAddress: string;
