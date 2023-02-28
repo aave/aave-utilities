@@ -21,6 +21,7 @@ export * from './governance-contract';
 export * from './governance-contract/types';
 export * from './governance-power-delegation-contract';
 export * from './v3-pool-contract';
+export * from './v3-pool-contract-bundle';
 export * from './synthetix-contract';
 export * from './baseDebtToken-contract';
 export * from './v3-migration-contract';

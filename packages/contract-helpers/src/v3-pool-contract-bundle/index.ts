@@ -6,7 +6,6 @@ import {
   DEFAULT_DEADLINE,
   ProtocolAction,
   SignedActionRequest,
-  tEthereumAddress,
 } from '../commons/types';
 import {
   API_ETH_MOCK_ADDRESS,
@@ -30,7 +29,7 @@ import {
   ParaswapRepayWithCollateralInterface,
 } from '../paraswap-repayWithCollateralAdapter-contract';
 import { SynthetixInterface, SynthetixService } from '../synthetix-contract';
-import { Pool, PoolInterface as V3PoolInterface } from '../v3-pool-contract';
+import { LendingPoolMarketConfigV3, Pool, PoolInterface as V3PoolInterface } from '../v3-pool-contract';
 import { LPSupplyParamsType } from '../v3-pool-contract/lendingPoolTypes';
 import { IPool } from '../v3-pool-contract/typechain/IPool';
 import { IPool__factory } from '../v3-pool-contract/typechain/IPool__factory';
@@ -40,27 +39,17 @@ import {
   WETHGatewayService,
 } from '../wethgateway-contract';
 
-export interface PoolInterface {
+export interface PoolBundleInterface {
   supplyBundle: (args: LPSupplyParamsBundleType) => Promise<ActionBundle>;
 }
 
-export type LendingPoolMarketConfigV3 = {
-  POOL: tEthereumAddress;
-  WETH_GATEWAY?: tEthereumAddress;
-  FLASH_LIQUIDATION_ADAPTER?: tEthereumAddress;
-  REPAY_WITH_COLLATERAL_ADAPTER?: tEthereumAddress;
-  SWAP_COLLATERAL_ADAPTER?: tEthereumAddress;
-  L2_ENCODER?: tEthereumAddress;
-  L2_POOL?: tEthereumAddress;
-};
-
-type LPSupplyParamsBundleType = LPSupplyParamsType & {
+export type LPSupplyParamsBundleType = LPSupplyParamsType & {
   skipApprovalChecks?: boolean;
   skipGasEstimation?: boolean;
   deadline?: string;
 };
 
-export class PoolBundle extends BaseService<IPool> implements PoolInterface {
+export class PoolBundle extends BaseService<IPool> implements PoolBundleInterface {
   readonly erc20Service: IERC20ServiceInterface;
 
   readonly poolAddress: string;
