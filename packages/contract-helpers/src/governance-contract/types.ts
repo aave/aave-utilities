@@ -1,4 +1,4 @@
-import { BigNumber, BytesLike } from 'ethers';
+import { BigNumber, BigNumberish, BytesLike } from 'ethers';
 import { tEthereumAddress } from '../commons/types';
 
 export enum ExecutorType {
@@ -77,6 +77,43 @@ export type GovGetTokensVotingPower = {
 export type GovGetVoteOnProposal = {
   proposalId: number;
   user: tEthereumAddress;
+};
+
+export type DelegateSignature = {
+  nonce: string;
+  expiry: string;
+  v: string;
+  r: string;
+  s: string;
+};
+
+type Signature = {
+  v: BigNumberish;
+  r: BytesLike;
+  s: BytesLike;
+};
+
+export type GovDelegateTokensBySig = {
+  user: tEthereumAddress;
+  tokens: tEthereumAddress[];
+  data: Array<{
+    delegatee: tEthereumAddress;
+    nonce: BigNumberish;
+    expiry: BigNumberish;
+    signature: Signature;
+  }>;
+};
+
+export type GovDelegateTokensByTypeBySig = {
+  user: tEthereumAddress;
+  tokens: tEthereumAddress[];
+  data: Array<{
+    delegatee: tEthereumAddress;
+    delegationType: BigNumberish;
+    nonce: BigNumberish;
+    expiry: BigNumberish;
+    signature: Signature;
+  }>;
 };
 
 export enum ProposalState {
