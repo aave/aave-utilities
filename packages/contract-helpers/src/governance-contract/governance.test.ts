@@ -514,4 +514,78 @@ describe('GovernanceService', () => {
       );
     });
   });
+  describe('delegateTokensBySig', () => {
+    it('should work if correct parameters are supplied', async () => {
+      const spy = jest
+        .spyOn(IGovernanceV2Helper__factory, 'connect')
+        .mockReturnValue({
+          delegateTokensBySig: async () =>
+            Promise.resolve(['sdasd', BigNumber.from('1111')]),
+        } as unknown as IGovernanceV2Helper);
+      const instance = new AaveGovernanceService(provider, {
+        GOVERNANCE_ADDRESS,
+        GOVERNANCE_HELPER_ADDRESS,
+      });
+      const mockedUser = '0xA7499Aa6464c078EeB940da2fc95C6aCd010c3Cc';
+      const mockedDelegatee = '0x603696E8740b0Fa0b8aEFC202052ae757a59CF1b';
+      const mockedTokens = ['0xEE56e2B3D491590B5b31738cC34d5232F378a8D5'];
+      const mockedData = [
+        {
+          expiry: 123,
+          nonce: 1,
+          delegatee: mockedDelegatee,
+          signature: {
+            v: '123',
+            r: '123',
+            s: '123',
+          },
+        },
+      ];
+      await instance.delegateTokensBySig({
+        user: mockedUser,
+        tokens: mockedTokens,
+        data: mockedData,
+      });
+
+      expect(spy).toBeCalled();
+    });
+  });
+
+  describe('delegateTokensByTypeBySig', () => {
+    it('should work if correct parameters are supplied', async () => {
+      const spy = jest
+        .spyOn(IGovernanceV2Helper__factory, 'connect')
+        .mockReturnValue({
+          delegateTokensByTypeBySig: async () =>
+            Promise.resolve(['sdasd', BigNumber.from('1111')]),
+        } as unknown as IGovernanceV2Helper);
+      const instance = new AaveGovernanceService(provider, {
+        GOVERNANCE_ADDRESS,
+        GOVERNANCE_HELPER_ADDRESS,
+      });
+      const mockedUser = '0xA7499Aa6464c078EeB940da2fc95C6aCd010c3Cc';
+      const mockedDelegatee = '0x603696E8740b0Fa0b8aEFC202052ae757a59CF1b';
+      const mockedTokens = ['0xEE56e2B3D491590B5b31738cC34d5232F378a8D5'];
+      const mockedData = [
+        {
+          expiry: 123,
+          nonce: 1,
+          delegatee: mockedDelegatee,
+          delegationType: 1,
+          signature: {
+            v: '123',
+            r: '123',
+            s: '123',
+          },
+        },
+      ];
+      await instance.delegateTokensByTypeBySig({
+        user: mockedUser,
+        tokens: mockedTokens,
+        data: mockedData,
+      });
+
+      expect(spy).toBeCalled();
+    });
+  });
 });
