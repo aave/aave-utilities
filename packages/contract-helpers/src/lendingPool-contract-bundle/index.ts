@@ -11,24 +11,32 @@ import {
   DEFAULT_APPROVE_AMOUNT,
   convertPopulatedTx,
 } from '../commons/utils';
-import {
-  LPValidator,
-} from '../commons/validators/methodValidators';
+import { LPValidator } from '../commons/validators/methodValidators';
 import {
   isEthAddress,
   isPositiveAmount,
 } from '../commons/validators/paramValidators';
 import { ERC20Service, IERC20ServiceInterface } from '../erc20-contract';
-import {
-  LPDepositParamsType,
-} from '../lendingPool-contract/lendingPoolTypes';
+import { LPDepositParamsType } from '../lendingPool-contract/lendingPoolTypes';
 import { ILendingPool } from '../lendingPool-contract/typechain/ILendingPool';
 import { ILendingPool__factory } from '../lendingPool-contract/typechain/ILendingPool__factory';
-import { LiquiditySwapAdapterInterface, LiquiditySwapAdapterService } from '../paraswap-liquiditySwapAdapter-contract';
-import { ParaswapRepayWithCollateral, ParaswapRepayWithCollateralInterface } from '../paraswap-repayWithCollateralAdapter-contract';
-import { RepayWithCollateralAdapterInterface, RepayWithCollateralAdapterService } from '../repayWithCollateralAdapter-contract';
+import {
+  LiquiditySwapAdapterInterface,
+  LiquiditySwapAdapterService,
+} from '../paraswap-liquiditySwapAdapter-contract';
+import {
+  ParaswapRepayWithCollateral,
+  ParaswapRepayWithCollateralInterface,
+} from '../paraswap-repayWithCollateralAdapter-contract';
+import {
+  RepayWithCollateralAdapterInterface,
+  RepayWithCollateralAdapterService,
+} from '../repayWithCollateralAdapter-contract';
 import { SynthetixInterface, SynthetixService } from '../synthetix-contract';
-import { WETHGatewayInterface, WETHGatewayService } from '../wethgateway-contract';
+import {
+  WETHGatewayInterface,
+  WETHGatewayService,
+} from '../wethgateway-contract';
 
 export type LPDepositParamsBundleType = LPDepositParamsType & {
   skipApprovalChecks?: boolean;
@@ -36,14 +44,13 @@ export type LPDepositParamsBundleType = LPDepositParamsType & {
 };
 
 export interface LendingPoolBundleInterface {
-  depositBundle: (
-    args: LPDepositParamsBundleType,
-  ) => Promise<ActionBundle>;
+  depositBundle: (args: LPDepositParamsBundleType) => Promise<ActionBundle>;
 }
 
 export class LendingPoolBundle
   extends BaseService<ILendingPool>
-  implements LendingPoolBundleInterface {
+  implements LendingPoolBundleInterface
+{
   readonly erc20Service: IERC20ServiceInterface;
 
   readonly lendingPoolAddress: string;
@@ -111,7 +118,15 @@ export class LendingPoolBundle
     @isEthAddress('reserve')
     @isPositiveAmount('amount')
     @isEthAddress('onBehalfOf')
-    { user, reserve, amount, onBehalfOf, referralCode, skipApprovalChecks, skipGasEstimation }: LPDepositParamsBundleType,
+    {
+      user,
+      reserve,
+      amount,
+      onBehalfOf,
+      referralCode,
+      skipApprovalChecks,
+      skipGasEstimation,
+    }: LPDepositParamsBundleType,
   ): Promise<ActionBundle> {
     let actionTx: PopulatedTransaction = {};
     const approvals: PopulatedTransaction[] = [];
@@ -169,6 +184,7 @@ export class LendingPoolBundle
           if (!skipGasEstimation) {
             approveTx = await this.estimateGasLimit({ tx: approveTx });
           }
+
           approvals.push(approveTx);
         }
       }
@@ -178,14 +194,13 @@ export class LendingPoolBundle
         this.lendingPoolAddress,
       );
 
-
       actionTx = await lendingPoolContract.populateTransaction.deposit(
         reserve,
         convertedAmount,
         onBehalfOf ?? user,
         referralCode ?? '0',
-      ),
-        actionTx.from = user;
+      );
+      actionTx.from = user;
     }
 
     if (!skipGasEstimation) {
@@ -199,7 +214,7 @@ export class LendingPoolBundle
       action: actionTx,
       approvals,
       signatureRequests: [],
-      generateSignedAction: () => Promise.resolve({})
+      generateSignedAction: async () => Promise.resolve({}),
     };
   }
 }

@@ -55,7 +55,8 @@ export type LPSupplyParamsBundleType = LPSupplyParamsType & {
 
 export class PoolBundle
   extends BaseService<IPool>
-  implements PoolBundleInterface {
+  implements PoolBundleInterface
+{
   readonly erc20Service: IERC20ServiceInterface;
 
   readonly poolAddress: string;

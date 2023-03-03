@@ -226,7 +226,9 @@ describe('LendingPoolBundle', () => {
       );
 
       expect(depositTxObj.signatureRequests.length).toEqual(0);
-      const signedAction = await depositTxObj.generateSignedAction({ signatures: [] });
+      const signedAction = await depositTxObj.generateSignedAction({
+        signatures: [],
+      });
       expect(signedAction).toEqual({});
     });
     it('Expects the tx object passing all parameters but not onBehalfOf', async () => {
@@ -464,6 +466,5 @@ describe('LendingPoolBundle', () => {
         }),
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
-
   });
 });
