@@ -14,6 +14,7 @@ export * from './incentive-controller';
 export * from './incentive-controller-v2';
 export * from './erc20-contract';
 export * from './lendingPool-contract';
+export * from './lendingPool-contract-bundle';
 export * from './faucet-contract';
 export * from './v3-faucet-contract';
 export * from './staking-contract';

@@ -55,8 +55,7 @@ export type LPSupplyParamsBundleType = LPSupplyParamsType & {
 
 export class PoolBundle
   extends BaseService<IPool>
-  implements PoolBundleInterface
-{
+  implements PoolBundleInterface {
   readonly erc20Service: IERC20ServiceInterface;
 
   readonly poolAddress: string;
@@ -231,7 +230,7 @@ export class PoolBundle
       if (!skipGasEstimation) {
         actionTx = await this.estimateGasLimit({
           tx: actionTx,
-          action: ProtocolAction.default,
+          action: ProtocolAction.supply,
         });
       }
     } else {
