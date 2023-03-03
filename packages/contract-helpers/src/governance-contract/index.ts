@@ -217,7 +217,7 @@ export class AaveGovernanceService
     @isEthAddress('user')
     @isEthAddressArray('tokens')
     { user, tokens, data }: GovDelegateTokensBySig,
-  ): Promise<EthereumTransactionTypeExtended> {
+  ): Promise<EthereumTransactionTypeExtended[]> {
     const helper = IGovernanceV2Helper__factory.connect(
       this.aaveGovernanceV2HelperAddress,
       this.provider,
@@ -228,11 +228,13 @@ export class AaveGovernanceService
         helper.populateTransaction.delegateTokensBySig(tokens, data),
       from: user,
     });
-    return {
-      tx: txCallback,
-      txType: eEthereumTxType.GOV_DELEGATION_ACTION,
-      gas: this.generateTxPriceEstimation([], txCallback),
-    };
+    return [
+      {
+        tx: txCallback,
+        txType: eEthereumTxType.GOV_DELEGATION_ACTION,
+        gas: this.generateTxPriceEstimation([], txCallback),
+      },
+    ];
   }
 
   @GovHelperValidator
@@ -240,7 +242,7 @@ export class AaveGovernanceService
     @isEthAddress('user')
     @isEthAddressArray('tokens')
     { user, tokens, data }: GovDelegateTokensByTypeBySig,
-  ): Promise<EthereumTransactionTypeExtended> {
+  ): Promise<EthereumTransactionTypeExtended[]> {
     const helper = IGovernanceV2Helper__factory.connect(
       this.aaveGovernanceV2HelperAddress,
       this.provider,
@@ -252,10 +254,12 @@ export class AaveGovernanceService
       from: user,
     });
 
-    return {
-      tx: txCallback,
-      txType: eEthereumTxType.GOV_DELEGATION_ACTION,
-      gas: this.generateTxPriceEstimation([], txCallback),
-    };
+    return [
+      {
+        tx: txCallback,
+        txType: eEthereumTxType.GOV_DELEGATION_ACTION,
+        gas: this.generateTxPriceEstimation([], txCallback),
+      },
+    ];
   }
 }
