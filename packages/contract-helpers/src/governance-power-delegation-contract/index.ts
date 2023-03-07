@@ -276,7 +276,7 @@ export class GovernancePowerDelegationTokenService
     }: GovPrepareDelegateSig,
   ): Promise<string> {
     const delegateeAddress: string = await this.getDelegateeAddress(delegatee);
-    const { chainId } = await this.provider.getNetwork();
+    // const { chainId } = await this.provider.getNetwork();
 
     const typeData = {
       types: {
@@ -296,7 +296,7 @@ export class GovernancePowerDelegationTokenService
       domain: {
         name: governanceTokenName,
         version: '1',
-        chainId,
+        chainId: 1,
         verifyingContract: governanceToken,
       },
       message: {
@@ -324,8 +324,7 @@ export class GovernancePowerDelegationTokenService
     }: GovPrepareDelegateSigByType,
   ): Promise<string> {
     const delegateeAddress: string = await this.getDelegateeAddress(delegatee);
-    const { chainId } = await this.provider.getNetwork();
-
+    // const { chainId } = await this.provider.getNetwork();
     const typeData = {
       types: {
         EIP712Domain: [
@@ -345,7 +344,7 @@ export class GovernancePowerDelegationTokenService
       domain: {
         name: governanceTokenName,
         version: '1',
-        chainId,
+        chainId: 1,
         verifyingContract: governanceToken,
       },
       message: {
