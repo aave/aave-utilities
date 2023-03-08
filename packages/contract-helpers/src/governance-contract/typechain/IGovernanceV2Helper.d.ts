@@ -40,7 +40,9 @@ interface IGovernanceV2HelperInterface extends ethers.utils.Interface {
         delegatee: string;
         nonce: BigNumberish;
         expiry: BigNumberish;
-        signature: { v: BigNumberish; r: BytesLike; s: BytesLike };
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
       }[],
     ],
   ): string;
@@ -53,7 +55,9 @@ interface IGovernanceV2HelperInterface extends ethers.utils.Interface {
         delegationType: BigNumberish;
         nonce: BigNumberish;
         expiry: BigNumberish;
-        signature: { v: BigNumberish; r: BytesLike; s: BytesLike };
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
       }[],
     ],
   ): string;
@@ -150,7 +154,9 @@ export class IGovernanceV2Helper extends BaseContract {
         delegatee: string;
         nonce: BigNumberish;
         expiry: BigNumberish;
-        signature: { v: BigNumberish; r: BytesLike; s: BytesLike };
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
       }[],
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
@@ -162,7 +168,9 @@ export class IGovernanceV2Helper extends BaseContract {
         delegationType: BigNumberish;
         nonce: BigNumberish;
         expiry: BigNumberish;
-        signature: { v: BigNumberish; r: BytesLike; s: BytesLike };
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
       }[],
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<ContractTransaction>;
@@ -415,7 +423,9 @@ export class IGovernanceV2Helper extends BaseContract {
       delegatee: string;
       nonce: BigNumberish;
       expiry: BigNumberish;
-      signature: { v: BigNumberish; r: BytesLike; s: BytesLike };
+      v: BigNumberish;
+      r: BytesLike;
+      s: BytesLike;
     }[],
     overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
@@ -427,7 +437,9 @@ export class IGovernanceV2Helper extends BaseContract {
       delegationType: BigNumberish;
       nonce: BigNumberish;
       expiry: BigNumberish;
-      signature: { v: BigNumberish; r: BytesLike; s: BytesLike };
+      v: BigNumberish;
+      r: BytesLike;
+      s: BytesLike;
     }[],
     overrides?: Overrides & { from?: string | Promise<string> },
   ): Promise<ContractTransaction>;
@@ -567,7 +579,9 @@ export class IGovernanceV2Helper extends BaseContract {
         delegatee: string;
         nonce: BigNumberish;
         expiry: BigNumberish;
-        signature: { v: BigNumberish; r: BytesLike; s: BytesLike };
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
       }[],
       overrides?: CallOverrides,
     ): Promise<void>;
@@ -579,7 +593,9 @@ export class IGovernanceV2Helper extends BaseContract {
         delegationType: BigNumberish;
         nonce: BigNumberish;
         expiry: BigNumberish;
-        signature: { v: BigNumberish; r: BytesLike; s: BytesLike };
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
       }[],
       overrides?: CallOverrides,
     ): Promise<void>;
@@ -722,7 +738,9 @@ export class IGovernanceV2Helper extends BaseContract {
         delegatee: string;
         nonce: BigNumberish;
         expiry: BigNumberish;
-        signature: { v: BigNumberish; r: BytesLike; s: BytesLike };
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
       }[],
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
@@ -734,7 +752,9 @@ export class IGovernanceV2Helper extends BaseContract {
         delegationType: BigNumberish;
         nonce: BigNumberish;
         expiry: BigNumberish;
-        signature: { v: BigNumberish; r: BytesLike; s: BytesLike };
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
       }[],
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
@@ -770,7 +790,9 @@ export class IGovernanceV2Helper extends BaseContract {
         delegatee: string;
         nonce: BigNumberish;
         expiry: BigNumberish;
-        signature: { v: BigNumberish; r: BytesLike; s: BytesLike };
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
       }[],
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;
@@ -782,7 +804,9 @@ export class IGovernanceV2Helper extends BaseContract {
         delegationType: BigNumberish;
         nonce: BigNumberish;
         expiry: BigNumberish;
-        signature: { v: BigNumberish; r: BytesLike; s: BytesLike };
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
       }[],
       overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<PopulatedTransaction>;

@@ -47,26 +47,19 @@ const _abi = [
             type: 'uint256',
           },
           {
-            components: [
-              {
-                internalType: 'uint8',
-                name: 'v',
-                type: 'uint8',
-              },
-              {
-                internalType: 'bytes32',
-                name: 'r',
-                type: 'bytes32',
-              },
-              {
-                internalType: 'bytes32',
-                name: 's',
-                type: 'bytes32',
-              },
-            ],
-            internalType: 'struct IGovernanceV2Helper.EIP712Signature',
-            name: 'signature',
-            type: 'tuple',
+            internalType: 'uint8',
+            name: 'v',
+            type: 'uint8',
+          },
+          {
+            internalType: 'bytes32',
+            name: 'r',
+            type: 'bytes32',
+          },
+          {
+            internalType: 'bytes32',
+            name: 's',
+            type: 'bytes32',
           },
         ],
         internalType: 'struct IGovernanceV2Helper.DelegateTokensBySigData[]',
@@ -109,26 +102,19 @@ const _abi = [
             type: 'uint256',
           },
           {
-            components: [
-              {
-                internalType: 'uint8',
-                name: 'v',
-                type: 'uint8',
-              },
-              {
-                internalType: 'bytes32',
-                name: 'r',
-                type: 'bytes32',
-              },
-              {
-                internalType: 'bytes32',
-                name: 's',
-                type: 'bytes32',
-              },
-            ],
-            internalType: 'struct IGovernanceV2Helper.EIP712Signature',
-            name: 'signature',
-            type: 'tuple',
+            internalType: 'uint8',
+            name: 'v',
+            type: 'uint8',
+          },
+          {
+            internalType: 'bytes32',
+            name: 'r',
+            type: 'bytes32',
+          },
+          {
+            internalType: 'bytes32',
+            name: 's',
+            type: 'bytes32',
           },
         ],
         internalType:

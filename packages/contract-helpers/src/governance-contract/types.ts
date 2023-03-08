@@ -87,12 +87,6 @@ export type DelegateSignature = {
   s: string;
 };
 
-type Signature = {
-  v: BigNumberish;
-  r: BytesLike;
-  s: BytesLike;
-};
-
 export type GovDelegateTokensBySig = {
   user: tEthereumAddress;
   tokens: tEthereumAddress[];
@@ -100,7 +94,9 @@ export type GovDelegateTokensBySig = {
     delegatee: tEthereumAddress;
     nonce: BigNumberish;
     expiry: BigNumberish;
-    signature: Signature;
+    v: BigNumberish;
+    r: BytesLike;
+    s: BytesLike;
   }>;
 };
 
@@ -112,7 +108,9 @@ export type GovDelegateTokensByTypeBySig = {
     delegationType: BigNumberish;
     nonce: BigNumberish;
     expiry: BigNumberish;
-    signature: Signature;
+    v: BigNumberish;
+    r: BytesLike;
+    s: BytesLike;
   }>;
 };
 
