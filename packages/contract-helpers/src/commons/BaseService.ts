@@ -117,20 +117,25 @@ export default class BaseService<T extends Contract> {
     gasSurplus,
     action,
   }: TransactionGenerationMethodNew): Promise<PopulatedTransaction> => {
-    tx.gasLimit = await estimateGasByNetwork(
-      {
-        ...tx,
-        value: tx.value ? tx.value.toHexString() : DEFAULT_NULL_VALUE_ON_TX,
-      },
-      this.provider,
-      gasSurplus,
-    );
-    if (
-      action &&
-      gasLimitRecommendations[action] &&
-      tx.gasLimit.lte(BigNumber.from(gasLimitRecommendations[action].limit))
-    ) {
-      tx.gasLimit = BigNumber.from(gasLimitRecommendations[action].recommended);
+    const gasLimit = action
+      ? BigNumber.from(gasLimitRecommendations[action].limit)
+      : BigNumber.from(gasLimitRecommendations[ProtocolAction.default].limit);
+    try {
+      const estimatedGasLimit = await estimateGasByNetwork(
+        {
+          ...tx,
+          value: tx.value ? tx.value.toHexString() : DEFAULT_NULL_VALUE_ON_TX,
+        },
+        this.provider,
+        gasSurplus,
+      );
+      if (estimatedGasLimit?.gt(gasLimit)) {
+        tx.gasLimit = estimatedGasLimit;
+      } else {
+        tx.gasLimit = gasLimit;
+      }
+    } catch (_: unknown) {
+      console.log(`Gas estimation failure for approval`);
     }
 
     return tx;
