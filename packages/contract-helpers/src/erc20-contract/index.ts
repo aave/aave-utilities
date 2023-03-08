@@ -57,6 +57,7 @@ export class ERC20Service
     this.tokenMetadata = {};
 
     this.approve = this.approve.bind(this);
+    this.approveTxData = this.approveTxData.bind(this);
     this.isApproved = this.isApproved.bind(this);
     this.getTokenData = this.getTokenData.bind(this);
     this.decimalsOf = this.decimalsOf.bind(this);
