@@ -539,11 +539,9 @@ describe('GovernanceService', () => {
           expiry: 123,
           nonce: 1,
           delegatee: mockedDelegatee,
-          signature: {
-            v: '123',
-            r: '123',
-            s: '123',
-          },
+          v: '123',
+          r: '123',
+          s: '123',
         },
       ];
       const txs = await instance.delegateTokensBySig({
@@ -574,18 +572,15 @@ describe('GovernanceService', () => {
       const mockedUser = '0xA7499Aa6464c078EeB940da2fc95C6aCd010c3Cc';
       const mockedDelegatee = '0x603696E8740b0Fa0b8aEFC202052ae757a59CF1b';
       const mockedTokens = ['0xEE56e2B3D491590B5b31738cC34d5232F378a8D5'];
-      const mockedSignature = {
-        v: '123',
-        r: '123',
-        s: '123',
-      };
       const mockedData = [
         {
           expiry: 123,
           nonce: 1,
           delegatee: mockedDelegatee,
           delegationType: 1,
-          signature: mockedSignature,
+          v: '123',
+          r: '123',
+          s: '123',
         },
       ];
       const txs = await instance.delegateTokensByTypeBySig({
