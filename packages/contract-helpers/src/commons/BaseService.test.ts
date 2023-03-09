@@ -284,6 +284,18 @@ describe('BaseService', () => {
       });
       expect(tx.gasLimit).toEqual(BigNumber.from('210000'));
     });
+    it('Uses estimation if > default for action', async () => {
+      const mockedEstimateGasByNetwork = jest
+        .fn()
+        .mockResolvedValue(BigNumber.from('400000'));
+      (estimateGasByNetwork as jest.Mock).mockImplementationOnce(
+        mockedEstimateGasByNetwork,
+      );
+      const tx = await baseService.estimateGasLimit({
+        tx: { value: undefined },
+      });
+      expect(tx.gasLimit?.toString()).toEqual('400000');
+    });
     it('Throws error if gas estimation fails', async () => {
       const mockedEstimateGasByNetwork = jest
         .fn()
