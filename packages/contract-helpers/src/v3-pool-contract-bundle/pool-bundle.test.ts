@@ -176,7 +176,7 @@ describe('PoolBundle', () => {
 
       expect(supplyTxObj.action.to).toEqual(POOL);
       expect(supplyTxObj.action.from).toEqual(user);
-      expect(supplyTxObj.action.gasLimit).toEqual(undefined);
+      expect(supplyTxObj.action.gasLimit).toEqual(BigNumber.from('300000'));
       expect(supplyTxObj.action.value).toEqual(undefined);
 
       const decoded = utils.defaultAbiCoder.decode(

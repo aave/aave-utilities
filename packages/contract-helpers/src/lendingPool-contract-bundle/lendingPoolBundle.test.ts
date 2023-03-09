@@ -173,7 +173,7 @@ describe('LendingPoolBundle', () => {
 
       expect(depositTxObj.action.to).toEqual(LENDING_POOL);
       expect(depositTxObj.action.from).toEqual(user);
-      expect(depositTxObj.action.gasLimit).toEqual(undefined);
+      expect(depositTxObj.action.gasLimit).toEqual(BigNumber.from('300000'));
       expect(depositTxObj.action.value).toEqual(undefined);
 
       const decoded = utils.defaultAbiCoder.decode(

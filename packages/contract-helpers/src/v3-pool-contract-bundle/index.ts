@@ -176,7 +176,6 @@ export class PoolBundle
 
       let populatedTx: PopulatedTransaction = {};
       if (useOptimizedPath) {
-        // TODO: Use new Transaction type in L2Service
         const legacyTx = await this.l2PoolService.supplyWithPermit(
           {
             user,
@@ -207,12 +206,11 @@ export class PoolBundle
         populatedTx.from = user;
       }
 
-      if (!skipGasEstimation) {
-        populatedTx = await this.estimateGasLimit({
-          tx: populatedTx,
-          action: ProtocolAction.supplyWithPermit,
-        });
-      }
+      populatedTx = await this.estimateGasLimit({
+        tx: populatedTx,
+        action: ProtocolAction.supplyWithPermit,
+        skipGasEstimation,
+      });
 
       return populatedTx;
     };
@@ -228,12 +226,12 @@ export class PoolBundle
       });
       const txData = await depositEth[0].tx();
       actionTx = convertPopulatedTx(txData);
-      if (!skipGasEstimation) {
-        actionTx = await this.estimateGasLimit({
-          tx: actionTx,
-          action: ProtocolAction.supply,
-        });
-      }
+
+      actionTx = await this.estimateGasLimit({
+        tx: actionTx,
+        action: ProtocolAction.supply,
+        skipGasEstimation,
+      });
     } else {
       // Handle mon-base asset supplies
       const { isApproved, decimalsOf, approveTxData }: IERC20ServiceInterface =
@@ -261,15 +259,13 @@ export class PoolBundle
         });
 
         if (!approved) {
-          let approveTx = await approveTxData({
+          const approveTx = await approveTxData({
             user,
             token: reserve,
             spender: this.poolAddress,
             amount: DEFAULT_APPROVE_AMOUNT,
+            skipGasEstimation,
           });
-          if (!skipGasEstimation) {
-            approveTx = await this.estimateGasLimit({ tx: approveTx });
-          }
 
           const signatureRequest = await this.v3PoolService.signERC20Approval({
             user,
@@ -289,7 +285,6 @@ export class PoolBundle
 
       // compress calldata for L2Pool
       if (useOptimizedPath) {
-        // TODO: Use new Transaction type in L2Service
         const legacyL2SupplyTx = await this.l2PoolService.supply(
           { user, reserve, amount: convertedAmount, referralCode },
           [],
@@ -306,12 +301,11 @@ export class PoolBundle
         actionTx.from = user;
       }
 
-      if (!skipGasEstimation) {
-        actionTx = await this.estimateGasLimit({
-          tx: actionTx,
-          action: ProtocolAction.supply,
-        });
-      }
+      actionTx = await this.estimateGasLimit({
+        tx: actionTx,
+        action: ProtocolAction.supply,
+        skipGasEstimation,
+      });
     }
 
     return {

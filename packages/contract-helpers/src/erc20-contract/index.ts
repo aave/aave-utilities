@@ -107,7 +107,7 @@ export class ERC20Service
       amount,
     );
     if (!skipGasEstimation) {
-      txData = await this.estimateGasLimit({ tx: txData });
+      txData = await this.estimateGasLimit({ tx: txData, skipGasEstimation });
     }
 
     return {

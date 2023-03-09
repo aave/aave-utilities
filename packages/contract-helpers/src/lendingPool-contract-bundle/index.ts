@@ -142,12 +142,11 @@ export class LendingPoolBundle
       });
       const txData = await depositEth[0].tx();
       actionTx = convertPopulatedTx(txData);
-      if (!skipGasEstimation) {
-        actionTx = await this.estimateGasLimit({
-          tx: actionTx,
-          action: ProtocolAction.deposit,
-        });
-      }
+      actionTx = await this.estimateGasLimit({
+        tx: actionTx,
+        action: ProtocolAction.deposit,
+        skipGasEstimation,
+      });
     } else {
       // Handle mon-base asset supplies
       const { isApproved, decimalsOf, approveTxData }: IERC20ServiceInterface =
@@ -175,15 +174,13 @@ export class LendingPoolBundle
         });
 
         if (!approved) {
-          let approveTx = await approveTxData({
+          const approveTx = await approveTxData({
             user,
             token: reserve,
             spender: this.lendingPoolAddress,
             amount: DEFAULT_APPROVE_AMOUNT,
+            skipGasEstimation,
           });
-          if (!skipGasEstimation) {
-            approveTx = await this.estimateGasLimit({ tx: approveTx });
-          }
 
           approvals.push(approveTx);
         }
@@ -203,12 +200,11 @@ export class LendingPoolBundle
       actionTx.from = user;
     }
 
-    if (!skipGasEstimation) {
-      actionTx = await this.estimateGasLimit({
-        tx: actionTx,
-        action: ProtocolAction.deposit,
-      });
-    }
+    actionTx = await this.estimateGasLimit({
+      tx: actionTx,
+      action: ProtocolAction.deposit,
+      skipGasEstimation,
+    });
 
     return {
       action: actionTx,
