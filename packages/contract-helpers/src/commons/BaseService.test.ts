@@ -303,12 +303,10 @@ describe('BaseService', () => {
       (estimateGasByNetwork as jest.Mock).mockImplementationOnce(
         mockedEstimateGasByNetwork,
       );
-      await expect(
-        baseService.estimateGasLimit({
-          tx: { value: undefined },
-          action: ProtocolAction.supply,
-        }),
-      ).rejects.toThrowError('Gas estimation failure for approval');
+      const tx = await baseService.estimateGasLimit({
+        tx: { value: undefined },
+      });
+      expect(tx.gasLimit?.toString()).toEqual('210000');
     });
   });
 });

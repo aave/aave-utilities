@@ -137,7 +137,7 @@ export default class BaseService<T extends Contract> {
         gasSurplus,
       );
     } catch (_: unknown) {
-      throw new Error(`Gas estimation failure for approval`);
+      // Don't log anything as this is expected to for methods requiring approval
     }
 
     if (estimatedGasLimit.gt(gasLimit)) {
