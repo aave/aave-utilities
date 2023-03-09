@@ -140,7 +140,7 @@ export default class BaseService<T extends Contract> {
       throw new Error(`Gas estimation failure for approval`);
     }
 
-    if (estimatedGasLimit?.gt(gasLimit)) {
+    if (estimatedGasLimit.gt(gasLimit)) {
       tx.gasLimit = estimatedGasLimit;
     } else {
       tx.gasLimit = gasLimit;
