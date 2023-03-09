@@ -231,6 +231,7 @@ export type TransactionGenerationMethodNew = {
   tx: PopulatedTransaction;
   gasSurplus?: number;
   action?: ProtocolAction;
+  skipGasEstimation?: boolean;
 };
 
 export type TransactionGasGenerationMethod = {

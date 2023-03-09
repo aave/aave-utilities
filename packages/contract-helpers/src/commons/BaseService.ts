@@ -116,12 +116,19 @@ export default class BaseService<T extends Contract> {
     tx,
     gasSurplus,
     action,
+    skipGasEstimation,
   }: TransactionGenerationMethodNew): Promise<PopulatedTransaction> => {
     const gasLimit = action
       ? BigNumber.from(gasLimitRecommendations[action].limit)
       : BigNumber.from(gasLimitRecommendations[ProtocolAction.default].limit);
+    if (skipGasEstimation) {
+      tx.gasLimit = gasLimit;
+      return tx;
+    }
+
+    let estimatedGasLimit = BigNumber.from('0');
     try {
-      const estimatedGasLimit = await estimateGasByNetwork(
+      estimatedGasLimit = await estimateGasByNetwork(
         {
           ...tx,
           value: tx.value ? tx.value.toHexString() : DEFAULT_NULL_VALUE_ON_TX,
@@ -129,13 +136,14 @@ export default class BaseService<T extends Contract> {
         this.provider,
         gasSurplus,
       );
-      if (estimatedGasLimit?.gt(gasLimit)) {
-        tx.gasLimit = estimatedGasLimit;
-      } else {
-        tx.gasLimit = gasLimit;
-      }
     } catch (_: unknown) {
       console.log(`Gas estimation failure for approval`);
+    }
+
+    if (estimatedGasLimit?.gt(gasLimit)) {
+      tx.gasLimit = estimatedGasLimit;
+    } else {
+      tx.gasLimit = gasLimit;
     }
 
     return tx;

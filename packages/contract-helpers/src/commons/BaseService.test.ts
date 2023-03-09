@@ -19,7 +19,6 @@ jest.mock('../commons/gasStation', () => {
       .mockImplementation(async () => Promise.resolve(BigNumber.from(1))),
   };
 });
-
 describe('BaseService', () => {
   const provider = new providers.JsonRpcProvider();
   jest
@@ -239,22 +238,24 @@ describe('BaseService', () => {
     it('Estimate gas limit with default tx', async () => {
       const tx = await baseService.estimateGasLimit({
         tx: {},
+        skipGasEstimation: true,
       });
-      expect(tx.gasLimit).toEqual(BigNumber.from('1'));
+      expect(tx.gasLimit).toEqual(BigNumber.from('210000'));
     });
     it('Estimate gas limit with surplus', async () => {
       const gasSurplus = 10;
       const tx = await baseService.estimateGasLimit({
         tx: {},
         gasSurplus,
+        skipGasEstimation: true,
       });
-      expect(tx.gasLimit).toEqual(BigNumber.from('1'));
+      expect(tx.gasLimit).toEqual(BigNumber.from('210000'));
     });
     it('Estimate gas limit with defined value', async () => {
       const tx = await baseService.estimateGasLimit({
         tx: { value: BigNumber.from('1') },
       });
-      expect(tx.gasLimit).toEqual(BigNumber.from('1'));
+      expect(tx.gasLimit).toEqual(BigNumber.from('210000'));
     });
     it('Estimate gas limit with action', async () => {
       const tx = await baseService.estimateGasLimit({
@@ -262,6 +263,21 @@ describe('BaseService', () => {
         action: ProtocolAction.supply,
       });
       expect(tx.gasLimit).toEqual(BigNumber.from('300000'));
+    });
+    it('Skips gas limit estimation with action', async () => {
+      const tx = await baseService.estimateGasLimit({
+        tx: { value: undefined },
+        action: ProtocolAction.supply,
+        skipGasEstimation: true,
+      });
+      expect(tx.gasLimit).toEqual(BigNumber.from('300000'));
+    });
+    it('Skips gas limit estimation without action', async () => {
+      const tx = await baseService.estimateGasLimit({
+        tx: { value: undefined },
+        skipGasEstimation: true,
+      });
+      expect(tx.gasLimit).toEqual(BigNumber.from('210000'));
     });
   });
 });
