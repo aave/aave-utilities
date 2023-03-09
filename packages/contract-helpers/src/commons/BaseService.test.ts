@@ -1,6 +1,7 @@
 import { Provider } from '@ethersproject/providers';
 import { BigNumber, Contract, providers, Signer } from 'ethers';
 import BaseService from './BaseService';
+import { estimateGasByNetwork } from './gasStation';
 import { eEthereumTxType, ProtocolAction } from './types';
 import { DEFAULT_NULL_VALUE_ON_TX } from './utils';
 
@@ -235,6 +236,10 @@ describe('BaseService', () => {
   describe('estimateGasLimit', () => {
     const baseService = new BaseService(provider, Test__factory);
 
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
     it('Estimate gas limit with default tx', async () => {
       const tx = await baseService.estimateGasLimit({
         tx: {},
@@ -278,6 +283,20 @@ describe('BaseService', () => {
         skipGasEstimation: true,
       });
       expect(tx.gasLimit).toEqual(BigNumber.from('210000'));
+    });
+    it('Throws error if gas estimation fails', async () => {
+      const mockedEstimateGasByNetwork = jest
+        .fn()
+        .mockRejectedValue('Gas estimation error');
+      (estimateGasByNetwork as jest.Mock).mockImplementationOnce(
+        mockedEstimateGasByNetwork,
+      );
+      await expect(
+        baseService.estimateGasLimit({
+          tx: { value: undefined },
+          action: ProtocolAction.supply,
+        }),
+      ).rejects.toThrowError('Gas estimation failure for approval');
     });
   });
 });

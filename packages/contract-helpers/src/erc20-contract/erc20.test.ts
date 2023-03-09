@@ -71,7 +71,7 @@ describe('ERC20Service', () => {
       });
       expect(txData.to).toEqual(token);
       expect(txData.from).toEqual(user);
-      expect(txData.gasLimit).toEqual(BigNumber.from('1'));
+      expect(txData.gasLimit).toEqual(BigNumber.from('210000'));
 
       const decoded = utils.defaultAbiCoder.decode(
         ['address', 'uint256'],
