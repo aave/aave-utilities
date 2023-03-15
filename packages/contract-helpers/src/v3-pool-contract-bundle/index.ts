@@ -149,6 +149,7 @@ export class PoolBundle
     }: LPSupplyParamsBundleType,
   ): Promise<ActionBundle> {
     let actionTx: PopulatedTransaction = {};
+    let approved = true;
     const approvals: PopulatedTransaction[] = [];
     const signatureRequests: string[] = [];
 
@@ -251,7 +252,7 @@ export class PoolBundle
 
       // Generate approval and signature requests, optional
       if (!skipApprovalChecks) {
-        const approved = await isApproved({
+        approved = await isApproved({
           token: reserve,
           user,
           spender: this.poolAddress,
@@ -310,6 +311,7 @@ export class PoolBundle
 
     return {
       action: actionTx,
+      approvalRequired: !approved,
       approvals,
       signatureRequests,
       generateSignedAction,

@@ -294,9 +294,10 @@ export interface SignedActionRequest {
 }
 
 export type ActionBundle = {
+  action: PopulatedTransaction;
+  approvalRequired: boolean;
   approvals: PopulatedTransaction[];
   signatureRequests: string[];
-  action: PopulatedTransaction;
   generateSignedAction: ({
     signatures,
   }: SignedActionRequest) => Promise<PopulatedTransaction>;

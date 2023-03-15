@@ -129,6 +129,7 @@ export class LendingPoolBundle
     }: LPDepositParamsBundleType,
   ): Promise<ActionBundle> {
     let actionTx: PopulatedTransaction = {};
+    let approved = true;
     const approvals: PopulatedTransaction[] = [];
 
     // Base asset supplies are routed to WETHGateway
@@ -166,7 +167,7 @@ export class LendingPoolBundle
 
       // Generate approval and signature requests, optional
       if (!skipApprovalChecks) {
-        const approved = await isApproved({
+        approved = await isApproved({
           token: reserve,
           user,
           spender: this.lendingPoolAddress,
@@ -208,6 +209,7 @@ export class LendingPoolBundle
 
     return {
       action: actionTx,
+      approvalRequired: !approved,
       approvals,
       signatureRequests: [],
       generateSignedAction: async () => Promise.resolve({}),

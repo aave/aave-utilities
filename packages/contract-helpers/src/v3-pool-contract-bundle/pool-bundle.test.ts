@@ -173,6 +173,7 @@ describe('PoolBundle', () => {
       expect(synthetixSpy).toHaveBeenCalled();
       expect(isApprovedSpy).toHaveBeenCalled();
       expect(decimalsSpy).toHaveBeenCalled();
+      expect(supplyTxObj.approvalRequired).toEqual(true);
 
       expect(supplyTxObj.action.to).toEqual(POOL);
       expect(supplyTxObj.action.from).toEqual(user);
@@ -361,7 +362,7 @@ describe('PoolBundle', () => {
         ),
       );
     });
-    it('Expects the tx object passing all parameters and needing approval', async () => {
+    it('Expects the tx object passing all parameters with approval skipped', async () => {
       const poolInstance = new PoolBundle(provider, config);
 
       const decimalsSpy = jest
@@ -383,7 +384,7 @@ describe('PoolBundle', () => {
       expect(synthetixSpy).toHaveBeenCalled();
       // expect(isApprovedSpy).toHaveBeenCalled();
       expect(decimalsSpy).toHaveBeenCalled();
-
+      expect(supplyTxObj.approvalRequired).toEqual(false);
       const tx: PopulatedTransaction = supplyTxObj.action;
       expect(tx.to).toEqual(POOL);
       expect(tx.from).toEqual(user);

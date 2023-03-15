@@ -170,7 +170,7 @@ describe('LendingPoolBundle', () => {
       expect(synthetixSpy).toHaveBeenCalled();
       expect(isApprovedSpy).toHaveBeenCalled();
       expect(decimalsSpy).toHaveBeenCalled();
-
+      expect(depositTxObj.approvalRequired).toEqual(true);
       expect(depositTxObj.action.to).toEqual(LENDING_POOL);
       expect(depositTxObj.action.from).toEqual(user);
       expect(depositTxObj.action.gasLimit).toEqual(BigNumber.from('300000'));
@@ -332,7 +332,7 @@ describe('LendingPoolBundle', () => {
         ),
       );
     });
-    it('Expects the tx object passing all parameters and needing approval', async () => {
+    it('Expects the tx object passing all parameters with approval skipped', async () => {
       const poolInstance = new LendingPoolBundle(provider, config);
 
       const decimalsSpy = jest
@@ -358,6 +358,7 @@ describe('LendingPoolBundle', () => {
       const tx: PopulatedTransaction = depositTxObj.action;
       expect(tx.to).toEqual(LENDING_POOL);
       expect(tx.from).toEqual(user);
+      expect(depositTxObj.approvalRequired).toEqual(false);
       expect(tx.gasLimit).toEqual(
         BigNumber.from(
           gasLimitRecommendations[ProtocolAction.deposit].recommended,
