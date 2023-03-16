@@ -17,7 +17,10 @@ import {
   isPositiveAmount,
   isPositiveOrMinusOneAmount,
 } from '../commons/validators/paramValidators';
-import { IERC20Detailed } from './typechain/IERC20Detailed';
+import {
+  IERC20Detailed,
+  IERC20DetailedInterface,
+} from './typechain/IERC20Detailed';
 import { IERC20Detailed__factory } from './typechain/IERC20Detailed__factory';
 
 export interface IERC20ServiceInterface {
@@ -51,6 +54,8 @@ export class ERC20Service
 
   readonly tokenMetadata: Record<string, TokenMetadataType>;
 
+  readonly contractInterface: IERC20DetailedInterface;
+
   constructor(provider: providers.Provider) {
     super(provider, IERC20Detailed__factory);
     this.tokenDecimals = {};
@@ -61,6 +66,7 @@ export class ERC20Service
     this.isApproved = this.isApproved.bind(this);
     this.getTokenData = this.getTokenData.bind(this);
     this.decimalsOf = this.decimalsOf.bind(this);
+    this.contractInterface = IERC20Detailed__factory.createInterface();
   }
 
   @ERC20Validator
@@ -100,20 +106,21 @@ export class ERC20Service
       skipGasEstimation,
     }: ApproveType & { skipGasEstimation?: boolean },
   ): Promise<PopulatedTransaction> {
-    const erc20Contract: IERC20Detailed = this.getContractInstance(token);
-
-    let txData = await erc20Contract.populateTransaction.approve(
+    let tx: PopulatedTransaction = {};
+    const txData = this.contractInterface.encodeFunctionData('approve', [
       spender,
       amount,
-    );
+    ]);
+
+    tx.data = txData;
+    tx.to = token;
+    tx.from = user;
+
     if (!skipGasEstimation) {
-      txData = await this.estimateGasLimit({ tx: txData, skipGasEstimation });
+      tx = await this.estimateGasLimit({ tx, skipGasEstimation });
     }
 
-    return {
-      ...txData,
-      from: user,
-    };
+    return tx;
   }
 
   @ERC20Validator

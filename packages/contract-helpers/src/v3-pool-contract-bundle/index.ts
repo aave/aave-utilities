@@ -11,6 +11,7 @@ import {
   API_ETH_MOCK_ADDRESS,
   convertPopulatedTx,
   DEFAULT_APPROVE_AMOUNT,
+  gasLimitRecommendations,
   valueToWei,
 } from '../commons/utils';
 import { LPValidatorV3 } from '../commons/validators/methodValidators';
@@ -35,7 +36,7 @@ import {
   PoolInterface as V3PoolInterface,
 } from '../v3-pool-contract';
 import { LPSupplyParamsType } from '../v3-pool-contract/lendingPoolTypes';
-import { IPool } from '../v3-pool-contract/typechain/IPool';
+import { IPool, IPoolInterface } from '../v3-pool-contract/typechain/IPool';
 import { IPool__factory } from '../v3-pool-contract/typechain/IPool__factory';
 import { L2Pool, L2PoolInterface } from '../v3-pool-rollups';
 import {
@@ -85,6 +86,8 @@ export class PoolBundle
 
   readonly v3PoolService: V3PoolInterface;
 
+  readonly contractInterface: IPoolInterface;
+
   constructor(
     provider: providers.Provider,
     lendingPoolConfig?: LendingPoolMarketConfigV3,
@@ -128,6 +131,8 @@ export class PoolBundle
       l2PoolAddress: this.poolAddress,
       encoderAddress: this.l2EncoderAddress,
     });
+
+    this.contractInterface = IPool__factory.createInterface();
   }
 
   @LPValidatorV3
@@ -157,9 +162,6 @@ export class PoolBundle
       signatures,
     }: SignedActionRequest) => {
       const { decimalsOf }: IERC20ServiceInterface = this.erc20Service;
-      const lendingPoolContract: IPool = this.getContractInstance(
-        this.poolAddress,
-      );
       const convertedAmount: string = valueToWei(
         amount,
         await decimalsOf(reserve),
@@ -193,8 +195,9 @@ export class PoolBundle
         const executedTx = await legacyTx[0].tx();
         populatedTx = convertPopulatedTx(executedTx);
       } else {
-        populatedTx =
-          await lendingPoolContract.populateTransaction.supplyWithPermit(
+        const txData = this.contractInterface.encodeFunctionData(
+          'supplyWithPermit',
+          [
             reserve,
             convertedAmount,
             onBehalfOf ?? user,
@@ -203,8 +206,11 @@ export class PoolBundle
             sig.v,
             sig.r,
             sig.s,
-          );
+          ],
+        );
+        populatedTx.to = this.poolAddress;
         populatedTx.from = user;
+        populatedTx.data = txData;
       }
 
       populatedTx = await this.estimateGasLimit({
@@ -279,11 +285,6 @@ export class PoolBundle
         }
       }
 
-      // Generate supply tx
-      const lendingPoolContract: IPool = this.getContractInstance(
-        this.poolAddress,
-      );
-
       // compress calldata for L2Pool
       if (useOptimizedPath) {
         const legacyL2SupplyTx = await this.l2PoolService.supply(
@@ -293,13 +294,15 @@ export class PoolBundle
         const executedTx = await legacyL2SupplyTx[0].tx();
         actionTx = convertPopulatedTx(executedTx);
       } else {
-        actionTx = await lendingPoolContract.populateTransaction.supply(
+        const txData = this.contractInterface.encodeFunctionData('supply', [
           reserve,
           convertedAmount,
           onBehalfOf ?? user,
           referralCode ?? '0',
-        );
+        ]);
+        actionTx.to = this.poolAddress;
         actionTx.from = user;
+        actionTx.data = txData;
       }
 
       actionTx = await this.estimateGasLimit({
@@ -315,6 +318,8 @@ export class PoolBundle
       approvals,
       signatureRequests,
       generateSignedAction,
+      signedActionGasEstimate:
+        gasLimitRecommendations[ProtocolAction.supplyWithPermit].limit,
     };
   }
 }
