@@ -18,7 +18,10 @@ import {
 } from '../commons/validators/paramValidators';
 import { ERC20Service, IERC20ServiceInterface } from '../erc20-contract';
 import { LPDepositParamsType } from '../lendingPool-contract/lendingPoolTypes';
-import { ILendingPool } from '../lendingPool-contract/typechain/ILendingPool';
+import {
+  ILendingPool,
+  ILendingPoolInterface,
+} from '../lendingPool-contract/typechain/ILendingPool';
 import { ILendingPool__factory } from '../lendingPool-contract/typechain/ILendingPool__factory';
 import {
   LiquiditySwapAdapterInterface,
@@ -71,6 +74,8 @@ export class LendingPoolBundle
 
   readonly paraswapRepayWithCollateralAdapterService: ParaswapRepayWithCollateralInterface;
 
+  readonly contractInterface: ILendingPoolInterface;
+
   constructor(
     provider: providers.Provider,
     lendingPoolConfig?: LendingPoolMarketConfig,
@@ -110,6 +115,8 @@ export class LendingPoolBundle
 
     this.paraswapRepayWithCollateralAdapterService =
       new ParaswapRepayWithCollateral(provider, REPAY_WITH_COLLATERAL_ADAPTER);
+
+    this.contractInterface = ILendingPool__factory.createInterface();
   }
 
   @LPValidator
@@ -187,17 +194,15 @@ export class LendingPoolBundle
         }
       }
 
-      // Generate deposit tx
-      const lendingPoolContract: ILendingPool = this.getContractInstance(
-        this.lendingPoolAddress,
-      );
-
-      actionTx = await lendingPoolContract.populateTransaction.deposit(
+      const txData = this.contractInterface.encodeFunctionData('deposit', [
         reserve,
         convertedAmount,
         onBehalfOf ?? user,
         referralCode ?? '0',
-      );
+      ]);
+
+      actionTx.to = this.lendingPoolAddress;
+      actionTx.data = txData;
       actionTx.from = user;
     }
 
