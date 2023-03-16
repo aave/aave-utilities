@@ -1,4 +1,4 @@
-import { BigNumber, providers } from 'ethers';
+import { BigNumber, PopulatedTransaction, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
@@ -17,7 +17,10 @@ import {
   isPositiveAmount,
   isPositiveOrMinusOneAmount,
 } from '../commons/validators/paramValidators';
-import { IERC20Detailed } from './typechain/IERC20Detailed';
+import {
+  IERC20Detailed,
+  IERC20DetailedInterface,
+} from './typechain/IERC20Detailed';
 import { IERC20Detailed__factory } from './typechain/IERC20Detailed__factory';
 
 export interface IERC20ServiceInterface {
@@ -25,6 +28,9 @@ export interface IERC20ServiceInterface {
   getTokenData: (token: tEthereumAddress) => Promise<TokenMetadataType>;
   isApproved: (args: ApproveType) => Promise<boolean>;
   approve: (args: ApproveType) => EthereumTransactionTypeExtended;
+  approveTxData: (
+    args: ApproveType & { skipGasEstimation?: boolean },
+  ) => Promise<PopulatedTransaction>;
 }
 
 export type ApproveType = {
@@ -48,15 +54,19 @@ export class ERC20Service
 
   readonly tokenMetadata: Record<string, TokenMetadataType>;
 
+  readonly contractInterface: IERC20DetailedInterface;
+
   constructor(provider: providers.Provider) {
     super(provider, IERC20Detailed__factory);
     this.tokenDecimals = {};
     this.tokenMetadata = {};
 
     this.approve = this.approve.bind(this);
+    this.approveTxData = this.approveTxData.bind(this);
     this.isApproved = this.isApproved.bind(this);
     this.getTokenData = this.getTokenData.bind(this);
     this.decimalsOf = this.decimalsOf.bind(this);
+    this.contractInterface = IERC20Detailed__factory.createInterface();
   }
 
   @ERC20Validator
@@ -80,6 +90,37 @@ export class ERC20Service
       txType: eEthereumTxType.ERC20_APPROVAL,
       gas: this.generateTxPriceEstimation([], txCallback),
     };
+  }
+
+  @ERC20Validator
+  public async approveTxData(
+    @isEthAddress('user')
+    @isEthAddress('token')
+    @isEthAddress('spender')
+    @isPositiveAmount('amount')
+    {
+      user,
+      token,
+      spender,
+      amount,
+      skipGasEstimation,
+    }: ApproveType & { skipGasEstimation?: boolean },
+  ): Promise<PopulatedTransaction> {
+    let tx: PopulatedTransaction = {};
+    const txData = this.contractInterface.encodeFunctionData('approve', [
+      spender,
+      amount,
+    ]);
+
+    tx.data = txData;
+    tx.to = token;
+    tx.from = user;
+
+    if (!skipGasEstimation) {
+      tx = await this.estimateGasLimit({ tx, skipGasEstimation });
+    }
+
+    return tx;
   }
 
   @ERC20Validator
