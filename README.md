@@ -91,6 +91,7 @@ yarn add @aave/contract-helpers @aave/math-utils
       - [delegateByType](#delegateByType)
     - g. [Credit Delegation](#credit-delegation)
       - [approveDelegation](#approveDelegation)
+    - h. [Bundle Methods](#bundle-methods)
 
 <br />
 
@@ -456,6 +457,46 @@ function submitTransaction({
 
 Transaction methods to perform actions on the V3 Pool contract
 
+### supplyBundle
+
+A [bundle method](#bundle-methods) for supply, formerly deposit, which supplies
+the underlying asset into the Pool reserve. For every token that is supplied, a
+corresponding amount of aTokens is minted.
+
+The bundle method provides the transaction for the action, approval if required
+(txn or signature request), and callback to generate signed supplyWithPermit
+txn.
+
+<details>
+  <summary>Sample Code</summary>
+
+````ts
+import { PoolBundle } from '@aave/contract-helpers';
+
+const poolBundle = new PoolBundle(provider, {
+  POOL: poolAddress,
+  WETH_GATEWAY: wethGatewayAddress,
+});
+
+/*
+- @param `user` The ethereum address that will make the deposit
+- @param `reserve` The ethereum address of the reserve
+- @param `amount` The amount to be deposited
+- @param @optional `onBehalfOf` The ethereum address for which user is depositing. It will default to the user address
+*/
+const supplyBundle: ActionBundle = await poolBundle.supplyBundle({
+  user,
+  reserve,
+  amount,
+  onBehalfOf,
+});
+
+// Submit bundle components as shown in #bundle-methods section
+
+</details>
+
+<br />
+
 ### supply
 
 Formerly `deposit`, supply the underlying asset into the Pool reserve. For every
@@ -473,9 +514,9 @@ const pool = new Pool(provider, {
 });
 
 /*
-- @param `user` The ethereum address that will make the deposit 
-- @param `reserve` The ethereum address of the reserve 
-- @param `amount` The amount to be deposited 
+- @param `user` The ethereum address that will make the deposit
+- @param `reserve` The ethereum address of the reserve
+- @param `amount` The amount to be deposited
 - @param @optional `onBehalfOf` The ethereum address for which user is depositing. It will default to the user address
 */
 const txs: EthereumTransactionTypeExtended[] = await pool.supply({
@@ -488,7 +529,7 @@ const txs: EthereumTransactionTypeExtended[] = await pool.supply({
 // If the user has not approved the pool contract to spend their tokens, txs will also contain two transactions: approve and supply. These approval and supply transactions can be submitted just as in V2,OR you can skip the first approval transaction with a gasless signature by using signERC20Approval -> supplyWithPermit which are documented below
 
 // If there is no approval transaction, then supply() can called without the need for an approval or signature
-```
+````
 
 Submit transaction(s) as shown [here](#submitting-transactions)
 
@@ -1042,6 +1083,45 @@ Submit transaction as shown [here](#submitting-transactions)
 Object that contains all the necessary methods to create Aave V2 lending pool
 transactions
 
+### depositBundle
+
+A [bundle method](#bundle-methods) for deposit, which supplies the underlying
+asset into the Pool reserve. For every token that is supplied, a corresponding
+amount of aTokens is minted.
+
+The bundle method generates the deposit tx data and approval tx data (if
+required).
+
+<details>
+  <summary>Sample Code</summary>
+
+````ts
+import { LendingPoolBundle } from '@aave/contract-helpers';
+
+const lendingPoolBundle = new LendingPoolBundle(provider, {
+  LENDING_POOL: lendingPoolAddress,
+  WETH_GATEWAY: wethGatewayAddress,
+});
+
+/*
+- @param `user` The ethereum address that will make the deposit
+- @param `reserve` The ethereum address of the reserve
+- @param `amount` The amount to be deposited
+- @param @optional `onBehalfOf` The ethereum address for which user is depositing. It will default to the user address
+*/
+const depositBundle: ActionBundle = await lendingPoolBundle.depositBundle({
+  user,
+  reserve,
+  amount,
+  onBehalfOf,
+});
+
+// Submit bundle components as shown in #bundle-methods section
+
+</details>
+
+<br />
+
 ### deposit
 
 Deposits the underlying asset into the reserve. For every token that is
@@ -1059,9 +1139,9 @@ const lendingPool = new LendingPool(provider, {
 });
 
 /*
-- @param `user` The ethereum address that will make the deposit 
-- @param `reserve` The ethereum address of the reserve 
-- @param `amount` The amount to be deposited 
+- @param `user` The ethereum address that will make the deposit
+- @param `reserve` The ethereum address of the reserve
+- @param `amount` The amount to be deposited
 - @param @optional `onBehalfOf` The ethereum address for which user is depositing. It will default to the user address
 */
 const txs: EthereumTransactionTypeExtended[] = await lendingPool.deposit({
@@ -1070,7 +1150,7 @@ const txs: EthereumTransactionTypeExtended[] = await lendingPool.deposit({
   amount,
   onBehalfOf,
 });
-```
+````
 
 Submit transaction(s) as shown [here](#submitting-transactions)
 
@@ -1738,3 +1818,35 @@ const approveDelegation = delegationServicePolygonV2USDC.approveDelegation({
 Submit transaction as shown [here](#submitting-transactions)
 
 </details>
+
+## Bundle Methods
+
+Any contract-helper method which does not have the `bundle` label functions the
+same way, it returns a callback to generate tx data for a certain action.
+Generating the tx data, gas estimation, handling approval lifecycle, and
+handling permit lifecycle all must be done by the client.
+
+Bundle methods are an attempt to combine all of these steps into a single
+utility function. Each bundle method returns an `ActionBundle` response:
+
+```
+type ActionBundle = {
+  action: PopulatedTransaction;
+  approvalRequired: boolean;
+  approvals: PopulatedTransaction[];
+  signatureRequests: string[];
+  generateSignedAction: ({
+    signatures,
+  }: SignedActionRequest) => Promise<PopulatedTransaction>;
+  signedActionGasEstimate: string;
+};
+```
+
+If approvalRequired is false then the tx data for `action` is already generated
+and ready to sign and send
+
+If approval is required then there are two options
+
+- Individually sign and send the transactions in `approvals`
+- Inidividually sign the message requests in `signatureRequests` -> pass
+  signatures to `generateSignedAction` -> sign and send this txn
