@@ -121,7 +121,9 @@ describe('PoolBundle', () => {
         ),
       );
       expect(supplyTxObj.action.value).toEqual(undefined);
-
+      expect(supplyTxObj.signedActionGasEstimate).toEqual(
+        gasLimitRecommendations[ProtocolAction.supplyWithPermit].recommended,
+      );
       const decoded = utils.defaultAbiCoder.decode(
         ['address', 'uint256', 'address', 'uint16'],
         utils.hexDataSlice(supplyTxObj.action.data ?? '', 4),

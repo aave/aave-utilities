@@ -301,6 +301,7 @@ export type ActionBundle = {
   generateSignedAction: ({
     signatures,
   }: SignedActionRequest) => Promise<PopulatedTransaction>;
+  signedActionGasEstimate: string;
 };
 
 export const DEFAULT_DEADLINE = Math.floor(Date.now() / 1000 + 3600).toString();

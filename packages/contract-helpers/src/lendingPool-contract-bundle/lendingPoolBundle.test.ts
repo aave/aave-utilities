@@ -253,7 +253,7 @@ describe('LendingPoolBundle', () => {
       expect(synthetixSpy).toHaveBeenCalled();
       expect(isApprovedSpy).toHaveBeenCalled();
       expect(decimalsSpy).toHaveBeenCalled();
-
+      expect(depositTxObj.signedActionGasEstimate).toEqual('0');
       const tx: PopulatedTransaction = depositTxObj.action;
       expect(tx.to).toEqual(LENDING_POOL);
       expect(tx.from).toEqual(user);

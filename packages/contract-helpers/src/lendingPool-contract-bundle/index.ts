@@ -213,6 +213,7 @@ export class LendingPoolBundle
       approvals,
       signatureRequests: [],
       generateSignedAction: async () => Promise.resolve({}),
+      signedActionGasEstimate: '0',
     };
   }
 }

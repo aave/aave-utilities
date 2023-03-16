@@ -11,6 +11,7 @@ import {
   API_ETH_MOCK_ADDRESS,
   convertPopulatedTx,
   DEFAULT_APPROVE_AMOUNT,
+  gasLimitRecommendations,
   valueToWei,
 } from '../commons/utils';
 import { LPValidatorV3 } from '../commons/validators/methodValidators';
@@ -315,6 +316,8 @@ export class PoolBundle
       approvals,
       signatureRequests,
       generateSignedAction,
+      signedActionGasEstimate:
+        gasLimitRecommendations[ProtocolAction.supplyWithPermit].limit,
     };
   }
 }
