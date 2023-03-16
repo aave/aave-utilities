@@ -13,7 +13,7 @@ export interface CalculateAccruedIncentivesRequest {
 }
 
 // Calculate incentives earned by user since reserveIndexTimestamp
-// Incentives earned before reserveIndexTimestamp are tracked seperately (userUnclaimedRewards from UiIncentiveDataProvider)
+// Incentives earned before reserveIndexTimestamp are tracked separately (userUnclaimedRewards from UiIncentiveDataProvider)
 // This function is used for deposit, variableDebt, and stableDebt incentives
 export function calculateAccruedIncentives({
   principalUserBalance,

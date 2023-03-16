@@ -50,6 +50,7 @@ yarn add @aave/contract-helpers @aave/math-utils
 2.  [Transaction Methods](#transaction-methods)
     - a. [Setup](#transactions-setup)
     - b. [Pool V3](#pool-v3)
+      - [supplyBundle](#supplyBundle)
       - [supply](#supply)
       - [signERC20Approval](#signERC20Approval)
       - [supplyWithPermit](#supply-with-permit)
@@ -65,6 +66,7 @@ yarn add @aave/contract-helpers @aave/math-utils
       - [repayWithCollateral](<#repayWithCollateral-(v3)>)
       - [setUserEMode](#setUserEMode)
     - c. [Lending Pool V2](#lending-pool-v2)
+      - [depositBundle](#depositBundle)
       - [deposit](#deposit)
       - [borrow](#borrow)
       - [repay](#repay)
@@ -483,7 +485,7 @@ const txs: EthereumTransactionTypeExtended[] = await pool.supply({
   onBehalfOf,
 });
 
-// If the user has not appoved the pool contract to spend their tokens, txs will also contain two transactions: approve and supply. These approval and supply transactions can be submitted just as in V2,OR you can skip the first approval transaction with a gasless signature by using signERC20Approval -> supplyWithPermit which are documented below
+// If the user has not approved the pool contract to spend their tokens, txs will also contain two transactions: approve and supply. These approval and supply transactions can be submitted just as in V2,OR you can skip the first approval transaction with a gasless signature by using signERC20Approval -> supplyWithPermit which are documented below
 
 // If there is no approval transaction, then supply() can called without the need for an approval or signature
 ```
@@ -545,7 +547,7 @@ const signature = await provider.send('eth_signTypedData_v4', [
 ### supplyWithPermit
 
 Same underlying method as `supply` but uses a signature based approval passed as
-a paramter.
+a parameter.
 
 <details>
   <summary>Sample Code</summary>
@@ -584,7 +586,7 @@ Submit transaction as shown [here](#transactions-setup)
 
 Borrow an `amount` of `reserve` asset.
 
-User must have a collaterised position (i.e. aTokens in their wallet)
+User must have a collateralized position (i.e. aTokens in their wallet)
 
 <details>
   <summary>Sample Code</summary>
@@ -599,8 +601,8 @@ const pool = new Pool(provider, {
 
 /*
 - @param `user` The ethereum address that repays 
-- @param `reserve` The ethereum address of the reserve on which the user borrowed 
-- @param `amount` The amount to repay, or (-1) if the user wants to repay everything 
+- @param `reserve` The ethereum address of the reserve on which the user borrowed
+- @param `amount` The amount to repay, or (-1) if the user wants to repay everything
 - @param `interestRateMode` // Whether the borrow will incur a stable (InterestRate.Stable) or variable (InterestRate.Variable) interest rate
 - @param @optional `onBehalfOf` The ethereum address for which user is repaying. It will default to the user address
 */
@@ -655,7 +657,7 @@ const txs: EthereumTransactionTypeExtended[] = await pool.repay({
   onBehalfOf,
 });
 
-// If the user has not appoved the pool contract to spend their tokens, txs will also contain two transactions: approve and repay. This approval transaction can be submitted just as in V2, OR you approve with a gasless signature by using signERC20Approval -> supplyWithPermit which are documented below
+// If the user has not approved the pool contract to spend their tokens, txs will also contain two transactions: approve and repay. This approval transaction can be submitted just as in V2, OR you approve with a gasless signature by using signERC20Approval -> supplyWithPermit which are documented below
 
 // If there is no approval transaction, then repay() can called without the need for an approval or signature
 ```
@@ -669,7 +671,7 @@ Submit transaction(s) as shown [here](#submitting-transactions)
 ### repayWithPermit
 
 Same underlying method as `repay` but uses a signature based approval passed as
-a paramter.
+a parameter.
 
 <details>
   <summary>Sample Code</summary>
@@ -906,7 +908,7 @@ const pool = new Pool(provider, {
 
 /*
 - @param `user` The ethereum address that will liquidate the position 
-- @param @optional `flash` If the transaction will be executed through a flasloan(true) or will be done directly through the adapters(false). Defaults to false 
+- @param @optional `flash` If the transaction will be executed through a flashloan(true) or will be done directly through the adapters(false). Defaults to false 
 - @param `fromAsset` The ethereum address of the asset you want to swap 
 - @param `fromAToken` The ethereum address of the aToken of the asset you want to swap 
 - @param `toAsset` The ethereum address of the asset you want to swap to (get) 
@@ -915,7 +917,7 @@ const pool = new Pool(provider, {
 - @param `maxSlippage` The max slippage that the user accepts in the swap 
 - @param @optional `permitSignature` A permit signature of the tx. Only needed when previously signed (Not needed at the moment). 
 - @param `swapAll` Bool indicating if the user wants to swap all the current collateral 
-- @param @optional `onBehalfOf` The ethereum address for which user is swaping. It will default to the user address 
+- @param @optional `onBehalfOf` The ethereum address for which user is swapping. It will default to the user address 
 - @param @optional `referralCode` Integrators are assigned a referral code and can potentially receive rewards. It defaults to 0 (no referrer) 
 - @param @optional `useEthPath` Boolean to indicate if the swap will use an ETH path. Defaults to false
 */
@@ -965,14 +967,14 @@ const pool = new Pool(provider, {
 - @param `fromAsset` The ethereum address of the asset you want to repay with (collateral) 
 - @param `fromAToken` The ethereum address of the aToken of the asset you want to repay with (collateral) 
 - @param `assetToRepay` The ethereum address of the asset you want to repay 
-- @param `repayWithAmount` The amount of collateral you want to repay the debt with 
+- @param `repayWithAmount` The amount of collateral you want to repay the debt with
 - @param `repayAmount` The amount of debt you want to repay 
 - @param `permitSignature` A permit signature of the tx. Optional
 - @param @optional `repayAllDebt` Bool indicating if the user wants to repay all current debt. Defaults to false 
 - @param `rateMode` //Enum indicating the type of the interest rate of the collateral
-- @param @optional `onBehalfOf` The ethereum address for which user is swaping. It will default to the user address 
+- @param @optional `onBehalfOf` The ethereum address for which user is swapping. It will default to the user address 
 - @param @optional `referralCode` Integrators are assigned a referral code and can potentially receive rewards. It defaults to 0 (no referrer) 
-- @param @optional `flash` If the transaction will be executed through a flasloan(true) or will be done directly through the adapters(false). Defaults to false 
+- @param @optional `flash` If the transaction will be executed through a flashloan(true) or will be done directly through the adapters(false). Defaults to false 
 - @param @optional `useEthPath` Boolean to indicate if the swap will use an ETH path. Defaults to false
 */
 const txs: EthereumTransactionTypeExtended[] =
@@ -1004,7 +1006,7 @@ Submit transaction(s) as shown [here](#submitting-transactions)
 Function to enable eMode on a user account IF conditions are met:
 
 To enable, pass `categoryId` of desired eMode (1 = stablecoins), can only be
-enabled if a users currently borrowed assests are ALL within this eMode category
+enabled if a users currently borrowed assets are ALL within this eMode category
 To disable, pass `categoryId` of 0, can only be disabled if new LTV will not
 leave user undercollateralized
 
@@ -1080,7 +1082,7 @@ Submit transaction(s) as shown [here](#submitting-transactions)
 
 Borrow an `amount` of `reserve` asset.
 
-User must have a collaterised position (i.e. aTokens in their wallet)
+User must have a collateralized position (i.e. aTokens in their wallet)
 
 </details>
 
@@ -1098,7 +1100,7 @@ const lendingPool = new LendingPool(provider, {
 /*
 - @param `user` The ethereum address that will receive the borrowed amount 
 - @param `reserve` The ethereum address of the reserve asset 
-- @param `amount` The amount to be borrowed, in human readable units (e.g. 2.5 ETH) 
+- @param `amount` The amount to be borrowed, in human readable units (e.g. 2.5 ETH)
 - @param `interestRateMode`//Whether the borrow will incur a stable (InterestRate.Stable) or variable (InterestRate.Variable) interest rate
 - @param @optional `debtTokenAddress` The ethereum address of the debt token of the asset you want to borrow. Only needed if the reserve is ETH mock address 
 - @param @optional `onBehalfOf` The ethereum address for which user is borrowing. It will default to the user address 
@@ -1142,8 +1144,8 @@ const lendingPool = new LendingPool(provider, {
 
 /*
 - @param `user` The ethereum address that repays 
-- @param `reserve` The ethereum address of the reserve on which the user borrowed 
-- @param `amount` The amount to repay, or (-1) if the user wants to repay everything 
+- @param `reserve` The ethereum address of the reserve on which the user borrowed
+- @param `amount` The amount to repay, or (-1) if the user wants to repay everything
 - @param `interestRateMode` // Whether stable (InterestRate.Stable) or variable (InterestRate.Variable) debt will be repaid
 - @param @optional `onBehalfOf` The ethereum address for which user is repaying. It will default to the user address
 */
@@ -1247,7 +1249,7 @@ const lendingPool = new LendingPool(provider, {
 });
 
 /*
-- @param `user` The ethereum address that enables or disables the deposit as collateral 
+- @param `user` The ethereum address that enables or disables the deposit as collateral
 - @param `reserve` The ethereum address of the reserve 
 - @param `useAsCollateral` Boolean, true if the user wants to use the deposit as collateral, false otherwise
 */
@@ -1288,7 +1290,7 @@ const lendingPool = new LendingPool(provider, {
 - @param `liquidatedUser` The address of the borrower 
 - @param `debtReserve` The ethereum address of the principal reserve 
 - @param `collateralReserve` The address of the collateral to liquidated 
-- @param `purchaseAmount` The amount of principal that the liquidator wants to repay 
+- @param `purchaseAmount` The amount of principal that the liquidator wants to repay
 - @param @optional `getAToken` Boolean to indicate if the user wants to receive the aToken instead of the asset. Defaults to false
 */
 const txs: EthereumTransactionTypeExtended[] = lendingPool.liquidationCall({
@@ -1329,17 +1331,17 @@ const lendingPool = new LendingPool(provider, {
 
 /*
 - @param `user` The ethereum address that will liquidate the position 
-- @param @optional `flash` If the transaction will be executed through a flasloan(true) or will be done directly through the adapters(false). Defaults to false 
+- @param @optional `flash` If the transaction will be executed through a flashloan(true) or will be done directly through the adapters(false). Defaults to false 
 - @param `fromAsset` The ethereum address of the asset you want to swap 
-- @param `fromAToken` The ethereum address of the aToken of the asset you want to swap 
+- @param `fromAToken` The ethereum address of the aToken of the asset you want to swap
 - @param `toAsset` The ethereum address of the asset you want to swap to (get) 
 - @param `fromAmount` The amount you want to swap 
 - @param `toAmount` The amount you want to get after the swap 
 - @param `maxSlippage` The max slippage that the user accepts in the swap 
-- @param @optional `permitSignature` A permit signature of the tx. Only needed when previously signed (Not needed at the moment). 
-- @param `swapAll` Bool indicating if the user wants to swap all the current collateral 
-- @param @optional `onBehalfOf` The ethereum address for which user is swaping. It will default to the user address 
-- @param @optional `referralCode` Integrators are assigned a referral code and can potentially receive rewards. It defaults to 0 (no referrer) 
+- @param @optional `permitSignature` A permit signature of the tx. Only needed when previously signed (Not needed at the moment).
+- @param `swapAll` Bool indicating if the user wants to swap all the current collateral
+- @param @optional `onBehalfOf` The ethereum address for which user is swapping. It will default to the user address
+- @param @optional `referralCode` Integrators are assigned a referral code and can potentially receive rewards. It defaults to 0 (no referrer)
 - @param @optional `useEthPath` Boolean to indicate if the swap will use an ETH path. Defaults to false
 */
 const txs: EthereumTransactionTypeExtended[] = await lendingPool.swapCollateral(
@@ -1389,17 +1391,17 @@ const lendingPool = new LendingPool(provider, {
 
 /*
 - @param `user` The ethereum address that will liquidate the position 
-- @param `fromAsset` The ethereum address of the asset you want to repay with (collateral) 
-- @param `fromAToken` The ethereum address of the aToken of the asset you want to repay with (collateral) 
+- @param `fromAsset` The ethereum address of the asset you want to repay with (collateral)
+- @param `fromAToken` The ethereum address of the aToken of the asset you want to repay with (collateral)
 - @param `assetToRepay` The ethereum address of the asset you want to repay 
-- @param `repayWithAmount` The amount of collateral you want to repay the debt with 
+- @param `repayWithAmount` The amount of collateral you want to repay the debt with
 - @param `repayAmount` The amount of debt you want to repay 
 - @param `permitSignature` A permit signature of the tx. Optional
-- @param @optional `repayAllDebt` Bool indicating if the user wants to repay all current debt. Defaults to false 
+- @param @optional `repayAllDebt` Bool indicating if the user wants to repay all current debt. Defaults to false
 - @param `rateMode` //Enum indicating the type of the interest rate of the collateral
-- @param @optional `onBehalfOf` The ethereum address for which user is swaping. It will default to the user address 
-- @param @optional `referralCode` Integrators are assigned a referral code and can potentially receive rewards. It defaults to 0 (no referrer) 
-- @param @optional `flash` If the transaction will be executed through a flasloan(true) or will be done directly through the adapters(false). Defaults to false 
+- @param @optional `onBehalfOf` The ethereum address for which user is swapping. It will default to the user address
+- @param @optional `referralCode` Integrators are assigned a referral code and can potentially receive rewards. It defaults to 0 (no referrer)
+- @param @optional `flash` If the transaction will be executed through a flashloan(true) or will be done directly through the adapters(false). Defaults to false
 - @param @optional `useEthPath` Boolean to indicate if the swap will use an ETH path. Defaults to false
 */
 const txs: EthereumTransactionTypeExtended[] =
@@ -1463,10 +1465,10 @@ const governanceService = new AaveGovernanceService(rpcProvider, {
 /*
 - @param `user` The ethereum address that will create the proposal
 - @param `targets` list of contracts called by proposal's associated transactions
-- @param `values` list of value in wei for each propoposal's associated transaction
+- @param `values` list of value in wei for each proposal's associated transaction
 - @param `signatures` list of function signatures (can be empty) to be used when created the callData
 - @param `calldatas` list of calldatas: if associated signature empty, calldata ready, else calldata is arguments
-- @param `withDelegatecalls` boolean, true = transaction delegatecalls the taget, else calls the target
+- @param `withDelegatecalls` boolean, true = transaction delegatecalls the target, else calls the target
 - @param `ipfsHash` IPFS hash of the proposal
 - @param `executor` The ExecutorWithTimelock contract that will execute the proposal: ExecutorType.Short or ExecutorType.Long
 */
@@ -1620,7 +1622,7 @@ const powerDelegation = new GovernancePowerDelegationTokenService(rpcProvider);
 
 /*
 - @param `user` The ethereum address that will create the proposal 
-- @param `delegatee` The ethereum address to which the user wants to delegate proposition power and voting power 
+- @param `delegatee` The ethereum address to which the user wants to delegate proposition power and voting power
 - @param `governanceToken` The ethereum address of the governance token
 */
 const tx = powerDelegation.delegate({ user, delegatee, governanceToken });
@@ -1647,8 +1649,8 @@ const powerDelegation = new GovernancePowerDelegationTokenService(rpcProvider);
 
 /*
 - @param `user` The ethereum address that will create the proposal 
-- @param `delegatee` The ethereum address to which the user wants to delegate proposition power and voting power 
-- @param `delegationType` The type of the delegation the user wants to do: voting power ('0') or proposition power ('1') 
+- @param `delegatee` The ethereum address to which the user wants to delegate proposition power and voting power
+- @param `delegationType` The type of the delegation the user wants to do: voting power ('0') or proposition power ('1')
 - @param `governanceToken` The ethereum address of the governance token
 */
 const tx = powerDelegation.delegateByType({
@@ -1683,7 +1685,7 @@ import { FaucetService } from '@aave/contract-helpers';
 const faucetService = new FaucetService(provider, faucetAddress);
 
 /*
-- @param `userAddress` The ethereum address of the wallet the minted tokens will go 
+- @param `userAddress` The ethereum address of the wallet the minted tokens will go
 - @param `reserve` The ethereum address of the token you want to mint 
 - @param `tokenSymbol` The symbol of the token you want to mint
 */
