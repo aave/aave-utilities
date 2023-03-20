@@ -266,12 +266,11 @@ export class PoolBundle
         });
 
         if (!approved) {
-          const approveTx = await approveTxData({
+          const approveTx = approveTxData({
             user,
             token: reserve,
             spender: this.poolAddress,
             amount: DEFAULT_APPROVE_AMOUNT,
-            skipGasEstimation,
           });
 
           const signatureRequest = await this.v3PoolService.signERC20Approval({

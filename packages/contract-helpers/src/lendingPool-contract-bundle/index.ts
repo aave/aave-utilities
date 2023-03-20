@@ -182,12 +182,11 @@ export class LendingPoolBundle
         });
 
         if (!approved) {
-          const approveTx = await approveTxData({
+          const approveTx = approveTxData({
             user,
             token: reserve,
             spender: this.lendingPoolAddress,
             amount: DEFAULT_APPROVE_AMOUNT,
-            skipGasEstimation,
           });
 
           approvals.push(approveTx);

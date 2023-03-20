@@ -28,11 +28,9 @@ export interface IERC20ServiceInterface {
   decimalsOf: (token: tEthereumAddress) => Promise<number>;
   getTokenData: (token: tEthereumAddress) => Promise<TokenMetadataType>;
   isApproved: (args: ApproveType) => Promise<boolean>;
-  approvedAmount: (arge: AllowanceRequest) => Promise<number>;
+  approvedAmount: (args: AllowanceRequest) => Promise<number>;
   approve: (args: ApproveType) => EthereumTransactionTypeExtended;
-  approveTxData: (
-    args: ApproveType & { skipGasEstimation?: boolean },
-  ) => PopulatedTransaction;
+  approveTxData: (args: ApproveType) => PopulatedTransaction;
 }
 
 export type AllowanceRequest = {
@@ -55,7 +53,8 @@ export type TokenMetadataType = {
 };
 export class ERC20Service
   extends BaseService<IERC20Detailed>
-  implements IERC20ServiceInterface {
+  implements IERC20ServiceInterface
+{
   readonly tokenDecimals: Record<string, number>;
 
   readonly tokenMetadata: Record<string, TokenMetadataType>;
