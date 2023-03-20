@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/promise-function-async */
 import { BigNumber, constants, providers, utils } from 'ethers';
 import {
   eEthereumTxType,
@@ -43,27 +42,8 @@ describe('ERC20Service', () => {
     const spender = '0x0000000000000000000000000000000000000003';
     const amount = '1000000000000000000';
 
-    it('Expects to get the approval txObj with correct params', async () => {
-      const txData = await erc20Service.approveTxData({
-        user,
-        token,
-        spender,
-        amount,
-        skipGasEstimation: true,
-      });
-      expect(txData.to).toEqual(token);
-      expect(txData.from).toEqual(user);
-
-      const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'uint256'],
-        utils.hexDataSlice(txData.data ?? '', 4),
-      );
-
-      expect(decoded[0]).toEqual(spender);
-      expect(decoded[1]).toEqual(BigNumber.from(amount));
-    });
-    it('Expects to get the approval txObj with correct params and gas limit', async () => {
-      const txData = await erc20Service.approveTxData({
+    it('Expects to get the approval txObj with correct params', () => {
+      const txData = erc20Service.approveTxData({
         user,
         token,
         spender,
@@ -71,7 +51,6 @@ describe('ERC20Service', () => {
       });
       expect(txData.to).toEqual(token);
       expect(txData.from).toEqual(user);
-      expect(txData.gasLimit).toEqual(BigNumber.from('210000'));
 
       const decoded = utils.defaultAbiCoder.decode(
         ['address', 'uint256'],
@@ -490,6 +469,126 @@ describe('ERC20Service', () => {
       expect(tokenData2.symbol).toEqual('AMPL');
       expect(tokenData2.decimals).toEqual(18);
       expect(tokenData2.address).toEqual(token);
+    });
+  });
+  describe('approvedAmount', () => {
+    const user = '0x0000000000000000000000000000000000000001';
+    const token = '0x0000000000000000000000000000000000000002';
+    const spender = '0x0000000000000000000000000000000000000003';
+
+    // mock erc20 service decimalsOf method
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('Expects to return max uint256 if token is eth mock address', async () => {
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
+      const token = API_ETH_MOCK_ADDRESS;
+      const approvedAmount: number = await erc20Service.approvedAmount({
+        user,
+        token,
+        spender,
+      });
+      expect(approvedAmount).toEqual(-1);
+    });
+    it('Expects to return correct approval amount', async () => {
+      jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
+        allowance: async () =>
+          Promise.resolve(BigNumber.from('100000000000000000')),
+      } as unknown as IERC20Detailed);
+
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
+      const decimalsSpy = jest
+        .spyOn(erc20Service, 'decimalsOf')
+        .mockImplementation(async () => Promise.resolve(6));
+
+      const approvedAmount: number = await erc20Service.approvedAmount({
+        user,
+        token,
+        spender,
+      });
+
+      expect(decimalsSpy).toHaveBeenCalled();
+      // 100000000000000000 / 10^6 = 100000000000
+      expect(approvedAmount).toEqual(100000000000);
+    });
+    it('Expects to return correct approval with decimal amount', async () => {
+      jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
+        allowance: async () => Promise.resolve(BigNumber.from('100000')),
+      } as unknown as IERC20Detailed);
+
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
+      const decimalsSpy = jest
+        .spyOn(erc20Service, 'decimalsOf')
+        .mockImplementation(async () => Promise.resolve(6));
+
+      const approvedAmount: number = await erc20Service.approvedAmount({
+        user,
+        token,
+        spender,
+      });
+      expect(decimalsSpy).toHaveBeenCalled();
+      // 100000 / 10^6 = 0.1
+      expect(approvedAmount).toEqual(0.1);
+    });
+
+    it('Expects to get the approval txObj with correct params and max allowance', async () => {
+      jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
+        allowance: async () =>
+          Promise.resolve(BigNumber.from(constants.MaxUint256)),
+      } as unknown as IERC20Detailed);
+
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
+      const decimalsSpy = jest
+        .spyOn(erc20Service, 'decimalsOf')
+        .mockImplementation(async () => Promise.resolve(6));
+
+      const approvedAmount: number = await erc20Service.approvedAmount({
+        user,
+        token,
+        spender,
+      });
+      // Skips decimals check and returns -1 with max allowance
+      expect(decimalsSpy).toHaveBeenCalledTimes(0);
+      expect(approvedAmount).toEqual(-1);
+    });
+    it('Expects to fail when user is not address', async () => {
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
+      const user = 'asdf';
+      await expect(async () =>
+        erc20Service.approvedAmount({
+          user,
+          token,
+          spender,
+        }),
+      ).rejects.toThrowError(
+        new Error(`Address: ${user} is not a valid ethereum Address`),
+      );
+    });
+    it('Expects to fail when token is not address', async () => {
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
+      const token = 'asdf';
+      await expect(async () =>
+        erc20Service.approvedAmount({
+          user,
+          token,
+          spender,
+        }),
+      ).rejects.toThrowError(
+        new Error(`Address: ${token} is not a valid ethereum Address`),
+      );
+    });
+    it('Expects to fail when spender is not address', async () => {
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
+      const spender = 'asdf';
+      await expect(async () =>
+        erc20Service.approvedAmount({
+          user,
+          token,
+          spender,
+        }),
+      ).rejects.toThrowError(
+        new Error(`Address: ${spender} is not a valid ethereum Address`),
+      );
     });
   });
 });
