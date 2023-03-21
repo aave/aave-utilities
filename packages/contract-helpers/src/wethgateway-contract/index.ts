@@ -1,4 +1,4 @@
-import { constants, PopulatedTransaction, providers } from 'ethers';
+import { BigNumber, constants, PopulatedTransaction, providers } from 'ethers';
 import {
   BaseDebtToken,
   BaseDebtTokenInterface,
@@ -121,6 +121,7 @@ export class WETHGatewayService
         data: txData,
         to: args.user,
         from: this.wethGatewayAddress,
+        value: BigNumber.from(args.amount),
       };
       return actionTx;
     };

@@ -121,6 +121,8 @@ export class PoolBundle
 
   readonly v3PoolService: V3PoolInterface;
 
+  readonly wethGatewayAddress: string;
+
   readonly contractInterface: IPoolInterface;
 
   supplyTxBuilder: SupplyTxBuilder;
@@ -135,6 +137,7 @@ export class PoolBundle
 
     this.poolAddress = POOL ?? '';
     this.l2EncoderAddress = L2_ENCODER ?? '';
+    this.wethGatewayAddress = WETH_GATEWAY ?? '';
     this.v3PoolService = new Pool(provider, lendingPoolConfig);
 
     // initialize services
@@ -177,7 +180,15 @@ export class PoolBundle
         useOptimizedPath,
       }: LPSupplyParamsType): PopulatedTransaction => {
         let actionTx: PopulatedTransaction = {};
-        if (useOptimizedPath) {
+        if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
+          actionTx = this.wethGatewayService.generateDepositEthTxData({
+            lendingPool: this.poolAddress,
+            user,
+            amount,
+            onBehalfOf,
+            referralCode,
+          });
+        } else if (useOptimizedPath) {
           const args: LPSupplyParamsType = {
             user,
             reserve,
@@ -185,8 +196,6 @@ export class PoolBundle
             referralCode,
           };
           actionTx = this.l2PoolService.generateSupplyTxData(args);
-          actionTx.to = this.l2PoolAddress;
-          actionTx.from = user;
         } else {
           const txData = this.contractInterface.encodeFunctionData('supply', [
             reserve,
