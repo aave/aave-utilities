@@ -150,7 +150,7 @@ describe('PoolBundle', () => {
         .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
       const approveSpy = jest
         .spyOn(poolInstance.erc20Service, 'approveTxData')
-        .mockReturnValue(Promise.resolve({}));
+        .mockReturnValue({});
       jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
         decimals: async () => Promise.resolve(18),
         allowance: async () =>
@@ -208,7 +208,7 @@ describe('PoolBundle', () => {
         .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
       jest
         .spyOn(poolInstance.erc20Service, 'approveTxData')
-        .mockReturnValue(Promise.resolve({}));
+        .mockReturnValue({});
       jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
         decimals: async () => Promise.resolve(18),
         allowance: async () =>
@@ -514,7 +514,7 @@ describe('PoolBundle', () => {
         .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
       const approveSpy = jest
         .spyOn(poolInstance.erc20Service, 'approveTxData')
-        .mockReturnValue(Promise.resolve({}));
+        .mockReturnValue({});
       jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
         decimals: async () => Promise.resolve(18),
         allowance: async () =>
@@ -562,7 +562,7 @@ describe('PoolBundle', () => {
         .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
       const approveSpy = jest
         .spyOn(poolInstance.erc20Service, 'approveTxData')
-        .mockReturnValue(Promise.resolve({}));
+        .mockReturnValue({});
       jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
         decimals: async () => Promise.resolve(18),
         allowance: async () =>
@@ -612,7 +612,7 @@ describe('PoolBundle', () => {
         .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
       const approveSpy = jest
         .spyOn(poolInstance.erc20Service, 'approveTxData')
-        .mockReturnValue(Promise.resolve({}));
+        .mockReturnValue({});
       jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
         decimals: async () => Promise.resolve(18),
         allowance: async () =>
@@ -669,7 +669,7 @@ describe('PoolBundle', () => {
         .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
       const approveSpy = jest
         .spyOn(poolInstance.erc20Service, 'approveTxData')
-        .mockReturnValue(Promise.resolve({}));
+        .mockReturnValue({});
       jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
         decimals: async () => Promise.resolve(18),
         allowance: async () =>
@@ -719,7 +719,7 @@ describe('PoolBundle', () => {
         .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
       const approveSpy = jest
         .spyOn(poolInstance.erc20Service, 'approveTxData')
-        .mockReturnValue(Promise.resolve({}));
+        .mockReturnValue({});
       jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
         decimals: async () => Promise.resolve(18),
         allowance: async () =>
