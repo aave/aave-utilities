@@ -1,4 +1,4 @@
-import { constants, providers } from 'ethers';
+import { constants, PopulatedTransaction, providers } from 'ethers';
 import {
   BaseDebtToken,
   BaseDebtTokenInterface,
@@ -21,7 +21,7 @@ import {
   isPositiveOrMinusOneAmount,
 } from '../commons/validators/paramValidators';
 import { IERC20ServiceInterface } from '../erc20-contract';
-import { IWETHGateway } from './typechain/IWETHGateway';
+import { IWETHGateway, IWETHGatewayInterface } from './typechain/IWETHGateway';
 import { IWETHGateway__factory } from './typechain/IWETHGateway__factory';
 
 export type WETHDepositParamsType = {
@@ -58,6 +58,9 @@ export type WETHBorrowParamsType = {
 };
 
 export interface WETHGatewayInterface {
+  generateDepositEthTxData: (
+    args: WETHDepositParamsType,
+  ) => PopulatedTransaction;
   depositETH: (
     args: WETHDepositParamsType,
   ) => EthereumTransactionTypeExtended[];
@@ -80,6 +83,12 @@ export class WETHGatewayService
 
   readonly erc20Service: IERC20ServiceInterface;
 
+  readonly wethGatewayInstance: IWETHGatewayInterface;
+
+  generateDepositEthTxData: (
+    args: WETHDepositParamsType,
+  ) => PopulatedTransaction;
+
   constructor(
     provider: providers.Provider,
     erc20Service: IERC20ServiceInterface,
@@ -99,6 +108,22 @@ export class WETHGatewayService
     this.withdrawETH = this.withdrawETH.bind(this);
     this.repayETH = this.repayETH.bind(this);
     this.borrowETH = this.borrowETH.bind(this);
+    this.wethGatewayInstance = IWETHGateway__factory.createInterface();
+    this.generateDepositEthTxData = (
+      args: WETHDepositParamsType,
+    ): PopulatedTransaction => {
+      const txData = this.wethGatewayInstance.encodeFunctionData('depositETH', [
+        args.lendingPool,
+        args.onBehalfOf ?? args.user,
+        args.referralCode ?? '0',
+      ]);
+      const actionTx: PopulatedTransaction = {
+        data: txData,
+        to: args.user,
+        from: this.wethGatewayAddress,
+      };
+      return actionTx;
+    };
   }
 
   @WETHValidator
