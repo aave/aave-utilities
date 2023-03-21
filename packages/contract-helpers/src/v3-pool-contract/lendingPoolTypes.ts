@@ -16,6 +16,11 @@ export type LPSupplyParamsType = {
   useOptimizedPath?: boolean;
 };
 
+export type LPSignedSupplyParamsType = LPSupplyParamsType & {
+  signature: string;
+  deadline: string;
+};
+
 export type LPWithdrawParamsType = {
   user: tEthereumAddress;
   reserve: tEthereumAddress;

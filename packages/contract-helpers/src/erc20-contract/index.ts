@@ -43,6 +43,10 @@ export type ApproveType = AllowanceRequest & {
   amount: string;
 };
 
+export type SignedApproveType = ApproveType & {
+  deadline?: string;
+};
+
 export type TokenMetadataType = {
   name: string;
   symbol: string;

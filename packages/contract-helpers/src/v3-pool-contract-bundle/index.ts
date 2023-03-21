@@ -1,5 +1,5 @@
 import { Signature, splitSignature } from '@ethersproject/bytes';
-import { PopulatedTransaction, providers } from 'ethers';
+import { BigNumber, PopulatedTransaction, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
   ActionBundle,
@@ -20,32 +20,77 @@ import {
   isPositiveAmount,
 } from '../commons/validators/paramValidators';
 import { ERC20_2612Service, ERC20_2612Interface } from '../erc20-2612';
-import { ERC20Service, IERC20ServiceInterface } from '../erc20-contract';
 import {
-  LiquiditySwapAdapterInterface,
-  LiquiditySwapAdapterService,
-} from '../paraswap-liquiditySwapAdapter-contract';
-import {
-  ParaswapRepayWithCollateral,
-  ParaswapRepayWithCollateralInterface,
-} from '../paraswap-repayWithCollateralAdapter-contract';
+  ApproveType,
+  ERC20Service,
+  IERC20ServiceInterface,
+  SignedApproveType,
+} from '../erc20-contract';
 import { SynthetixInterface, SynthetixService } from '../synthetix-contract';
 import {
   LendingPoolMarketConfigV3,
   Pool,
   PoolInterface as V3PoolInterface,
 } from '../v3-pool-contract';
-import { LPSupplyParamsType } from '../v3-pool-contract/lendingPoolTypes';
+import {
+  LPSignedSupplyParamsType,
+  LPSupplyParamsType,
+} from '../v3-pool-contract/lendingPoolTypes';
 import { IPool, IPoolInterface } from '../v3-pool-contract/typechain/IPool';
 import { IPool__factory } from '../v3-pool-contract/typechain/IPool__factory';
 import { L2Pool, L2PoolInterface } from '../v3-pool-rollups';
+import { LPSupplyWithPermitType as LPSupplyWithPermitTypeL2 } from '../v3-pool-rollups/poolTypes';
 import {
   WETHGatewayInterface,
   WETHGatewayService,
 } from '../wethgateway-contract';
 
+export type SupplyTxBuilder = {
+  generateApprovalTxData: ({
+    user,
+    token,
+    spender,
+    amount,
+  }: ApproveType) => PopulatedTransaction;
+  generateApprovalSignatureData: ({
+    user,
+    token,
+    spender,
+    amount,
+    deadline,
+  }: SignedApproveType) => Promise<string>;
+  generateTxData: ({
+    user,
+    reserve,
+    amount,
+    onBehalfOf,
+    referralCode,
+    useOptimizedPath,
+  }: LPSupplyParamsType) => PopulatedTransaction;
+  generateSignedTxData: ({
+    user,
+    reserve,
+    amount,
+    onBehalfOf,
+    referralCode,
+    useOptimizedPath,
+    signature,
+  }: LPSignedSupplyParamsType) => PopulatedTransaction;
+  generateSignedActionGasEstimate: ({
+    tx,
+  }: {
+    tx?: PopulatedTransaction;
+  }) => Promise<BigNumber>;
+  generateActionGasEstimate: ({
+    tx,
+  }: {
+    tx?: PopulatedTransaction;
+  }) => Promise<BigNumber>;
+};
+
 export interface PoolBundleInterface {
   supplyBundle: (args: LPSupplyParamsBundleType) => Promise<ActionBundle>;
+  supplyTxBuilder: SupplyTxBuilder;
 }
 
 export type LPSupplyParamsBundleType = LPSupplyParamsType & {
@@ -66,17 +111,7 @@ export class PoolBundle
 
   readonly wethGatewayService: WETHGatewayInterface;
 
-  readonly liquiditySwapAdapterService: LiquiditySwapAdapterInterface;
-
-  readonly paraswapRepayWithCollateralAdapterService: ParaswapRepayWithCollateralInterface;
-
   readonly erc20_2612Service: ERC20_2612Interface;
-
-  readonly flashLiquidationAddress: string;
-
-  readonly swapCollateralAddress: string;
-
-  readonly repayWithCollateralAddress: string;
 
   readonly l2EncoderAddress: string;
 
@@ -88,25 +123,17 @@ export class PoolBundle
 
   readonly contractInterface: IPoolInterface;
 
+  supplyTxBuilder: SupplyTxBuilder;
+
   constructor(
     provider: providers.Provider,
     lendingPoolConfig?: LendingPoolMarketConfigV3,
   ) {
     super(provider, IPool__factory);
 
-    const {
-      POOL,
-      FLASH_LIQUIDATION_ADAPTER,
-      REPAY_WITH_COLLATERAL_ADAPTER,
-      SWAP_COLLATERAL_ADAPTER,
-      WETH_GATEWAY,
-      L2_ENCODER,
-    } = lendingPoolConfig ?? {};
+    const { POOL, WETH_GATEWAY, L2_ENCODER } = lendingPoolConfig ?? {};
 
     this.poolAddress = POOL ?? '';
-    this.flashLiquidationAddress = FLASH_LIQUIDATION_ADAPTER ?? '';
-    this.swapCollateralAddress = SWAP_COLLATERAL_ADAPTER ?? '';
-    this.repayWithCollateralAddress = REPAY_WITH_COLLATERAL_ADAPTER ?? '';
     this.l2EncoderAddress = L2_ENCODER ?? '';
     this.v3PoolService = new Pool(provider, lendingPoolConfig);
 
@@ -119,13 +146,6 @@ export class PoolBundle
       this.erc20Service,
       WETH_GATEWAY,
     );
-    this.liquiditySwapAdapterService = new LiquiditySwapAdapterService(
-      provider,
-      SWAP_COLLATERAL_ADAPTER,
-    );
-
-    this.paraswapRepayWithCollateralAdapterService =
-      new ParaswapRepayWithCollateral(provider, REPAY_WITH_COLLATERAL_ADAPTER);
 
     this.l2PoolService = new L2Pool(provider, {
       l2PoolAddress: this.poolAddress,
@@ -133,6 +153,135 @@ export class PoolBundle
     });
 
     this.contractInterface = IPool__factory.createInterface();
+
+    // Initialize supplyTxBuilder
+    this.supplyTxBuilder = {
+      generateApprovalTxData: (props: ApproveType): PopulatedTransaction => {
+        return this.erc20Service.approveTxData(props);
+      },
+      generateApprovalSignatureData: async (
+        props: SignedApproveType,
+      ): Promise<string> => {
+        return this.v3PoolService.signERC20Approval({
+          ...props,
+          reserve: props.token,
+          deadline: props.deadline ?? DEFAULT_DEADLINE,
+        });
+      },
+      generateTxData: ({
+        user,
+        reserve,
+        amount,
+        onBehalfOf,
+        referralCode,
+        useOptimizedPath,
+      }: LPSupplyParamsType): PopulatedTransaction => {
+        let actionTx: PopulatedTransaction = {};
+        if (useOptimizedPath) {
+          const args: LPSupplyParamsType = {
+            user,
+            reserve,
+            amount,
+            referralCode,
+          };
+          actionTx = this.l2PoolService.generateSupplyTxData(args);
+          actionTx.to = this.l2PoolAddress;
+          actionTx.from = user;
+        } else {
+          const txData = this.contractInterface.encodeFunctionData('supply', [
+            reserve,
+            amount,
+            onBehalfOf ?? user,
+            referralCode ?? '0',
+          ]);
+          actionTx.to = this.poolAddress;
+          actionTx.from = user;
+          actionTx.data = txData;
+        }
+
+        return actionTx;
+      },
+      generateSignedTxData: ({
+        user,
+        reserve,
+        amount,
+        onBehalfOf,
+        referralCode,
+        useOptimizedPath,
+        signature,
+        deadline,
+      }: LPSignedSupplyParamsType): PopulatedTransaction => {
+        const decomposedSignature: Signature = splitSignature(signature);
+        let populatedTx: PopulatedTransaction = {};
+        if (useOptimizedPath) {
+          const args: LPSupplyWithPermitTypeL2 = {
+            user,
+            reserve,
+            amount,
+            referralCode,
+            permitR: decomposedSignature.r,
+            permitS: decomposedSignature.s,
+            permitV: decomposedSignature.v,
+            deadline: Number(deadline),
+          };
+          populatedTx = this.l2PoolService.generateSupplyWithPermitTxData(args);
+          populatedTx.to = this.l2PoolAddress;
+          populatedTx.from = user;
+        } else {
+          const txData = this.contractInterface.encodeFunctionData(
+            'supplyWithPermit',
+            [
+              reserve,
+              amount,
+              onBehalfOf ?? user,
+              referralCode ?? '0',
+              DEFAULT_DEADLINE,
+              decomposedSignature.v,
+              decomposedSignature.r,
+              decomposedSignature.s,
+            ],
+          );
+          populatedTx.to = this.poolAddress;
+          populatedTx.from = user;
+          populatedTx.data = txData;
+        }
+
+        return populatedTx;
+      },
+      generateActionGasEstimate: async ({
+        tx,
+      }: {
+        tx?: PopulatedTransaction;
+      }): Promise<BigNumber> => {
+        if (!tx)
+          return BigNumber.from(
+            gasLimitRecommendations[ProtocolAction.supply].recommended,
+          );
+
+        const txGas = await this.estimateGasLimit({
+          tx,
+          action: ProtocolAction.supply,
+        });
+        return txGas.gasLimit ?? BigNumber.from('0');
+      },
+      generateSignedActionGasEstimate: async ({
+        tx,
+      }: {
+        tx?: PopulatedTransaction;
+      }): Promise<BigNumber> => {
+        if (!tx)
+          return BigNumber.from(
+            gasLimitRecommendations[ProtocolAction.supplyWithPermit]
+              .recommended,
+          );
+
+        const txGas = await this.estimateGasLimit({
+          tx,
+          action: ProtocolAction.supplyWithPermit,
+        });
+        return txGas.gasLimit ?? BigNumber.from('0');
+      },
+    };
   }
 
   @LPValidatorV3

@@ -17,7 +17,7 @@ import { Listener, Provider } from '@ethersproject/providers';
 import { FunctionFragment, EventFragment, Result } from '@ethersproject/abi';
 import type { TypedEventFilter, TypedEvent, TypedListener } from './common';
 
-interface L2EncoderInterface extends ethers.utils.Interface {
+export interface L2EncoderInterface extends ethers.utils.Interface {
   functions: {
     'POOL()': FunctionFragment;
     'encodeBorrowParams(address,uint256,uint256,uint16)': FunctionFragment;
