@@ -78,6 +78,32 @@ describe('L2Pool', () => {
       expect(instance instanceof L2Pool).toEqual(true);
     });
   });
+
+  describe('Generate Tx Data', () => {
+    it('Generate supply tx data', () => {
+      const instance: L2PoolInterface = new L2Pool(provider, config);
+      const txData = instance.generateSupplyTxData({
+        user,
+        reserve,
+        amount,
+      });
+      console.log(txData);
+    });
+
+    it('Generate supplyWithPermit tx data', () => {
+      const instance: L2PoolInterface = new L2Pool(provider, config);
+      const txData = instance.generateSupplyWithPermitTxData({
+        user,
+        reserve,
+        amount,
+        deadline,
+        permitR,
+        permitS,
+        permitV,
+      });
+      console.log(txData);
+    });
+  });
   describe('getEncoder', () => {
     const instance: L2PoolInterface = new L2Pool(provider, config);
 
