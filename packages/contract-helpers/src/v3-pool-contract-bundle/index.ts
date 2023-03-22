@@ -1,11 +1,8 @@
 import { Signature, splitSignature } from '@ethersproject/bytes';
-import { BigNumber, PopulatedTransaction, providers } from 'ethers';
+import { PopulatedTransaction, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
-import { DEFAULT_DEADLINE, ProtocolAction } from '../commons/types';
-import {
-  API_ETH_MOCK_ADDRESS,
-  gasLimitRecommendations,
-} from '../commons/utils';
+import { DEFAULT_DEADLINE } from '../commons/types';
+import { API_ETH_MOCK_ADDRESS } from '../commons/utils';
 import { ERC20_2612Service, ERC20_2612Interface } from '../erc20-2612';
 import {
   ApproveType,
@@ -63,16 +60,6 @@ export type SupplyTxBuilder = {
     useOptimizedPath,
     signature,
   }: LPSignedSupplyParamsType) => PopulatedTransaction;
-  generateSignedActionGasEstimate: ({
-    tx,
-  }: {
-    tx?: PopulatedTransaction;
-  }) => Promise<BigNumber>;
-  generateActionGasEstimate: ({
-    tx,
-  }: {
-    tx?: PopulatedTransaction;
-  }) => Promise<BigNumber>;
 };
 
 export interface PoolBundleInterface {
@@ -224,7 +211,7 @@ export class PoolBundle
               amount,
               onBehalfOf ?? user,
               referralCode ?? '0',
-              DEFAULT_DEADLINE,
+              deadline ?? DEFAULT_DEADLINE,
               decomposedSignature.v,
               decomposedSignature.r,
               decomposedSignature.s,
@@ -236,39 +223,6 @@ export class PoolBundle
         }
 
         return populatedTx;
-      },
-      generateActionGasEstimate: async ({
-        tx,
-      }: {
-        tx?: PopulatedTransaction;
-      }): Promise<BigNumber> => {
-        if (!tx)
-          return BigNumber.from(
-            gasLimitRecommendations[ProtocolAction.supply].recommended,
-          );
-
-        const txGas = await this.estimateGasLimit({
-          tx,
-          action: ProtocolAction.supply,
-        });
-        return txGas.gasLimit ?? BigNumber.from('0');
-      },
-      generateSignedActionGasEstimate: async ({
-        tx,
-      }: {
-        tx?: PopulatedTransaction;
-      }): Promise<BigNumber> => {
-        if (!tx)
-          return BigNumber.from(
-            gasLimitRecommendations[ProtocolAction.supplyWithPermit]
-              .recommended,
-          );
-
-        const txGas = await this.estimateGasLimit({
-          tx,
-          action: ProtocolAction.supplyWithPermit,
-        });
-        return txGas.gasLimit ?? BigNumber.from('0');
       },
     };
   }
