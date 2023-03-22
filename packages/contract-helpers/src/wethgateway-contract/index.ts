@@ -119,8 +119,8 @@ export class WETHGatewayService
       ]);
       const actionTx: PopulatedTransaction = {
         data: txData,
-        to: args.user,
-        from: this.wethGatewayAddress,
+        to: this.wethGatewayAddress,
+        from: args.user,
         value: BigNumber.from(args.amount),
       };
       return actionTx;
