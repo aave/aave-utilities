@@ -50,6 +50,7 @@ export type SupplyTxBuilder = {
     onBehalfOf,
     referralCode,
     useOptimizedPath,
+    encodedTxData,
   }: LPSupplyParamsType) => PopulatedTransaction;
   generateSignedTxData: ({
     user,
@@ -59,6 +60,7 @@ export type SupplyTxBuilder = {
     referralCode,
     useOptimizedPath,
     signature,
+    encodedTxData,
   }: LPSignedSupplyParamsType) => PopulatedTransaction;
 };
 
@@ -145,30 +147,41 @@ export class PoolBundle
         onBehalfOf,
         referralCode,
         useOptimizedPath,
+        encodedTxData,
       }: LPSupplyParamsType): PopulatedTransaction => {
         let actionTx: PopulatedTransaction = {};
+        const onBehalfOfParam = onBehalfOf ?? user;
+        const referralCodeParam = referralCode ?? '0';
         if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
           actionTx = this.wethGatewayService.generateDepositEthTxData({
             lendingPool: this.poolAddress,
             user,
             amount,
-            onBehalfOf,
-            referralCode,
+            onBehalfOf: onBehalfOfParam,
+            referralCode: referralCodeParam,
           });
         } else if (useOptimizedPath) {
-          const args: LPSupplyParamsType = {
-            user,
-            reserve,
-            amount,
-            referralCode,
-          };
-          actionTx = this.l2PoolService.generateSupplyTxData(args);
+          if (encodedTxData) {
+            actionTx = this.l2PoolService.generateEncodedSupplyTxData({
+              encodedTxData,
+              user,
+            });
+          } else {
+            const args: LPSupplyParamsType = {
+              user,
+              reserve,
+              amount,
+              onBehalfOf: onBehalfOfParam,
+              referralCode: referralCodeParam,
+            };
+            actionTx = this.l2PoolService.generateSupplyTxData(args);
+          }
         } else {
           const txData = this.contractInterface.encodeFunctionData('supply', [
             reserve,
             amount,
-            onBehalfOf ?? user,
-            referralCode ?? '0',
+            onBehalfOfParam,
+            referralCodeParam,
           ]);
           actionTx.to = this.poolAddress;
           actionTx.from = user;
@@ -186,32 +199,44 @@ export class PoolBundle
         useOptimizedPath,
         signature,
         deadline,
+        encodedTxData,
       }: LPSignedSupplyParamsType): PopulatedTransaction => {
         const decomposedSignature: Signature = splitSignature(signature);
         let populatedTx: PopulatedTransaction = {};
+        const onBehalfOfParam = onBehalfOf ?? user;
+        const referralCodeParam = referralCode ?? '0';
         if (useOptimizedPath) {
-          const args: LPSupplyWithPermitTypeL2 = {
-            user,
-            reserve,
-            amount,
-            referralCode,
-            permitR: decomposedSignature.r,
-            permitS: decomposedSignature.s,
-            permitV: decomposedSignature.v,
-            deadline: Number(deadline),
-          };
-          populatedTx = this.l2PoolService.generateSupplyWithPermitTxData(args);
-          populatedTx.to = this.l2PoolAddress;
-          populatedTx.from = user;
+          if (encodedTxData) {
+            populatedTx =
+              this.l2PoolService.generateEncodedSupplyWithPermitTxData({
+                encodedTxData,
+                user,
+                signature,
+              });
+          } else {
+            const args: LPSupplyWithPermitTypeL2 = {
+              user,
+              reserve,
+              amount,
+              referralCode: referralCodeParam,
+              onBehalfOf: onBehalfOfParam,
+              permitR: decomposedSignature.r,
+              permitS: decomposedSignature.s,
+              permitV: decomposedSignature.v,
+              deadline: Number(deadline),
+            };
+            populatedTx =
+              this.l2PoolService.generateSupplyWithPermitTxData(args);
+          }
         } else {
           const txData = this.contractInterface.encodeFunctionData(
             'supplyWithPermit',
             [
               reserve,
               amount,
-              onBehalfOf ?? user,
-              referralCode ?? '0',
-              deadline ?? DEFAULT_DEADLINE,
+              onBehalfOfParam,
+              referralCodeParam,
+              deadline,
               decomposedSignature.v,
               decomposedSignature.r,
               decomposedSignature.s,

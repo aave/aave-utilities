@@ -14,6 +14,7 @@ export type LPSupplyParamsType = {
   onBehalfOf?: tEthereumAddress;
   referralCode?: string;
   useOptimizedPath?: boolean;
+  encodedTxData?: string;
 };
 
 export type LPSignedSupplyParamsType = LPSupplyParamsType & {
