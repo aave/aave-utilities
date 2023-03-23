@@ -1,40 +1,18 @@
 import { providers, PopulatedTransaction } from 'ethers';
 import BaseService from '../commons/BaseService';
+import { LendingPoolMarketConfig } from '../commons/types';
+import { API_ETH_MOCK_ADDRESS } from '../commons/utils';
 import {
-  ProtocolAction,
-  LendingPoolMarketConfig,
-  ActionBundle,
-} from '../commons/types';
-import {
-  valueToWei,
-  API_ETH_MOCK_ADDRESS,
-  DEFAULT_APPROVE_AMOUNT,
-  convertPopulatedTx,
-} from '../commons/utils';
-import { LPValidator } from '../commons/validators/methodValidators';
-import {
-  isEthAddress,
-  isPositiveAmount,
-} from '../commons/validators/paramValidators';
-import { ERC20Service, IERC20ServiceInterface } from '../erc20-contract';
+  ApproveType,
+  ERC20Service,
+  IERC20ServiceInterface,
+} from '../erc20-contract';
 import { LPDepositParamsType } from '../lendingPool-contract/lendingPoolTypes';
 import {
   ILendingPool,
   ILendingPoolInterface,
 } from '../lendingPool-contract/typechain/ILendingPool';
 import { ILendingPool__factory } from '../lendingPool-contract/typechain/ILendingPool__factory';
-import {
-  LiquiditySwapAdapterInterface,
-  LiquiditySwapAdapterService,
-} from '../paraswap-liquiditySwapAdapter-contract';
-import {
-  ParaswapRepayWithCollateral,
-  ParaswapRepayWithCollateralInterface,
-} from '../paraswap-repayWithCollateralAdapter-contract';
-import {
-  RepayWithCollateralAdapterInterface,
-  RepayWithCollateralAdapterService,
-} from '../repayWithCollateralAdapter-contract';
 import { SynthetixInterface, SynthetixService } from '../synthetix-contract';
 import {
   WETHGatewayInterface,
@@ -46,8 +24,24 @@ export type LPDepositParamsBundleType = LPDepositParamsType & {
   skipGasEstimation?: boolean;
 };
 
+export type DepositTxBuilder = {
+  generateApprovalTxData: ({
+    user,
+    token,
+    spender,
+    amount,
+  }: ApproveType) => PopulatedTransaction;
+  generateTxData: ({
+    user,
+    reserve,
+    amount,
+    onBehalfOf,
+    referralCode,
+  }: LPDepositParamsType) => PopulatedTransaction;
+};
+
 export interface LendingPoolBundleInterface {
-  depositBundle: (args: LPDepositParamsBundleType) => Promise<ActionBundle>;
+  depositTxBuilder: DepositTxBuilder;
 }
 
 export class LendingPoolBundle
@@ -62,19 +56,9 @@ export class LendingPoolBundle
 
   readonly wethGatewayService: WETHGatewayInterface;
 
-  readonly liquiditySwapAdapterService: LiquiditySwapAdapterInterface;
-
-  readonly repayWithCollateralAdapterService: RepayWithCollateralAdapterInterface;
-
-  readonly flashLiquidationAddress: string;
-
-  readonly swapCollateralAddress: string;
-
-  readonly repayWithCollateralAddress: string;
-
-  readonly paraswapRepayWithCollateralAdapterService: ParaswapRepayWithCollateralInterface;
-
   readonly contractInterface: ILendingPoolInterface;
+
+  depositTxBuilder: DepositTxBuilder;
 
   constructor(
     provider: providers.Provider,
@@ -82,18 +66,9 @@ export class LendingPoolBundle
   ) {
     super(provider, ILendingPool__factory);
 
-    const {
-      LENDING_POOL,
-      FLASH_LIQUIDATION_ADAPTER,
-      REPAY_WITH_COLLATERAL_ADAPTER,
-      SWAP_COLLATERAL_ADAPTER,
-      WETH_GATEWAY,
-    } = lendingPoolConfig ?? {};
+    const { LENDING_POOL, WETH_GATEWAY } = lendingPoolConfig ?? {};
 
     this.lendingPoolAddress = LENDING_POOL ?? '';
-    this.flashLiquidationAddress = FLASH_LIQUIDATION_ADAPTER ?? '';
-    this.swapCollateralAddress = SWAP_COLLATERAL_ADAPTER ?? '';
-    this.repayWithCollateralAddress = REPAY_WITH_COLLATERAL_ADAPTER ?? '';
 
     // initialize services
     this.erc20Service = new ERC20Service(provider);
@@ -103,121 +78,44 @@ export class LendingPoolBundle
       this.erc20Service,
       WETH_GATEWAY,
     );
-    this.liquiditySwapAdapterService = new LiquiditySwapAdapterService(
-      provider,
-      SWAP_COLLATERAL_ADAPTER,
-    );
-    this.repayWithCollateralAdapterService =
-      new RepayWithCollateralAdapterService(
-        provider,
-        REPAY_WITH_COLLATERAL_ADAPTER,
-      );
-
-    this.paraswapRepayWithCollateralAdapterService =
-      new ParaswapRepayWithCollateral(provider, REPAY_WITH_COLLATERAL_ADAPTER);
 
     this.contractInterface = ILendingPool__factory.createInterface();
-  }
 
-  @LPValidator
-  public async depositBundle(
-    @isEthAddress('user')
-    @isEthAddress('reserve')
-    @isPositiveAmount('amount')
-    @isEthAddress('onBehalfOf')
-    {
-      user,
-      reserve,
-      amount,
-      onBehalfOf,
-      referralCode,
-      skipApprovalChecks,
-      skipGasEstimation,
-    }: LPDepositParamsBundleType,
-  ): Promise<ActionBundle> {
-    let actionTx: PopulatedTransaction = {};
-    let approved = true;
-    const approvals: PopulatedTransaction[] = [];
-
-    // Base asset supplies are routed to WETHGateway
-    if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
-      const depositEth = this.wethGatewayService.depositETH({
-        lendingPool: this.lendingPoolAddress,
+    // Initialize supplyTxBuilder
+    this.depositTxBuilder = {
+      generateApprovalTxData: (props: ApproveType): PopulatedTransaction => {
+        return this.erc20Service.approveTxData(props);
+      },
+      generateTxData: ({
         user,
+        reserve,
         amount,
         onBehalfOf,
         referralCode,
-      });
-      const txData = await depositEth[0].tx();
-      actionTx = convertPopulatedTx(txData);
-      actionTx = await this.estimateGasLimit({
-        tx: actionTx,
-        action: ProtocolAction.deposit,
-        skipGasEstimation,
-      });
-    } else {
-      // Handle mon-base asset supplies
-      const { isApproved, decimalsOf, approveTxData }: IERC20ServiceInterface =
-        this.erc20Service;
-      const reserveDecimals: number = await decimalsOf(reserve);
-      const convertedAmount: string = valueToWei(amount, reserveDecimals);
-
-      const fundsAvailable: boolean =
-        await this.synthetixService.synthetixValidation({
-          user,
-          reserve,
-          amount: convertedAmount,
-        });
-      if (!fundsAvailable) {
-        throw new Error('Not enough funds to execute operation');
-      }
-
-      // Generate approval and signature requests, optional
-      if (!skipApprovalChecks) {
-        approved = await isApproved({
-          token: reserve,
-          user,
-          spender: this.lendingPoolAddress,
-          amount,
-        });
-
-        if (!approved) {
-          const approveTx = approveTxData({
+      }: LPDepositParamsType): PopulatedTransaction => {
+        let actionTx: PopulatedTransaction = {};
+        if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
+          actionTx = this.wethGatewayService.generateDepositEthTxData({
+            lendingPool: this.lendingPoolAddress,
             user,
-            token: reserve,
-            spender: this.lendingPoolAddress,
-            amount: DEFAULT_APPROVE_AMOUNT,
+            amount,
+            onBehalfOf,
+            referralCode,
           });
-
-          approvals.push(approveTx);
+        } else {
+          const txData = this.contractInterface.encodeFunctionData('deposit', [
+            reserve,
+            amount,
+            onBehalfOf ?? user,
+            referralCode ?? '0',
+          ]);
+          actionTx.to = this.lendingPoolAddress;
+          actionTx.from = user;
+          actionTx.data = txData;
         }
-      }
 
-      const txData = this.contractInterface.encodeFunctionData('deposit', [
-        reserve,
-        convertedAmount,
-        onBehalfOf ?? user,
-        referralCode ?? '0',
-      ]);
-
-      actionTx.to = this.lendingPoolAddress;
-      actionTx.data = txData;
-      actionTx.from = user;
-    }
-
-    actionTx = await this.estimateGasLimit({
-      tx: actionTx,
-      action: ProtocolAction.deposit,
-      skipGasEstimation,
-    });
-
-    return {
-      action: actionTx,
-      approvalRequired: !approved,
-      approvals,
-      signatureRequests: [],
-      generateSignedAction: async () => Promise.resolve({}),
-      signedActionGasEstimate: '0',
+        return actionTx;
+      },
     };
   }
 }
