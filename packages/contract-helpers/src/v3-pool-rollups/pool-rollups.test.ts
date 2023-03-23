@@ -1,4 +1,5 @@
 import { BigNumber, constants, providers, utils } from 'ethers';
+import { splitSignature } from 'ethers/lib/utils';
 import {
   eEthereumTxType,
   GasType,
@@ -80,28 +81,147 @@ describe('L2Pool', () => {
   });
 
   describe('Generate Tx Data', () => {
-    it('Generate supply tx data', () => {
+    it('Generate supply tx data without encoded parameter', async () => {
       const instance: L2PoolInterface = new L2Pool(provider, config);
+
       const txData = instance.generateSupplyTxData({
         user,
         reserve,
         amount,
       });
-      console.log(txData);
+
+      const txData2 = instance.generateSupplyTxData({
+        user,
+        reserve,
+        amount,
+        onBehalfOf: user,
+      });
+
+      const txData3 = instance.generateSupplyTxData({
+        user,
+        reserve,
+        amount,
+        referralCode: '0',
+      });
+
+      const supplyTxData =
+        '0x617ba03700000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000001bc16d674ec8000000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000000';
+
+      expect(txData.to).toEqual(l2PoolAddress);
+      expect(txData.from).toEqual(user);
+      expect(txData.data).toEqual(supplyTxData);
+      expect(txData2.to).toEqual(l2PoolAddress);
+      expect(txData2.from).toEqual(user);
+      expect(txData2.data).toEqual(supplyTxData);
+      expect(txData3.to).toEqual(l2PoolAddress);
+      expect(txData3.from).toEqual(user);
+      expect(txData3.data).toEqual(supplyTxData);
     });
 
-    it('Generate supplyWithPermit tx data', () => {
+    it('Generate supply tx data with encoded parameter', async () => {
       const instance: L2PoolInterface = new L2Pool(provider, config);
+
+      const encoder = instance.getEncoder();
+
+      // Result is mocked so inputs don't matter
+      const encodedTxData = await encoder.encodeSupplyParams(reserve, 1, '0');
+
+      const txData = instance.generateEncodedSupplyTxData({
+        user,
+        encodedTxData,
+      });
+
+      const encodedSupplyTxData =
+        '0xf7a738400000000000000000000000000000000000000000000000000000006d6168616d';
+      expect(txData.to).toEqual(l2PoolAddress);
+      expect(txData.from).toEqual(user);
+      expect(txData.data).toEqual(encodedSupplyTxData);
+    });
+
+    it('Generate supplyWithPermit tx data without encoded parameter', () => {
+      const instance: L2PoolInterface = new L2Pool(provider, config);
+      const signature =
+        '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c';
+      const decomposedSignature = splitSignature(signature);
       const txData = instance.generateSupplyWithPermitTxData({
         user,
         reserve,
         amount,
-        deadline,
-        permitR,
-        permitS,
-        permitV,
+        permitV: decomposedSignature.v,
+        permitR: decomposedSignature.r,
+        permitS: decomposedSignature.s,
+        deadline: '1000',
       });
-      console.log(txData);
+
+      const txData2 = instance.generateSupplyWithPermitTxData({
+        user,
+        reserve,
+        amount,
+        onBehalfOf: user,
+        permitV: decomposedSignature.v,
+        permitR: decomposedSignature.r,
+        permitS: decomposedSignature.s,
+        deadline: '1000',
+      });
+
+      const txData3 = instance.generateSupplyWithPermitTxData({
+        user,
+        reserve,
+        amount,
+        referralCode: '0',
+        permitV: decomposedSignature.v,
+        permitR: decomposedSignature.r,
+        permitS: decomposedSignature.s,
+        deadline: '1000',
+      });
+
+      const supplyTxData =
+        '0x02c205f000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000001bc16d674ec800000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003e8000000000000000000000000000000000000000000000000000000000000001c532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4';
+      expect(txData.to).toEqual(l2PoolAddress);
+      expect(txData.from).toEqual(user);
+      expect(txData.data).toEqual(supplyTxData);
+      expect(txData2.to).toEqual(l2PoolAddress);
+      expect(txData2.from).toEqual(user);
+      expect(txData2.data).toEqual(supplyTxData);
+      expect(txData3.to).toEqual(l2PoolAddress);
+      expect(txData3.from).toEqual(user);
+      expect(txData3.data).toEqual(supplyTxData);
+    });
+
+    it('Generate supplyWithPermit tx data with encoded parameter', async () => {
+      const instance: L2PoolInterface = new L2Pool(provider, config);
+
+      const encoder = instance.getEncoder();
+
+      const signature =
+        '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c';
+      const decomposedSignature = splitSignature(signature);
+      expect(instance).toBeDefined();
+      expect(encoder).toBeDefined();
+      // Result is mocked so inputs don't matter
+      const encodedTxData = await encoder.encodeSupplyWithPermitParams(
+        reserve,
+        1,
+        '0',
+        '10000',
+        decomposedSignature.v,
+        decomposedSignature.r,
+        decomposedSignature.s,
+      );
+
+      expect(encodedTxData).toBeDefined();
+
+      const txData = instance.generateEncodedSupplyWithPermitTxData({
+        user,
+        encodedTxData: encodedTxData[0],
+        signature,
+      });
+
+      const encodedSupplyWithPermitTxData =
+        '0x680dd47c0000000000000000000000000000000000000000000000000000006d6168616d532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4';
+      expect(txData.to).toEqual(l2PoolAddress);
+      expect(txData.from).toEqual(user);
+      expect(txData.data).toEqual(encodedSupplyWithPermitTxData);
     });
   });
   describe('getEncoder', () => {
