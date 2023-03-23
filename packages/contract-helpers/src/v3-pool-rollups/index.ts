@@ -1,4 +1,5 @@
-import { PopulatedTransaction, providers } from 'ethers';
+import { PopulatedTransaction, providers, Signature } from 'ethers';
+import { splitSignature } from 'ethers/lib/utils';
 import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
@@ -10,6 +11,8 @@ import { getTxValue } from '../commons/utils';
 import { L2PValidator } from '../commons/validators/methodValidators';
 import { isDeadline32Bytes } from '../commons/validators/paramValidators';
 import { LPSupplyParamsType } from '../v3-pool-contract/lendingPoolTypes';
+import { IPoolInterface } from '../v3-pool-contract/typechain/IPool';
+import { IPool__factory } from '../v3-pool-contract/typechain/IPool__factory';
 import {
   LPBorrowParamsType,
   LPLiquidationCall,
@@ -33,9 +36,18 @@ export interface L2PoolInterface {
     txs: EthereumTransactionTypeExtended[],
   ) => Promise<EthereumTransactionTypeExtended[]>;
   generateSupplyTxData: (args: LPSupplyParamsType) => PopulatedTransaction;
+  generateEncodedSupplyTxData: (args: {
+    encodedTxData: string;
+    user: string;
+  }) => PopulatedTransaction;
   generateSupplyWithPermitTxData: (
     args: LPSupplyWithPermitType,
   ) => PopulatedTransaction;
+  generateEncodedSupplyWithPermitTxData: (args: {
+    encodedTxData: string;
+    user: string;
+    signature: string;
+  }) => PopulatedTransaction;
   supplyWithPermit: (
     args: LPSupplyWithPermitType,
     txs: EthereumTransactionTypeExtended[],
@@ -75,18 +87,32 @@ export type L2PoolConfigType = {
   l2PoolAddress?: string;
   encoderAddress?: string;
 };
+
 export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
   readonly l2PoolAddress: string;
   readonly encoderAddress: string;
   readonly l2PoolContractInstance: IL2PoolInterface;
+  readonly poolContractInstance: IPoolInterface;
 
   public encoderContract: L2Encoder;
   public encoderInterface: L2EncoderInterface;
 
   generateSupplyTxData: (args: LPSupplyParamsType) => PopulatedTransaction;
+
   generateSupplyWithPermitTxData: (
     args: LPSupplyWithPermitType,
   ) => PopulatedTransaction;
+
+  generateEncodedSupplyTxData: (args: {
+    encodedTxData: string;
+    user: string;
+  }) => PopulatedTransaction;
+
+  generateEncodedSupplyWithPermitTxData: (args: {
+    encodedTxData: string;
+    user: string;
+    signature: string;
+  }) => PopulatedTransaction;
 
   constructor(provider: providers.Provider, l2PoolConfig?: L2PoolConfigType) {
     super(provider, IL2Pool__factory);
@@ -97,22 +123,23 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     this.encoderAddress = encoderAddress ?? '';
     this.encoderInterface = L2Encoder__factory.createInterface();
     this.l2PoolContractInstance = IL2Pool__factory.createInterface();
+    this.poolContractInstance = IPool__factory.createInterface();
 
     this.generateSupplyTxData = ({
       user,
       reserve,
+      onBehalfOf,
       amount,
       referralCode,
     }: LPSupplyParamsType) => {
       const actionTx: PopulatedTransaction = {};
-      const encodedTxData = this.encoderInterface.encodeFunctionData(
-        'encodeSupplyParams',
-        [reserve, amount, referralCode ?? '0'],
-      );
-
-      const txData = this.l2PoolContractInstance.encodeFunctionData('supply', [
-        encodedTxData,
+      const txData = this.poolContractInstance.encodeFunctionData('supply', [
+        reserve,
+        amount,
+        onBehalfOf ?? user,
+        referralCode ?? '0',
       ]);
+
       actionTx.to = this.l2PoolAddress;
       actionTx.from = user;
       actionTx.data = txData;
@@ -123,6 +150,7 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
       user,
       reserve,
       amount,
+      onBehalfOf,
       referralCode,
       deadline,
       permitR,
@@ -130,11 +158,13 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
       permitV,
     }: LPSupplyWithPermitType) => {
       const actionTx: PopulatedTransaction = {};
-      const encodedTxData = this.encoderInterface.encodeFunctionData(
-        'encodeSupplyWithPermitParams',
+
+      const txData = this.poolContractInstance.encodeFunctionData(
+        'supplyWithPermit',
         [
           reserve,
           amount,
+          onBehalfOf ?? user,
           referralCode ?? '0',
           deadline,
           permitV,
@@ -143,13 +173,49 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
         ],
       );
 
-      const txData = this.l2PoolContractInstance.encodeFunctionData(
-        'supplyWithPermit',
-        [encodedTxData, permitR, permitS],
-      );
       actionTx.to = this.l2PoolAddress;
       actionTx.from = user;
       actionTx.data = txData;
+      return actionTx;
+    };
+
+    this.generateEncodedSupplyTxData = ({
+      encodedTxData,
+      user,
+    }: {
+      encodedTxData: string;
+      user: string;
+    }) => {
+      const actionTx: PopulatedTransaction = {};
+      const txData = this.l2PoolContractInstance.encodeFunctionData('supply', [
+        encodedTxData,
+      ]);
+
+      actionTx.to = this.l2PoolAddress;
+      actionTx.data = txData;
+      actionTx.from = user;
+      return actionTx;
+    };
+
+    this.generateEncodedSupplyWithPermitTxData = ({
+      encodedTxData,
+      signature,
+      user,
+    }: {
+      encodedTxData: string;
+      signature: string;
+      user: string;
+    }) => {
+      const actionTx: PopulatedTransaction = {};
+      const decomposedSignature: Signature = splitSignature(signature);
+      const txData = this.l2PoolContractInstance.encodeFunctionData(
+        'supplyWithPermit',
+        [encodedTxData, decomposedSignature.r, decomposedSignature.s],
+      );
+
+      actionTx.to = this.l2PoolAddress;
+      actionTx.data = txData;
+      actionTx.from = user;
       return actionTx;
     };
   }
