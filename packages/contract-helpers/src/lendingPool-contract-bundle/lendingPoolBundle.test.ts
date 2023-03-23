@@ -43,6 +43,37 @@ describe('LendingPoolBundle', () => {
     };
 
     const instance = new LendingPoolBundle(provider, config);
+
+    it('gets approved amount for Pool', async () => {
+      jest
+        .spyOn(instance.erc20Service, 'approvedAmount')
+        .mockReturnValue(Promise.resolve(1));
+
+      const result = await instance.supplyTxBuilder.getApprovedAmount({
+        user: USER,
+        token: TOKEN,
+      });
+      expect(result.amount).toEqual('1');
+      expect(result.spender).toEqual(LENDING_POOL);
+      expect(result.token).toEqual(TOKEN);
+      expect(result.user).toEqual(USER);
+    });
+
+    it('gets approved amount for WETHGateway', async () => {
+      jest
+        .spyOn(instance.erc20Service, 'approvedAmount')
+        .mockReturnValue(Promise.resolve(1));
+
+      const result = await instance.supplyTxBuilder.getApprovedAmount({
+        user: USER,
+        token: API_ETH_MOCK_ADDRESS,
+      });
+      expect(result.amount).toEqual('1');
+      expect(result.spender).toEqual(WETH_GATEWAY);
+      expect(result.token).toEqual(API_ETH_MOCK_ADDRESS);
+      expect(result.user).toEqual(USER);
+    });
+
     it('generates approval with generateApprovalTxData', () => {
       const result = instance.supplyTxBuilder.generateApprovalTxData({
         user: USER,

@@ -33,9 +33,12 @@ export interface IERC20ServiceInterface {
   approveTxData: (args: ApproveType) => PopulatedTransaction;
 }
 
-export type AllowanceRequest = {
+export type TokenOwner = {
   user: tEthereumAddress;
   token: tEthereumAddress;
+};
+
+export type AllowanceRequest = TokenOwner & {
   spender: tEthereumAddress;
 };
 
