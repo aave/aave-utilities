@@ -43,7 +43,7 @@ export type DepositTxBuilder = {
 };
 
 export interface LendingPoolBundleInterface {
-  supplyTxBuilder: DepositTxBuilder;
+  depositTxBuilder: DepositTxBuilder;
 }
 
 export class LendingPoolBundle
@@ -62,7 +62,7 @@ export class LendingPoolBundle
 
   readonly wethGatewayAddress: tEthereumAddress;
 
-  supplyTxBuilder: DepositTxBuilder;
+  depositTxBuilder: DepositTxBuilder;
 
   constructor(
     provider: providers.Provider,
@@ -86,8 +86,8 @@ export class LendingPoolBundle
 
     this.contractInterface = ILendingPool__factory.createInterface();
 
-    // Initialize supplyTxBuilder
-    this.supplyTxBuilder = {
+    // Initialize depositTxBuilder
+    this.depositTxBuilder = {
       getApprovedAmount: async (props: TokenOwner): Promise<ApproveType> => {
         const spender =
           props.token.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()
