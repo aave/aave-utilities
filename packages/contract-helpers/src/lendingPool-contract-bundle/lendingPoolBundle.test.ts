@@ -44,7 +44,7 @@ describe('LendingPoolBundle', () => {
 
     const instance = new LendingPoolBundle(provider, config);
     it('generates approval with generateApprovalTxData', () => {
-      const result = instance.depositTxBuilder.generateApprovalTxData({
+      const result = instance.supplyTxBuilder.generateApprovalTxData({
         user: USER,
         token: TOKEN,
         spender: LENDING_POOL,
@@ -60,7 +60,7 @@ describe('LendingPoolBundle', () => {
     });
 
     it('generates deposit tx data with generateTxData', () => {
-      const result = instance.depositTxBuilder.generateTxData({
+      const result = instance.supplyTxBuilder.generateTxData({
         user: USER,
         reserve: TOKEN,
         amount: '1',
@@ -68,16 +68,17 @@ describe('LendingPoolBundle', () => {
         referralCode: '0',
       });
 
-      const differentParamsSameResult =
-        instance.depositTxBuilder.generateTxData({
+      const differentParamsSameResult = instance.supplyTxBuilder.generateTxData(
+        {
           user: USER,
           reserve: TOKEN,
           amount: '1',
           referralCode: '0',
-        });
+        },
+      );
 
       const differentParamsSameResult2 =
-        instance.depositTxBuilder.generateTxData({
+        instance.supplyTxBuilder.generateTxData({
           user: USER,
           reserve: TOKEN,
           amount: '1',
@@ -85,7 +86,7 @@ describe('LendingPoolBundle', () => {
         });
 
       const differentParamsSameResult3 =
-        instance.depositTxBuilder.generateTxData({
+        instance.supplyTxBuilder.generateTxData({
           user: USER,
           reserve: TOKEN,
           amount: '1',
@@ -108,7 +109,7 @@ describe('LendingPoolBundle', () => {
     });
 
     it('generates deposit tx for WETHGateway data with generateTxData', () => {
-      const result = instance.depositTxBuilder.generateTxData({
+      const result = instance.supplyTxBuilder.generateTxData({
         user: USER,
         reserve: API_ETH_MOCK_ADDRESS.toLowerCase(),
         amount: '1',

@@ -41,7 +41,7 @@ export type DepositTxBuilder = {
 };
 
 export interface LendingPoolBundleInterface {
-  depositTxBuilder: DepositTxBuilder;
+  supplyTxBuilder: DepositTxBuilder;
 }
 
 export class LendingPoolBundle
@@ -58,7 +58,7 @@ export class LendingPoolBundle
 
   readonly contractInterface: ILendingPoolInterface;
 
-  depositTxBuilder: DepositTxBuilder;
+  supplyTxBuilder: DepositTxBuilder;
 
   constructor(
     provider: providers.Provider,
@@ -82,7 +82,7 @@ export class LendingPoolBundle
     this.contractInterface = ILendingPool__factory.createInterface();
 
     // Initialize supplyTxBuilder
-    this.depositTxBuilder = {
+    this.supplyTxBuilder = {
       generateApprovalTxData: (props: ApproveType): PopulatedTransaction => {
         return this.erc20Service.approveTxData(props);
       },

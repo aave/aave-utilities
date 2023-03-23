@@ -1,7 +1,7 @@
 import { Signature, splitSignature } from '@ethersproject/bytes';
 import { PopulatedTransaction, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
-import { DEFAULT_DEADLINE } from '../commons/types';
+import { DEFAULT_DEADLINE, tEthereumAddress } from '../commons/types';
 import { API_ETH_MOCK_ADDRESS } from '../commons/utils';
 import { ERC20_2612Service, ERC20_2612Interface } from '../erc20-2612';
 import {
@@ -9,6 +9,7 @@ import {
   ERC20Service,
   IERC20ServiceInterface,
   SignedApproveType,
+  TokenOwner,
 } from '../erc20-contract';
 import { SynthetixInterface, SynthetixService } from '../synthetix-contract';
 import {
@@ -62,6 +63,7 @@ export type SupplyTxBuilder = {
     signature,
     encodedTxData,
   }: LPSignedSupplyParamsType) => PopulatedTransaction;
+  getApprovedAmount: ({ user, token }: TokenOwner) => Promise<ApproveType>;
 };
 
 export interface PoolBundleInterface {
@@ -74,7 +76,7 @@ export class PoolBundle
 {
   readonly erc20Service: IERC20ServiceInterface;
 
-  readonly poolAddress: string;
+  readonly poolAddress: tEthereumAddress;
 
   readonly synthetixService: SynthetixInterface;
 
@@ -90,7 +92,7 @@ export class PoolBundle
 
   readonly v3PoolService: V3PoolInterface;
 
-  readonly wethGatewayAddress: string;
+  readonly wethGatewayAddress: tEthereumAddress;
 
   readonly contractInterface: IPoolInterface;
 
@@ -128,6 +130,21 @@ export class PoolBundle
 
     // Initialize supplyTxBuilder
     this.supplyTxBuilder = {
+      getApprovedAmount: async (props: TokenOwner): Promise<ApproveType> => {
+        const spender =
+          props.token.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()
+            ? this.wethGatewayAddress
+            : this.poolAddress;
+        const amount = await this.erc20Service.approvedAmount({
+          ...props,
+          spender,
+        });
+        return {
+          ...props,
+          spender,
+          amount: amount.toString(),
+        };
+      },
       generateApprovalTxData: (props: ApproveType): PopulatedTransaction => {
         return this.erc20Service.approveTxData(props);
       },
