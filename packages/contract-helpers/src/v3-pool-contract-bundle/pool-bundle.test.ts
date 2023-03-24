@@ -88,49 +88,6 @@ describe('PoolBundle', () => {
       expect(result.user).toEqual(USER);
     });
 
-    it('generates approval with generateApprovalTxData', () => {
-      const result = instance.supplyTxBuilder.generateApprovalTxData({
-        user: USER,
-        token: TOKEN,
-        spender: POOL,
-        amount: '1',
-      });
-
-      expect(result).toBeDefined();
-      expect(result.to).toEqual(TOKEN);
-      expect(result.from).toEqual(USER);
-      expect(result.data).toEqual(
-        '0x095ea7b300000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001',
-      );
-    });
-
-    it('generates signature resquest with generateApprovalSignatureData', async () => {
-      // Mock signature request, tests performed inside of v3 pool service
-      jest
-        .spyOn(instance.v3PoolService, 'signERC20Approval')
-        .mockImplementation(async () => Promise.resolve('0x0'));
-
-      const result =
-        await instance.supplyTxBuilder.generateApprovalSignatureData({
-          user: USER,
-          token: TOKEN,
-          spender: POOL,
-          amount: '1',
-          deadline: '10000',
-        });
-
-      const resultNoDeadline =
-        await instance.supplyTxBuilder.generateApprovalSignatureData({
-          user: USER,
-          token: TOKEN,
-          spender: POOL,
-          amount: '1',
-        });
-
-      expect(result).toEqual('0x0');
-      expect(resultNoDeadline).toEqual('0x0');
-    });
-
     it('generates supply tx data with generateTxData', () => {
       const result = instance.supplyTxBuilder.generateTxData({
         user: USER,

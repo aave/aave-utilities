@@ -1,14 +1,13 @@
 import { Signature, splitSignature } from '@ethersproject/bytes';
 import { PopulatedTransaction, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
-import { DEFAULT_DEADLINE, tEthereumAddress } from '../commons/types';
+import { tEthereumAddress } from '../commons/types';
 import { API_ETH_MOCK_ADDRESS } from '../commons/utils';
 import { ERC20_2612Service, ERC20_2612Interface } from '../erc20-2612';
 import {
   ApproveType,
   ERC20Service,
   IERC20ServiceInterface,
-  SignedApproveType,
   TokenOwner,
 } from '../erc20-contract';
 import { SynthetixInterface, SynthetixService } from '../synthetix-contract';
@@ -31,19 +30,6 @@ import {
 } from '../wethgateway-contract';
 
 export type SupplyTxBuilder = {
-  generateApprovalTxData: ({
-    user,
-    token,
-    spender,
-    amount,
-  }: ApproveType) => PopulatedTransaction;
-  generateApprovalSignatureData: ({
-    user,
-    token,
-    spender,
-    amount,
-    deadline,
-  }: SignedApproveType) => Promise<string>;
   generateTxData: ({
     user,
     reserve,
@@ -144,18 +130,6 @@ export class PoolBundle
           spender,
           amount: amount.toString(),
         };
-      },
-      generateApprovalTxData: (props: ApproveType): PopulatedTransaction => {
-        return this.erc20Service.approveTxData(props);
-      },
-      generateApprovalSignatureData: async (
-        props: SignedApproveType,
-      ): Promise<string> => {
-        return this.v3PoolService.signERC20Approval({
-          ...props,
-          reserve: props.token,
-          deadline: props.deadline ?? DEFAULT_DEADLINE,
-        });
       },
       generateTxData: ({
         user,

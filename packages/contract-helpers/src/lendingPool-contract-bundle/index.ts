@@ -20,18 +20,7 @@ import {
   WETHGatewayService,
 } from '../wethgateway-contract';
 
-export type LPDepositParamsBundleType = LPDepositParamsType & {
-  skipApprovalChecks?: boolean;
-  skipGasEstimation?: boolean;
-};
-
 export type DepositTxBuilder = {
-  generateApprovalTxData: ({
-    user,
-    token,
-    spender,
-    amount,
-  }: ApproveType) => PopulatedTransaction;
   generateTxData: ({
     user,
     reserve,
@@ -102,9 +91,6 @@ export class LendingPoolBundle
           spender,
           amount: amount.toString(),
         };
-      },
-      generateApprovalTxData: (props: ApproveType): PopulatedTransaction => {
-        return this.erc20Service.approveTxData(props);
       },
       generateTxData: ({
         user,

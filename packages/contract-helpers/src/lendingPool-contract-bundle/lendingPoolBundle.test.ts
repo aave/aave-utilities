@@ -74,22 +74,6 @@ describe('LendingPoolBundle', () => {
       expect(result.user).toEqual(USER);
     });
 
-    it('generates approval with generateApprovalTxData', () => {
-      const result = instance.depositTxBuilder.generateApprovalTxData({
-        user: USER,
-        token: TOKEN,
-        spender: LENDING_POOL,
-        amount: '1',
-      });
-
-      expect(result).toBeDefined();
-      expect(result.to).toEqual(TOKEN);
-      expect(result.from).toEqual(USER);
-      expect(result.data).toEqual(
-        '0x095ea7b300000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001',
-      );
-    });
-
     it('generates deposit tx data with generateTxData', () => {
       const result = instance.depositTxBuilder.generateTxData({
         user: USER,
