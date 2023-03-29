@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import BigNumber from 'bignumber.js';
 import { constants, providers, utils } from 'ethers';
 import {
   BaseDebtToken,
@@ -142,7 +140,6 @@ export class V3MigrationHelperService
     user: string,
     assets: MigrationDelegationApproval[],
   ): Promise<EthereumTransactionTypeExtended[]> {
-    console.log(assets, 'assets');
     const assetsApproved = await Promise.all(
       assets.map(async ({ amount, debtTokenAddress }) => {
         return this.baseDebtTokenService.isDelegationApproved({
@@ -153,7 +150,6 @@ export class V3MigrationHelperService
         });
       }),
     );
-    console.log(assetsApproved, 'assetsApproved');
     return assetsApproved
       .map((approved, index) => {
         if (approved) {
@@ -161,11 +157,15 @@ export class V3MigrationHelperService
         }
 
         const asset = assets[index];
+        const originalAmount = new BigNumber(asset.amount);
+        const tenPercent = originalAmount.dividedBy(10);
+        const amountPlusBuffer = originalAmount.plus(tenPercent).toString();
+
         return this.baseDebtTokenService.approveDelegation({
           user,
           delegatee: this.MIGRATOR_ADDRESS,
           debtTokenAddress: asset.debtTokenAddress,
-          amount: asset.amount,
+          amount: amountPlusBuffer,
         });
       })
       .filter((tx): tx is EthereumTransactionTypeExtended => Boolean(tx));
