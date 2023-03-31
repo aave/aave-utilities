@@ -1819,34 +1819,99 @@ Submit transaction as shown [here](#submitting-transactions)
 
 </details>
 
-## Bundle Methods
+## Building Transactions
 
-Any contract-helper method which does not have the `bundle` label functions the
-same way, it returns a callback to generate tx data for a certain action.
-Generating the tx data, gas estimation, handling approval lifecycle, and
-handling permit lifecycle all must be done by the client.
+The latest version of the Aave Utilities includes new methods for constructing
+txns to simplify NodeJs integrations with the Aave Protocol. This sections will
+explain the complete process of construction tx data for particular actions and
+submitting to a blockchain.
 
-Bundle methods are an attempt to combine all of these steps into a single
-utility function. Each bundle method returns an `ActionBundle` response:
+### Install
+
+These features are available in the demo package versions listed below:
 
 ```
-type ActionBundle = {
-  action: PopulatedTransaction;
-  approvalRequired: boolean;
-  approvals: PopulatedTransaction[];
-  signatureRequests: string[];
-  generateSignedAction: ({
-    signatures,
-  }: SignedActionRequest) => Promise<PopulatedTransaction>;
-  signedActionGasEstimate: string;
-};
+npm install @aave/contract-helpers@1.13.7-dbc7cc05d5192ca4aaf92d2c8fb628a7ea7421e4.0+6f25580
 ```
 
-If approvalRequired is false then the tx data for `action` is already generated
-and ready to sign and send
+This tutorial will also use the following packages:
 
-If approval is required then there are two options
+```
+npm i @bgd-labs/aave-address-book
+npm i ethers@5
+```
 
-- Individually sign and send the transactions in `approvals`
-- Inidividually sign the message requests in `signatureRequests` -> pass
-  signatures to `generateSignedAction` -> sign and send this txn
+### Initialize
+
+```
+// Import the ethers library
+const ethers = require('ethers');
+
+// Create a default provider for Ethereum mainnet
+const provider = ethers.getDefaultProvider('homestead');
+
+
+const poolBundle =  new PoolBundle(provider, {
+  POOL: currentMarketData.addresses.LENDING_POOL,
+  WETH_GATEWAY: currentMarketData.addresses.WETH_GATEWAY,
+  L2_ENCODER: currentMarketData.addresses.L2_ENCODER,
+});
+```
+
+### Build Transactions
+
+As functions are added, sections will be added here.
+
+<details>
+  <summary>Supply</summary>
+
+```
+
+```
+
+</details>
+
+### Signing and Submitting Transactions
+
+### Complete Example
+
+Vanilla JS
+
+```
+const ethers = require("ethers");
+const markets = require("@bgd-labs/aave-address-book");
+const { PoolBundle, approvalAmount } = require("@aave/contract-helpers");
+
+// Create a default provider for Ethereum mainnet
+const provider = ethers.getDefaultProvider("homestead");
+
+const poolBundle = new PoolBundle(provider, {
+  POOL: markets.AaveV3Ethereum.POOL,
+  WETH_GATEWAY: markets.AaveV3Ethereum.WETH_GATEWAY,
+});
+
+const userAddress = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"; // vitalik.eth
+
+const wethTokenAddress = markets.AaveV3Ethereum.wethTokenAddress;
+
+async function getApprovedAmount(user, token) {
+  try {
+    return await poolBundle.supplyTxBuilder.getApprovedAmount({
+      user,
+      token,
+    });
+  } catch (error) {
+    console.error("Error fetching approved amount", error);
+  }
+}
+
+const approvedAmount = getApprovedAmount(userAddress, wethTokenAddress);
+
+console.log(approvedAmount);
+```
+
+React
+
+```
+
+```
