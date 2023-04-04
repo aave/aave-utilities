@@ -14,8 +14,8 @@ library.
 
 The library has two main features:
 
-1.) Query live market and user data  
-2.) Build transactions
+1.) Query on-chain market and user data 2.) Generate transaction data for
+protocol actions
 
 <br />
 
@@ -45,7 +45,7 @@ yarn add @aave/contract-helpers @aave/math-utils
 
 1.  [Data Methods](#data-methods)
     - a. [Setup](#data-methods-setup)
-    - a. [Markets Data](#markets-data)
+    - b. [Markets Data](#markets-data)
     - b. [User Data](#user-data)
 2.  [Transaction Methods](#transaction-methods)
     - a. [Setup](#transactions-setup)
@@ -203,6 +203,10 @@ async function fetchContractData() {
 
 fetchContractData();
 ```
+
+</details>
+
+<br />
 
 ## Markets Data
 
