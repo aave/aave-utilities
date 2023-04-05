@@ -1905,8 +1905,8 @@ const ethers = require("ethers");
 const markets = require("@bgd-labs/aave-address-book");
 const { PoolBundle, LendingPoolBundle } = require("@aave/contract-helpers");
 
-// Create provider and connect wallet
-// Can use a local fork network from tenderly, ganache, foundry, hardhat, etc. for testing
+// Create provider
+// Can use custom RPC or a local fork network from tenderly, ganache, foundry, hardhat, etc. for testing
 const provider = ethers.getDefaultProvider("homestead");
 
 function getPoolBundle(v2, marketKey) {
