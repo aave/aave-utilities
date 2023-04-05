@@ -3,19 +3,12 @@
 <h1 align="center">Aave Utilities</h1>
 
 The Aave Protocol is a decentralized non-custodial liquidity protocol where
-users can participate as suppliers or borrowers. The protocol is a set of open
-source smart contracts which define procedures that are enforced by a network of
-nodes called a distributed ledger or blockchain.
+users can participate as suppliers or borrowers.
 
 Aave Utilities is a JavaScript SDK extending
 [ethers.js](https://docs.ethers.org/v5/) for interacting with V2 and V3 of the
 Aave Protocol, an upgrade to the existing
-[aave-js](https://github.com/aave/aave-js) library. The library has two main
-features:
-
-1.) Query on-chain market and user data  
-2.) Generate transaction data for
-protocol actions
+[aave-js](https://github.com/aave/aave-js) library.
 
 <br />
 
@@ -2648,10 +2641,3 @@ welcome();
 ```
 
 </details>
-
-## Disclaimer
-
-The methods provided in this library are to be used at your own risk. The
-contributors are not responsible for any consequences resulting from the use,
-misuse, or reliance on these methods. By using this library, you accept full
-responsibility for any actions taken based on the provided methods.
