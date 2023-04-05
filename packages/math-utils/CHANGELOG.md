@@ -1,5 +1,21 @@
 # Change Log
 
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# 1.14.0 (2023-04-05)
+
+
+### Features
+
+* tx bundle refactor ([#514](https://github.com/aave/aave-utilities/issues/514)) ([fc5c937](https://github.com/aave/aave-utilities/commit/fc5c9378b48a14a31df9fdbe435095a3e81390a2)), closes [#524](https://github.com/aave/aave-utilities/issues/524) [#504](https://github.com/aave/aave-utilities/issues/504)
+
+
+
+
+
+# Change Log
+
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
