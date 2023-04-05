@@ -108,6 +108,7 @@ npm install ethers@5
     - h. [New Transaction Methods (experimental)](#new-transaction-methods)
       - [supplyTxBuilder](#supplyTxBuilder)
       - [depositTxBuilder](#depositTxBuilder)
+    - i. [Disclaimer]
 
 <br />
 
@@ -1906,7 +1907,7 @@ const markets = require("@bgd-labs/aave-address-book");
 const { PoolBundle, LendingPoolBundle } = require("@aave/contract-helpers");
 
 // Create provider
-// Can use custom RPC or a local fork network from tenderly, ganache, foundry, hardhat, etc. for testing
+// Can use custom RPC orR a local fork network from tenderly, ganache, foundry, hardhat, etc. for testing
 const provider = ethers.getDefaultProvider("homestead");
 
 function getPoolBundle(v2, marketKey) {
@@ -2647,3 +2648,10 @@ welcome();
 ```
 
 </details>
+
+## Disclaimer
+
+The methods provided in this library are to be used at your own risk. The
+contributors are not responsible for any consequences resulting from the use,
+misuse, or reliance on these methods. By using this library, you accept full
+responsibility for any actions taken based on the provided methods.
