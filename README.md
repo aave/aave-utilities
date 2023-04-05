@@ -13,7 +13,7 @@ Aave Protocol, an upgrade to the existing
 [aave-js](https://github.com/aave/aave-js) library. The library has two main
 features:
 
-1.) Query on-chain market and user data 
+1.) Query on-chain market and user data  
 2.) Generate transaction data for
 protocol actions
 
