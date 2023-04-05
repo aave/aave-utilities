@@ -39,6 +39,8 @@ npm install @aave/contract-helpers @aave/math-utils
 yarn add @aave/contract-helpers @aave/math-utils
 ```
 
+<br />
+
 ### Compatibility
 
 This library has a peer dependency of [ethers v5](https://docs.ethers.org/v5/),
@@ -114,6 +116,8 @@ npm install ethers@5
 The `@aave/contract-helpers` and `@aave/math-utils` packages are utilities to
 fetch and format smart contract data respectively. This section will guide you
 to setup and use these packages to query Aave Protocol data.
+
+<br />
 
 ## Data Methods Setup
 
@@ -232,6 +236,8 @@ incentives data, and one without. Examples for both methods are shown below.
 
 The output of these methods is an array of formatted reserve data for each
 reserve in an Aave market.
+
+<br />
 
 ### formatReserves
 
