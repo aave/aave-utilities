@@ -4,17 +4,17 @@
 
 The Aave Protocol is a decentralized non-custodial liquidity protocol where
 users can participate as suppliers or borrowers. The protocol is a set of open
-source smart contracts which facilitate the logic of user interactions. These
-contracts, and all user transactions/balances are stored on a public ledger
-called a blockchain, making them accessible to anyone.
+source smart contracts which define procedures that are enforced by a network of
+nodes called a distributed ledger or blockchain.
 
-Aave Utilities is a JavaScript SDK for interacting with V2 and V3 of the Aave
-Protocol, an upgrade to the existing [aave-js](https://github.com/aave/aave-js)
-library.
+Aave Utilities is a JavaScript SDK extending
+[ethers.js](https://docs.ethers.org/v5/) for interacting with V2 and V3 of the
+Aave Protocol, an upgrade to the existing
+[aave-js](https://github.com/aave/aave-js) library. The library has two main
+features:
 
-The library has two main features:
-
-1.) Query on-chain market and user data 2.) Generate transaction data for
+1.) Query on-chain market and user data 
+2.) Generate transaction data for
 protocol actions
 
 <br />
@@ -39,6 +39,17 @@ npm install @aave/contract-helpers @aave/math-utils
 yarn add @aave/contract-helpers @aave/math-utils
 ```
 
+### Compatibility
+
+This library has a peer dependency of [ethers v5](https://docs.ethers.org/v5/),
+and will not work with v6.
+
+To install the correct version, run:
+
+```sh
+npm install ethers@5
+```
+
 <br />
 
 ## Features
@@ -49,7 +60,8 @@ yarn add @aave/contract-helpers @aave/math-utils
     - b. [User Data](#user-data)
 2.  [Transaction Methods](#transaction-methods)
     - a. [Setup](#transactions-setup)
-    - b. [Pool V3](#pool-v3)
+    - b. [Submitting Transactions](#submitting-transactions)
+    - c. [Pool V3](#pool-v3)
       - [supplyBundle](#supplyBundle)
       - [supply](#supply)
       - [signERC20Approval](#signERC20Approval)
@@ -65,7 +77,7 @@ yarn add @aave/contract-helpers @aave/math-utils
       - [swapCollateral](<#swapCollateral-(v3)>)
       - [repayWithCollateral](<#repayWithCollateral-(v3)>)
       - [setUserEMode](#setUserEMode)
-    - c. [Lending Pool V2](#lending-pool-v2)
+    - d. [Lending Pool V2](#lending-pool-v2)
       - [depositBundle](#depositBundle)
       - [deposit](#deposit)
       - [borrow](#borrow)
@@ -76,12 +88,12 @@ yarn add @aave/contract-helpers @aave/math-utils
       - [liquidationCall](#liquidationCall)
       - [swapCollateral](#swapCollateral)
       - [repayWithCollateral](#repayWithCollateral)
-    - d. [Staking](#staking)
+    - e. [Staking](#staking)
       - [stake](#stake)
       - [redeem](#redeem)
       - [cooldown](#cooldown)
       - [claimRewards](#claimRewards)
-    - e. [Governance](#governance)
+    - f. [Governance](#governance)
       - [create](#create)
       - [cancel](#cancel)
       - [queue](#queue)
@@ -91,7 +103,9 @@ yarn add @aave/contract-helpers @aave/math-utils
       - [delegateByType](#delegateByType)
     - g. [Credit Delegation](#credit-delegation)
       - [approveDelegation](#approveDelegation)
-    - h. [Bundle Methods](#bundle-methods)
+    - h. [New Transaction Methods (experimental)](#new-transaction-methods)
+      - [supplyTxBuilder](#supplyTxBuilder)
+      - [depositTxBuilder](#depositTxBuilder)
 
 <br />
 
@@ -456,6 +470,38 @@ function submitTransaction({
   });
 }
 ```
+
+<br />
+
+## Submitting Transactions
+
+All transaction methods will return an array of transaction objects of the
+following type:
+
+```
+import { EthereumTransactionTypeExtended } from '@aave/contract-helpers';
+```
+
+To send a transaction from this object:
+
+```
+import { BigNumber, providers } from 'ethers';
+
+function submitTransaction({
+  provider: ethers.providers.provider,  // Signing transactions requires a wallet provider
+  tx: EthereumTransactionTypeExtended
+}){
+  const extendedTxData = await tx.tx();
+  const { from, ...txData } = extendedTxData;
+  const signer = provider.getSigner(from);
+  const txResponse = await signer.sendTransaction({
+    ...txData,
+    value: txData.value ? BigNumber.from(txData.value) : undefined,
+  });
+}
+```
+
+<br />
 
 ## Pool V3
 
@@ -1823,99 +1869,775 @@ Submit transaction as shown [here](#submitting-transactions)
 
 </details>
 
-## Building Transactions
+<br />
 
-The latest version of the Aave Utilities includes new methods for constructing
-txns to simplify NodeJs integrations with the Aave Protocol. This sections will
-explain the complete process of construction tx data for particular actions and
-submitting to a blockchain.
+## New Transaction Methods
 
-### Install
+The @aave/contract-helpers package is currently undergoing a refactor to
+simplify the end-to-end process of building transactions. This section is a work
+in progress and working and will be updated as new methods are added. <br />
 
-These features are available in the demo package versions listed below:
+### Setup
 
-```
-npm install @aave/contract-helpers@1.13.7-dbc7cc05d5192ca4aaf92d2c8fb628a7ea7421e4.0+6f25580
-```
-
-This tutorial will also use the following packages:
+The samples given below will also use the following packages:
 
 ```
-npm i @bgd-labs/aave-address-book
-npm i ethers@5
+npm i @aave/contract-helpers @bgd-labs/aave-address-book ethers@5
 ```
 
-### Initialize
-
-```
-// Import the ethers library
-const ethers = require('ethers');
-
-// Create a default provider for Ethereum mainnet
-const provider = ethers.getDefaultProvider('homestead');
-
-
-const poolBundle =  new PoolBundle(provider, {
-  POOL: currentMarketData.addresses.LENDING_POOL,
-  WETH_GATEWAY: currentMarketData.addresses.WETH_GATEWAY,
-  L2_ENCODER: currentMarketData.addresses.L2_ENCODER,
-});
-```
-
-### Build Transactions
-
-As functions are added, sections will be added here.
+### Samples
 
 <details>
-  <summary>Supply</summary>
+  <summary>Getting Started</summary>
+
+New transaction methods are accessible from the PoolBundle and LendingPool
+objects. The following script demonstrates how to initialize these objects and
+the functions which are available.
 
 ```
+const ethers = require("ethers");
+const markets = require("@bgd-labs/aave-address-book");
+const { PoolBundle, LendingPoolBundle } = require("@aave/contract-helpers");
+
+// Create provider and connect wallet
+// Can use a local fork network from tenderly, ganache, foundry, hardhat, etc. for testing
+const provider = ethers.getDefaultProvider("homestead");
+
+function getPoolBundle(v2, marketKey) {
+  if (v2) {
+    return new LendingPoolBundle(provider, {
+      LENDING_POOL: markets[marketKey].POOL,
+      WETH_GATEWAY: markets[marketKey].WETH_GATEWAY,
+    });
+  } else {
+    return new PoolBundle(provider, {
+      POOL: markets[marketKey].POOL,
+      WETH_GATEWAY: markets[marketKey].WETH_GATEWAY,
+    });
+  }
+}
+
+console.log("Available markets", markets);
+
+// V2 + V3 Methods
+
+async function getApprovedAmount(v2, marketKey, user, token) {
+  const poolBundle = getPoolBundle(v2, marketKey);
+  if (v2) {
+    try {
+      const approvedAmount =
+        await poolBundle.depositTxBuilder.getApprovedAmount({
+          user,
+          token,
+        });
+      return approvedAmount;
+    } catch (error) {
+      console.error("Error fetching approved amount", error);
+    }
+  } else {
+    try {
+      const approvedAmount = await poolBundle.supplyTxBuilder.getApprovedAmount(
+        {
+          user,
+          token,
+        }
+      );
+      return approvedAmount;
+    } catch (error) {
+      console.error("Error fetching approved amount", error);
+    }
+  }
+}
+
+function generateApprovalTx(user, token, amount, marketKey) {
+  const poolBundle = getPoolBundle(v2, marketKey);
+  if (v2) {
+    try {
+      const approvedAmount = poolBundle.depositTxBuilder.generateApprovalTx({
+        user,
+        token,
+        amount,
+      });
+      return approvedAmount;
+    } catch (error) {
+      console.error("Error fetching approved amount", error);
+    }
+  } else {
+    try {
+      const approvedAmount = poolBundle.supplyTxBuilder.generateApprovalTx({
+        user,
+        token,
+        amount,
+      });
+      return approvedAmount;
+    } catch (error) {
+      console.error("Error fetching approved amount", error);
+    }
+  }
+}
+
+function generateSupplyTx(v2, user, token, amount, marketKey) {
+  const poolBundle = getPoolBundle(v2, marketKey);
+  if (v2) {
+    try {
+      const txData = poolBundle.depositTxBuilder.generateTxData({
+        user,
+        reserve: token,
+        amount,
+      });
+      return txData;
+    } catch (error) {
+      console.error("Error generating supply tx data", error);
+    }
+  } else {
+    try {
+      const txData = poolBundle.supplyTxBuilder.generateTxData({
+        user,
+        reserve: token,
+        amount,
+      });
+      return txData;
+    } catch (error) {
+      console.error("Errorgenerating deposit tx data", error);
+    }
+  }
+}
+
+// V3 Methods
+
+function generateSupplyWithPermitTx(
+  user,
+  token,
+  amount,
+  signature,
+  marketKey,
+  deadline
+) {
+  const poolBundle = getPoolBundle(false, marketKey);
+  try {
+    const txData = poolBundle.supplyTxBuilder.generateSignedTxData({
+      user,
+      reserve: token,
+      amount,
+      signature,
+      deadline,
+    });
+    return txData;
+  } catch (error) {
+    console.error("Errorgenerating deposit tx data", error);
+  }
+}
+
+async function generateSupplySignatureRequest(user, token, marketKey, amount) {
+  const spender = markets[marketKey].POOL;
+  const tokenERC20Service = new ERC20Service(provider);
+  const tokenERC2612Service = new ERC20_2612Service(provider);
+  const { name } = await tokenERC20Service.getTokenData(token);
+  const { chainId } = await provider.getNetwork();
+  const nonce = await tokenERC2612Service.getNonce({
+    token,
+    owner: user,
+  });
+  const deadline = Math.floor(Date.now() / 1000 + 3600).toString();
+  const typeData = {
+    types: {
+      EIP712Domain: [
+        { name: "name", type: "string" },
+        { name: "version", type: "string" },
+        { name: "chainId", type: "uint256" },
+        { name: "verifyingContract", type: "address" },
+      ],
+      Permit: [
+        { name: "owner", type: "address" },
+        { name: "spender", type: "address" },
+        { name: "value", type: "uint256" },
+        { name: "nonce", type: "uint256" },
+        { name: "deadline", type: "uint256" },
+      ],
+    },
+    primaryType: "Permit",
+    domain: {
+      name,
+      version: "1",
+      chainId,
+      verifyingContract: token,
+    },
+    message: {
+      owner: user,
+      spender: spender,
+      value: amount,
+      nonce,
+      deadline,
+    },
+  };
+  return JSON.stringify(typeData);
+}
 
 ```
 
 </details>
 
-### Signing and Submitting Transactions
+<details>
+  <summary>Complete CLI Example</summary>
 
-### Complete Example
-
-Vanilla JS
+The following is a script which generates a command line interface to interact
+with the V2 and V3 Ethereum markets. This can be used to generate txns or used
+as a reference for how to integrate new transaction methods.
 
 ```
 const ethers = require("ethers");
 const markets = require("@bgd-labs/aave-address-book");
-const { PoolBundle, approvalAmount } = require("@aave/contract-helpers");
+const {
+  PoolBundle,
+  LendingPoolBundle,
+  ERC20Service,
+  ERC20_2612Service,
+  UiPoolDataProvider,
+  ChainId,
+} = require("@aave/contract-helpers");
+const readline = require("readline");
 
-// Create a default provider for Ethereum mainnet
+// Create provider and connect wallet
+// Can use a local fork network from tenderly, ganache, foundry, hardhat, etc. for testing
 const provider = ethers.getDefaultProvider("homestead");
 
-const poolBundle = new PoolBundle(provider, {
-  POOL: markets.AaveV3Ethereum.POOL,
-  WETH_GATEWAY: markets.AaveV3Ethereum.WETH_GATEWAY,
-});
-
-const userAddress = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"; // vitalik.eth
-
-const wethTokenAddress = markets.AaveV3Ethereum.wethTokenAddress;
-
-async function getApprovedAmount(user, token) {
-  try {
-    return await poolBundle.supplyTxBuilder.getApprovedAmount({
-      user,
-      token,
+function getPoolBundle(v2, marketKey) {
+  if (v2) {
+    return new LendingPoolBundle(provider, {
+      LENDING_POOL: markets[marketKey].POOL,
+      WETH_GATEWAY: markets[marketKey].WETH_GATEWAY,
     });
-  } catch (error) {
-    console.error("Error fetching approved amount", error);
+  } else {
+    return new PoolBundle(provider, {
+      POOL: markets[marketKey].POOL,
+      WETH_GATEWAY: markets[marketKey].WETH_GATEWAY,
+    });
   }
 }
 
-const approvedAmount = getApprovedAmount(userAddress, wethTokenAddress);
+async function getApprovedAmount(v2, marketKey, user, token) {
+  const poolBundle = getPoolBundle(v2, marketKey);
+  if (v2) {
+    try {
+      const approvedAmount =
+        await poolBundle.depositTxBuilder.getApprovedAmount({
+          user,
+          token,
+        });
+      return approvedAmount;
+    } catch (error) {
+      console.error("Error fetching approved amount", error);
+    }
+  } else {
+    try {
+      const approvedAmount = await poolBundle.supplyTxBuilder.getApprovedAmount(
+        {
+          user,
+          token,
+        }
+      );
+      return approvedAmount;
+    } catch (error) {
+      console.error("Error fetching approved amount", error);
+    }
+  }
+}
 
-console.log(approvedAmount);
+function isValidUint256(input) {
+  try {
+    const inputBN = ethers.BigNumber.from(input);
+    const zero = ethers.BigNumber.from(0);
+    const maxUint256 = ethers.constants.MaxUint256;
+
+    if (inputBN.gte(zero) && inputBN.lte(maxUint256)) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    return false;
+  }
+}
+
+function generateApprovalTx(user, token, amount, marketKey) {
+  const poolBundle = getPoolBundle(v2, marketKey);
+  if (v2) {
+    try {
+      const approvedAmount = poolBundle.depositTxBuilder.generateApprovalTx({
+        user,
+        token,
+        amount,
+      });
+      return approvedAmount;
+    } catch (error) {
+      console.error("Error fetching approved amount", error);
+    }
+  } else {
+    try {
+      const approvedAmount = poolBundle.supplyTxBuilder.generateApprovalTx({
+        user,
+        token,
+        amount,
+      });
+      return approvedAmount;
+    } catch (error) {
+      console.error("Error fetching approved amount", error);
+    }
+  }
+}
+
+function generateSupplyTx(v2, user, token, amount, marketKey) {
+  const poolBundle = getPoolBundle(v2, marketKey);
+  if (v2) {
+    try {
+      const txData = poolBundle.depositTxBuilder.generateTxData({
+        user,
+        reserve: token,
+        amount,
+      });
+      return txData;
+    } catch (error) {
+      console.error("Error generating supply tx data", error);
+    }
+  } else {
+    try {
+      const txData = poolBundle.supplyTxBuilder.generateTxData({
+        user,
+        reserve: token,
+        amount,
+      });
+      return txData;
+    } catch (error) {
+      console.error("Errorgenerating deposit tx data", error);
+    }
+  }
+}
+
+function generateSupplyWithPermitTx(
+  user,
+  token,
+  amount,
+  signature,
+  marketKey,
+  deadline
+) {
+  const poolBundle = getPoolBundle(false, marketKey);
+  try {
+    const txData = poolBundle.supplyTxBuilder.generateSignedTxData({
+      user,
+      reserve: token,
+      amount,
+      signature,
+      deadline,
+    });
+    return txData;
+  } catch (error) {
+    console.error("Errorgenerating deposit tx data", error);
+  }
+}
+
+async function generateSupplySignatureRequest(user, token, marketKey, amount) {
+  const spender = markets[marketKey].POOL;
+  const tokenERC20Service = new ERC20Service(provider);
+  const tokenERC2612Service = new ERC20_2612Service(provider);
+  const { name } = await tokenERC20Service.getTokenData(token);
+  const { chainId } = await provider.getNetwork();
+  const nonce = await tokenERC2612Service.getNonce({
+    token,
+    owner: user,
+  });
+  const deadline = Math.floor(Date.now() / 1000 + 3600).toString();
+  const typeData = {
+    types: {
+      EIP712Domain: [
+        { name: "name", type: "string" },
+        { name: "version", type: "string" },
+        { name: "chainId", type: "uint256" },
+        { name: "verifyingContract", type: "address" },
+      ],
+      Permit: [
+        { name: "owner", type: "address" },
+        { name: "spender", type: "address" },
+        { name: "value", type: "uint256" },
+        { name: "nonce", type: "uint256" },
+        { name: "deadline", type: "uint256" },
+      ],
+    },
+    primaryType: "Permit",
+    domain: {
+      name,
+      version: "1",
+      chainId,
+      verifyingContract: token,
+    },
+    message: {
+      owner: user,
+      spender: spender,
+      value: amount,
+      nonce,
+      deadline,
+    },
+  };
+  return JSON.stringify(typeData);
+}
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+function marketContinue(marketName) {
+  console.log("Press enter to continue");
+  let load = true;
+  rl.on("line", () => {
+    if (load) {
+      marketOptions(marketName);
+      load = false;
+    }
+  });
+}
+
+async function marketOptions(marketName) {
+  const v2 = marketName.includes("V2");
+  console.log("\n");
+  console.log("Type the number of action to perform and press Enter");
+  console.log("1. Print market addresses");
+  console.log("2. Print reserves info");
+  console.log("3. Print user info");
+  console.log("4. Check approved amount to supply");
+  console.log("5. Build approval tx");
+  if (v2) {
+    console.log("6. Build deposit tx");
+  } else {
+    console.log("6. Build supply tx");
+    console.log("7. Build signature request");
+    console.log("8. Build supplyWithPermit tx data");
+  }
+  console.log(`${v2 ? "7" : "9"}. <- Back`);
+  console.log("\n");
+
+  rl.question("Your choice: ", async (answer) => {
+    const choice = parseInt(answer);
+    switch (choice) {
+      case 1:
+        const marketAddresses = markets[marketName];
+        console.log(marketAddresses);
+        console.log("\n");
+        marketContinue(marketName);
+        break;
+      case 2:
+        console.log("Fetching reserves...");
+        try {
+          // Create UiPoolDataProvider object for fetching protocol reserves data
+          const uiPoolDataProvider = new UiPoolDataProvider({
+            uiPoolDataProviderAddress: v2
+              ? markets.AaveV2Ethereum.UI_POOL_DATA_PROVIDER
+              : markets.AaveV3Ethereum.UI_POOL_DATA_PROVIDER,
+            provider,
+            chainId: ChainId.mainnet,
+          });
+          const reserves = await uiPoolDataProvider.getReservesHumanized({
+            lendingPoolAddressProvider: v2
+              ? markets.AaveV2Ethereum.POOL_ADDRESSES_PROVIDER
+              : markets.AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
+          });
+          console.log(reserves);
+          console.log("\n");
+        } catch (error) {
+          console.log("Error fetching pool reserves", error);
+        } finally {
+          marketContinue(marketName);
+        }
+        break;
+      case 3:
+        console.log("Enter an ethereum address");
+        rl.question("Input: ", async (answer) => {
+          if (!ethers.utils.isAddress(answer)) {
+            console.log("Not a valid ethereum address");
+            marketContinue(marketName);
+          } else {
+            console.log("Fetching user reserves...");
+            try {
+              // Create UiPoolDataProvider object for fetching protocol reserves data
+              const uiPoolDataProvider = new UiPoolDataProvider({
+                uiPoolDataProviderAddress: v2
+                  ? markets.AaveV2Ethereum.UI_POOL_DATA_PROVIDER
+                  : markets.AaveV3Ethereum.UI_POOL_DATA_PROVIDER,
+                provider,
+                chainId: ChainId.mainnet,
+              });
+              const reserves = await uiPoolDataProvider.getReservesHumanized({
+                lendingPoolAddressProvider: v2
+                  ? markets.AaveV2Ethereum.POOL_ADDRESSES_PROVIDER
+                  : markets.AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
+              });
+              console.log(reserves);
+              console.log("\n");
+            } catch (error) {
+              console.log("Error fetching pool reserves", error);
+            } finally {
+              marketContinue(marketName);
+            }
+          }
+        });
+        break;
+      case 4:
+        console.log("Enter a user address");
+        rl.question("Input: ", async (user) => {
+          if (!ethers.utils.isAddress(user)) {
+            console.log("Not a valid ethereum address");
+            marketContinue(marketName);
+          } else {
+            console.log("Input address of underyling token to suply");
+            rl.question("Input: ", async (token) => {
+              if (!ethers.utils.isAddress(token)) {
+                console.log("Not a valid ethereum address");
+                marketContinue(marketName);
+              } else {
+                const approvedAmount = await getApprovedAmount(
+                  v2,
+                  marketName,
+                  user,
+                  token
+                );
+                console.log(`Approved amount: ${approvedAmount}`);
+                console.log("\n");
+                console.log(
+                  "Note: an approval amount of -1 represents a uint256.max approval or an asset that doesn't require approval (base assets)"
+                );
+                console.log("\n");
+                marketContinue(marketName);
+              }
+            });
+          }
+        });
+        break;
+      case 5:
+        console.log("Enter a user address");
+        rl.question("Input: ", async (user) => {
+          if (!ethers.utils.isAddress(user)) {
+            console.log("Not a valid ethereum address");
+            marketContinue(marketName);
+          } else {
+            console.log("Input address of underyling token to suply");
+            rl.question("Input: ", async (token) => {
+              if (!ethers.utils.isAddress(token)) {
+                console.log("Not a valid ethereum address");
+                marketContinue(marketName);
+              } else {
+                console.log("Input amount to supply, in native token decimals");
+                rl.question("Input: ", async (amount) => {
+                  if (isValidUint256(amount)) {
+                    const txData = generateApprovalTx(
+                      user,
+                      token,
+                      amount,
+                      marketName
+                    );
+                    console.log(txData);
+                    console.log("\n");
+                    marketContinue(marketName);
+                  } else {
+                    console.log(
+                      "Invalid amount input, must be number between 0 and uint256.max"
+                    );
+                  }
+                });
+              }
+            });
+          }
+        });
+        break;
+      case 6:
+        console.log("Enter a user address");
+        rl.question("Input: ", async (user) => {
+          if (!ethers.utils.isAddress(user)) {
+            console.log("Not a valid ethereum address");
+            marketContinue(marketName);
+          } else {
+            console.log("Input address of underyling token to suply");
+            rl.question("Input: ", async (token) => {
+              if (!ethers.utils.isAddress(token)) {
+                console.log("Not a valid ethereum address");
+                marketContinue(marketName);
+              } else {
+                console.log("Input amount to supply, in native token decimals");
+                rl.question("Input: ", async (amount) => {
+                  if (isValidUint256(amount)) {
+                    const txData = generateSupplyTx(
+                      v2,
+                      user,
+                      token,
+                      amount,
+                      marketName
+                    );
+                    console.log(txData);
+                    console.log("\n");
+                    marketContinue(marketName);
+                  } else {
+                    console.log(
+                      "Invalid amount input, must be number between 0 and uint256.max"
+                    );
+                    marketContinue(marketName);
+                  }
+                });
+              }
+            });
+          }
+        });
+        break;
+      case 7:
+        if (v2) {
+          promptUser();
+          break;
+        }
+        console.log("Enter a user address");
+        rl.question("Input: ", async (user) => {
+          if (!ethers.utils.isAddress(user)) {
+            console.log("Not a valid ethereum address");
+            marketContinue(marketName);
+          } else {
+            console.log("Input address of underyling token to suply");
+            rl.question("Input: ", async (token) => {
+              if (!ethers.utils.isAddress(token)) {
+                console.log("Not a valid ethereum address");
+                marketContinue(marketName);
+              } else {
+                console.log("Input amount to supply, in native token decimals");
+                rl.question("Input: ", async (amount) => {
+                  if (isValidUint256(amount)) {
+                    const dataToSign = await generateSupplySignatureRequest(
+                      user,
+                      token,
+                      marketName,
+                      amount
+                    );
+                    console.log(`Data to sign: ${dataToSign}`);
+                    console.log("\n");
+                    marketContinue(marketName);
+                  } else {
+                    console.log(
+                      "Invalid amount input, must be number between 0 and uint256.max"
+                    );
+                    marketContinue(marketName);
+                  }
+                });
+              }
+            });
+          }
+        });
+        break;
+
+      case 8:
+        if (v2) {
+          console.log("action not implemented");
+        }
+        console.log("Enter a user address");
+        rl.question("Input: ", async (user) => {
+          if (!ethers.utils.isAddress(user)) {
+            console.log("Not a valid ethereum address");
+            marketContinue(marketName);
+          } else {
+            console.log("Input address of underyling token to suply");
+            rl.question("Input: ", async (token) => {
+              if (!ethers.utils.isAddress(token)) {
+                console.log("Not a valid ethereum address");
+                marketContinue(marketName);
+              } else {
+                console.log("Input amount to supply, in native token decimals");
+                rl.question("Input: ", async (amount) => {
+                  if (isValidUint256(amount)) {
+                    console.log("Input signature");
+                    const deadline = Math.floor(
+                      Date.now() / 1000 + 3600
+                    ).toString();
+                    rl.question("Input: ", async (signature) => {
+                      const txData = generateSupplyWithPermitTx(
+                        user,
+                        token,
+                        amount,
+                        signature,
+                        marketName,
+                        deadline
+                      );
+                      console.log(txData);
+                      console.log("\n");
+                      marketContinue(marketName);
+                    });
+                  } else {
+                    console.log(
+                      "Invalid amount input, must be number between 0 and uint256.max"
+                    );
+                  }
+                });
+              }
+            });
+          }
+        });
+        break;
+      case 9:
+        promptUser();
+        break;
+      default:
+        console.log("action not implemented");
+        marketContinue(marketName);
+        break;
+    }
+  });
+}
+
+function promptUser() {
+  console.log("1. AaveV3Ethereum");
+  console.log("2. AaveV2Ethereum");
+  console.log("3. Exit");
+  console.log("\n");
+  console.log(
+    "Type the number of the market you would like to interact with and press Enter."
+  );
+
+  rl.question("Your choice: ", async (answer) => {
+    const choice = parseInt(answer);
+
+    if (choice === 1) {
+      console.log("You selected AaveV3Ethereum");
+      marketOptions("AaveV3Ethereum");
+    } else if (choice === 2) {
+      console.log("You selected AaveV2Ethereum");
+      marketOptions("AaveV2Ethereum");
+    } else if (choice === 3) {
+      rl.close();
+    } else {
+      console.log("Invalid market selection");
+      promptUser();
+    }
+  });
+}
+
+function welcome() {
+  console.log("Welcome to");
+  console.log(`
+
+     ######   ##     ##  #######   ######  ########     ######  ##       ####
+    ##    ##  ##     ## ##     ## ##    ##    ##       ##    ## ##        ##
+    ##        ##     ## ##     ## ##          ##       ##       ##        ##
+    ##   #### ######### ##     ##  ######     ##       ##       ##        ##
+    ##    ##  ##     ## ##     ##       ##    ##       ##       ##        ##
+    ##    ##  ##     ## ##     ## ##    ##    ##       ##    ## ##        ##
+     ######   ##     ##  #######   ######     ##        ######  ######## ####
+
+    `);
+  console.log("Press enter to begin");
+  let load = true;
+  rl.on("line", () => {
+    if (load) {
+      promptUser();
+      load = false;
+    }
+  });
+}
+
+welcome();
+
 ```
 
-React
-
-```
-
-```
+</details>
