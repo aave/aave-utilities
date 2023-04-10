@@ -9,23 +9,22 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+} from "ethers";
+import type { FunctionFragment, Result } from "@ethersproject/abi";
+import type { Listener, Provider } from "@ethersproject/providers";
 import type {
   TypedEventFilter,
   TypedEvent,
   TypedListener,
   OnEvent,
   PromiseOrValue,
-} from '../../../../../../common';
+} from "../../../../../../common";
 
 export declare namespace IUiGhoDataProvider {
   export type GhoReserveDataStruct = {
     ghoBaseVariableBorrowRate: PromiseOrValue<BigNumberish>;
     ghoDiscountedPerToken: PromiseOrValue<BigNumberish>;
     ghoDiscountRate: PromiseOrValue<BigNumberish>;
-    ghoDiscountLockPeriod: PromiseOrValue<BigNumberish>;
     ghoMinDebtTokenBalanceForDiscount: PromiseOrValue<BigNumberish>;
     ghoMinDiscountTokenBalanceForDiscount: PromiseOrValue<BigNumberish>;
     ghoReserveLastUpdateTimestamp: PromiseOrValue<BigNumberish>;
@@ -40,16 +39,14 @@ export declare namespace IUiGhoDataProvider {
     BigNumber,
     BigNumber,
     BigNumber,
-    BigNumber,
     number,
     BigNumber,
     BigNumber,
-    BigNumber,
+    BigNumber
   ] & {
     ghoBaseVariableBorrowRate: BigNumber;
     ghoDiscountedPerToken: BigNumber;
     ghoDiscountRate: BigNumber;
-    ghoDiscountLockPeriod: BigNumber;
     ghoMinDebtTokenBalanceForDiscount: BigNumber;
     ghoMinDiscountTokenBalanceForDiscount: BigNumber;
     ghoReserveLastUpdateTimestamp: number;
@@ -63,50 +60,47 @@ export declare namespace IUiGhoDataProvider {
     userDiscountTokenBalance: PromiseOrValue<BigNumberish>;
     userPreviousGhoBorrowIndex: PromiseOrValue<BigNumberish>;
     userGhoScaledBorrowBalance: PromiseOrValue<BigNumberish>;
-    userDiscountLockPeriodEndTimestamp: PromiseOrValue<BigNumberish>;
   };
 
   export type GhoUserDataStructOutput = [
     BigNumber,
     BigNumber,
     BigNumber,
-    BigNumber,
-    BigNumber,
+    BigNumber
   ] & {
     userGhoDiscountPercent: BigNumber;
     userDiscountTokenBalance: BigNumber;
     userPreviousGhoBorrowIndex: BigNumber;
     userGhoScaledBorrowBalance: BigNumber;
-    userDiscountLockPeriodEndTimestamp: BigNumber;
   };
 }
 
 export interface IUiGhoDataProviderInterface extends utils.Interface {
   functions: {
-    'getGhoReserveData()': FunctionFragment;
-    'getGhoUserData(address)': FunctionFragment;
+    "getGhoReserveData()": FunctionFragment;
+    "getGhoUserData(address)": FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: 'getGhoReserveData' | 'getGhoUserData',
+    nameOrSignatureOrTopic: "getGhoReserveData" | "getGhoUserData"
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: 'getGhoReserveData',
-    values?: undefined,
+    functionFragment: "getGhoReserveData",
+    values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'getGhoUserData',
-    values: [PromiseOrValue<string>],
+    functionFragment: "getGhoUserData",
+    values: [PromiseOrValue<string>]
   ): string;
 
   decodeFunctionResult(
-    functionFragment: 'getGhoReserveData',
-    data: BytesLike,
+    functionFragment: "getGhoReserveData",
+    data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getGhoUserData',
-    data: BytesLike,
+    functionFragment: "getGhoUserData",
+    data: BytesLike
   ): Result;
 
   events: {};
@@ -122,15 +116,15 @@ export interface IUiGhoDataProvider extends BaseContract {
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
-    toBlock?: string | number | undefined,
+    toBlock?: string | number | undefined
   ): Promise<Array<TEvent>>;
 
   listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>,
+    eventFilter?: TypedEventFilter<TEvent>
   ): Array<TypedListener<TEvent>>;
   listeners(eventName?: string): Array<Listener>;
   removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>,
+    eventFilter: TypedEventFilter<TEvent>
   ): this;
   removeAllListeners(eventName?: string): this;
   off: OnEvent<this>;
@@ -140,32 +134,32 @@ export interface IUiGhoDataProvider extends BaseContract {
 
   functions: {
     getGhoReserveData(
-      overrides?: CallOverrides,
+      overrides?: CallOverrides
     ): Promise<[IUiGhoDataProvider.GhoReserveDataStructOutput]>;
 
     getGhoUserData(
       user: PromiseOrValue<string>,
-      overrides?: CallOverrides,
+      overrides?: CallOverrides
     ): Promise<[IUiGhoDataProvider.GhoUserDataStructOutput]>;
   };
 
   getGhoReserveData(
-    overrides?: CallOverrides,
+    overrides?: CallOverrides
   ): Promise<IUiGhoDataProvider.GhoReserveDataStructOutput>;
 
   getGhoUserData(
     user: PromiseOrValue<string>,
-    overrides?: CallOverrides,
+    overrides?: CallOverrides
   ): Promise<IUiGhoDataProvider.GhoUserDataStructOutput>;
 
   callStatic: {
     getGhoReserveData(
-      overrides?: CallOverrides,
+      overrides?: CallOverrides
     ): Promise<IUiGhoDataProvider.GhoReserveDataStructOutput>;
 
     getGhoUserData(
       user: PromiseOrValue<string>,
-      overrides?: CallOverrides,
+      overrides?: CallOverrides
     ): Promise<IUiGhoDataProvider.GhoUserDataStructOutput>;
   };
 
@@ -176,7 +170,7 @@ export interface IUiGhoDataProvider extends BaseContract {
 
     getGhoUserData(
       user: PromiseOrValue<string>,
-      overrides?: CallOverrides,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
@@ -185,7 +179,7 @@ export interface IUiGhoDataProvider extends BaseContract {
 
     getGhoUserData(
       user: PromiseOrValue<string>,
-      overrides?: CallOverrides,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }
