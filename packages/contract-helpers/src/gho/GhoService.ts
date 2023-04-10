@@ -46,7 +46,6 @@ export class GhoService implements IGhoService {
         ghoReserveData.ghoBaseVariableBorrowRate.toString(),
       ghoDiscountedPerToken: ghoReserveData.ghoDiscountedPerToken.toString(),
       ghoDiscountRate: ghoReserveData.ghoDiscountRate.toString(),
-      ghoDiscountLockPeriod: ghoReserveData.ghoDiscountLockPeriod.toString(),
       aaveFacilitatorBucketMaxCapacity:
         ghoReserveData.aaveFacilitatorBucketMaxCapacity.toString(),
       aaveFacilitatorBucketLevel:
@@ -84,8 +83,6 @@ export class GhoService implements IGhoService {
         ghoUserData.userGhoScaledBorrowBalance.toString(),
       userPreviousGhoBorrowIndex:
         ghoUserData.userPreviousGhoBorrowIndex.toString(),
-      userDiscountLockPeriodEndTimestamp:
-        ghoUserData.userDiscountLockPeriodEndTimestamp.toString(),
     };
   }
 }

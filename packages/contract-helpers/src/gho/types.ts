@@ -2,7 +2,6 @@ export interface GhoReserveData {
   ghoBaseVariableBorrowRate: string;
   ghoDiscountedPerToken: string;
   ghoDiscountRate: string;
-  ghoDiscountLockPeriod: string;
   ghoMinDebtTokenBalanceForDiscount: string;
   ghoMinDiscountTokenBalanceForDiscount: string;
   ghoReserveLastUpdateTimestamp: string;
@@ -16,5 +15,4 @@ export interface GhoUserData {
   userDiscountTokenBalance: string;
   userPreviousGhoBorrowIndex: string;
   userGhoScaledBorrowBalance: string;
-  userDiscountLockPeriodEndTimestamp: string;
 }

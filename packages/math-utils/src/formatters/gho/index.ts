@@ -9,7 +9,6 @@ export interface GhoReserveData {
   ghoReserveLastUpdateTimestamp: string;
   ghoDiscountedPerToken: string;
   ghoDiscountRate: string;
-  ghoDiscountLockPeriod: string;
   ghoMinDebtTokenBalanceForDiscount: string;
   ghoMinDiscountTokenBalanceForDiscount: string;
   ghoCurrentBorrowIndex: string;
@@ -22,7 +21,6 @@ export interface GhoUserData {
   userDiscountTokenBalance: string;
   userPreviousGhoBorrowIndex: string;
   userGhoScaledBorrowBalance: string;
-  userDiscountLockPeriodEndTimestamp: string;
 }
 
 export interface FormattedGhoReserveData {
@@ -35,7 +33,6 @@ export interface FormattedGhoReserveData {
   ghoVariableBorrowAPY: number;
   ghoDiscountedPerToken: number;
   ghoDiscountRate: number;
-  ghoDiscountLockPeriod: number;
   ghoMinDebtTokenBalanceForDiscount: number;
   ghoMinDiscountTokenBalanceForDiscount: number;
 }
@@ -46,7 +43,6 @@ export interface FormattedGhoUserData {
   userGhoBorrowBalance: number;
   userDiscountedGhoInterest: number;
   userGhoAvailableToBorrowAtDiscount: number;
-  userDiscountLockPeriodEndTimestamp: number;
 }
 
 export function formatGhoReserveData({
@@ -78,7 +74,6 @@ export function formatGhoReserveData({
     ),
     ghoDiscountedPerToken: formattedGhoDiscountedPerToken,
     ghoDiscountRate: formattedGhoDiscountRate,
-    ghoDiscountLockPeriod: Number(ghoReserveData.ghoDiscountLockPeriod),
     aaveFacilitatorBucketLevel: formattedFacilitatorBucketLevel,
     aaveFacilitatorBucketMaxCapacity: formattedFacilitatorBucketMaxCapacity,
     ghoMinDebtTokenBalanceForDiscount: Number(
@@ -135,9 +130,6 @@ export function formatGhoUserData({
     ),
     userDiscountTokenBalance: formattedUserDiscountTokenBalance,
     userGhoBorrowBalance: Number(normalize(userBorrowBalance, 18)),
-    userDiscountLockPeriodEndTimestamp: Number(
-      ghoUserData.userDiscountLockPeriodEndTimestamp,
-    ),
     userGhoAvailableToBorrowAtDiscount:
       Number(normalize(ghoReserveData.ghoDiscountedPerToken, 18)) *
       formattedUserDiscountTokenBalance,

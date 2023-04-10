@@ -21,7 +21,6 @@ describe('formatGhoData', () => {
     expect(result.ghoVariableBorrowAPY).toBeCloseTo(1.71828, 5); // 17.18%
     expect(result.ghoDiscountedPerToken).toEqual(100);
     expect(result.ghoDiscountRate).toEqual(0.2);
-    expect(result.ghoDiscountLockPeriod).toEqual(1000);
     expect(result.ghoMinDebtTokenBalanceForDiscount).toEqual(1);
     expect(result.ghoMinDiscountTokenBalanceForDiscount).toEqual(1);
     expect(result.ghoBorrowAPYWithMaxDiscount).toEqual(1.3746254282887769); // 17.18% - 20% discount = 13.75%
@@ -37,7 +36,6 @@ describe('formatGhoData', () => {
     expect(result.userGhoDiscountPercent).toEqual(0.1);
     expect(result.userGhoAvailableToBorrowAtDiscount).toEqual(10000);
     expect(result.userDiscountTokenBalance).toEqual(100);
-    expect(result.userDiscountLockPeriodEndTimestamp).toEqual(1);
     expect(result.userGhoBorrowBalance).toEqual(1.1000000063419584);
     expect(result.userDiscountedGhoInterest).toEqual(0.9000000570776255);
   });
