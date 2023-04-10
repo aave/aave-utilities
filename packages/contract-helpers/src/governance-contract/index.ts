@@ -34,6 +34,8 @@ import {
   Power,
   ProposalRPC,
   Vote,
+  GovDelegateTokensByTypeBySig,
+  GovDelegateTokensBySig,
 } from './types';
 
 export const humanizeProposal = (rawProposal: ProposalRPC): Proposal => {
@@ -208,5 +210,56 @@ export class AaveGovernanceService
     );
 
     return (await govContract.getProposalsCount()).toNumber();
+  }
+
+  @GovHelperValidator
+  public async delegateTokensBySig(
+    @isEthAddress('user')
+    @isEthAddressArray('tokens')
+    { user, tokens, data }: GovDelegateTokensBySig,
+  ): Promise<EthereumTransactionTypeExtended[]> {
+    const helper = IGovernanceV2Helper__factory.connect(
+      this.aaveGovernanceV2HelperAddress,
+      this.provider,
+    );
+
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        helper.populateTransaction.delegateTokensBySig(tokens, data),
+      from: user,
+    });
+    return [
+      {
+        tx: txCallback,
+        txType: eEthereumTxType.GOV_DELEGATION_ACTION,
+        gas: this.generateTxPriceEstimation([], txCallback),
+      },
+    ];
+  }
+
+  @GovHelperValidator
+  public async delegateTokensByTypeBySig(
+    @isEthAddress('user')
+    @isEthAddressArray('tokens')
+    { user, tokens, data }: GovDelegateTokensByTypeBySig,
+  ): Promise<EthereumTransactionTypeExtended[]> {
+    const helper = IGovernanceV2Helper__factory.connect(
+      this.aaveGovernanceV2HelperAddress,
+      this.provider,
+    );
+
+    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
+      rawTxMethod: async () =>
+        helper.populateTransaction.delegateTokensByTypeBySig(tokens, data),
+      from: user,
+    });
+
+    return [
+      {
+        tx: txCallback,
+        txType: eEthereumTxType.GOV_DELEGATION_ACTION,
+        gas: this.generateTxPriceEstimation([], txCallback),
+      },
+    ];
   }
 }

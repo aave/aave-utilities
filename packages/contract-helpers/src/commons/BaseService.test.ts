@@ -1,6 +1,7 @@
 import { Provider } from '@ethersproject/providers';
 import { BigNumber, Contract, providers, Signer } from 'ethers';
 import BaseService from './BaseService';
+import { estimateGasByNetwork } from './gasStation';
 import { eEthereumTxType, ProtocolAction } from './types';
 import { DEFAULT_NULL_VALUE_ON_TX } from './utils';
 
@@ -19,7 +20,6 @@ jest.mock('../commons/gasStation', () => {
       .mockImplementation(async () => Promise.resolve(BigNumber.from(1))),
   };
 });
-
 describe('BaseService', () => {
   const provider = new providers.JsonRpcProvider();
   jest
@@ -231,6 +231,82 @@ describe('BaseService', () => {
       await expect(async () => gasObj()).rejects.toThrowError(
         'Transaction calculation error',
       );
+    });
+  });
+  describe('estimateGasLimit', () => {
+    const baseService = new BaseService(provider, Test__factory);
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('Estimate gas limit with default tx', async () => {
+      const tx = await baseService.estimateGasLimit({
+        tx: {},
+        skipGasEstimation: true,
+      });
+      expect(tx.gasLimit).toEqual(BigNumber.from('210000'));
+    });
+    it('Estimate gas limit with surplus', async () => {
+      const gasSurplus = 10;
+      const tx = await baseService.estimateGasLimit({
+        tx: {},
+        gasSurplus,
+        skipGasEstimation: true,
+      });
+      expect(tx.gasLimit).toEqual(BigNumber.from('210000'));
+    });
+    it('Estimate gas limit with defined value', async () => {
+      const tx = await baseService.estimateGasLimit({
+        tx: { value: BigNumber.from('1') },
+      });
+      expect(tx.gasLimit).toEqual(BigNumber.from('210000'));
+    });
+    it('Estimate gas limit with action', async () => {
+      const tx = await baseService.estimateGasLimit({
+        tx: { value: undefined },
+        action: ProtocolAction.supply,
+      });
+      expect(tx.gasLimit).toEqual(BigNumber.from('300000'));
+    });
+    it('Skips gas limit estimation with action', async () => {
+      const tx = await baseService.estimateGasLimit({
+        tx: { value: undefined },
+        action: ProtocolAction.supply,
+        skipGasEstimation: true,
+      });
+      expect(tx.gasLimit).toEqual(BigNumber.from('300000'));
+    });
+    it('Skips gas limit estimation without action', async () => {
+      const tx = await baseService.estimateGasLimit({
+        tx: { value: undefined },
+        skipGasEstimation: true,
+      });
+      expect(tx.gasLimit).toEqual(BigNumber.from('210000'));
+    });
+    it('Uses estimation if > default for action', async () => {
+      const mockedEstimateGasByNetwork = jest
+        .fn()
+        .mockResolvedValue(BigNumber.from('400000'));
+      (estimateGasByNetwork as jest.Mock).mockImplementationOnce(
+        mockedEstimateGasByNetwork,
+      );
+      const tx = await baseService.estimateGasLimit({
+        tx: { value: undefined },
+      });
+      expect(tx.gasLimit?.toString()).toEqual('400000');
+    });
+    it('Throws error if gas estimation fails', async () => {
+      const mockedEstimateGasByNetwork = jest
+        .fn()
+        .mockRejectedValue('Gas estimation error');
+      (estimateGasByNetwork as jest.Mock).mockImplementationOnce(
+        mockedEstimateGasByNetwork,
+      );
+      const tx = await baseService.estimateGasLimit({
+        tx: { value: undefined },
+      });
+      expect(tx.gasLimit?.toString()).toEqual('210000');
     });
   });
 });

@@ -282,6 +282,7 @@ export class GovernancePowerDelegationTokenService
       types: {
         EIP712Domain: [
           { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
           { name: 'chainId', type: 'uint256' },
           { name: 'verifyingContract', type: 'address' },
         ],
@@ -294,6 +295,7 @@ export class GovernancePowerDelegationTokenService
       primaryType: 'Delegate' as const,
       domain: {
         name: governanceTokenName,
+        version: '1',
         chainId,
         verifyingContract: governanceToken,
       },
@@ -328,6 +330,7 @@ export class GovernancePowerDelegationTokenService
       types: {
         EIP712Domain: [
           { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
           { name: 'chainId', type: 'uint256' },
           { name: 'verifyingContract', type: 'address' },
         ],
@@ -341,6 +344,7 @@ export class GovernancePowerDelegationTokenService
       primaryType: 'DelegateByType' as const,
       domain: {
         name: governanceTokenName,
+        version: '1',
         chainId,
         verifyingContract: governanceToken,
       },

@@ -1,4 +1,4 @@
-import { BigNumber, providers } from 'ethers';
+import { BigNumber, ethers, PopulatedTransaction, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
@@ -10,6 +10,7 @@ import {
   API_ETH_MOCK_ADDRESS,
   valueToWei,
   SUPER_BIG_ALLOWANCE_NUMBER,
+  MAX_UINT_AMOUNT,
 } from '../commons/utils';
 import { ERC20Validator } from '../commons/validators/methodValidators';
 import {
@@ -17,21 +18,36 @@ import {
   isPositiveAmount,
   isPositiveOrMinusOneAmount,
 } from '../commons/validators/paramValidators';
-import { IERC20Detailed } from './typechain/IERC20Detailed';
+import {
+  IERC20Detailed,
+  IERC20DetailedInterface,
+} from './typechain/IERC20Detailed';
 import { IERC20Detailed__factory } from './typechain/IERC20Detailed__factory';
 
 export interface IERC20ServiceInterface {
   decimalsOf: (token: tEthereumAddress) => Promise<number>;
   getTokenData: (token: tEthereumAddress) => Promise<TokenMetadataType>;
   isApproved: (args: ApproveType) => Promise<boolean>;
+  approvedAmount: (args: AllowanceRequest) => Promise<number>;
   approve: (args: ApproveType) => EthereumTransactionTypeExtended;
+  approveTxData: (args: ApproveType) => PopulatedTransaction;
 }
 
-export type ApproveType = {
+export type TokenOwner = {
   user: tEthereumAddress;
   token: tEthereumAddress;
+};
+
+export type AllowanceRequest = TokenOwner & {
   spender: tEthereumAddress;
+};
+
+export type ApproveType = AllowanceRequest & {
   amount: string;
+};
+
+export type SignedApproveType = ApproveType & {
+  deadline?: string;
 };
 
 export type TokenMetadataType = {
@@ -48,17 +64,29 @@ export class ERC20Service
 
   readonly tokenMetadata: Record<string, TokenMetadataType>;
 
+  readonly contractInterface: IERC20DetailedInterface;
+
   constructor(provider: providers.Provider) {
     super(provider, IERC20Detailed__factory);
     this.tokenDecimals = {};
     this.tokenMetadata = {};
 
     this.approve = this.approve.bind(this);
+    this.approveTxData = this.approveTxData.bind(this);
     this.isApproved = this.isApproved.bind(this);
     this.getTokenData = this.getTokenData.bind(this);
     this.decimalsOf = this.decimalsOf.bind(this);
+    this.contractInterface = IERC20Detailed__factory.createInterface();
   }
 
+  /**
+   * Generate approval tx data with legacy method, call tx() and gas() callbacks for tx data and gas estimation respectively
+   * @param {string} user - Address to check allowance for
+   * @param {string} token - Token which the user is spending
+   * @param {string} spender - Address which is spending the tokens
+   * @param {string} amount - Amount to approve
+   * @returns {EthereumTransactionTypeExtended} legacy transaction response
+   */
   @ERC20Validator
   public approve(
     @isEthAddress('user')
@@ -82,6 +110,43 @@ export class ERC20Service
     };
   }
 
+  /**
+   * Generate approval tx data, ready to sign and submit to blockchain
+   * @param {string} user - Address to check allowance for
+   * @param {string} token - Token which the user is spending
+   * @param {string} spender - Address which is spending the tokens
+   * @param {string} amount - Amount to approve
+   * @returns {PopulatedTransaction} Transaction response
+   */
+  @ERC20Validator
+  public approveTxData(
+    @isEthAddress('user')
+    @isEthAddress('token')
+    @isEthAddress('spender')
+    @isPositiveAmount('amount')
+    { user, token, spender, amount }: ApproveType,
+  ): PopulatedTransaction {
+    const tx: PopulatedTransaction = {};
+    const txData = this.contractInterface.encodeFunctionData('approve', [
+      spender,
+      amount,
+    ]);
+
+    tx.data = txData;
+    tx.to = token;
+    tx.from = user;
+
+    return tx;
+  }
+
+  /**
+   * Qeuries whether user has approved spender to transfer tokens up to the specific amount
+   * @param {string} user - Address to check allowance for
+   * @param {string} token - Token which the user is spending
+   * @param {string} spender - Address which is spending the tokens
+   * @param {string} amount - Amount of token to checkif spender has allowance for
+   * @returns {boolean} true if user has approved spender contract for greater than passed amount, false otherwise
+   */
   @ERC20Validator
   public async isApproved(
     @isEthAddress('user')
@@ -101,6 +166,36 @@ export class ERC20Service
     return allowance.gte(amountBNWithDecimals);
   }
 
+  /**
+   * Fetches the approval allowance of a user for a specific token and spender
+   * @param {string} user - Address to check allowance for
+   * @param {string} token - Token which the user is spending
+   * @param {string} spender - Address which is spending the tokens
+   * @returns {number} The user's approved allowance, in standard decimal units, -1 for max allowance
+   */
+  @ERC20Validator
+  public async approvedAmount(
+    @isEthAddress('user')
+    @isEthAddress('token')
+    @isEthAddress('spender')
+    { user, token, spender }: AllowanceRequest,
+  ): Promise<number> {
+    if (token.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) return -1;
+    const erc20Contract: IERC20Detailed = this.getContractInstance(token);
+    const allowance: BigNumber = await erc20Contract.allowance(user, spender);
+    if (allowance.toString() === MAX_UINT_AMOUNT) {
+      return -1;
+    }
+
+    const decimals = await this.decimalsOf(token);
+    return Number(ethers.utils.formatUnits(allowance, decimals));
+  }
+
+  /**
+   * Fetches the decimals of an ERC20 token, used for formatting amounts
+   * @param {string} token - ERC20 token address
+   * @returns {number} Decimal units of token amounts
+   */
   @ERC20Validator
   public async decimalsOf(
     @isEthAddress() token: tEthereumAddress,
@@ -114,6 +209,11 @@ export class ERC20Service
     return this.tokenDecimals[token];
   }
 
+  /**
+   * Return basic details of an ERC20
+   * @param {string} token - ERC20 token address
+   * @returns {TokenMetadataType} ERC20 token metadata
+   */
   @ERC20Validator
   public async getTokenData(
     @isEthAddress() token: tEthereumAddress,

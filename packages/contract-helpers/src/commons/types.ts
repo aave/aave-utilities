@@ -31,6 +31,7 @@ export const ChainIdToNetwork: Record<number, string> = {
   420: 'optimism_goerli',
   1666600000: 'harmony',
   1666700000: 'harmony_testnet',
+  11155111: 'sepolia',
 };
 
 export enum ChainId {
@@ -55,6 +56,7 @@ export enum ChainId {
   harmony = 1666600000,
   harmony_testnet = 1666700000,
   zkevm_testnet = 1402,
+  sepolia = 11155111,
 }
 export type ConstantAddressesByNetwork = Record<
   string,
@@ -229,6 +231,13 @@ export type TransactionGenerationMethod = {
   action?: ProtocolAction;
 };
 
+export type TransactionGenerationMethodNew = {
+  tx: PopulatedTransaction;
+  gasSurplus?: number;
+  action?: ProtocolAction;
+  skipGasEstimation?: boolean;
+};
+
 export type TransactionGasGenerationMethod = {
   txCallback: () => Promise<transactionType>;
   action?: ProtocolAction;
@@ -283,3 +292,20 @@ export type FlashLoanParams = {
   r: BytesLike[]; // List of r param for the permit signature
   s: BytesLike[]; // List of s param for the permit signature
 };
+
+export interface SignedActionRequest {
+  signatures: string[];
+}
+
+export type ActionBundle = {
+  action: PopulatedTransaction;
+  approvalRequired: boolean;
+  approvals: PopulatedTransaction[];
+  signatureRequests: string[];
+  generateSignedAction: ({
+    signatures,
+  }: SignedActionRequest) => Promise<PopulatedTransaction>;
+  signedActionGasEstimate: string;
+};
+
+export const DEFAULT_DEADLINE = Math.floor(Date.now() / 1000 + 3600).toString();
