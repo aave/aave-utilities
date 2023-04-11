@@ -223,6 +223,70 @@ describe('L2Pool', () => {
       expect(txData.from).toEqual(user);
       expect(txData.data).toEqual(encodedSupplyWithPermitTxData);
     });
+    it('Generate borrow tx data without encoded parameter', async () => {
+      const instance: L2PoolInterface = new L2Pool(provider, config);
+
+      const txData = instance.generateBorrowTxData({
+        user,
+        reserve,
+        amount,
+        numericRateMode,
+      });
+
+      const txData2 = instance.generateBorrowTxData({
+        user,
+        reserve,
+        amount,
+        numericRateMode,
+        onBehalfOf: user,
+      });
+
+      const txData3 = instance.generateBorrowTxData({
+        user,
+        reserve,
+        amount,
+        numericRateMode,
+        referralCode: '0',
+      });
+
+      const borrowTxData =
+        '0xa415bcad00000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000001bc16d674ec80000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003';
+
+      expect(txData.to).toEqual(l2PoolAddress);
+      expect(txData.from).toEqual(user);
+      expect(txData.data).toEqual(borrowTxData);
+      expect(txData2.to).toEqual(l2PoolAddress);
+      expect(txData2.from).toEqual(user);
+      expect(txData2.data).toEqual(borrowTxData);
+      expect(txData3.to).toEqual(l2PoolAddress);
+      expect(txData3.from).toEqual(user);
+      expect(txData3.data).toEqual(borrowTxData);
+    });
+
+    it('Generate borrow tx data with encoded parameter', async () => {
+      const instance: L2PoolInterface = new L2Pool(provider, config);
+
+      const encoder = instance.getEncoder();
+
+      // Result is mocked so inputs don't matter
+      const encodedTxData = await encoder.encodeBorrowParams(
+        reserve,
+        1,
+        '1',
+        '0',
+      );
+
+      const txData = instance.generateEncodedBorrowTxData({
+        user,
+        encodedTxData,
+      });
+
+      const encodedBorrowTxData =
+        '0xf7a738400000000000000000000000000000000000000000000000000000006d6168616d';
+      expect(txData.to).toEqual(l2PoolAddress);
+      expect(txData.from).toEqual(user);
+      expect(txData.data).toEqual(encodedBorrowTxData);
+    });
   });
   describe('getEncoder', () => {
     const instance: L2PoolInterface = new L2Pool(provider, config);
