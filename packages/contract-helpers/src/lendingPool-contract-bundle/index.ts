@@ -1,6 +1,11 @@
 import { providers, PopulatedTransaction } from 'ethers';
 import BaseService from '../commons/BaseService';
-import { LendingPoolMarketConfig, tEthereumAddress } from '../commons/types';
+import {
+  BorrowTxBuilder,
+  InterestRate,
+  LendingPoolMarketConfig,
+  tEthereumAddress,
+} from '../commons/types';
 import { API_ETH_MOCK_ADDRESS } from '../commons/utils';
 import {
   ApproveType,
@@ -8,7 +13,10 @@ import {
   IERC20ServiceInterface,
   TokenOwner,
 } from '../erc20-contract';
-import { LPDepositParamsType } from '../lendingPool-contract/lendingPoolTypes';
+import {
+  LPBorrowParamsType,
+  LPDepositParamsType,
+} from '../lendingPool-contract/lendingPoolTypes';
 import {
   ILendingPool,
   ILendingPoolInterface,
@@ -52,6 +60,7 @@ export class LendingPoolBundle
   readonly wethGatewayAddress: tEthereumAddress;
 
   depositTxBuilder: DepositTxBuilder;
+  borrowTxBuilder: Omit<BorrowTxBuilder, 'useOptimizedPath' | 'encodedTxData'>;
 
   constructor(
     provider: providers.Provider,
@@ -114,6 +123,55 @@ export class LendingPoolBundle
             amount,
             onBehalfOf ?? user,
             referralCode ?? '0',
+          ]);
+          actionTx.to = this.lendingPoolAddress;
+          actionTx.from = user;
+          actionTx.data = txData;
+        }
+
+        return actionTx;
+      },
+    };
+    this.borrowTxBuilder = {
+      generateTxData: ({
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        debtTokenAddress,
+        onBehalfOf,
+        referralCode,
+      }: Omit<
+        LPBorrowParamsType,
+        'useOptimizedPath' | 'encodedTxData'
+      >): PopulatedTransaction => {
+        let actionTx: PopulatedTransaction = {};
+        const referralCodeParam = referralCode ?? '0';
+        const onBehalfOfParam = onBehalfOf ?? user;
+        const numericRateMode =
+          interestRateMode === InterestRate.Variable ? 2 : 1;
+        if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
+          if (!debtTokenAddress) {
+            throw new Error(
+              `To borrow ETH you need to pass the stable or variable WETH debt Token Address corresponding the interestRateMode`,
+            );
+          }
+
+          actionTx = this.wethGatewayService.generateBorrowEthTxData({
+            lendingPool: this.lendingPoolAddress,
+            user,
+            amount,
+            debtTokenAddress,
+            interestRateMode,
+            referralCode: referralCodeParam,
+          });
+        } else {
+          const txData = this.contractInterface.encodeFunctionData('borrow', [
+            reserve,
+            amount,
+            numericRateMode,
+            referralCodeParam,
+            onBehalfOfParam,
           ]);
           actionTx.to = this.lendingPoolAddress;
           actionTx.from = user;

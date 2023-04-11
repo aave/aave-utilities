@@ -319,5 +319,6 @@ export type BorrowTxBuilder = {
     onBehalfOf,
     referralCode,
     useOptimizedPath,
+    encodedTxData,
   }: LPBorrowParamsType) => PopulatedTransaction;
 };

@@ -282,7 +282,7 @@ describe('L2Pool', () => {
       });
 
       const encodedBorrowTxData =
-        '0xf7a738400000000000000000000000000000000000000000000000000000006d6168616d';
+        '0xd5eed8680000000000000000000000000000000000000000000000000000006d6168616d';
       expect(txData.to).toEqual(l2PoolAddress);
       expect(txData.from).toEqual(user);
       expect(txData.data).toEqual(encodedBorrowTxData);
