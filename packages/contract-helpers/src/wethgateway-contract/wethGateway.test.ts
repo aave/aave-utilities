@@ -76,6 +76,43 @@ describe('WethGatewayService', () => {
       );
     });
   });
+  describe('generateBorrowEthTxData', () => {
+    it('generates borrowETH tx data', () => {
+      const provider: providers.Provider = new providers.JsonRpcProvider();
+      const erc20Service = new ERC20Service(provider);
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+      const user = '0x0000000000000000000000000000000000000003';
+      const txData = weth.generateBorrowEthTxData({
+        lendingPool,
+        user,
+        amount: '1',
+        interestRateMode: InterestRate.Variable,
+        referralCode: '0',
+      });
+
+      expect(txData.to).toEqual(wethGatewayAddress);
+      expect(txData.from).toEqual(user);
+      expect(txData.data).toEqual(
+        '0x66514c970000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000',
+      );
+
+      const txDataStable = weth.generateBorrowEthTxData({
+        lendingPool,
+        user,
+        amount: '1',
+        interestRateMode: InterestRate.Stable,
+        debtTokenAddress: '',
+      });
+
+      expect(txDataStable.data).toEqual(
+        '0x66514c970000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000',
+      );
+    });
+  });
   describe('depositETH', () => {
     const user = '0x0000000000000000000000000000000000000003';
     const onBehalfOf = '0x0000000000000000000000000000000000000004';
