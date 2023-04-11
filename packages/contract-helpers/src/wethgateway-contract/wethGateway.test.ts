@@ -77,7 +77,7 @@ describe('WethGatewayService', () => {
     });
   });
   describe('generateBorrowEthTxData', () => {
-    it('generates borrowETH tx data', () => {
+    it('generates borrowETH tx data', async () => {
       const provider: providers.Provider = new providers.JsonRpcProvider();
       const erc20Service = new ERC20Service(provider);
       const weth = new WETHGatewayService(
@@ -393,6 +393,18 @@ describe('WethGatewayService', () => {
         interestRateMode,
         referralCode,
       });
+
+      await expect(async () =>
+        weth.borrowETH({
+          lendingPool,
+          user,
+          amount,
+          interestRateMode,
+          referralCode,
+        }),
+      ).rejects.toThrowError(
+        `To borrow ETH you need to pass the stable or variable WETH debt Token Address corresponding the interestRateMode`,
+      );
 
       expect(isApprovedSpy).toHaveBeenCalled();
       expect(approveSpy).toHaveBeenCalled();
