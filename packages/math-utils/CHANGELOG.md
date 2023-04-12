@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.15.0 (2023-04-12)
+
+
+### Features
+
+* add Scroll Alpha chainId ([#528](https://github.com/aave/aave-utilities/issues/528)) ([3418c70](https://github.com/aave/aave-utilities/commit/3418c7087796397ed535fc7a3522445fb44f94c5))
+
+
+
+
+
 # 1.14.0 (2023-04-05)
 
 
