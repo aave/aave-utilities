@@ -8,7 +8,6 @@ const ghoReserveDataMock: GhoReserveData = {
   ghoBaseVariableBorrowRate: '0',
   ghoDiscountedPerToken: '0',
   ghoDiscountRate: '0',
-  ghoDiscountLockPeriod: '0',
   aaveFacilitatorBucketLevel: '0',
   aaveFacilitatorBucketMaxCapacity: '0',
   ghoMinDebtTokenBalanceForDiscount: '0',
@@ -22,7 +21,6 @@ const ghoUserDataMock: GhoUserData = {
   userDiscountTokenBalance: '0',
   userGhoScaledBorrowBalance: '0',
   userPreviousGhoBorrowIndex: '0',
-  userDiscountLockPeriodEndTimestamp: '0',
 };
 
 describe('GhoService', () => {
