@@ -1,4 +1,4 @@
-import { BigNumber, PopulatedTransaction, providers } from 'ethers';
+import { BigNumber, ethers, PopulatedTransaction, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
@@ -26,6 +26,9 @@ export interface BaseDebtTokenInterface {
   generateApproveDelegationTxData: (
     args: ApproveDelegationType,
   ) => PopulatedTransaction;
+  approvedDelegationAmount: (
+    args: Omit<ApproveDelegationType, 'amount'>,
+  ) => Promise<number>;
   isDelegationApproved: (args: DelegationApprovedType) => Promise<boolean>;
 }
 
@@ -83,6 +86,27 @@ export class BaseDebtToken
       txType: eEthereumTxType.ERC20_APPROVAL,
       gas: this.generateTxPriceEstimation([], txCallback),
     };
+  }
+
+  @DebtTokenValidator
+  public async approvedDelegationAmount(
+    @isEthAddress('user')
+    @isEthAddress('delegatee')
+    @isEthAddress('debtTokenAddress')
+    {
+      user,
+      delegatee,
+      debtTokenAddress,
+    }: Omit<ApproveDelegationType, 'amount'>,
+  ): Promise<number> {
+    const debtTokenContract: IDebtTokenBase =
+      this.getContractInstance(debtTokenAddress);
+    const allowance: BigNumber = await debtTokenContract.borrowAllowance(
+      user,
+      delegatee,
+    );
+    const decimals = await this.erc20Service.decimalsOf(debtTokenAddress);
+    return Number(ethers.utils.formatUnits(allowance, decimals));
   }
 
   @DebtTokenValidator

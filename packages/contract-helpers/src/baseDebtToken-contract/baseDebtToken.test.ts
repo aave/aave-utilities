@@ -1,9 +1,9 @@
 import { BigNumber, providers, utils } from 'ethers';
 import { eEthereumTxType, GasType, transactionType } from '../commons/types';
-import { ERC20Service } from '../erc20-contract';
+import { ERC20Service, IERC20ServiceInterface } from '../erc20-contract';
 import { IDebtTokenBase } from './typechain/IDebtTokenBase';
 import { IDebtTokenBase__factory } from './typechain/IDebtTokenBase__factory';
-import { BaseDebtToken } from './index';
+import { BaseDebtToken, BaseDebtTokenInterface } from './index';
 
 jest.mock('../commons/gasStation', () => {
   return {
@@ -322,5 +322,44 @@ describe('isDelegationApproved', () => {
         amount,
       }),
     ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
+  });
+});
+
+describe('approvedDelegationAmount', () => {
+  const provider: providers.Provider = new providers.JsonRpcProvider();
+  const user = '0x0000000000000000000000000000000000000001';
+  const debtTokenAddress = '0x0000000000000000000000000000000000000002';
+  const delegatee = '0x0000000000000000000000000000000000000003';
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('Expects to return correct approval amount', async () => {
+    jest.spyOn(IDebtTokenBase__factory, 'connect').mockReturnValue({
+      borrowAllowance: async () =>
+        Promise.resolve(BigNumber.from('100000000000000000')),
+    } as unknown as IDebtTokenBase);
+
+    const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
+    const decimalsSpy = jest
+      .spyOn(erc20Service, 'decimalsOf')
+      .mockImplementation(async () => Promise.resolve(6));
+
+    const debtTokenService: BaseDebtTokenInterface = new BaseDebtToken(
+      provider,
+      erc20Service,
+    );
+
+    const approvedAmount: number =
+      await debtTokenService.approvedDelegationAmount({
+        user,
+        delegatee,
+        debtTokenAddress,
+      });
+
+    expect(decimalsSpy).toHaveBeenCalled();
+    // 100000000000000000 / 10^6 = 100000000000
+    expect(approvedAmount).toEqual(100000000000);
   });
 });
