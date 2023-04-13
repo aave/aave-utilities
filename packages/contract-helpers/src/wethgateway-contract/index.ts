@@ -52,7 +52,7 @@ export type WETHBorrowParamsType = {
   lendingPool: tEthereumAddress;
   user: tEthereumAddress;
   amount: string;
-  debtTokenAddress: tEthereumAddress;
+  debtTokenAddress?: tEthereumAddress;
   interestRateMode: InterestRate;
   referralCode?: string;
 };
@@ -61,6 +61,7 @@ export interface WETHGatewayInterface {
   generateDepositEthTxData: (
     args: WETHDepositParamsType,
   ) => PopulatedTransaction;
+  generateBorrowEthTxData: (args: WETHBorrowParamsType) => PopulatedTransaction;
   depositETH: (
     args: WETHDepositParamsType,
   ) => EthereumTransactionTypeExtended[];
@@ -88,6 +89,8 @@ export class WETHGatewayService
   generateDepositEthTxData: (
     args: WETHDepositParamsType,
   ) => PopulatedTransaction;
+
+  generateBorrowEthTxData: (args: WETHBorrowParamsType) => PopulatedTransaction;
 
   constructor(
     provider: providers.Provider,
@@ -122,6 +125,25 @@ export class WETHGatewayService
         to: this.wethGatewayAddress,
         from: args.user,
         value: BigNumber.from(args.amount),
+      };
+      return actionTx;
+    };
+
+    this.generateBorrowEthTxData = (
+      args: WETHBorrowParamsType,
+    ): PopulatedTransaction => {
+      const numericRateMode =
+        args.interestRateMode === InterestRate.Variable ? 2 : 1;
+      const txData = this.wethGatewayInstance.encodeFunctionData('borrowETH', [
+        args.lendingPool,
+        args.amount,
+        numericRateMode,
+        args.referralCode ?? '0',
+      ]);
+      const actionTx: PopulatedTransaction = {
+        data: txData,
+        to: this.wethGatewayAddress,
+        from: args.user,
       };
       return actionTx;
     };
@@ -186,6 +208,11 @@ export class WETHGatewayService
     const txs: EthereumTransactionTypeExtended[] = [];
     const convertedAmount: string = valueToWei(amount, 18);
     const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
+    if (!debtTokenAddress) {
+      throw new Error(
+        `To borrow ETH you need to pass the stable or variable WETH debt Token Address corresponding the interestRateMode`,
+      );
+    }
 
     const delegationApproved: boolean =
       await this.baseDebtTokenService.isDelegationApproved({

@@ -1,4 +1,5 @@
 import { BigNumber, BytesLike, PopulatedTransaction } from 'ethers';
+import { LPBorrowParamsType } from '../v3-pool-contract/lendingPoolTypes';
 
 export type tEthereumAddress = string;
 export type ENS = string; // something.eth
@@ -309,3 +310,17 @@ export type ActionBundle = {
 };
 
 export const DEFAULT_DEADLINE = Math.floor(Date.now() / 1000 + 3600).toString();
+
+export type BorrowTxBuilder = {
+  generateTxData: ({
+    user,
+    reserve,
+    amount,
+    interestRateMode,
+    debtTokenAddress,
+    onBehalfOf,
+    referralCode,
+    useOptimizedPath,
+    encodedTxData,
+  }: LPBorrowParamsType) => PopulatedTransaction;
+};

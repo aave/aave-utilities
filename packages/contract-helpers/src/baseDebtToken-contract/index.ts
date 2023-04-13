@@ -1,4 +1,4 @@
-import { BigNumber, providers } from 'ethers';
+import { BigNumber, ethers, PopulatedTransaction, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
@@ -13,13 +13,22 @@ import {
   isPositiveAmount,
 } from '../commons/validators/paramValidators';
 import { IERC20ServiceInterface } from '../erc20-contract';
-import { IDebtTokenBase } from './typechain/IDebtTokenBase';
+import {
+  IDebtTokenBase,
+  IDebtTokenBaseInterface,
+} from './typechain/IDebtTokenBase';
 import { IDebtTokenBase__factory } from './typechain/IDebtTokenBase__factory';
 
 export interface BaseDebtTokenInterface {
   approveDelegation: (
     args: ApproveDelegationType,
   ) => EthereumTransactionTypeExtended;
+  generateApproveDelegationTxData: (
+    args: ApproveDelegationType,
+  ) => PopulatedTransaction;
+  approvedDelegationAmount: (
+    args: Omit<ApproveDelegationType, 'amount'>,
+  ) => Promise<number>;
   isDelegationApproved: (args: DelegationApprovedType) => Promise<boolean>;
 }
 
@@ -42,6 +51,7 @@ export class BaseDebtToken
   implements BaseDebtTokenInterface
 {
   readonly erc20Service: IERC20ServiceInterface;
+  readonly debtTokenInterface: IDebtTokenBaseInterface;
 
   constructor(
     provider: providers.Provider,
@@ -49,6 +59,7 @@ export class BaseDebtToken
   ) {
     super(provider, IDebtTokenBase__factory);
     this.erc20Service = erc20Service;
+    this.debtTokenInterface = IDebtTokenBase__factory.createInterface();
   }
 
   @DebtTokenValidator
@@ -75,6 +86,47 @@ export class BaseDebtToken
       txType: eEthereumTxType.ERC20_APPROVAL,
       gas: this.generateTxPriceEstimation([], txCallback),
     };
+  }
+
+  @DebtTokenValidator
+  public async approvedDelegationAmount(
+    @isEthAddress('user')
+    @isEthAddress('delegatee')
+    @isEthAddress('debtTokenAddress')
+    {
+      user,
+      delegatee,
+      debtTokenAddress,
+    }: Omit<ApproveDelegationType, 'amount'>,
+  ): Promise<number> {
+    const debtTokenContract: IDebtTokenBase =
+      this.getContractInstance(debtTokenAddress);
+    const allowance: BigNumber = await debtTokenContract.borrowAllowance(
+      user,
+      delegatee,
+    );
+    const decimals = await this.erc20Service.decimalsOf(debtTokenAddress);
+    return Number(ethers.utils.formatUnits(allowance, decimals));
+  }
+
+  @DebtTokenValidator
+  public generateApproveDelegationTxData(
+    @isEthAddress('user')
+    @isEthAddress('delegatee')
+    @isEthAddress('debtTokenAddress')
+    @isPositiveAmount('amount')
+    { user, delegatee, debtTokenAddress, amount }: ApproveDelegationType,
+  ): PopulatedTransaction {
+    const txData = this.debtTokenInterface.encodeFunctionData(
+      'approveDelegation',
+      [delegatee, amount],
+    );
+    const approveDelegationTx: PopulatedTransaction = {
+      data: txData,
+      to: debtTokenAddress,
+      from: user,
+    };
+    return approveDelegationTx;
   }
 
   @DebtTokenValidator
