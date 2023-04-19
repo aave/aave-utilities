@@ -36,7 +36,12 @@ export interface L2PoolInterface {
     txs: EthereumTransactionTypeExtended[],
   ) => Promise<EthereumTransactionTypeExtended[]>;
   generateSupplyTxData: (args: LPSupplyParamsType) => PopulatedTransaction;
+  generateBorrowTxData: (args: LPBorrowParamsType) => PopulatedTransaction;
   generateEncodedSupplyTxData: (args: {
+    encodedTxData: string;
+    user: string;
+  }) => PopulatedTransaction;
+  generateEncodedBorrowTxData: (args: {
     encodedTxData: string;
     user: string;
   }) => PopulatedTransaction;
@@ -99,11 +104,18 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
 
   generateSupplyTxData: (args: LPSupplyParamsType) => PopulatedTransaction;
 
+  generateBorrowTxData: (args: LPBorrowParamsType) => PopulatedTransaction;
+
   generateSupplyWithPermitTxData: (
     args: LPSupplyWithPermitType,
   ) => PopulatedTransaction;
 
   generateEncodedSupplyTxData: (args: {
+    encodedTxData: string;
+    user: string;
+  }) => PopulatedTransaction;
+
+  generateEncodedBorrowTxData: (args: {
     encodedTxData: string;
     user: string;
   }) => PopulatedTransaction;
@@ -138,6 +150,29 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
         amount,
         onBehalfOf ?? user,
         referralCode ?? '0',
+      ]);
+
+      actionTx.to = this.l2PoolAddress;
+      actionTx.from = user;
+      actionTx.data = txData;
+      return actionTx;
+    };
+
+    this.generateBorrowTxData = ({
+      user,
+      reserve,
+      amount,
+      numericRateMode,
+      referralCode,
+      onBehalfOf,
+    }: LPBorrowParamsType) => {
+      const actionTx: PopulatedTransaction = {};
+      const txData = this.poolContractInstance.encodeFunctionData('borrow', [
+        reserve,
+        amount,
+        numericRateMode,
+        referralCode ?? '0',
+        onBehalfOf ?? user,
       ]);
 
       actionTx.to = this.l2PoolAddress;
@@ -188,6 +223,24 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     }) => {
       const actionTx: PopulatedTransaction = {};
       const txData = this.l2PoolContractInstance.encodeFunctionData('supply', [
+        encodedTxData,
+      ]);
+
+      actionTx.to = this.l2PoolAddress;
+      actionTx.data = txData;
+      actionTx.from = user;
+      return actionTx;
+    };
+
+    this.generateEncodedBorrowTxData = ({
+      encodedTxData,
+      user,
+    }: {
+      encodedTxData: string;
+      user: string;
+    }) => {
+      const actionTx: PopulatedTransaction = {};
+      const txData = this.l2PoolContractInstance.encodeFunctionData('borrow', [
         encodedTxData,
       ]);
 

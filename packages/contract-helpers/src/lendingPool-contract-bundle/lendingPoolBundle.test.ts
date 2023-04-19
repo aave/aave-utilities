@@ -1,4 +1,5 @@
 import { BigNumber, providers } from 'ethers';
+import { InterestRate } from '../commons/types';
 import { API_ETH_MOCK_ADDRESS } from '../commons/utils';
 import { LendingPoolBundle } from './index';
 
@@ -135,6 +136,104 @@ describe('LendingPoolBundle', () => {
       expect(result.value).toEqual(BigNumber.from('1'));
       expect(result.data).toEqual(
         '0x474cf53d000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000000',
+      );
+    });
+  });
+
+  describe('BorrowTxBuilder', () => {
+    const config = {
+      LENDING_POOL,
+      WETH_GATEWAY,
+    };
+
+    const instance = new LendingPoolBundle(provider, config);
+
+    it('generates borrow tx data with generateTxData', () => {
+      const stableResult = instance.borrowTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        onBehalfOf: USER,
+        referralCode: '0',
+        interestRateMode: InterestRate.Stable,
+      });
+
+      const result = instance.borrowTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        onBehalfOf: USER,
+        referralCode: '0',
+        interestRateMode: InterestRate.Variable,
+      });
+
+      const differentParamsSameResult = instance.borrowTxBuilder.generateTxData(
+        {
+          user: USER,
+          reserve: TOKEN,
+          amount: '1',
+          referralCode: '0',
+          interestRateMode: InterestRate.Variable,
+        },
+      );
+
+      const differentParamsSameResult2 =
+        instance.borrowTxBuilder.generateTxData({
+          user: USER,
+          reserve: TOKEN,
+          amount: '1',
+          onBehalfOf: USER,
+          interestRateMode: InterestRate.Variable,
+        });
+
+      const differentParamsSameResult3 =
+        instance.borrowTxBuilder.generateTxData({
+          user: USER,
+          reserve: TOKEN,
+          amount: '1',
+          interestRateMode: InterestRate.Variable,
+        });
+      const variableBorrowTxData =
+        '0xa415bcad00000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003';
+      const stableBorrowTxData =
+        '0xa415bcad00000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003';
+      expect(result.to).toEqual(LENDING_POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(variableBorrowTxData);
+      expect(differentParamsSameResult.data).toEqual(variableBorrowTxData);
+      expect(differentParamsSameResult2.data).toEqual(variableBorrowTxData);
+      expect(differentParamsSameResult3.data).toEqual(variableBorrowTxData);
+      expect(stableResult.data).toEqual(stableBorrowTxData);
+    });
+
+    it('generates deposit tx for WETHGateway data with generateTxData', async () => {
+      const result = instance.borrowTxBuilder.generateTxData({
+        user: USER,
+        reserve: API_ETH_MOCK_ADDRESS.toLowerCase(),
+        amount: '1',
+        onBehalfOf: USER,
+        referralCode: '0',
+        interestRateMode: InterestRate.Variable,
+        debtTokenAddress: API_ETH_MOCK_ADDRESS.toLowerCase(),
+      });
+      expect(result.to).toEqual(WETH_GATEWAY);
+      expect(result.from).toEqual(USER);
+      expect(result.value).toEqual(undefined);
+      expect(result.data).toEqual(
+        '0x66514c970000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000',
+      );
+
+      await expect(async () =>
+        instance.borrowTxBuilder.generateTxData({
+          user: USER,
+          reserve: API_ETH_MOCK_ADDRESS.toLowerCase(),
+          amount: '1',
+          onBehalfOf: USER,
+          interestRateMode: InterestRate.Variable,
+          referralCode: '0',
+        }),
+      ).rejects.toThrowError(
+        `To borrow ETH you need to pass the stable or variable WETH debt Token Address corresponding the interestRateMode`,
       );
     });
   });

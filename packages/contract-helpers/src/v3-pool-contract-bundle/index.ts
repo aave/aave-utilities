@@ -1,7 +1,11 @@
 import { Signature, splitSignature } from '@ethersproject/bytes';
 import { BytesLike, PopulatedTransaction, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
-import { InterestRate, tEthereumAddress } from '../commons/types';
+import {
+  BorrowTxBuilder,
+  InterestRate,
+  tEthereumAddress,
+} from '../commons/types';
 import { API_ETH_MOCK_ADDRESS } from '../commons/utils';
 import { ERC20_2612Service, ERC20_2612Interface } from '../erc20-2612';
 import {
@@ -17,13 +21,17 @@ import {
   PoolInterface as V3PoolInterface,
 } from '../v3-pool-contract';
 import {
+  LPBorrowParamsType,
   LPSignedSupplyParamsType,
   LPSupplyParamsType,
 } from '../v3-pool-contract/lendingPoolTypes';
 import { IPool, IPoolInterface } from '../v3-pool-contract/typechain/IPool';
 import { IPool__factory } from '../v3-pool-contract/typechain/IPool__factory';
 import { L2Pool, L2PoolInterface } from '../v3-pool-rollups';
-import { LPSupplyWithPermitType as LPSupplyWithPermitTypeL2 } from '../v3-pool-rollups/poolTypes';
+import {
+  LPSupplyWithPermitType as LPSupplyWithPermitTypeL2,
+  LPBorrowParamsType as LPBorrowParamsTypeL2,
+} from '../v3-pool-rollups/poolTypes';
 import {
   WETHGatewayInterface,
   WETHGatewayService,
@@ -95,6 +103,7 @@ export class PoolBundle
   readonly contractInterface: IPoolInterface;
 
   supplyTxBuilder: SupplyTxBuilder;
+  borrowTxBuilder: BorrowTxBuilder;
 
   constructor(
     provider: providers.Provider,
@@ -126,7 +135,6 @@ export class PoolBundle
 
     this.contractInterface = IPool__factory.createInterface();
 
-    // Initialize supplyTxBuilder
     this.supplyTxBuilder = {
       getApprovedAmount: async (props: TokenOwner): Promise<ApproveType> => {
         const spender =
@@ -285,6 +293,72 @@ export class PoolBundle
         }
 
         return populatedTx;
+      },
+    };
+
+    this.borrowTxBuilder = {
+      generateTxData: ({
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        debtTokenAddress,
+        onBehalfOf,
+        referralCode,
+        useOptimizedPath,
+        encodedTxData,
+      }: LPBorrowParamsType): PopulatedTransaction => {
+        let actionTx: PopulatedTransaction = {};
+        const referralCodeParam = referralCode ?? '0';
+        const onBehalfOfParam = onBehalfOf ?? user;
+        const numericRateMode =
+          interestRateMode === InterestRate.Variable ? 2 : 1;
+        if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
+          if (!debtTokenAddress) {
+            throw new Error(
+              `To borrow ETH you need to pass the stable or variable WETH debt Token Address corresponding the interestRateMode`,
+            );
+          }
+
+          actionTx = this.wethGatewayService.generateBorrowEthTxData({
+            lendingPool: this.poolAddress,
+            user,
+            amount,
+            debtTokenAddress,
+            interestRateMode,
+            referralCode: referralCodeParam,
+          });
+        } else if (useOptimizedPath) {
+          if (encodedTxData) {
+            actionTx = this.l2PoolService.generateEncodedBorrowTxData({
+              encodedTxData,
+              user,
+            });
+          } else {
+            const args: LPBorrowParamsTypeL2 = {
+              user,
+              reserve,
+              amount,
+              onBehalfOf: onBehalfOfParam,
+              referralCode: referralCodeParam,
+              numericRateMode,
+            };
+            actionTx = this.l2PoolService.generateBorrowTxData(args);
+          }
+        } else {
+          const txData = this.contractInterface.encodeFunctionData('borrow', [
+            reserve,
+            amount,
+            numericRateMode,
+            referralCodeParam,
+            onBehalfOfParam,
+          ]);
+          actionTx.to = this.poolAddress;
+          actionTx.from = user;
+          actionTx.data = txData;
+        }
+
+        return actionTx;
       },
     };
   }

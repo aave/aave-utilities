@@ -1,4 +1,5 @@
 import { BigNumber, BytesLike, PopulatedTransaction } from 'ethers';
+import { LPBorrowParamsType } from '../v3-pool-contract/lendingPoolTypes';
 
 export type tEthereumAddress = string;
 export type ENS = string; // something.eth
@@ -32,6 +33,7 @@ export const ChainIdToNetwork: Record<number, string> = {
   1666600000: 'harmony',
   1666700000: 'harmony_testnet',
   11155111: 'sepolia',
+  534353: 'scroll_alpha',
 };
 
 export enum ChainId {
@@ -57,6 +59,7 @@ export enum ChainId {
   harmony_testnet = 1666700000,
   zkevm_testnet = 1402,
   sepolia = 11155111,
+  scroll_alpha = 534353,
 }
 export type ConstantAddressesByNetwork = Record<
   string,
@@ -307,3 +310,17 @@ export type ActionBundle = {
 };
 
 export const DEFAULT_DEADLINE = Math.floor(Date.now() / 1000 + 3600).toString();
+
+export type BorrowTxBuilder = {
+  generateTxData: ({
+    user,
+    reserve,
+    amount,
+    interestRateMode,
+    debtTokenAddress,
+    onBehalfOf,
+    referralCode,
+    useOptimizedPath,
+    encodedTxData,
+  }: LPBorrowParamsType) => PopulatedTransaction;
+};
