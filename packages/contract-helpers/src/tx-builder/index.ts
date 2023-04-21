@@ -1,6 +1,7 @@
+import { Signature, splitSignature } from '@ethersproject/bytes';
 import { PopulatedTransaction, providers, utils } from 'ethers';
 import BaseService from '../commons/BaseService';
-import { tEthereumAddress } from '../commons/types';
+import { InterestRate, tEthereumAddress } from '../commons/types';
 import {
   ApproveType,
   ERC20Service,
@@ -18,8 +19,21 @@ export interface TxBuilderServiceInterface {
   txDataBuilder: TxDataBuilder;
 }
 
+export type SignedCreditDelegationParams = {
+  user: tEthereumAddress;
+  target: tEthereumAddress;
+  token: tEthereumAddress;
+  interestRateMode: InterestRate;
+  delegationAmount: string;
+  deadline: string;
+  signature: string;
+};
+
 export type TxDataBuilder = {
   getApprovedAmount: ({ user, token }: TokenOwner) => Promise<ApproveType>;
+  generateSignedCreditDelegationTx: (
+    params: SignedCreditDelegationParams,
+  ) => PopulatedTransaction;
   encodeActions: (actions: Action[]) => string;
   generateTxData: (
     user: tEthereumAddress,
@@ -83,6 +97,53 @@ export class TxBuilderService
     this.contractInterface = TxBuilder__factory.createInterface();
 
     this.txDataBuilder = {
+      generateSignedCreditDelegationTx: ({
+        user,
+        target,
+        token,
+        interestRateMode,
+        delegationAmount,
+        deadline,
+        signature,
+      }) => {
+        const decomposedSignature: Signature = splitSignature(signature);
+        const populatedTx: PopulatedTransaction = {};
+        const fragment = this.contractInterface.getFunction('executeActions');
+        const txData = utils.defaultAbiCoder.encode(
+          [fragment.inputs[0]],
+          [
+            {
+              target,
+              data: utils.defaultAbiCoder.encode(
+                [
+                  'address',
+                  'uint256',
+                  'uint256',
+                  'uint256',
+                  'uint8',
+                  'bytes32',
+                  'bytes32',
+                ],
+                [
+                  token,
+                  interestRateMode,
+                  delegationAmount,
+                  deadline,
+                  decomposedSignature.v,
+                  decomposedSignature.r,
+                  decomposedSignature.s,
+                ],
+              ),
+            },
+          ],
+        );
+
+        populatedTx.data = txData;
+        populatedTx.from = user;
+        populatedTx.to = this.TX_BUILDER_ADDRESS;
+
+        return populatedTx;
+      },
       getApprovedAmount: async (props: TokenOwner): Promise<ApproveType> => {
         const spender = this.TX_BUILDER_ADDRESS;
         const amount = await this.erc20Service.approvedAmount({
@@ -130,14 +191,6 @@ export class TxBuilderService
           [fragment.inputs[0]],
           [actionStructs.reverse()],
         );
-        // const foo = actionStructs.reverse().map(a => {
-        // return utils.defaultAbiCoder.encode(
-        //   ['address', 'bytes'],
-        //   [a.target, a.data],
-        //   );
-        // });
-
-        // return utils.defaultAbiCoder.encode(['bytes'], [foo]);
       },
       generateTxData: (user: tEthereumAddress, actions: Action[]) => {
         const actionTx: PopulatedTransaction = {};
