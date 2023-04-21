@@ -115,6 +115,8 @@ export enum ProtocolAction {
   supplyWithPermit = 'supplyWithPermit',
   repayWithPermit = 'repayWithPermit',
   vote = 'vote',
+  approval = 'approval',
+  creditDelegationApproval = 'creditDelegationApproval',
 }
 
 export enum GovernanceVote {
