@@ -1,7 +1,7 @@
 import { Signature, SignatureLike, splitSignature } from '@ethersproject/bytes';
 import { PopulatedTransaction, providers, utils } from 'ethers';
 import BaseService from '../commons/BaseService';
-import { InterestRate, tEthereumAddress } from '../commons/types';
+import { tEthereumAddress } from '../commons/types';
 import {
   ApproveType,
   ERC20Service,
@@ -23,7 +23,7 @@ export type SignedCreditDelegationParams = {
   user: tEthereumAddress;
   target: tEthereumAddress;
   token: tEthereumAddress;
-  interestRateMode: InterestRate;
+  interestRateMode: 1 | 2;
   delegationAmount: string;
   deadline: string;
   signature: string;
@@ -68,7 +68,7 @@ export type CreditDelegationWithSig = {
   type: 'CreditDelegationWithSig';
   target: tEthereumAddress;
   reserveAddress: tEthereumAddress;
-  interestRateMode: InterestRate;
+  interestRateMode: 1 | 2;
   delegationAmount: string;
   signature: SignatureLike;
   deadline: string;
