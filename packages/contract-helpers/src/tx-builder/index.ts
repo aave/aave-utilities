@@ -1,4 +1,4 @@
-import { Signature, splitSignature } from '@ethersproject/bytes';
+import { Signature, SignatureLike, splitSignature } from '@ethersproject/bytes';
 import { PopulatedTransaction, providers, utils } from 'ethers';
 import BaseService from '../commons/BaseService';
 import { InterestRate, tEthereumAddress } from '../commons/types';
@@ -48,11 +48,30 @@ export type TransferAction = {
   amount: string;
 };
 
+export type TransferWithPermitAction = {
+  type: 'TransferWithPermit';
+  target: tEthereumAddress;
+  reserveAddress: tEthereumAddress;
+  amount: string;
+  signature: SignatureLike;
+  deadline: string;
+};
+
 export type SupplyAction = {
   type: 'Supply';
   target: tEthereumAddress;
   reserveAddress: tEthereumAddress;
   amount: string;
+};
+
+export type CreditDelegationWithSig = {
+  type: 'CreditDelegationWithSig';
+  target: tEthereumAddress;
+  reserveAddress: tEthereumAddress;
+  interestRateMode: InterestRate;
+  delegationAmount: string;
+  signature: SignatureLike;
+  deadline: string;
 };
 
 export type BorrowAction = {
@@ -63,7 +82,24 @@ export type BorrowAction = {
   interestRateMode: 1 | 2;
 };
 
-export type Action = TransferAction | SupplyAction | BorrowAction;
+export type Action =
+  | TransferAction
+  | TransferWithPermitAction
+  | SupplyAction
+  | BorrowAction
+  | CreditDelegationWithSig;
+
+export function isCreditDelegationWithSig(
+  action: Action,
+): action is CreditDelegationWithSig {
+  return action.type === 'CreditDelegationWithSig';
+}
+
+export function isTransferWithPermit(
+  action: Action,
+): action is TransferWithPermitAction {
+  return action.type === 'TransferWithPermit';
+}
 
 function isTransferIn(action: Action): action is TransferAction {
   return action.type === 'Transfer';
@@ -167,6 +203,31 @@ export class TxBuilderService
                 [action.reserveAddress, action.amount],
               ),
             });
+          } else if (isTransferWithPermit(action)) {
+            const { v, r, s } = splitSignature(action.signature);
+            actionStructs.push({
+              target: action.target,
+              data: utils.defaultAbiCoder.encode(
+                [
+                  'address',
+                  'uint256',
+                  'uint256',
+                  'uint256',
+                  'uint8',
+                  'bytes32',
+                  'bytes32',
+                ],
+                [
+                  action.reserveAddress,
+                  action.amount,
+                  action.amount,
+                  action.deadline,
+                  v,
+                  r,
+                  s,
+                ],
+              ),
+            });
           } else if (isSupply(action)) {
             actionStructs.push({
               target: action.target,
@@ -181,6 +242,31 @@ export class TxBuilderService
               data: utils.defaultAbiCoder.encode(
                 ['address', 'uint256', 'uint256'],
                 [action.reserveAddress, action.amount, action.interestRateMode],
+              ),
+            });
+          } else if (isCreditDelegationWithSig(action)) {
+            const { v, r, s } = splitSignature(action.signature);
+            actionStructs.push({
+              target: action.target,
+              data: utils.defaultAbiCoder.encode(
+                [
+                  'address',
+                  'uint256',
+                  'uint256',
+                  'uint256',
+                  'uint8',
+                  'bytes32',
+                  'bytes32',
+                ],
+                [
+                  action.reserveAddress,
+                  action.interestRateMode,
+                  action.delegationAmount,
+                  action.deadline,
+                  v,
+                  r,
+                  s,
+                ],
               ),
             });
           }
