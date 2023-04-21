@@ -307,6 +307,56 @@ export class TxBuilderService
                 [action.reserveAddress, action.amount, action.interestRateMode],
               ),
             });
+          } else if (isCreditDelegationWithSig(action)) {
+            const { v, r, s } = splitSignature(action.signature);
+            actionStructs.push({
+              target: action.target,
+              data: utils.defaultAbiCoder.encode(
+                [
+                  'address',
+                  'uint256',
+                  'uint256',
+                  'uint256',
+                  'uint8',
+                  'bytes32',
+                  'bytes32',
+                ],
+                [
+                  action.reserveAddress,
+                  action.interestRateMode,
+                  action.delegationAmount,
+                  action.deadline,
+                  v,
+                  r,
+                  s,
+                ],
+              ),
+            });
+          } else if (isTransferWithPermit(action)) {
+            const { v, r, s } = splitSignature(action.signature);
+            actionStructs.push({
+              target: action.target,
+              data: utils.defaultAbiCoder.encode(
+                [
+                  'address',
+                  'uint256',
+                  'uint256',
+                  'uint256',
+                  'uint8',
+                  'bytes32',
+                  'bytes32',
+                ],
+                [
+                  action.reserveAddress,
+                  action.amount,
+                  action.amount,
+                  action.deadline,
+                  v,
+                  r,
+                  s,
+                ],
+              ),
+            });
           }
         }
 
