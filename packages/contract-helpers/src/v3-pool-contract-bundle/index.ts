@@ -1,5 +1,5 @@
 import { Signature, splitSignature } from '@ethersproject/bytes';
-import { PopulatedTransaction, providers } from 'ethers';
+import { BytesLike, PopulatedTransaction, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
   BorrowTxBuilder,
@@ -37,7 +37,19 @@ import {
   WETHGatewayService,
 } from '../wethgateway-contract';
 
+type FlashloanParams = {
+  user: tEthereumAddress;
+  receiverAddress: tEthereumAddress;
+  assets: tEthereumAddress[];
+  amounts: string[];
+  interestRateModes: InterestRate[];
+  onBehalfOf: tEthereumAddress;
+  params: BytesLike;
+  referralCode?: number;
+};
+
 export type SupplyTxBuilder = {
+  generateFlashloanTxData: (params: FlashloanParams) => PopulatedTransaction;
   generateTxData: ({
     user,
     reserve,
@@ -138,6 +150,40 @@ export class PoolBundle
           spender,
           amount: amount.toString(),
         };
+      },
+      generateFlashloanTxData: ({
+        user,
+        receiverAddress,
+        assets,
+        amounts,
+        interestRateModes,
+        onBehalfOf,
+        params,
+        referralCode,
+      }) => {
+        const actionTx: PopulatedTransaction = {};
+        const onBehalfOfParam = onBehalfOf ?? user;
+        const referralCodeParam = referralCode ?? '0';
+
+        const numericRateModes = interestRateModes.map(interestRateMode =>
+          interestRateMode === InterestRate.Variable ? 2 : 1,
+        );
+
+        const txData = this.contractInterface.encodeFunctionData('flashLoan', [
+          receiverAddress,
+          assets,
+          amounts,
+          numericRateModes,
+          onBehalfOfParam,
+          params,
+          referralCodeParam,
+        ]);
+
+        actionTx.to = this.poolAddress;
+        actionTx.from = user;
+        actionTx.data = txData;
+
+        return actionTx;
       },
       generateTxData: ({
         user,
