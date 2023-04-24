@@ -149,6 +149,42 @@ describe('generateRawUserSummary', () => {
     expect(rawSummary.healthFactor.toFixed()).toEqual('1.2');
   });
 
+  it('should not allow negative available borrows if debtCeiling is exceeded ', () => {
+    const rawETHSummaryDebtCeilingExceeded: UserReserveSummaryResponse =
+      generateUserReserveSummary({
+        userReserve: {
+          ...ethUserMock.userReserve,
+          reserve: {
+            ...ethUserMock.reserve,
+            debtCeiling: '100',
+            isolationModeTotalDebt: '101',
+          },
+        },
+        marketReferencePriceInUsdNormalized,
+        marketReferenceCurrencyDecimals: 18,
+        currentTimestamp,
+      });
+
+    const rawSummaryDebtCeilingExceeded: RawUserSummaryResponse =
+      generateRawUserSummary({
+        userReserves: [rawETHSummaryDebtCeilingExceeded],
+        marketReferencePriceInUsd,
+        marketReferenceCurrencyDecimals,
+        userEmodeCategoryId: 0,
+      });
+
+    console.log(
+      rawSummaryDebtCeilingExceeded.availableBorrowsMarketReferenceCurrency.toString(),
+    );
+
+    expect(
+      normalize(
+        rawSummaryDebtCeilingExceeded.availableBorrowsMarketReferenceCurrency,
+        marketReferenceCurrencyDecimals,
+      ),
+    ).toEqual('0');
+  });
+
   it('should generate the correct user summary for user in stablecoin eMode', () => {
     expect(
       normalize(
