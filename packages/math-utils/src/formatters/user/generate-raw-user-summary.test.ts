@@ -173,10 +173,6 @@ describe('generateRawUserSummary', () => {
         userEmodeCategoryId: 0,
       });
 
-    console.log(
-      rawSummaryDebtCeilingExceeded.availableBorrowsMarketReferenceCurrency.toString(),
-    );
-
     expect(
       normalize(
         rawSummaryDebtCeilingExceeded.availableBorrowsMarketReferenceCurrency,
