@@ -1,12 +1,16 @@
-import { providers, PopulatedTransaction } from 'ethers';
+import { providers, PopulatedTransaction, BigNumber } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
   BorrowTxBuilder,
   InterestRate,
   LendingPoolMarketConfig,
+  ProtocolAction,
   tEthereumAddress,
 } from '../commons/types';
-import { API_ETH_MOCK_ADDRESS } from '../commons/utils';
+import {
+  API_ETH_MOCK_ADDRESS,
+  gasLimitRecommendations,
+} from '../commons/utils';
 import {
   ApproveType,
   ERC20Service,
@@ -127,6 +131,9 @@ export class LendingPoolBundle
           actionTx.to = this.lendingPoolAddress;
           actionTx.from = user;
           actionTx.data = txData;
+          actionTx.gasLimit = BigNumber.from(
+            gasLimitRecommendations[ProtocolAction.deposit].recommended,
+          );
         }
 
         return actionTx;
@@ -176,6 +183,9 @@ export class LendingPoolBundle
           actionTx.to = this.lendingPoolAddress;
           actionTx.from = user;
           actionTx.data = txData;
+          actionTx.gasLimit = BigNumber.from(
+            gasLimitRecommendations[ProtocolAction.borrow].recommended,
+          );
         }
 
         return actionTx;

@@ -12,7 +12,7 @@ import {
   tEthereumAddress,
   transactionType,
 } from '../commons/types';
-import { valueToWei } from '../commons/utils';
+import { gasLimitRecommendations, valueToWei } from '../commons/utils';
 import { WETHValidator } from '../commons/validators/methodValidators';
 import {
   is0OrPositiveAmount,
@@ -125,6 +125,9 @@ export class WETHGatewayService
         to: this.wethGatewayAddress,
         from: args.user,
         value: BigNumber.from(args.amount),
+        gasLimit: BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.deposit].limit,
+        ),
       };
       return actionTx;
     };
@@ -144,6 +147,9 @@ export class WETHGatewayService
         data: txData,
         to: this.wethGatewayAddress,
         from: args.user,
+        gasLimit: BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.borrowETH].limit,
+        ),
       };
       return actionTx;
     };

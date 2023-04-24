@@ -3,10 +3,11 @@ import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
   EthereumTransactionTypeExtended,
+  ProtocolAction,
   tEthereumAddress,
   transactionType,
 } from '../commons/types';
-import { valueToWei } from '../commons/utils';
+import { gasLimitRecommendations, valueToWei } from '../commons/utils';
 import { DebtTokenValidator } from '../commons/validators/methodValidators';
 import {
   isEthAddress,
@@ -125,6 +126,10 @@ export class BaseDebtToken
       data: txData,
       to: debtTokenAddress,
       from: user,
+      gasLimit: BigNumber.from(
+        gasLimitRecommendations[ProtocolAction.creditDelegationApproval]
+          .recommended,
+      ),
     };
     return approveDelegationTx;
   }
