@@ -1,12 +1,16 @@
 import { Signature, splitSignature } from '@ethersproject/bytes';
-import { PopulatedTransaction, providers } from 'ethers';
+import { BigNumber, PopulatedTransaction, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
   BorrowTxBuilder,
   InterestRate,
+  ProtocolAction,
   tEthereumAddress,
 } from '../commons/types';
-import { API_ETH_MOCK_ADDRESS } from '../commons/utils';
+import {
+  API_ETH_MOCK_ADDRESS,
+  gasLimitRecommendations,
+} from '../commons/utils';
 import { ERC20_2612Service, ERC20_2612Interface } from '../erc20-2612';
 import {
   ApproveType,
@@ -185,6 +189,9 @@ export class PoolBundle
           actionTx.to = this.poolAddress;
           actionTx.from = user;
           actionTx.data = txData;
+          actionTx.gasLimit = BigNumber.from(
+            gasLimitRecommendations[ProtocolAction.supply].recommended,
+          );
         }
 
         return actionTx;
@@ -244,6 +251,10 @@ export class PoolBundle
           populatedTx.to = this.poolAddress;
           populatedTx.from = user;
           populatedTx.data = txData;
+          populatedTx.gasLimit = BigNumber.from(
+            gasLimitRecommendations[ProtocolAction.supplyWithPermit]
+              .recommended,
+          );
         }
 
         return populatedTx;
@@ -310,6 +321,9 @@ export class PoolBundle
           actionTx.to = this.poolAddress;
           actionTx.from = user;
           actionTx.data = txData;
+          actionTx.gasLimit = BigNumber.from(
+            gasLimitRecommendations[ProtocolAction.borrow].recommended,
+          );
         }
 
         return actionTx;

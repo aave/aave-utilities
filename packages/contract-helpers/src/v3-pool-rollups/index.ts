@@ -1,4 +1,4 @@
-import { PopulatedTransaction, providers, Signature } from 'ethers';
+import { BigNumber, PopulatedTransaction, providers, Signature } from 'ethers';
 import { splitSignature } from 'ethers/lib/utils';
 import BaseService from '../commons/BaseService';
 import {
@@ -7,7 +7,7 @@ import {
   ProtocolAction,
   transactionType,
 } from '../commons/types';
-import { getTxValue } from '../commons/utils';
+import { gasLimitRecommendations, getTxValue } from '../commons/utils';
 import { L2PValidator } from '../commons/validators/methodValidators';
 import { isDeadline32Bytes } from '../commons/validators/paramValidators';
 import { LPSupplyParamsType } from '../v3-pool-contract/lendingPoolTypes';
@@ -178,6 +178,9 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
       actionTx.to = this.l2PoolAddress;
       actionTx.from = user;
       actionTx.data = txData;
+      actionTx.gasLimit = BigNumber.from(
+        gasLimitRecommendations[ProtocolAction.borrow].limit,
+      );
       return actionTx;
     };
 
@@ -229,6 +232,30 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
       actionTx.to = this.l2PoolAddress;
       actionTx.data = txData;
       actionTx.from = user;
+      actionTx.gasLimit = BigNumber.from(
+        gasLimitRecommendations[ProtocolAction.supply].limit,
+      );
+      return actionTx;
+    };
+
+    this.generateEncodedBorrowTxData = ({
+      encodedTxData,
+      user,
+    }: {
+      encodedTxData: string;
+      user: string;
+    }) => {
+      const actionTx: PopulatedTransaction = {};
+      const txData = this.l2PoolContractInstance.encodeFunctionData('borrow', [
+        encodedTxData,
+      ]);
+
+      actionTx.to = this.l2PoolAddress;
+      actionTx.data = txData;
+      actionTx.from = user;
+      actionTx.gasLimit = BigNumber.from(
+        gasLimitRecommendations[ProtocolAction.borrow].limit,
+      );
       return actionTx;
     };
 
@@ -269,6 +296,9 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
       actionTx.to = this.l2PoolAddress;
       actionTx.data = txData;
       actionTx.from = user;
+      actionTx.gasLimit = BigNumber.from(
+        gasLimitRecommendations[ProtocolAction.supplyWithPermit].limit,
+      );
       return actionTx;
     };
   }

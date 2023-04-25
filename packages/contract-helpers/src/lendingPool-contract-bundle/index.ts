@@ -1,12 +1,16 @@
-import { providers, PopulatedTransaction } from 'ethers';
+import { providers, PopulatedTransaction, BigNumber } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
   BorrowTxBuilder,
   InterestRate,
   LendingPoolMarketConfig,
+  ProtocolAction,
   tEthereumAddress,
 } from '../commons/types';
-import { API_ETH_MOCK_ADDRESS } from '../commons/utils';
+import {
+  API_ETH_MOCK_ADDRESS,
+  gasLimitRecommendations,
+} from '../commons/utils';
 import {
   ApproveType,
   ERC20Service,
@@ -127,6 +131,61 @@ export class LendingPoolBundle
           actionTx.to = this.lendingPoolAddress;
           actionTx.from = user;
           actionTx.data = txData;
+          actionTx.gasLimit = BigNumber.from(
+            gasLimitRecommendations[ProtocolAction.deposit].recommended,
+          );
+        }
+
+        return actionTx;
+      },
+    };
+    this.borrowTxBuilder = {
+      generateTxData: ({
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        debtTokenAddress,
+        onBehalfOf,
+        referralCode,
+      }: Omit<
+        LPBorrowParamsType,
+        'useOptimizedPath' | 'encodedTxData'
+      >): PopulatedTransaction => {
+        let actionTx: PopulatedTransaction = {};
+        const referralCodeParam = referralCode ?? '0';
+        const onBehalfOfParam = onBehalfOf ?? user;
+        const numericRateMode =
+          interestRateMode === InterestRate.Variable ? 2 : 1;
+        if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
+          if (!debtTokenAddress) {
+            throw new Error(
+              `To borrow ETH you need to pass the stable or variable WETH debt Token Address corresponding the interestRateMode`,
+            );
+          }
+
+          actionTx = this.wethGatewayService.generateBorrowEthTxData({
+            lendingPool: this.lendingPoolAddress,
+            user,
+            amount,
+            debtTokenAddress,
+            interestRateMode,
+            referralCode: referralCodeParam,
+          });
+        } else {
+          const txData = this.contractInterface.encodeFunctionData('borrow', [
+            reserve,
+            amount,
+            numericRateMode,
+            referralCodeParam,
+            onBehalfOfParam,
+          ]);
+          actionTx.to = this.lendingPoolAddress;
+          actionTx.from = user;
+          actionTx.data = txData;
+          actionTx.gasLimit = BigNumber.from(
+            gasLimitRecommendations[ProtocolAction.borrow].recommended,
+          );
         }
 
         return actionTx;

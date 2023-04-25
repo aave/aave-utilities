@@ -33,6 +33,7 @@ export const ChainIdToNetwork: Record<number, string> = {
   1666600000: 'harmony',
   1666700000: 'harmony_testnet',
   11155111: 'sepolia',
+  534353: 'scroll_alpha',
 };
 
 export enum ChainId {
@@ -58,6 +59,7 @@ export enum ChainId {
   harmony_testnet = 1666700000,
   zkevm_testnet = 1402,
   sepolia = 11155111,
+  scroll_alpha = 534353,
 }
 export type ConstantAddressesByNetwork = Record<
   string,
@@ -115,6 +117,8 @@ export enum ProtocolAction {
   stake = 'stake',
   stakeWithPermit = 'stakeWithPermit',
   vote = 'vote',
+  approval = 'approval',
+  creditDelegationApproval = 'creditDelegationApproval',
 }
 
 export enum GovernanceVote {

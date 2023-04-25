@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.16.0 (2023-04-17)
+
+### Features
+
+- update borrow methods SDK
+  ([#527](https://github.com/aave/aave-utilities/issues/527))
+  ([da31b83](https://github.com/aave/aave-utilities/commit/da31b836dd7a85da0dbfe664b67612b1f261c7a7))
+
+# 1.15.0 (2023-04-12)
+
+### Features
+
+- add Scroll Alpha chainId
+  ([#528](https://github.com/aave/aave-utilities/issues/528))
+  ([3418c70](https://github.com/aave/aave-utilities/commit/3418c7087796397ed535fc7a3522445fb44f94c5))
+
 # 1.14.0 (2023-04-05)
 
 ### Features
