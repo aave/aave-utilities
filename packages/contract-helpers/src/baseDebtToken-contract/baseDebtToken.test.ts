@@ -275,11 +275,22 @@ describe('isDelegationApproved', () => {
     expect(spy).toBeCalled();
     expect(isApproved).toEqual(true);
 
-    const isApprovedInvalid = await debtToken.isDelegationApproved({
+    const isApprovedValidExact = await debtToken.isDelegationApproved({
       debtTokenAddress,
       allowanceGiver,
       allowanceReceiver,
       amount: '20000000000',
+      nativeDecimals: true,
+    });
+
+    expect(spy).toBeCalled();
+    expect(isApprovedValidExact).toEqual(true);
+
+    const isApprovedInvalid = await debtToken.isDelegationApproved({
+      debtTokenAddress,
+      allowanceGiver,
+      allowanceReceiver,
+      amount: '30000000000',
       nativeDecimals: true,
     });
 

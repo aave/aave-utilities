@@ -285,6 +285,17 @@ describe('ERC20Service', () => {
       expect(decimalsSpy).toHaveBeenCalled();
       expect(isApproved).toEqual(true);
 
+      const isApprovedValidExact: boolean = await erc20Service.isApproved({
+        user,
+        token,
+        spender,
+        amount: '200000000',
+        nativeDecimals: true,
+      });
+
+      expect(decimalsSpy).toHaveBeenCalled();
+      expect(isApprovedValidExact).toEqual(true);
+
       const isApprovedInvalid: boolean = await erc20Service.isApproved({
         user,
         token,

@@ -168,6 +168,6 @@ export class BaseDebtToken
       ),
     );
 
-    return delegatedAllowance.gt(amountBNWithDecimals);
+    return delegatedAllowance.gte(amountBNWithDecimals);
   }
 }
