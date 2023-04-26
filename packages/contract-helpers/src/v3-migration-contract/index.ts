@@ -147,6 +147,7 @@ export class V3MigrationHelperService
           allowanceGiver: user,
           allowanceReceiver: this.MIGRATOR_ADDRESS,
           amount,
+          nativeDecimals: true,
         });
       }),
     );
@@ -182,6 +183,7 @@ export class V3MigrationHelperService
           spender: this.MIGRATOR_ADDRESS,
           token: aToken,
           user,
+          nativeDecimals: true,
         });
       }),
     );
