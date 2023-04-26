@@ -8,23 +8,59 @@ import {
   BigNumber,
   BigNumberish,
   PopulatedTransaction,
-} from 'ethers';
-import {
-  Contract,
+  BaseContract,
   ContractTransaction,
+  Overrides,
   CallOverrides,
-} from '@ethersproject/contracts';
+} from 'ethers';
 import { BytesLike } from '@ethersproject/bytes';
 import { Listener, Provider } from '@ethersproject/providers';
 import { FunctionFragment, EventFragment, Result } from '@ethersproject/abi';
+import { TypedEventFilter, TypedEvent, TypedListener } from './commons';
 
 interface IGovernanceV2HelperInterface extends ethers.utils.Interface {
   functions: {
+    'ONE_HUNDRED_WITH_PRECISION()': FunctionFragment;
+    'delegateTokensBySig(address[],tuple[])': FunctionFragment;
+    'delegateTokensByTypeBySig(address[],tuple[])': FunctionFragment;
     'getProposal(uint256,address)': FunctionFragment;
     'getProposals(uint256,uint256,address)': FunctionFragment;
     'getTokensPower(address,address[])': FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: 'ONE_HUNDRED_WITH_PRECISION',
+    values?: undefined,
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'delegateTokensBySig',
+    values: [
+      string[],
+      {
+        delegatee: string;
+        nonce: BigNumberish;
+        expiry: BigNumberish;
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
+      }[],
+    ],
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'delegateTokensByTypeBySig',
+    values: [
+      string[],
+      {
+        delegatee: string;
+        delegationType: BigNumberish;
+        nonce: BigNumberish;
+        expiry: BigNumberish;
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
+      }[],
+    ],
+  ): string;
   encodeFunctionData(
     functionFragment: 'getProposal',
     values: [BigNumberish, string],
@@ -38,6 +74,18 @@ interface IGovernanceV2HelperInterface extends ethers.utils.Interface {
     values: [string, string[]],
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: 'ONE_HUNDRED_WITH_PRECISION',
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'delegateTokensBySig',
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'delegateTokensByTypeBySig',
+    data: BytesLike,
+  ): Result;
   decodeFunctionResult(
     functionFragment: 'getProposal',
     data: BytesLike,
@@ -54,594 +102,403 @@ interface IGovernanceV2HelperInterface extends ethers.utils.Interface {
   events: {};
 }
 
-export class IGovernanceV2Helper extends Contract {
+export class IGovernanceV2Helper extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  on(event: EventFilter | string, listener: Listener): this;
-  once(event: EventFilter | string, listener: Listener): this;
-  addListener(eventName: EventFilter | string, listener: Listener): this;
-  removeAllListeners(eventName: EventFilter | string): this;
-  removeListener(eventName: any, listener: Listener): this;
+  listeners<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter?: TypedEventFilter<EventArgsArray, EventArgsObject>,
+  ): Array<TypedListener<EventArgsArray, EventArgsObject>>;
+  off<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>,
+  ): this;
+  on<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>,
+  ): this;
+  once<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>,
+  ): this;
+  removeListener<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>,
+  ): this;
+  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+  ): this;
 
-  interface: IGovernanceV2HelperInterface;
+  listeners(eventName?: string): Array<Listener>;
+  off(eventName: string, listener: Listener): this;
+  on(eventName: string, listener: Listener): this;
+  once(eventName: string, listener: Listener): this;
+  removeListener(eventName: string, listener: Listener): this;
+  removeAllListeners(eventName?: string): this;
+
+  queryFilter<EventArgsArray extends Array<any>, EventArgsObject>(
+    event: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined,
+  ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
+
+  interface: GovernanceV2HelperInterface;
 
   functions: {
+    ONE_HUNDRED_WITH_PRECISION(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    delegateTokensBySig(
+      tokens: string[],
+      data: {
+        delegatee: string;
+        nonce: BigNumberish;
+        expiry: BigNumberish;
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
+      }[],
+      overrides?: Overrides & { from?: string | Promise<string> },
+    ): Promise<ContractTransaction>;
+
+    delegateTokensByTypeBySig(
+      tokens: string[],
+      data: {
+        delegatee: string;
+        delegationType: BigNumberish;
+        nonce: BigNumberish;
+        expiry: BigNumberish;
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
+      }[],
+      overrides?: Overrides & { from?: string | Promise<string> },
+    ): Promise<ContractTransaction>;
+
     getProposal(
       id: BigNumberish,
       governance: string,
       overrides?: CallOverrides,
-    ): Promise<{
-      proposalStats: {
-        totalVotingSupply: BigNumber;
-        minimumQuorum: BigNumber;
-        minimumDiff: BigNumber;
-        executionTimeWithGracePeriod: BigNumber;
-        proposalCreated: BigNumber;
-        id: BigNumber;
-        creator: string;
-        executor: string;
-        targets: string[];
-        values: BigNumber[];
-        signatures: string[];
-        calldatas: string[];
-        withDelegatecalls: boolean[];
-        startBlock: BigNumber;
-        endBlock: BigNumber;
-        executionTime: BigNumber;
-        forVotes: BigNumber;
-        againstVotes: BigNumber;
-        executed: boolean;
-        canceled: boolean;
-        strategy: string;
-        ipfsHash: string;
-        proposalState: number;
-        0: BigNumber;
-        1: BigNumber;
-        2: BigNumber;
-        3: BigNumber;
-        4: BigNumber;
-        5: BigNumber;
-        6: string;
-        7: string;
-        8: string[];
-        9: BigNumber[];
-        10: string[];
-        11: string[];
-        12: boolean[];
-        13: BigNumber;
-        14: BigNumber;
-        15: BigNumber;
-        16: BigNumber;
-        17: BigNumber;
-        18: boolean;
-        19: boolean;
-        20: string;
-        21: string;
-        22: number;
-      };
-      0: {
-        totalVotingSupply: BigNumber;
-        minimumQuorum: BigNumber;
-        minimumDiff: BigNumber;
-        executionTimeWithGracePeriod: BigNumber;
-        proposalCreated: BigNumber;
-        id: BigNumber;
-        creator: string;
-        executor: string;
-        targets: string[];
-        values: BigNumber[];
-        signatures: string[];
-        calldatas: string[];
-        withDelegatecalls: boolean[];
-        startBlock: BigNumber;
-        endBlock: BigNumber;
-        executionTime: BigNumber;
-        forVotes: BigNumber;
-        againstVotes: BigNumber;
-        executed: boolean;
-        canceled: boolean;
-        strategy: string;
-        ipfsHash: string;
-        proposalState: number;
-        0: BigNumber;
-        1: BigNumber;
-        2: BigNumber;
-        3: BigNumber;
-        4: BigNumber;
-        5: BigNumber;
-        6: string;
-        7: string;
-        8: string[];
-        9: BigNumber[];
-        10: string[];
-        11: string[];
-        12: boolean[];
-        13: BigNumber;
-        14: BigNumber;
-        15: BigNumber;
-        16: BigNumber;
-        17: BigNumber;
-        18: boolean;
-        19: boolean;
-        20: string;
-        21: string;
-        22: number;
-      };
-    }>;
-
-    'getProposal(uint256,address)'(
-      id: BigNumberish,
-      governance: string,
-      overrides?: CallOverrides,
-    ): Promise<{
-      proposalStats: {
-        totalVotingSupply: BigNumber;
-        minimumQuorum: BigNumber;
-        minimumDiff: BigNumber;
-        executionTimeWithGracePeriod: BigNumber;
-        proposalCreated: BigNumber;
-        id: BigNumber;
-        creator: string;
-        executor: string;
-        targets: string[];
-        values: BigNumber[];
-        signatures: string[];
-        calldatas: string[];
-        withDelegatecalls: boolean[];
-        startBlock: BigNumber;
-        endBlock: BigNumber;
-        executionTime: BigNumber;
-        forVotes: BigNumber;
-        againstVotes: BigNumber;
-        executed: boolean;
-        canceled: boolean;
-        strategy: string;
-        ipfsHash: string;
-        proposalState: number;
-        0: BigNumber;
-        1: BigNumber;
-        2: BigNumber;
-        3: BigNumber;
-        4: BigNumber;
-        5: BigNumber;
-        6: string;
-        7: string;
-        8: string[];
-        9: BigNumber[];
-        10: string[];
-        11: string[];
-        12: boolean[];
-        13: BigNumber;
-        14: BigNumber;
-        15: BigNumber;
-        16: BigNumber;
-        17: BigNumber;
-        18: boolean;
-        19: boolean;
-        20: string;
-        21: string;
-        22: number;
-      };
-      0: {
-        totalVotingSupply: BigNumber;
-        minimumQuorum: BigNumber;
-        minimumDiff: BigNumber;
-        executionTimeWithGracePeriod: BigNumber;
-        proposalCreated: BigNumber;
-        id: BigNumber;
-        creator: string;
-        executor: string;
-        targets: string[];
-        values: BigNumber[];
-        signatures: string[];
-        calldatas: string[];
-        withDelegatecalls: boolean[];
-        startBlock: BigNumber;
-        endBlock: BigNumber;
-        executionTime: BigNumber;
-        forVotes: BigNumber;
-        againstVotes: BigNumber;
-        executed: boolean;
-        canceled: boolean;
-        strategy: string;
-        ipfsHash: string;
-        proposalState: number;
-        0: BigNumber;
-        1: BigNumber;
-        2: BigNumber;
-        3: BigNumber;
-        4: BigNumber;
-        5: BigNumber;
-        6: string;
-        7: string;
-        8: string[];
-        9: BigNumber[];
-        10: string[];
-        11: string[];
-        12: boolean[];
-        13: BigNumber;
-        14: BigNumber;
-        15: BigNumber;
-        16: BigNumber;
-        17: BigNumber;
-        18: boolean;
-        19: boolean;
-        20: string;
-        21: string;
-        22: number;
-      };
-    }>;
+    ): Promise<
+      [
+        [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          string,
+          string,
+          string[],
+          BigNumber[],
+          string[],
+          string[],
+          boolean[],
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          boolean,
+          boolean,
+          string,
+          string,
+          number,
+        ] & {
+          totalVotingSupply: BigNumber;
+          minimumQuorum: BigNumber;
+          minimumDiff: BigNumber;
+          executionTimeWithGracePeriod: BigNumber;
+          proposalCreated: BigNumber;
+          id: BigNumber;
+          creator: string;
+          executor: string;
+          targets: string[];
+          values: BigNumber[];
+          signatures: string[];
+          calldatas: string[];
+          withDelegatecalls: boolean[];
+          startBlock: BigNumber;
+          endBlock: BigNumber;
+          executionTime: BigNumber;
+          forVotes: BigNumber;
+          againstVotes: BigNumber;
+          executed: boolean;
+          canceled: boolean;
+          strategy: string;
+          ipfsHash: string;
+          proposalState: number;
+        },
+      ] & {
+        proposalStats: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          string,
+          string,
+          string[],
+          BigNumber[],
+          string[],
+          string[],
+          boolean[],
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          boolean,
+          boolean,
+          string,
+          string,
+          number,
+        ] & {
+          totalVotingSupply: BigNumber;
+          minimumQuorum: BigNumber;
+          minimumDiff: BigNumber;
+          executionTimeWithGracePeriod: BigNumber;
+          proposalCreated: BigNumber;
+          id: BigNumber;
+          creator: string;
+          executor: string;
+          targets: string[];
+          values: BigNumber[];
+          signatures: string[];
+          calldatas: string[];
+          withDelegatecalls: boolean[];
+          startBlock: BigNumber;
+          endBlock: BigNumber;
+          executionTime: BigNumber;
+          forVotes: BigNumber;
+          againstVotes: BigNumber;
+          executed: boolean;
+          canceled: boolean;
+          strategy: string;
+          ipfsHash: string;
+          proposalState: number;
+        };
+      }
+    >;
 
     getProposals(
       skip: BigNumberish,
       limit: BigNumberish,
       governance: string,
       overrides?: CallOverrides,
-    ): Promise<{
-      proposalsStats: {
-        totalVotingSupply: BigNumber;
-        minimumQuorum: BigNumber;
-        minimumDiff: BigNumber;
-        executionTimeWithGracePeriod: BigNumber;
-        proposalCreated: BigNumber;
-        id: BigNumber;
-        creator: string;
-        executor: string;
-        targets: string[];
-        values: BigNumber[];
-        signatures: string[];
-        calldatas: string[];
-        withDelegatecalls: boolean[];
-        startBlock: BigNumber;
-        endBlock: BigNumber;
-        executionTime: BigNumber;
-        forVotes: BigNumber;
-        againstVotes: BigNumber;
-        executed: boolean;
-        canceled: boolean;
-        strategy: string;
-        ipfsHash: string;
-        proposalState: number;
-        0: BigNumber;
-        1: BigNumber;
-        2: BigNumber;
-        3: BigNumber;
-        4: BigNumber;
-        5: BigNumber;
-        6: string;
-        7: string;
-        8: string[];
-        9: BigNumber[];
-        10: string[];
-        11: string[];
-        12: boolean[];
-        13: BigNumber;
-        14: BigNumber;
-        15: BigNumber;
-        16: BigNumber;
-        17: BigNumber;
-        18: boolean;
-        19: boolean;
-        20: string;
-        21: string;
-        22: number;
-      }[];
-      0: {
-        totalVotingSupply: BigNumber;
-        minimumQuorum: BigNumber;
-        minimumDiff: BigNumber;
-        executionTimeWithGracePeriod: BigNumber;
-        proposalCreated: BigNumber;
-        id: BigNumber;
-        creator: string;
-        executor: string;
-        targets: string[];
-        values: BigNumber[];
-        signatures: string[];
-        calldatas: string[];
-        withDelegatecalls: boolean[];
-        startBlock: BigNumber;
-        endBlock: BigNumber;
-        executionTime: BigNumber;
-        forVotes: BigNumber;
-        againstVotes: BigNumber;
-        executed: boolean;
-        canceled: boolean;
-        strategy: string;
-        ipfsHash: string;
-        proposalState: number;
-        0: BigNumber;
-        1: BigNumber;
-        2: BigNumber;
-        3: BigNumber;
-        4: BigNumber;
-        5: BigNumber;
-        6: string;
-        7: string;
-        8: string[];
-        9: BigNumber[];
-        10: string[];
-        11: string[];
-        12: boolean[];
-        13: BigNumber;
-        14: BigNumber;
-        15: BigNumber;
-        16: BigNumber;
-        17: BigNumber;
-        18: boolean;
-        19: boolean;
-        20: string;
-        21: string;
-        22: number;
-      }[];
-    }>;
-
-    'getProposals(uint256,uint256,address)'(
-      skip: BigNumberish,
-      limit: BigNumberish,
-      governance: string,
-      overrides?: CallOverrides,
-    ): Promise<{
-      proposalsStats: {
-        totalVotingSupply: BigNumber;
-        minimumQuorum: BigNumber;
-        minimumDiff: BigNumber;
-        executionTimeWithGracePeriod: BigNumber;
-        proposalCreated: BigNumber;
-        id: BigNumber;
-        creator: string;
-        executor: string;
-        targets: string[];
-        values: BigNumber[];
-        signatures: string[];
-        calldatas: string[];
-        withDelegatecalls: boolean[];
-        startBlock: BigNumber;
-        endBlock: BigNumber;
-        executionTime: BigNumber;
-        forVotes: BigNumber;
-        againstVotes: BigNumber;
-        executed: boolean;
-        canceled: boolean;
-        strategy: string;
-        ipfsHash: string;
-        proposalState: number;
-        0: BigNumber;
-        1: BigNumber;
-        2: BigNumber;
-        3: BigNumber;
-        4: BigNumber;
-        5: BigNumber;
-        6: string;
-        7: string;
-        8: string[];
-        9: BigNumber[];
-        10: string[];
-        11: string[];
-        12: boolean[];
-        13: BigNumber;
-        14: BigNumber;
-        15: BigNumber;
-        16: BigNumber;
-        17: BigNumber;
-        18: boolean;
-        19: boolean;
-        20: string;
-        21: string;
-        22: number;
-      }[];
-      0: {
-        totalVotingSupply: BigNumber;
-        minimumQuorum: BigNumber;
-        minimumDiff: BigNumber;
-        executionTimeWithGracePeriod: BigNumber;
-        proposalCreated: BigNumber;
-        id: BigNumber;
-        creator: string;
-        executor: string;
-        targets: string[];
-        values: BigNumber[];
-        signatures: string[];
-        calldatas: string[];
-        withDelegatecalls: boolean[];
-        startBlock: BigNumber;
-        endBlock: BigNumber;
-        executionTime: BigNumber;
-        forVotes: BigNumber;
-        againstVotes: BigNumber;
-        executed: boolean;
-        canceled: boolean;
-        strategy: string;
-        ipfsHash: string;
-        proposalState: number;
-        0: BigNumber;
-        1: BigNumber;
-        2: BigNumber;
-        3: BigNumber;
-        4: BigNumber;
-        5: BigNumber;
-        6: string;
-        7: string;
-        8: string[];
-        9: BigNumber[];
-        10: string[];
-        11: string[];
-        12: boolean[];
-        13: BigNumber;
-        14: BigNumber;
-        15: BigNumber;
-        16: BigNumber;
-        17: BigNumber;
-        18: boolean;
-        19: boolean;
-        20: string;
-        21: string;
-        22: number;
-      }[];
-    }>;
+    ): Promise<
+      [
+        ([
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          string,
+          string,
+          string[],
+          BigNumber[],
+          string[],
+          string[],
+          boolean[],
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          boolean,
+          boolean,
+          string,
+          string,
+          number,
+        ] & {
+          totalVotingSupply: BigNumber;
+          minimumQuorum: BigNumber;
+          minimumDiff: BigNumber;
+          executionTimeWithGracePeriod: BigNumber;
+          proposalCreated: BigNumber;
+          id: BigNumber;
+          creator: string;
+          executor: string;
+          targets: string[];
+          values: BigNumber[];
+          signatures: string[];
+          calldatas: string[];
+          withDelegatecalls: boolean[];
+          startBlock: BigNumber;
+          endBlock: BigNumber;
+          executionTime: BigNumber;
+          forVotes: BigNumber;
+          againstVotes: BigNumber;
+          executed: boolean;
+          canceled: boolean;
+          strategy: string;
+          ipfsHash: string;
+          proposalState: number;
+        })[],
+      ] & {
+        proposalsStats: ([
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          string,
+          string,
+          string[],
+          BigNumber[],
+          string[],
+          string[],
+          boolean[],
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          boolean,
+          boolean,
+          string,
+          string,
+          number,
+        ] & {
+          totalVotingSupply: BigNumber;
+          minimumQuorum: BigNumber;
+          minimumDiff: BigNumber;
+          executionTimeWithGracePeriod: BigNumber;
+          proposalCreated: BigNumber;
+          id: BigNumber;
+          creator: string;
+          executor: string;
+          targets: string[];
+          values: BigNumber[];
+          signatures: string[];
+          calldatas: string[];
+          withDelegatecalls: boolean[];
+          startBlock: BigNumber;
+          endBlock: BigNumber;
+          executionTime: BigNumber;
+          forVotes: BigNumber;
+          againstVotes: BigNumber;
+          executed: boolean;
+          canceled: boolean;
+          strategy: string;
+          ipfsHash: string;
+          proposalState: number;
+        })[];
+      }
+    >;
 
     getTokensPower(
       user: string,
       tokens: string[],
       overrides?: CallOverrides,
-    ): Promise<{
-      power: {
-        votingPower: BigNumber;
-        delegatedAddressVotingPower: string;
-        propositionPower: BigNumber;
-        delegatedAddressPropositionPower: string;
-        0: BigNumber;
-        1: string;
-        2: BigNumber;
-        3: string;
-      }[];
-      0: {
-        votingPower: BigNumber;
-        delegatedAddressVotingPower: string;
-        propositionPower: BigNumber;
-        delegatedAddressPropositionPower: string;
-        0: BigNumber;
-        1: string;
-        2: BigNumber;
-        3: string;
-      }[];
-    }>;
-
-    'getTokensPower(address,address[])'(
-      user: string,
-      tokens: string[],
-      overrides?: CallOverrides,
-    ): Promise<{
-      power: {
-        votingPower: BigNumber;
-        delegatedAddressVotingPower: string;
-        propositionPower: BigNumber;
-        delegatedAddressPropositionPower: string;
-        0: BigNumber;
-        1: string;
-        2: BigNumber;
-        3: string;
-      }[];
-      0: {
-        votingPower: BigNumber;
-        delegatedAddressVotingPower: string;
-        propositionPower: BigNumber;
-        delegatedAddressPropositionPower: string;
-        0: BigNumber;
-        1: string;
-        2: BigNumber;
-        3: string;
-      }[];
-    }>;
+    ): Promise<
+      [
+        ([BigNumber, string, BigNumber, string] & {
+          votingPower: BigNumber;
+          delegatedAddressVotingPower: string;
+          propositionPower: BigNumber;
+          delegatedAddressPropositionPower: string;
+        })[],
+      ] & {
+        power: ([BigNumber, string, BigNumber, string] & {
+          votingPower: BigNumber;
+          delegatedAddressVotingPower: string;
+          propositionPower: BigNumber;
+          delegatedAddressPropositionPower: string;
+        })[];
+      }
+    >;
   };
+
+  ONE_HUNDRED_WITH_PRECISION(overrides?: CallOverrides): Promise<BigNumber>;
+
+  delegateTokensBySig(
+    tokens: string[],
+    data: {
+      delegatee: string;
+      nonce: BigNumberish;
+      expiry: BigNumberish;
+      v: BigNumberish;
+      r: BytesLike;
+      s: BytesLike;
+    }[],
+    overrides?: Overrides & { from?: string | Promise<string> },
+  ): Promise<ContractTransaction>;
+
+  delegateTokensByTypeBySig(
+    tokens: string[],
+    data: {
+      delegatee: string;
+      delegationType: BigNumberish;
+      nonce: BigNumberish;
+      expiry: BigNumberish;
+      v: BigNumberish;
+      r: BytesLike;
+      s: BytesLike;
+    }[],
+    overrides?: Overrides & { from?: string | Promise<string> },
+  ): Promise<ContractTransaction>;
 
   getProposal(
     id: BigNumberish,
     governance: string,
     overrides?: CallOverrides,
-  ): Promise<{
-    totalVotingSupply: BigNumber;
-    minimumQuorum: BigNumber;
-    minimumDiff: BigNumber;
-    executionTimeWithGracePeriod: BigNumber;
-    proposalCreated: BigNumber;
-    id: BigNumber;
-    creator: string;
-    executor: string;
-    targets: string[];
-    values: BigNumber[];
-    signatures: string[];
-    calldatas: string[];
-    withDelegatecalls: boolean[];
-    startBlock: BigNumber;
-    endBlock: BigNumber;
-    executionTime: BigNumber;
-    forVotes: BigNumber;
-    againstVotes: BigNumber;
-    executed: boolean;
-    canceled: boolean;
-    strategy: string;
-    ipfsHash: string;
-    proposalState: number;
-    0: BigNumber;
-    1: BigNumber;
-    2: BigNumber;
-    3: BigNumber;
-    4: BigNumber;
-    5: BigNumber;
-    6: string;
-    7: string;
-    8: string[];
-    9: BigNumber[];
-    10: string[];
-    11: string[];
-    12: boolean[];
-    13: BigNumber;
-    14: BigNumber;
-    15: BigNumber;
-    16: BigNumber;
-    17: BigNumber;
-    18: boolean;
-    19: boolean;
-    20: string;
-    21: string;
-    22: number;
-  }>;
-
-  'getProposal(uint256,address)'(
-    id: BigNumberish,
-    governance: string,
-    overrides?: CallOverrides,
-  ): Promise<{
-    totalVotingSupply: BigNumber;
-    minimumQuorum: BigNumber;
-    minimumDiff: BigNumber;
-    executionTimeWithGracePeriod: BigNumber;
-    proposalCreated: BigNumber;
-    id: BigNumber;
-    creator: string;
-    executor: string;
-    targets: string[];
-    values: BigNumber[];
-    signatures: string[];
-    calldatas: string[];
-    withDelegatecalls: boolean[];
-    startBlock: BigNumber;
-    endBlock: BigNumber;
-    executionTime: BigNumber;
-    forVotes: BigNumber;
-    againstVotes: BigNumber;
-    executed: boolean;
-    canceled: boolean;
-    strategy: string;
-    ipfsHash: string;
-    proposalState: number;
-    0: BigNumber;
-    1: BigNumber;
-    2: BigNumber;
-    3: BigNumber;
-    4: BigNumber;
-    5: BigNumber;
-    6: string;
-    7: string;
-    8: string[];
-    9: BigNumber[];
-    10: string[];
-    11: string[];
-    12: boolean[];
-    13: BigNumber;
-    14: BigNumber;
-    15: BigNumber;
-    16: BigNumber;
-    17: BigNumber;
-    18: boolean;
-    19: boolean;
-    20: string;
-    21: string;
-    22: number;
-  }>;
+  ): Promise<
+    [
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      string,
+      string,
+      string[],
+      BigNumber[],
+      string[],
+      string[],
+      boolean[],
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      boolean,
+      boolean,
+      string,
+      string,
+      number,
+    ] & {
+      totalVotingSupply: BigNumber;
+      minimumQuorum: BigNumber;
+      minimumDiff: BigNumber;
+      executionTimeWithGracePeriod: BigNumber;
+      proposalCreated: BigNumber;
+      id: BigNumber;
+      creator: string;
+      executor: string;
+      targets: string[];
+      values: BigNumber[];
+      signatures: string[];
+      calldatas: string[];
+      withDelegatecalls: boolean[];
+      startBlock: BigNumber;
+      endBlock: BigNumber;
+      executionTime: BigNumber;
+      forVotes: BigNumber;
+      againstVotes: BigNumber;
+      executed: boolean;
+      canceled: boolean;
+      strategy: string;
+      ipfsHash: string;
+      proposalState: number;
+    }
+  >;
 
   getProposals(
     skip: BigNumberish,
@@ -649,7 +506,31 @@ export class IGovernanceV2Helper extends Contract {
     governance: string,
     overrides?: CallOverrides,
   ): Promise<
-    {
+    ([
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      string,
+      string,
+      string[],
+      BigNumber[],
+      string[],
+      string[],
+      boolean[],
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      boolean,
+      boolean,
+      string,
+      string,
+      number,
+    ] & {
       totalVotingSupply: BigNumber;
       minimumQuorum: BigNumber;
       minimumDiff: BigNumber;
@@ -673,86 +554,7 @@ export class IGovernanceV2Helper extends Contract {
       strategy: string;
       ipfsHash: string;
       proposalState: number;
-      0: BigNumber;
-      1: BigNumber;
-      2: BigNumber;
-      3: BigNumber;
-      4: BigNumber;
-      5: BigNumber;
-      6: string;
-      7: string;
-      8: string[];
-      9: BigNumber[];
-      10: string[];
-      11: string[];
-      12: boolean[];
-      13: BigNumber;
-      14: BigNumber;
-      15: BigNumber;
-      16: BigNumber;
-      17: BigNumber;
-      18: boolean;
-      19: boolean;
-      20: string;
-      21: string;
-      22: number;
-    }[]
-  >;
-
-  'getProposals(uint256,uint256,address)'(
-    skip: BigNumberish,
-    limit: BigNumberish,
-    governance: string,
-    overrides?: CallOverrides,
-  ): Promise<
-    {
-      totalVotingSupply: BigNumber;
-      minimumQuorum: BigNumber;
-      minimumDiff: BigNumber;
-      executionTimeWithGracePeriod: BigNumber;
-      proposalCreated: BigNumber;
-      id: BigNumber;
-      creator: string;
-      executor: string;
-      targets: string[];
-      values: BigNumber[];
-      signatures: string[];
-      calldatas: string[];
-      withDelegatecalls: boolean[];
-      startBlock: BigNumber;
-      endBlock: BigNumber;
-      executionTime: BigNumber;
-      forVotes: BigNumber;
-      againstVotes: BigNumber;
-      executed: boolean;
-      canceled: boolean;
-      strategy: string;
-      ipfsHash: string;
-      proposalState: number;
-      0: BigNumber;
-      1: BigNumber;
-      2: BigNumber;
-      3: BigNumber;
-      4: BigNumber;
-      5: BigNumber;
-      6: string;
-      7: string;
-      8: string[];
-      9: BigNumber[];
-      10: string[];
-      11: string[];
-      12: boolean[];
-      13: BigNumber;
-      14: BigNumber;
-      15: BigNumber;
-      16: BigNumber;
-      17: BigNumber;
-      18: boolean;
-      19: boolean;
-      20: string;
-      21: string;
-      22: number;
-    }[]
+    })[]
   >;
 
   getTokensPower(
@@ -760,141 +562,99 @@ export class IGovernanceV2Helper extends Contract {
     tokens: string[],
     overrides?: CallOverrides,
   ): Promise<
-    {
+    ([BigNumber, string, BigNumber, string] & {
       votingPower: BigNumber;
       delegatedAddressVotingPower: string;
       propositionPower: BigNumber;
       delegatedAddressPropositionPower: string;
-      0: BigNumber;
-      1: string;
-      2: BigNumber;
-      3: string;
-    }[]
-  >;
-
-  'getTokensPower(address,address[])'(
-    user: string,
-    tokens: string[],
-    overrides?: CallOverrides,
-  ): Promise<
-    {
-      votingPower: BigNumber;
-      delegatedAddressVotingPower: string;
-      propositionPower: BigNumber;
-      delegatedAddressPropositionPower: string;
-      0: BigNumber;
-      1: string;
-      2: BigNumber;
-      3: string;
-    }[]
+    })[]
   >;
 
   callStatic: {
+    ONE_HUNDRED_WITH_PRECISION(overrides?: CallOverrides): Promise<BigNumber>;
+
+    delegateTokensBySig(
+      tokens: string[],
+      data: {
+        delegatee: string;
+        nonce: BigNumberish;
+        expiry: BigNumberish;
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
+      }[],
+      overrides?: CallOverrides,
+    ): Promise<void>;
+
+    delegateTokensByTypeBySig(
+      tokens: string[],
+      data: {
+        delegatee: string;
+        delegationType: BigNumberish;
+        nonce: BigNumberish;
+        expiry: BigNumberish;
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
+      }[],
+      overrides?: CallOverrides,
+    ): Promise<void>;
+
     getProposal(
       id: BigNumberish,
       governance: string,
       overrides?: CallOverrides,
-    ): Promise<{
-      totalVotingSupply: BigNumber;
-      minimumQuorum: BigNumber;
-      minimumDiff: BigNumber;
-      executionTimeWithGracePeriod: BigNumber;
-      proposalCreated: BigNumber;
-      id: BigNumber;
-      creator: string;
-      executor: string;
-      targets: string[];
-      values: BigNumber[];
-      signatures: string[];
-      calldatas: string[];
-      withDelegatecalls: boolean[];
-      startBlock: BigNumber;
-      endBlock: BigNumber;
-      executionTime: BigNumber;
-      forVotes: BigNumber;
-      againstVotes: BigNumber;
-      executed: boolean;
-      canceled: boolean;
-      strategy: string;
-      ipfsHash: string;
-      proposalState: number;
-      0: BigNumber;
-      1: BigNumber;
-      2: BigNumber;
-      3: BigNumber;
-      4: BigNumber;
-      5: BigNumber;
-      6: string;
-      7: string;
-      8: string[];
-      9: BigNumber[];
-      10: string[];
-      11: string[];
-      12: boolean[];
-      13: BigNumber;
-      14: BigNumber;
-      15: BigNumber;
-      16: BigNumber;
-      17: BigNumber;
-      18: boolean;
-      19: boolean;
-      20: string;
-      21: string;
-      22: number;
-    }>;
-
-    'getProposal(uint256,address)'(
-      id: BigNumberish,
-      governance: string,
-      overrides?: CallOverrides,
-    ): Promise<{
-      totalVotingSupply: BigNumber;
-      minimumQuorum: BigNumber;
-      minimumDiff: BigNumber;
-      executionTimeWithGracePeriod: BigNumber;
-      proposalCreated: BigNumber;
-      id: BigNumber;
-      creator: string;
-      executor: string;
-      targets: string[];
-      values: BigNumber[];
-      signatures: string[];
-      calldatas: string[];
-      withDelegatecalls: boolean[];
-      startBlock: BigNumber;
-      endBlock: BigNumber;
-      executionTime: BigNumber;
-      forVotes: BigNumber;
-      againstVotes: BigNumber;
-      executed: boolean;
-      canceled: boolean;
-      strategy: string;
-      ipfsHash: string;
-      proposalState: number;
-      0: BigNumber;
-      1: BigNumber;
-      2: BigNumber;
-      3: BigNumber;
-      4: BigNumber;
-      5: BigNumber;
-      6: string;
-      7: string;
-      8: string[];
-      9: BigNumber[];
-      10: string[];
-      11: string[];
-      12: boolean[];
-      13: BigNumber;
-      14: BigNumber;
-      15: BigNumber;
-      16: BigNumber;
-      17: BigNumber;
-      18: boolean;
-      19: boolean;
-      20: string;
-      21: string;
-      22: number;
-    }>;
+    ): Promise<
+      [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        string,
+        string,
+        string[],
+        BigNumber[],
+        string[],
+        string[],
+        boolean[],
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        boolean,
+        boolean,
+        string,
+        string,
+        number,
+      ] & {
+        totalVotingSupply: BigNumber;
+        minimumQuorum: BigNumber;
+        minimumDiff: BigNumber;
+        executionTimeWithGracePeriod: BigNumber;
+        proposalCreated: BigNumber;
+        id: BigNumber;
+        creator: string;
+        executor: string;
+        targets: string[];
+        values: BigNumber[];
+        signatures: string[];
+        calldatas: string[];
+        withDelegatecalls: boolean[];
+        startBlock: BigNumber;
+        endBlock: BigNumber;
+        executionTime: BigNumber;
+        forVotes: BigNumber;
+        againstVotes: BigNumber;
+        executed: boolean;
+        canceled: boolean;
+        strategy: string;
+        ipfsHash: string;
+        proposalState: number;
+      }
+    >;
 
     getProposals(
       skip: BigNumberish,
@@ -902,7 +662,31 @@ export class IGovernanceV2Helper extends Contract {
       governance: string,
       overrides?: CallOverrides,
     ): Promise<
-      {
+      ([
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        string,
+        string,
+        string[],
+        BigNumber[],
+        string[],
+        string[],
+        boolean[],
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        boolean,
+        boolean,
+        string,
+        string,
+        number,
+      ] & {
         totalVotingSupply: BigNumber;
         minimumQuorum: BigNumber;
         minimumDiff: BigNumber;
@@ -926,86 +710,7 @@ export class IGovernanceV2Helper extends Contract {
         strategy: string;
         ipfsHash: string;
         proposalState: number;
-        0: BigNumber;
-        1: BigNumber;
-        2: BigNumber;
-        3: BigNumber;
-        4: BigNumber;
-        5: BigNumber;
-        6: string;
-        7: string;
-        8: string[];
-        9: BigNumber[];
-        10: string[];
-        11: string[];
-        12: boolean[];
-        13: BigNumber;
-        14: BigNumber;
-        15: BigNumber;
-        16: BigNumber;
-        17: BigNumber;
-        18: boolean;
-        19: boolean;
-        20: string;
-        21: string;
-        22: number;
-      }[]
-    >;
-
-    'getProposals(uint256,uint256,address)'(
-      skip: BigNumberish,
-      limit: BigNumberish,
-      governance: string,
-      overrides?: CallOverrides,
-    ): Promise<
-      {
-        totalVotingSupply: BigNumber;
-        minimumQuorum: BigNumber;
-        minimumDiff: BigNumber;
-        executionTimeWithGracePeriod: BigNumber;
-        proposalCreated: BigNumber;
-        id: BigNumber;
-        creator: string;
-        executor: string;
-        targets: string[];
-        values: BigNumber[];
-        signatures: string[];
-        calldatas: string[];
-        withDelegatecalls: boolean[];
-        startBlock: BigNumber;
-        endBlock: BigNumber;
-        executionTime: BigNumber;
-        forVotes: BigNumber;
-        againstVotes: BigNumber;
-        executed: boolean;
-        canceled: boolean;
-        strategy: string;
-        ipfsHash: string;
-        proposalState: number;
-        0: BigNumber;
-        1: BigNumber;
-        2: BigNumber;
-        3: BigNumber;
-        4: BigNumber;
-        5: BigNumber;
-        6: string;
-        7: string;
-        8: string[];
-        9: BigNumber[];
-        10: string[];
-        11: string[];
-        12: boolean[];
-        13: BigNumber;
-        14: BigNumber;
-        15: BigNumber;
-        16: BigNumber;
-        17: BigNumber;
-        18: boolean;
-        19: boolean;
-        20: string;
-        21: string;
-        22: number;
-      }[]
+      })[]
     >;
 
     getTokensPower(
@@ -1013,46 +718,48 @@ export class IGovernanceV2Helper extends Contract {
       tokens: string[],
       overrides?: CallOverrides,
     ): Promise<
-      {
+      ([BigNumber, string, BigNumber, string] & {
         votingPower: BigNumber;
         delegatedAddressVotingPower: string;
         propositionPower: BigNumber;
         delegatedAddressPropositionPower: string;
-        0: BigNumber;
-        1: string;
-        2: BigNumber;
-        3: string;
-      }[]
-    >;
-
-    'getTokensPower(address,address[])'(
-      user: string,
-      tokens: string[],
-      overrides?: CallOverrides,
-    ): Promise<
-      {
-        votingPower: BigNumber;
-        delegatedAddressVotingPower: string;
-        propositionPower: BigNumber;
-        delegatedAddressPropositionPower: string;
-        0: BigNumber;
-        1: string;
-        2: BigNumber;
-        3: string;
-      }[]
+      })[]
     >;
   };
 
   filters: {};
 
   estimateGas: {
-    getProposal(
-      id: BigNumberish,
-      governance: string,
-      overrides?: CallOverrides,
+    ONE_HUNDRED_WITH_PRECISION(overrides?: CallOverrides): Promise<BigNumber>;
+
+    delegateTokensBySig(
+      tokens: string[],
+      data: {
+        delegatee: string;
+        nonce: BigNumberish;
+        expiry: BigNumberish;
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
+      }[],
+      overrides?: Overrides & { from?: string | Promise<string> },
     ): Promise<BigNumber>;
 
-    'getProposal(uint256,address)'(
+    delegateTokensByTypeBySig(
+      tokens: string[],
+      data: {
+        delegatee: string;
+        delegationType: BigNumberish;
+        nonce: BigNumberish;
+        expiry: BigNumberish;
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
+      }[],
+      overrides?: Overrides & { from?: string | Promise<string> },
+    ): Promise<BigNumber>;
+
+    getProposal(
       id: BigNumberish,
       governance: string,
       overrides?: CallOverrides,
@@ -1065,20 +772,7 @@ export class IGovernanceV2Helper extends Contract {
       overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
-    'getProposals(uint256,uint256,address)'(
-      skip: BigNumberish,
-      limit: BigNumberish,
-      governance: string,
-      overrides?: CallOverrides,
-    ): Promise<BigNumber>;
-
     getTokensPower(
-      user: string,
-      tokens: string[],
-      overrides?: CallOverrides,
-    ): Promise<BigNumber>;
-
-    'getTokensPower(address,address[])'(
       user: string,
       tokens: string[],
       overrides?: CallOverrides,
@@ -1086,13 +780,38 @@ export class IGovernanceV2Helper extends Contract {
   };
 
   populateTransaction: {
-    getProposal(
-      id: BigNumberish,
-      governance: string,
+    ONE_HUNDRED_WITH_PRECISION(
       overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
-    'getProposal(uint256,address)'(
+    delegateTokensBySig(
+      tokens: string[],
+      data: {
+        delegatee: string;
+        nonce: BigNumberish;
+        expiry: BigNumberish;
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
+      }[],
+      overrides?: Overrides & { from?: string | Promise<string> },
+    ): Promise<PopulatedTransaction>;
+
+    delegateTokensByTypeBySig(
+      tokens: string[],
+      data: {
+        delegatee: string;
+        delegationType: BigNumberish;
+        nonce: BigNumberish;
+        expiry: BigNumberish;
+        v: BigNumberish;
+        r: BytesLike;
+        s: BytesLike;
+      }[],
+      overrides?: Overrides & { from?: string | Promise<string> },
+    ): Promise<PopulatedTransaction>;
+
+    getProposal(
       id: BigNumberish,
       governance: string,
       overrides?: CallOverrides,
@@ -1105,20 +824,7 @@ export class IGovernanceV2Helper extends Contract {
       overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
-    'getProposals(uint256,uint256,address)'(
-      skip: BigNumberish,
-      limit: BigNumberish,
-      governance: string,
-      overrides?: CallOverrides,
-    ): Promise<PopulatedTransaction>;
-
     getTokensPower(
-      user: string,
-      tokens: string[],
-      overrides?: CallOverrides,
-    ): Promise<PopulatedTransaction>;
-
-    'getTokensPower(address,address[])'(
       user: string,
       tokens: string[],
       overrides?: CallOverrides,

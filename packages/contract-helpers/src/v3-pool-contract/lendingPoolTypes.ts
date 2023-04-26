@@ -14,6 +14,12 @@ export type LPSupplyParamsType = {
   onBehalfOf?: tEthereumAddress;
   referralCode?: string;
   useOptimizedPath?: boolean;
+  encodedTxData?: string;
+};
+
+export type LPSignedSupplyParamsType = LPSupplyParamsType & {
+  signature: string;
+  deadline: string;
 };
 
 export type LPWithdrawParamsType = {
@@ -34,6 +40,7 @@ export type LPBorrowParamsType = {
   onBehalfOf?: tEthereumAddress;
   referralCode?: string;
   useOptimizedPath?: boolean;
+  encodedTxData?: string;
 };
 
 export type LPRepayParamsType = {

@@ -1,4 +1,4 @@
-import { constants, providers } from 'ethers';
+import { BigNumber, constants, PopulatedTransaction, providers } from 'ethers';
 import {
   BaseDebtToken,
   BaseDebtTokenInterface,
@@ -12,7 +12,7 @@ import {
   tEthereumAddress,
   transactionType,
 } from '../commons/types';
-import { valueToWei } from '../commons/utils';
+import { gasLimitRecommendations, valueToWei } from '../commons/utils';
 import { WETHValidator } from '../commons/validators/methodValidators';
 import {
   is0OrPositiveAmount,
@@ -21,7 +21,7 @@ import {
   isPositiveOrMinusOneAmount,
 } from '../commons/validators/paramValidators';
 import { IERC20ServiceInterface } from '../erc20-contract';
-import { IWETHGateway } from './typechain/IWETHGateway';
+import { IWETHGateway, IWETHGatewayInterface } from './typechain/IWETHGateway';
 import { IWETHGateway__factory } from './typechain/IWETHGateway__factory';
 
 export type WETHDepositParamsType = {
@@ -52,12 +52,16 @@ export type WETHBorrowParamsType = {
   lendingPool: tEthereumAddress;
   user: tEthereumAddress;
   amount: string;
-  debtTokenAddress: tEthereumAddress;
+  debtTokenAddress?: tEthereumAddress;
   interestRateMode: InterestRate;
   referralCode?: string;
 };
 
 export interface WETHGatewayInterface {
+  generateDepositEthTxData: (
+    args: WETHDepositParamsType,
+  ) => PopulatedTransaction;
+  generateBorrowEthTxData: (args: WETHBorrowParamsType) => PopulatedTransaction;
   depositETH: (
     args: WETHDepositParamsType,
   ) => EthereumTransactionTypeExtended[];
@@ -80,6 +84,14 @@ export class WETHGatewayService
 
   readonly erc20Service: IERC20ServiceInterface;
 
+  readonly wethGatewayInstance: IWETHGatewayInterface;
+
+  generateDepositEthTxData: (
+    args: WETHDepositParamsType,
+  ) => PopulatedTransaction;
+
+  generateBorrowEthTxData: (args: WETHBorrowParamsType) => PopulatedTransaction;
+
   constructor(
     provider: providers.Provider,
     erc20Service: IERC20ServiceInterface,
@@ -99,6 +111,48 @@ export class WETHGatewayService
     this.withdrawETH = this.withdrawETH.bind(this);
     this.repayETH = this.repayETH.bind(this);
     this.borrowETH = this.borrowETH.bind(this);
+    this.wethGatewayInstance = IWETHGateway__factory.createInterface();
+    this.generateDepositEthTxData = (
+      args: WETHDepositParamsType,
+    ): PopulatedTransaction => {
+      const txData = this.wethGatewayInstance.encodeFunctionData('depositETH', [
+        args.lendingPool,
+        args.onBehalfOf ?? args.user,
+        args.referralCode ?? '0',
+      ]);
+      const actionTx: PopulatedTransaction = {
+        data: txData,
+        to: this.wethGatewayAddress,
+        from: args.user,
+        value: BigNumber.from(args.amount),
+        gasLimit: BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.deposit].limit,
+        ),
+      };
+      return actionTx;
+    };
+
+    this.generateBorrowEthTxData = (
+      args: WETHBorrowParamsType,
+    ): PopulatedTransaction => {
+      const numericRateMode =
+        args.interestRateMode === InterestRate.Variable ? 2 : 1;
+      const txData = this.wethGatewayInstance.encodeFunctionData('borrowETH', [
+        args.lendingPool,
+        args.amount,
+        numericRateMode,
+        args.referralCode ?? '0',
+      ]);
+      const actionTx: PopulatedTransaction = {
+        data: txData,
+        to: this.wethGatewayAddress,
+        from: args.user,
+        gasLimit: BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.borrowETH].limit,
+        ),
+      };
+      return actionTx;
+    };
   }
 
   @WETHValidator
@@ -160,6 +214,11 @@ export class WETHGatewayService
     const txs: EthereumTransactionTypeExtended[] = [];
     const convertedAmount: string = valueToWei(amount, 18);
     const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
+    if (!debtTokenAddress) {
+      throw new Error(
+        `To borrow ETH you need to pass the stable or variable WETH debt Token Address corresponding the interestRateMode`,
+      );
+    }
 
     const delegationApproved: boolean =
       await this.baseDebtTokenService.isDelegationApproved({

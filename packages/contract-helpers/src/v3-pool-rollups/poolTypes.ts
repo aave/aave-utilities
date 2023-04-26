@@ -20,6 +20,7 @@ export type LPBorrowParamsType = {
   amount: string;
   numericRateMode: number;
   referralCode?: string;
+  onBehalfOf?: string;
 };
 
 export type LPRepayParamsType = {
@@ -38,6 +39,7 @@ export type LPSupplyWithPermitType = {
   permitR: BytesLike;
   permitS: BytesLike;
   referralCode?: string;
+  onBehalfOf?: string;
 };
 
 export type LPRepayWithPermitParamsType = {
