@@ -264,6 +264,37 @@ describe('ERC20Service', () => {
       expect(decimalsSpy).toHaveBeenCalled();
       expect(isApproved).toEqual(true);
     });
+    it('Expects to return isApproved correctly with amounts in native decimals', async () => {
+      jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
+        allowance: async () => Promise.resolve(BigNumber.from('200000000')),
+      } as unknown as IERC20Detailed);
+
+      const erc20Service: IERC20ServiceInterface = new ERC20Service(provider);
+      const decimalsSpy = jest
+        .spyOn(erc20Service, 'decimalsOf')
+        .mockImplementation(async () => Promise.resolve(6));
+
+      const isApproved: boolean = await erc20Service.isApproved({
+        user,
+        token,
+        spender,
+        amount: '100000000',
+        nativeDecimals: true,
+      });
+
+      expect(decimalsSpy).toHaveBeenCalled();
+      expect(isApproved).toEqual(true);
+
+      const isApprovedInvalid: boolean = await erc20Service.isApproved({
+        user,
+        token,
+        spender,
+        amount: '300000000',
+        nativeDecimals: true,
+      });
+
+      expect(isApprovedInvalid).toEqual(false);
+    });
     it('Expects to not be approved with correct params', async () => {
       jest.spyOn(IERC20Detailed__factory, 'connect').mockReturnValue({
         allowance: async () => Promise.resolve(BigNumber.from('100000')),
