@@ -3,6 +3,7 @@ import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
   EthereumTransactionTypeExtended,
+  ProtocolAction,
   tEthereumAddress,
   transactionType,
 } from '../commons/types';
@@ -11,6 +12,7 @@ import {
   valueToWei,
   SUPER_BIG_ALLOWANCE_NUMBER,
   MAX_UINT_AMOUNT,
+  gasLimitRecommendations,
 } from '../commons/utils';
 import { ERC20Validator } from '../commons/validators/methodValidators';
 import {
@@ -135,6 +137,9 @@ export class ERC20Service
     tx.data = txData;
     tx.to = token;
     tx.from = user;
+    tx.gasLimit = BigNumber.from(
+      gasLimitRecommendations[ProtocolAction.approval].recommended,
+    );
 
     return tx;
   }
