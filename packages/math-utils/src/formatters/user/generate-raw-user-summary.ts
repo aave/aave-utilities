@@ -59,12 +59,15 @@ export function generateRawUserSummary({
   const availableBorrowsMarketReferenceCurrency =
     isInIsolationMode && isolatedReserve
       ? BigNumber.min(
-          normalizeBN(
-            new BigNumber(isolatedReserve.debtCeiling).minus(
-              isolatedReserve.isolationModeTotalDebt,
+          BigNumber.max(
+            0,
+            normalizeBN(
+              new BigNumber(isolatedReserve.debtCeiling).minus(
+                isolatedReserve.isolationModeTotalDebt,
+              ),
+              isolatedReserve.debtCeilingDecimals -
+                marketReferenceCurrencyDecimals,
             ),
-            isolatedReserve.debtCeilingDecimals -
-              marketReferenceCurrencyDecimals,
           ),
           _availableBorrowsMarketReferenceCurrency,
         )

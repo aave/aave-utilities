@@ -20,6 +20,7 @@ export type LPBorrowParamsType = {
   amount: string;
   numericRateMode: number;
   referralCode?: string;
+  onBehalfOf?: string;
 };
 
 export type LPRepayParamsType = {

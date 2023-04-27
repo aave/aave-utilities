@@ -40,6 +40,7 @@ export type LPBorrowParamsType = {
   onBehalfOf?: tEthereumAddress;
   referralCode?: string;
   useOptimizedPath?: boolean;
+  encodedTxData?: string;
 };
 
 export type LPRepayParamsType = {
