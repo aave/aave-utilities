@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.17.0 (2023-04-27)
+
+
+### Features
+
+* fixed available debt in isolated reserve in case that debt > ma… ([#532](https://github.com/aave/aave-utilities/issues/532)) ([7a2ea1e](https://github.com/aave/aave-utilities/commit/7a2ea1e94a26008247b4c4c045641291ff20261b))
+
+
+
+
+
 # 1.16.0 (2023-04-17)
 
 
