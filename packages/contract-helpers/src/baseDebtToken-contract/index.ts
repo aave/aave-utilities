@@ -1,5 +1,4 @@
 import { BigNumber, ethers, PopulatedTransaction, providers } from 'ethers';
-import { formatUnits } from 'ethers/lib/utils';
 import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
@@ -161,12 +160,9 @@ export class BaseDebtToken
         allowanceReceiver,
       );
 
-    const amountBNWithDecimals: BigNumber = BigNumber.from(
-      valueToWei(
-        nativeDecimals ? formatUnits(amount, decimals) : amount,
-        decimals,
-      ),
-    );
+    const amountBNWithDecimals: BigNumber = nativeDecimals
+      ? BigNumber.from(amount)
+      : BigNumber.from(valueToWei(amount, decimals));
 
     return delegatedAllowance.gte(amountBNWithDecimals);
   }
