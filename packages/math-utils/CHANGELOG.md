@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.17.1 (2023-05-01)
+
+**Note:** Version bump only for package @aave/math-utils
+
+
+
+
+
 # 1.17.0 (2023-04-27)
 
 
