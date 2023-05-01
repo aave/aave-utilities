@@ -36,7 +36,8 @@ export interface V3MigrationHelperInterface {
 
 export class V3MigrationHelperService
   extends BaseService<IMigrationHelper>
-  implements V3MigrationHelperInterface {
+  implements V3MigrationHelperInterface
+{
   readonly baseDebtTokenService: BaseDebtTokenInterface;
   readonly provider: providers.Provider;
   readonly MIGRATOR_ADDRESS: tEthereumAddress;
