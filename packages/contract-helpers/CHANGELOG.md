@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.17.2 (2023-05-01)
+
+
+### Bug Fixes
+
+* integer rounding for migration credit delegation approval buffer ([#537](https://github.com/aave/aave-utilities/issues/537)) ([3eef29e](https://github.com/aave/aave-utilities/commit/3eef29eb2e79bce2e1289c951fa00628bc5d4868))
+
+
+
+
+
 ## 1.17.1 (2023-05-01)
 
 **Note:** Version bump only for package @aave/contract-helpers
