@@ -257,6 +257,46 @@ describe('isDelegationApproved', () => {
     expect(spy).toBeCalled();
     expect(isApproved).toEqual(false);
   });
+  it('Expects to return approved or not approved if amount is in native decimals', async () => {
+    const spy = jest.spyOn(IDebtTokenBase__factory, 'connect').mockReturnValue({
+      borrowAllowance: async () =>
+        Promise.resolve(BigNumber.from('20000000000')),
+    } as unknown as IDebtTokenBase);
+    const debtToken = new BaseDebtToken(provider, erc20Service);
+
+    const isApproved = await debtToken.isDelegationApproved({
+      debtTokenAddress,
+      allowanceGiver,
+      allowanceReceiver,
+      amount: '10000000000',
+      nativeDecimals: true,
+    });
+
+    expect(spy).toBeCalled();
+    expect(isApproved).toEqual(true);
+
+    const isApprovedValidExact = await debtToken.isDelegationApproved({
+      debtTokenAddress,
+      allowanceGiver,
+      allowanceReceiver,
+      amount: '20000000000',
+      nativeDecimals: true,
+    });
+
+    expect(spy).toBeCalled();
+    expect(isApprovedValidExact).toEqual(true);
+
+    const isApprovedInvalid = await debtToken.isDelegationApproved({
+      debtTokenAddress,
+      allowanceGiver,
+      allowanceReceiver,
+      amount: '30000000000',
+      nativeDecimals: true,
+    });
+
+    expect(spy).toBeCalled();
+    expect(isApprovedInvalid).toEqual(false);
+  });
   it('Expects to fail when debtTokenAddress is wrong address', async () => {
     const debtToken = new BaseDebtToken(provider, erc20Service);
     const debtTokenAddress = 'asdf';

@@ -1,4 +1,5 @@
 import { BigNumber, ethers, PopulatedTransaction, providers } from 'ethers';
+import { formatUnits } from 'ethers/lib/utils';
 import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
@@ -44,7 +45,8 @@ export type DelegationApprovedType = {
   debtTokenAddress: tEthereumAddress;
   allowanceGiver: tEthereumAddress;
   allowanceReceiver: tEthereumAddress;
-  amount: string; // normal
+  amount: string; // normal  by default
+  nativeDecimals?: boolean;
 };
 
 export class BaseDebtToken
@@ -145,6 +147,7 @@ export class BaseDebtToken
       allowanceGiver,
       allowanceReceiver,
       amount,
+      nativeDecimals,
     }: DelegationApprovedType,
   ): Promise<boolean> {
     const decimals: number = await this.erc20Service.decimalsOf(
@@ -157,10 +160,14 @@ export class BaseDebtToken
         allowanceGiver,
         allowanceReceiver,
       );
+
     const amountBNWithDecimals: BigNumber = BigNumber.from(
-      valueToWei(amount, decimals),
+      valueToWei(
+        nativeDecimals ? formatUnits(amount, decimals) : amount,
+        decimals,
+      ),
     );
 
-    return delegatedAllowance.gt(amountBNWithDecimals);
+    return delegatedAllowance.gte(amountBNWithDecimals);
   }
 }

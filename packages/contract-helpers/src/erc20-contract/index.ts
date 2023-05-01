@@ -1,4 +1,5 @@
 import { BigNumber, ethers, PopulatedTransaction, providers } from 'ethers';
+import { formatUnits } from 'ethers/lib/utils';
 import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
@@ -29,7 +30,9 @@ import { IERC20Detailed__factory } from './typechain/IERC20Detailed__factory';
 export interface IERC20ServiceInterface {
   decimalsOf: (token: tEthereumAddress) => Promise<number>;
   getTokenData: (token: tEthereumAddress) => Promise<TokenMetadataType>;
-  isApproved: (args: ApproveType) => Promise<boolean>;
+  isApproved: (
+    args: ApproveType & { nativeDecimals?: boolean },
+  ) => Promise<boolean>;
   approvedAmount: (args: AllowanceRequest) => Promise<number>;
   approve: (args: ApproveType) => EthereumTransactionTypeExtended;
   approveTxData: (args: ApproveType) => PopulatedTransaction;
@@ -158,7 +161,13 @@ export class ERC20Service
     @isEthAddress('token')
     @isEthAddress('spender')
     @isPositiveOrMinusOneAmount('amount')
-    { user, token, spender, amount }: ApproveType,
+    {
+      user,
+      token,
+      spender,
+      amount,
+      nativeDecimals,
+    }: ApproveType & { nativeDecimals?: boolean },
   ): Promise<boolean> {
     if (token.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) return true;
     const decimals = await this.decimalsOf(token);
@@ -167,7 +176,12 @@ export class ERC20Service
     const amountBNWithDecimals: BigNumber =
       amount === '-1'
         ? BigNumber.from(SUPER_BIG_ALLOWANCE_NUMBER)
-        : BigNumber.from(valueToWei(amount, decimals));
+        : BigNumber.from(
+            valueToWei(
+              nativeDecimals ? formatUnits(amount, decimals) : amount,
+              decimals,
+            ),
+          );
     return allowance.gte(amountBNWithDecimals);
   }
 
