@@ -160,10 +160,7 @@ export class V3MigrationHelperService
         const asset = assets[index];
         const originalAmount = new BigNumber(asset.amount);
         const tenPercent = originalAmount.dividedBy(10);
-        const amountPlusBuffer = originalAmount
-          .plus(tenPercent)
-          .integerValue()
-          .toString();
+        const amountPlusBuffer = originalAmount.plus(tenPercent).toFixed(0);
 
         return this.baseDebtTokenService.approveDelegation({
           user,
