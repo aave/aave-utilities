@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.17.3 (2023-05-02)
+
+
+### Bug Fixes
+
+* decimal formatting in credit delegation approval checks ([#538](https://github.com/aave/aave-utilities/issues/538)) ([27eef6b](https://github.com/aave/aave-utilities/commit/27eef6b182f671fc9b4eb13cbd3712be17949c5c))
+
+
+
+
+
 ## 1.17.2 (2023-05-01)
 
 
