@@ -40,6 +40,23 @@ describe('formatGhoData', () => {
     expect(result.userDiscountedGhoInterest).toEqual(0.9000000570776255);
   });
 
+  it('calculates the amount of GHO available to borrow at discount', () => {
+    const result = formatGhoUserData({
+      ghoReserveData: ghoMock.ghoReserveData,
+      ghoUserData: {
+        ...ghoMock.ghoUserData,
+        userDiscountTokenBalance: (10 ** 17).toString(),
+      },
+      currentTimestamp: 2,
+    });
+
+    expect(result.userGhoDiscountPercent).toEqual(0.1);
+    expect(result.userGhoAvailableToBorrowAtDiscount).toEqual(0);
+    expect(result.userDiscountTokenBalance).toEqual(0.1);
+    expect(result.userGhoBorrowBalance).toEqual(1.1000000063419584);
+    expect(result.userDiscountedGhoInterest).toEqual(0.9000000570776255);
+  });
+
   it('properly formats user summary with GHO discount', () => {
     const usdcUserMock = new UserReserveMock({ decimals: 6 })
       .supply(200)

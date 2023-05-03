@@ -107,6 +107,21 @@ export function formatGhoUserData({
   const formattedUserDiscountTokenBalance = Number(
     normalize(ghoUserData.userDiscountTokenBalance, 18),
   );
+
+  const formattedRequiredTokenBalanceForDiscount = Number(
+    normalize(ghoReserveData.ghoMinDiscountTokenBalanceForDiscount, 18),
+  );
+
+  let userGhoAvailableToBorrowAtDiscount =
+    Number(normalize(ghoReserveData.ghoDiscountedPerToken, 18)) *
+    formattedUserDiscountTokenBalance;
+
+  if (
+    formattedUserDiscountTokenBalance < formattedRequiredTokenBalanceForDiscount
+  ) {
+    userGhoAvailableToBorrowAtDiscount = 0;
+  }
+
   const userBalancePreDiscount = getCompoundedBalance({
     principalBalance: ghoUserData.userGhoScaledBorrowBalance,
     reserveIndex: ghoReserveData.ghoCurrentBorrowIndex,
@@ -130,10 +145,8 @@ export function formatGhoUserData({
     ),
     userDiscountTokenBalance: formattedUserDiscountTokenBalance,
     userGhoBorrowBalance: Number(normalize(userBorrowBalance, 18)),
-    userGhoAvailableToBorrowAtDiscount:
-      Number(normalize(ghoReserveData.ghoDiscountedPerToken, 18)) *
-      formattedUserDiscountTokenBalance,
     userDiscountedGhoInterest: Number(normalize(discount, 18)),
+    userGhoAvailableToBorrowAtDiscount,
   };
 }
 
