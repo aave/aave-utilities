@@ -1,16 +1,88 @@
-import { providers } from 'ethers';
-import { StackeUiDataProviderValidator } from '../commons/validators/methodValidators';
+import { providers, BigNumber } from 'ethers';
+import { StakeUiDataProviderValidator } from '../commons/validators/methodValidators';
 import { isEthAddress } from '../commons/validators/paramValidators';
-import { StakeUiHelperFactory } from './typechain/StakeUiHelperFactory';
-import { StakeUiHelperI } from './typechain/StakeUiHelperI';
-import {
-  GeneralStakeUIData,
-  GeneralStakeUIDataHumanized,
-  GetUserStakeUIData,
-  GetUserStakeUIDataHumanized,
-} from './types';
+import { StakedTokenDataProvider } from './typechain/StakedTokenDataProvider';
+import { StakedTokenDataProvider__factory } from './typechain/StakedTokenDataProviderFactory';
 
-export * from './types';
+export type GeneralStakeUIData = {
+  stkAaveData: {
+    stakedTokenTotalSupply: BigNumber;
+    stakeCooldownSeconds: BigNumber;
+    stakeUnstakeWindow: BigNumber;
+    rewardTokenPriceEth: BigNumber;
+    distributionEnd: BigNumber;
+    distributionPerSecond: BigNumber;
+    stakedTokenPriceEth: BigNumber;
+    stakeApy: BigNumber;
+  };
+  stkBptData: {
+    stakedTokenTotalSupply: BigNumber;
+    stakeCooldownSeconds: BigNumber;
+    stakeUnstakeWindow: BigNumber;
+    rewardTokenPriceEth: BigNumber;
+    distributionEnd: BigNumber;
+    distributionPerSecond: BigNumber;
+    stakedTokenPriceEth: BigNumber;
+    stakeApy: BigNumber;
+  };
+  ethPrice: BigNumber;
+};
+
+export type GetUserStakeUIData = {
+  stkAaveData: {
+    stakedTokenUserBalance: BigNumber;
+    underlyingTokenUserBalance: BigNumber;
+    userCooldownAmount: BigNumber;
+    rewardsToClaim: BigNumber;
+  };
+  stkBptData: {
+    stakedTokenUserBalance: BigNumber;
+    underlyingTokenUserBalance: BigNumber;
+    userCooldownAmount: BigNumber;
+    rewardsToClaim: BigNumber;
+  };
+  ethPrice: BigNumber;
+};
+
+export type GeneralStakeUIDataHumanized = {
+  aave: {
+    stakeTokenTotalSupply: string;
+    stakeCooldownSeconds: number;
+    stakeUnstakeWindow: number;
+    stakeTokenPriceEth: string;
+    rewardTokenPriceEth: string;
+    stakeApy: string;
+    distributionPerSecond: string;
+    distributionEnd: string;
+  };
+  bpt: {
+    stakeTokenTotalSupply: string;
+    stakeCooldownSeconds: number;
+    stakeUnstakeWindow: number;
+    stakeTokenPriceEth: string;
+    rewardTokenPriceEth: string;
+    stakeApy: string;
+    distributionPerSecond: string;
+    distributionEnd: string;
+  };
+  ethPriceUsd: string;
+};
+
+export type GetUserStakeUIDataHumanized = {
+  aave: {
+    stakeTokenUserBalance: string;
+    underlyingTokenUserBalance: string;
+    userCooldown: number;
+    userIncentivesToClaim: string;
+  };
+  bpt: {
+    stakeTokenUserBalance: string;
+    underlyingTokenUserBalance: string;
+    userCooldown: number;
+    userIncentivesToClaim: string;
+  };
+  ethPriceUsd: string;
+};
 
 export interface UiStakeDataProviderInterface {
   getUserStakeUIData: (params: { user: string }) => Promise<GetUserStakeUIData>;
@@ -27,84 +99,123 @@ export type UiStakeDataProviderContext = {
 };
 
 export class UiStakeDataProvider implements UiStakeDataProviderInterface {
-  private readonly _contract: StakeUiHelperI;
+  private readonly _contract: StakedTokenDataProvider;
 
   public constructor(context: UiStakeDataProviderContext) {
-    this._contract = StakeUiHelperFactory.connect(
+    this._contract = StakedTokenDataProvider__factory.connect(
       context.uiStakeDataProvider,
       context.provider,
     );
   }
 
-  @StackeUiDataProviderValidator
+  @StakeUiDataProviderValidator
   public async getUserStakeUIData(
     @isEthAddress('user') { user }: { user: string },
   ): Promise<GetUserStakeUIData> {
-    return this._contract.getUserStakeUIData(user);
+    const {
+      stkAaveData,
+      stkAaveUserData,
+      stkBptData,
+      stkBptUserData,
+      ethPrice,
+    } = await this._contract.getAllStakedTokenUserData(user);
+
+    return {
+      stkAaveData: {
+        ...stkAaveData,
+        stakedTokenUserBalance: stkAaveUserData.stakedTokenUserBalance,
+        underlyingTokenUserBalance: stkAaveUserData.underlyingTokenUserBalance,
+        userCooldownAmount: stkAaveUserData.userCooldownAmount,
+        rewardsToClaim: stkAaveUserData.rewardsToClaim,
+      },
+      stkBptData: {
+        ...stkBptData,
+        stakedTokenUserBalance: stkBptUserData.stakedTokenUserBalance,
+        underlyingTokenUserBalance: stkBptUserData.underlyingTokenUserBalance,
+        userCooldownAmount: stkBptUserData.userCooldownAmount,
+        rewardsToClaim: stkBptUserData.rewardsToClaim,
+      },
+      ethPrice,
+    };
   }
 
-  @StackeUiDataProviderValidator
+  @StakeUiDataProviderValidator
   public async getUserStakeUIDataHumanized(
     @isEthAddress('user') { user }: { user: string },
   ): Promise<GetUserStakeUIDataHumanized> {
-    const {
-      0: aave,
-      1: bpt,
-      2: usdPriceEth,
-    } = await this.getUserStakeUIData({ user });
+    const contractResult = await this.getUserStakeUIData({ user });
 
     return {
       aave: {
-        stakeTokenUserBalance: aave.stakeTokenUserBalance.toString(),
-        underlyingTokenUserBalance: aave.underlyingTokenUserBalance.toString(),
-        userCooldown: aave.userCooldown.toNumber(),
-        userIncentivesToClaim: aave.userIncentivesToClaim.toString(),
-        userPermitNonce: aave.userPermitNonce.toString(),
+        stakeTokenUserBalance:
+          contractResult.stkAaveData.stakedTokenUserBalance.toString(),
+        underlyingTokenUserBalance:
+          contractResult.stkAaveData.underlyingTokenUserBalance.toString(),
+        userCooldown: contractResult.stkAaveData.userCooldownAmount.toNumber(),
+        userIncentivesToClaim:
+          contractResult.stkAaveData.rewardsToClaim.toString(),
       },
       bpt: {
-        stakeTokenUserBalance: bpt.stakeTokenUserBalance.toString(),
-        underlyingTokenUserBalance: bpt.underlyingTokenUserBalance.toString(),
-        userCooldown: bpt.userCooldown.toNumber(),
-        userIncentivesToClaim: bpt.userIncentivesToClaim.toString(),
-        userPermitNonce: bpt.userPermitNonce.toString(),
+        stakeTokenUserBalance:
+          contractResult.stkBptData.stakedTokenUserBalance.toString(),
+        underlyingTokenUserBalance:
+          contractResult.stkBptData.underlyingTokenUserBalance.toString(),
+        userCooldown: contractResult.stkBptData.userCooldownAmount.toNumber(),
+        userIncentivesToClaim:
+          contractResult.stkBptData.rewardsToClaim.toString(),
       },
-      usdPriceEth: usdPriceEth.toString(),
+      ethPriceUsd: contractResult.ethPrice.toString(),
     };
   }
 
   public async getGeneralStakeUIData(): Promise<GeneralStakeUIData> {
-    return this._contract.getGeneralStakeUIData();
+    const { stkAaveData, stkBptData, ethPrice } =
+      await this._contract.getAllStakedTokenData();
+
+    return {
+      stkAaveData,
+      stkBptData,
+      ethPrice,
+    };
   }
 
   public async getGeneralStakeUIDataHumanized(): Promise<GeneralStakeUIDataHumanized> {
-    const {
-      0: aave,
-      1: bpt,
-      2: usdPriceEth,
-    } = await this.getGeneralStakeUIData();
+    const contractResult = await this.getGeneralStakeUIData();
 
     return {
       aave: {
-        stakeTokenTotalSupply: aave.stakeTokenTotalSupply.toString(),
-        stakeCooldownSeconds: aave.stakeCooldownSeconds.toNumber(),
-        stakeUnstakeWindow: aave.stakeUnstakeWindow.toNumber(),
-        stakeTokenPriceEth: aave.stakeTokenPriceEth.toString(),
-        rewardTokenPriceEth: aave.rewardTokenPriceEth.toString(),
-        stakeApy: aave.stakeApy.toString(),
-        distributionPerSecond: aave.distributionPerSecond.toString(),
-        distributionEnd: aave.distributionEnd.toString(),
+        stakeTokenTotalSupply:
+          contractResult.stkAaveData.stakedTokenTotalSupply.toString(),
+        stakeCooldownSeconds:
+          contractResult.stkAaveData.stakeCooldownSeconds.toNumber(),
+        stakeUnstakeWindow:
+          contractResult.stkAaveData.stakeUnstakeWindow.toNumber(),
+        stakeTokenPriceEth:
+          contractResult.stkAaveData.stakedTokenPriceEth.toString(),
+        rewardTokenPriceEth:
+          contractResult.stkAaveData.rewardTokenPriceEth.toString(),
+        stakeApy: contractResult.stkAaveData.stakeApy.toString(),
+        distributionPerSecond:
+          contractResult.stkAaveData.distributionPerSecond.toString(),
+        distributionEnd: contractResult.stkAaveData.distributionEnd.toString(),
       },
       bpt: {
-        stakeTokenTotalSupply: bpt.stakeTokenTotalSupply.toString(),
-        stakeCooldownSeconds: bpt.stakeCooldownSeconds.toNumber(),
-        stakeUnstakeWindow: bpt.stakeUnstakeWindow.toNumber(),
-        stakeTokenPriceEth: bpt.stakeTokenPriceEth.toString(),
-        rewardTokenPriceEth: bpt.rewardTokenPriceEth.toString(),
-        stakeApy: bpt.stakeApy.toString(),
-        distributionPerSecond: bpt.distributionPerSecond.toString(),
-        distributionEnd: bpt.distributionEnd.toString(),
+        stakeTokenTotalSupply:
+          contractResult.stkBptData.stakedTokenTotalSupply.toString(),
+        stakeCooldownSeconds:
+          contractResult.stkBptData.stakeCooldownSeconds.toNumber(),
+        stakeUnstakeWindow:
+          contractResult.stkBptData.stakeUnstakeWindow.toNumber(),
+        stakeTokenPriceEth:
+          contractResult.stkBptData.stakedTokenPriceEth.toString(),
+        rewardTokenPriceEth:
+          contractResult.stkBptData.rewardTokenPriceEth.toString(),
+        stakeApy: contractResult.stkBptData.stakeApy.toString(),
+        distributionPerSecond:
+          contractResult.stkBptData.distributionPerSecond.toString(),
+        distributionEnd: contractResult.stkBptData.distributionEnd.toString(),
       },
-      usdPriceEth: usdPriceEth.toString(),
+      ethPriceUsd: contractResult.ethPrice.toString(),
     };
   }
 }
