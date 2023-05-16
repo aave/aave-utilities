@@ -5,8 +5,8 @@ import {
   GetUserStakeUIDataHumanized,
   GetUserStakeUIDataRaw,
 } from './_mocks';
-import { StakeUiHelperFactory } from './typechain/StakeUiHelperFactory';
-import { StakeUiHelperI } from './typechain/StakeUiHelperI';
+import { StakedTokenDataProvider } from './typechain/StakedTokenDataProvider';
+import { StakedTokenDataProvider__factory } from './typechain/StakedTokenDataProviderFactory';
 import { UiStakeDataProvider, UiStakeDataProviderInterface } from './index';
 
 describe('UiStakeDataProvider', () => {
@@ -14,10 +14,10 @@ describe('UiStakeDataProvider', () => {
   const uiStakeDataProvider = '0x0000000000000000000000000000000000000002';
   const dataProvider: providers.Provider = new providers.JsonRpcProvider();
 
-  jest.spyOn(StakeUiHelperFactory, 'connect').mockReturnValue({
+  jest.spyOn(StakedTokenDataProvider__factory, 'connect').mockReturnValue({
     getGeneralStakeUIData: async () => Promise.resolve(GeneralStakeUIDataRaw),
     getUserStakeUIData: async () => Promise.resolve(GetUserStakeUIDataRaw),
-  } as unknown as StakeUiHelperI);
+  } as unknown as StakedTokenDataProvider);
 
   describe('Init', () => {
     it('Expects to create the instance', () => {
