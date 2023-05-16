@@ -585,6 +585,7 @@ export function GovDelegationValidator(
   };
 }
 
+/* istanbul ignore next */
 export function StakeUiDataProviderValidator(
   target: any,
   propertyName: string,
