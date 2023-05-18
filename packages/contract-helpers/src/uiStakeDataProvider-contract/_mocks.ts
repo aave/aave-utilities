@@ -150,6 +150,10 @@ export const GetUserStakeUIDataRaw = {
       _hex: '0x0',
       _isBigNumber: true,
     }),
+    stakedTokenRedeemableAmount: BigNumber.from({
+      _hex: '0x0',
+      _isBigNumber: true,
+    }),
     userCooldown: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
@@ -175,6 +179,10 @@ export const GetUserStakeUIDataRaw = {
       _isBigNumber: true,
     }),
     4: BigNumber.from({
+      _hex: '0x0',
+      _isBigNumber: true,
+    }),
+    5: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
     }),
@@ -188,6 +196,10 @@ export const GetUserStakeUIDataRaw = {
       _hex: '0x0',
       _isBigNumber: true,
     }),
+    stakedTokenRedeemableAmount: BigNumber.from({
+      _hex: '0x0',
+      _isBigNumber: true,
+    }),
     userCooldown: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
@@ -213,6 +225,10 @@ export const GetUserStakeUIDataRaw = {
       _isBigNumber: true,
     }),
     4: BigNumber.from({
+      _hex: '0x0',
+      _isBigNumber: true,
+    }),
+    5: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
     }),
@@ -234,6 +250,10 @@ export const GetUserStakeTotalsRaw = {
       _hex: '0x0',
       _isBigNumber: true,
     }),
+    stakedTokenRedeemableAmount: BigNumber.from({
+      _hex: '0x0',
+      _isBigNumber: true,
+    }),
     userCooldown: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
@@ -275,6 +295,10 @@ export const GetUserStakeTotalsRaw = {
       _isBigNumber: true,
     }),
     6: BigNumber.from({
+      _hex: '0x0',
+      _isBigNumber: true,
+    }),
+    7: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
     }),
@@ -288,6 +312,10 @@ export const GetUserStakeTotalsRaw = {
       _hex: '0x0',
       _isBigNumber: true,
     }),
+    stakedTokenRedeemableAmount: BigNumber.from({
+      _hex: '0x0',
+      _isBigNumber: true,
+    }),
     userCooldown: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
@@ -329,6 +357,10 @@ export const GetUserStakeTotalsRaw = {
       _isBigNumber: true,
     }),
     6: BigNumber.from({
+      _hex: '0x0',
+      _isBigNumber: true,
+    }),
+    7: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
     }),
@@ -367,12 +399,14 @@ export const GetUserStakeUIDataHumanized = {
   aave: {
     stakeTokenUserBalance: '0',
     underlyingTokenUserBalance: '0',
+    stakeTokenRedeemableAmount: '0',
     userCooldown: 0,
     userIncentivesToClaim: '0',
   },
   bpt: {
     stakeTokenUserBalance: '0',
     underlyingTokenUserBalance: '0',
+    stakeTokenRedeemableAmount: '0',
     userCooldown: 0,
     userIncentivesToClaim: '0',
   },

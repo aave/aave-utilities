@@ -1,71 +1,45 @@
 import { BigNumber } from 'ethers';
 
 export type GeneralStakeUIData = {
-  0: {
-    stakeTokenTotalSupply: BigNumber;
+  stkAaveData: {
+    stakedTokenTotalSupply: BigNumber;
     stakeCooldownSeconds: BigNumber;
     stakeUnstakeWindow: BigNumber;
-    stakeTokenPriceEth: BigNumber;
     rewardTokenPriceEth: BigNumber;
-    stakeApy: BigNumber;
-    distributionPerSecond: BigNumber;
     distributionEnd: BigNumber;
-    0: BigNumber;
-    1: BigNumber;
-    2: BigNumber;
-    3: BigNumber;
-    4: BigNumber;
-    5: BigNumber;
-    6: BigNumber;
-    7: BigNumber;
+    distributionPerSecond: BigNumber;
+    stakedTokenPriceEth: BigNumber;
+    stakeApy: BigNumber;
   };
-  1: {
-    stakeTokenTotalSupply: BigNumber;
+  stkBptData: {
+    stakedTokenTotalSupply: BigNumber;
     stakeCooldownSeconds: BigNumber;
     stakeUnstakeWindow: BigNumber;
-    stakeTokenPriceEth: BigNumber;
     rewardTokenPriceEth: BigNumber;
-    stakeApy: BigNumber;
-    distributionPerSecond: BigNumber;
     distributionEnd: BigNumber;
-    0: BigNumber;
-    1: BigNumber;
-    2: BigNumber;
-    3: BigNumber;
-    4: BigNumber;
-    5: BigNumber;
-    6: BigNumber;
-    7: BigNumber;
+    distributionPerSecond: BigNumber;
+    stakedTokenPriceEth: BigNumber;
+    stakeApy: BigNumber;
   };
-  2: BigNumber;
+  ethPrice: BigNumber;
 };
 
 export type GetUserStakeUIData = {
-  0: {
-    stakeTokenUserBalance: BigNumber;
+  stkAaveData: {
+    stakedTokenUserBalance: BigNumber;
     underlyingTokenUserBalance: BigNumber;
-    userCooldown: BigNumber;
-    userIncentivesToClaim: BigNumber;
-    userPermitNonce: BigNumber;
-    0: BigNumber;
-    1: BigNumber;
-    2: BigNumber;
-    3: BigNumber;
-    4: BigNumber;
+    stakedTokenRedeemableAmount: BigNumber;
+    userCooldownAmount: BigNumber;
+    rewardsToClaim: BigNumber;
   };
-  1: {
-    stakeTokenUserBalance: BigNumber;
+  stkBptData: {
+    stakedTokenUserBalance: BigNumber;
     underlyingTokenUserBalance: BigNumber;
-    userCooldown: BigNumber;
-    userIncentivesToClaim: BigNumber;
-    userPermitNonce: BigNumber;
-    0: BigNumber;
-    1: BigNumber;
-    2: BigNumber;
-    3: BigNumber;
-    4: BigNumber;
+    stakedTokenRedeemableAmount: BigNumber;
+    userCooldownAmount: BigNumber;
+    rewardsToClaim: BigNumber;
   };
-  2: BigNumber;
+  ethPrice: BigNumber;
 };
 
 export type GeneralStakeUIDataHumanized = {
@@ -89,23 +63,23 @@ export type GeneralStakeUIDataHumanized = {
     distributionPerSecond: string;
     distributionEnd: string;
   };
-  usdPriceEth: string;
+  ethPriceUsd: string;
 };
 
 export type GetUserStakeUIDataHumanized = {
   aave: {
     stakeTokenUserBalance: string;
     underlyingTokenUserBalance: string;
+    stakeTokenRedeemableAmount: string;
     userCooldown: number;
     userIncentivesToClaim: string;
-    userPermitNonce: string;
   };
   bpt: {
     stakeTokenUserBalance: string;
     underlyingTokenUserBalance: string;
+    stakeTokenRedeemableAmount: string;
     userCooldown: number;
     userIncentivesToClaim: string;
-    userPermitNonce: string;
   };
-  usdPriceEth: string;
+  ethPriceUsd: string;
 };

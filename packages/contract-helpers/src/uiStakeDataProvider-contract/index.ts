@@ -1,88 +1,14 @@
-import { providers, BigNumber } from 'ethers';
+import { providers } from 'ethers';
 import { StakeUiDataProviderValidator } from '../commons/validators/methodValidators';
 import { isEthAddress } from '../commons/validators/paramValidators';
 import { StakedTokenDataProvider } from './typechain/StakedTokenDataProvider';
 import { StakedTokenDataProvider__factory } from './typechain/StakedTokenDataProviderFactory';
-
-export type GeneralStakeUIData = {
-  stkAaveData: {
-    stakedTokenTotalSupply: BigNumber;
-    stakeCooldownSeconds: BigNumber;
-    stakeUnstakeWindow: BigNumber;
-    rewardTokenPriceEth: BigNumber;
-    distributionEnd: BigNumber;
-    distributionPerSecond: BigNumber;
-    stakedTokenPriceEth: BigNumber;
-    stakeApy: BigNumber;
-  };
-  stkBptData: {
-    stakedTokenTotalSupply: BigNumber;
-    stakeCooldownSeconds: BigNumber;
-    stakeUnstakeWindow: BigNumber;
-    rewardTokenPriceEth: BigNumber;
-    distributionEnd: BigNumber;
-    distributionPerSecond: BigNumber;
-    stakedTokenPriceEth: BigNumber;
-    stakeApy: BigNumber;
-  };
-  ethPrice: BigNumber;
-};
-
-export type GetUserStakeUIData = {
-  stkAaveData: {
-    stakedTokenUserBalance: BigNumber;
-    underlyingTokenUserBalance: BigNumber;
-    userCooldownAmount: BigNumber;
-    rewardsToClaim: BigNumber;
-  };
-  stkBptData: {
-    stakedTokenUserBalance: BigNumber;
-    underlyingTokenUserBalance: BigNumber;
-    userCooldownAmount: BigNumber;
-    rewardsToClaim: BigNumber;
-  };
-  ethPrice: BigNumber;
-};
-
-export type GeneralStakeUIDataHumanized = {
-  aave: {
-    stakeTokenTotalSupply: string;
-    stakeCooldownSeconds: number;
-    stakeUnstakeWindow: number;
-    stakeTokenPriceEth: string;
-    rewardTokenPriceEth: string;
-    stakeApy: string;
-    distributionPerSecond: string;
-    distributionEnd: string;
-  };
-  bpt: {
-    stakeTokenTotalSupply: string;
-    stakeCooldownSeconds: number;
-    stakeUnstakeWindow: number;
-    stakeTokenPriceEth: string;
-    rewardTokenPriceEth: string;
-    stakeApy: string;
-    distributionPerSecond: string;
-    distributionEnd: string;
-  };
-  ethPriceUsd: string;
-};
-
-export type GetUserStakeUIDataHumanized = {
-  aave: {
-    stakeTokenUserBalance: string;
-    underlyingTokenUserBalance: string;
-    userCooldown: number;
-    userIncentivesToClaim: string;
-  };
-  bpt: {
-    stakeTokenUserBalance: string;
-    underlyingTokenUserBalance: string;
-    userCooldown: number;
-    userIncentivesToClaim: string;
-  };
-  ethPriceUsd: string;
-};
+import {
+  GeneralStakeUIData,
+  GeneralStakeUIDataHumanized,
+  GetUserStakeUIData,
+  GetUserStakeUIDataHumanized,
+} from './types';
 
 export interface UiStakeDataProviderInterface {
   getUserStakeUIData: (params: { user: string }) => Promise<GetUserStakeUIData>;
@@ -125,6 +51,8 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
         ...stkAaveData,
         stakedTokenUserBalance: stkAaveUserData.stakedTokenUserBalance,
         underlyingTokenUserBalance: stkAaveUserData.underlyingTokenUserBalance,
+        stakedTokenRedeemableAmount:
+          stkAaveUserData.stakedTokenRedeemableAmount,
         userCooldownAmount: stkAaveUserData.userCooldownAmount,
         rewardsToClaim: stkAaveUserData.rewardsToClaim,
       },
@@ -132,6 +60,8 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
         ...stkBptData,
         stakedTokenUserBalance: stkBptUserData.stakedTokenUserBalance,
         underlyingTokenUserBalance: stkBptUserData.underlyingTokenUserBalance,
+        stakedTokenRedeemableAmount:
+          stkAaveUserData.stakedTokenRedeemableAmount,
         userCooldownAmount: stkBptUserData.userCooldownAmount,
         rewardsToClaim: stkBptUserData.rewardsToClaim,
       },
@@ -151,6 +81,8 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
           contractResult.stkAaveData.stakedTokenUserBalance.toString(),
         underlyingTokenUserBalance:
           contractResult.stkAaveData.underlyingTokenUserBalance.toString(),
+        stakeTokenRedeemableAmount:
+          contractResult.stkAaveData.stakedTokenRedeemableAmount.toString(),
         userCooldown: contractResult.stkAaveData.userCooldownAmount.toNumber(),
         userIncentivesToClaim:
           contractResult.stkAaveData.rewardsToClaim.toString(),
@@ -160,6 +92,8 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
           contractResult.stkBptData.stakedTokenUserBalance.toString(),
         underlyingTokenUserBalance:
           contractResult.stkBptData.underlyingTokenUserBalance.toString(),
+        stakeTokenRedeemableAmount:
+          contractResult.stkAaveData.stakedTokenRedeemableAmount.toString(),
         userCooldown: contractResult.stkBptData.userCooldownAmount.toNumber(),
         userIncentivesToClaim:
           contractResult.stkBptData.rewardsToClaim.toString(),
