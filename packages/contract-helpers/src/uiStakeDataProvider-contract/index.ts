@@ -60,8 +60,7 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
         ...stkBptData,
         stakedTokenUserBalance: stkBptUserData.stakedTokenUserBalance,
         underlyingTokenUserBalance: stkBptUserData.underlyingTokenUserBalance,
-        stakedTokenRedeemableAmount:
-          stkAaveUserData.stakedTokenRedeemableAmount,
+        stakedTokenRedeemableAmount: stkBptUserData.stakedTokenRedeemableAmount,
         userCooldownAmount: stkBptUserData.userCooldownAmount,
         rewardsToClaim: stkBptUserData.rewardsToClaim,
       },
@@ -93,7 +92,7 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
         underlyingTokenUserBalance:
           contractResult.stkBptData.underlyingTokenUserBalance.toString(),
         stakeTokenRedeemableAmount:
-          contractResult.stkAaveData.stakedTokenRedeemableAmount.toString(),
+          contractResult.stkBptData.stakedTokenRedeemableAmount.toString(),
         userCooldown: contractResult.stkBptData.userCooldownAmount.toNumber(),
         userIncentivesToClaim:
           contractResult.stkBptData.rewardsToClaim.toString(),
