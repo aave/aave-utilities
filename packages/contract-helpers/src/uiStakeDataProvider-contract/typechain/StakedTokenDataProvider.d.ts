@@ -396,8 +396,9 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         },
-        [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -422,8 +423,9 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         },
-        [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -454,10 +456,12 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           number,
           BigNumber
         ] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -482,8 +486,16 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         };
-        stkBptUserData: [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        stkBptUserData: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          number,
+          BigNumber
+        ] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -517,8 +529,9 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         },
-        [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -543,8 +556,9 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         },
-        [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -575,10 +589,12 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           number,
           BigNumber
         ] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -603,8 +619,16 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         };
-        stkBptUserData: [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        stkBptUserData: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          number,
+          BigNumber
+        ] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -730,8 +754,9 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         },
-        [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -761,10 +786,12 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           number,
           BigNumber
         ] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -797,8 +824,9 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         },
-        [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -828,10 +856,12 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           number,
           BigNumber
         ] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -864,8 +894,9 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         },
-        [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -891,8 +922,16 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         };
-        stkBptUserData: [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        stkBptUserData: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          number,
+          BigNumber
+        ] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -925,8 +964,9 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         },
-        [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -952,8 +992,16 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         };
-        stkBptUserData: [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        stkBptUserData: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          number,
+          BigNumber
+        ] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -1279,8 +1327,9 @@ export class StakedTokenDataProvider extends Contract {
         distributionPerSecond: BigNumber;
         distributionEnd: BigNumber;
       },
-      [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+      [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
         stakedTokenUserBalance: BigNumber;
+        stakedTokenRedeemableAmount: BigNumber;
         underlyingTokenUserBalance: BigNumber;
         rewardsToClaim: BigNumber;
         userCooldownTimestamp: number;
@@ -1305,8 +1354,9 @@ export class StakedTokenDataProvider extends Contract {
         distributionPerSecond: BigNumber;
         distributionEnd: BigNumber;
       },
-      [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+      [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
         stakedTokenUserBalance: BigNumber;
+        stakedTokenRedeemableAmount: BigNumber;
         underlyingTokenUserBalance: BigNumber;
         rewardsToClaim: BigNumber;
         userCooldownTimestamp: number;
@@ -1333,8 +1383,16 @@ export class StakedTokenDataProvider extends Contract {
         distributionPerSecond: BigNumber;
         distributionEnd: BigNumber;
       };
-      stkAaveUserData: [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+      stkAaveUserData: [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        number,
+        BigNumber
+      ] & {
         stakedTokenUserBalance: BigNumber;
+        stakedTokenRedeemableAmount: BigNumber;
         underlyingTokenUserBalance: BigNumber;
         rewardsToClaim: BigNumber;
         userCooldownTimestamp: number;
@@ -1359,8 +1417,16 @@ export class StakedTokenDataProvider extends Contract {
         distributionPerSecond: BigNumber;
         distributionEnd: BigNumber;
       };
-      stkBptUserData: [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+      stkBptUserData: [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        number,
+        BigNumber
+      ] & {
         stakedTokenUserBalance: BigNumber;
+        stakedTokenRedeemableAmount: BigNumber;
         underlyingTokenUserBalance: BigNumber;
         rewardsToClaim: BigNumber;
         userCooldownTimestamp: number;
@@ -1394,8 +1460,9 @@ export class StakedTokenDataProvider extends Contract {
         distributionPerSecond: BigNumber;
         distributionEnd: BigNumber;
       },
-      [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+      [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
         stakedTokenUserBalance: BigNumber;
+        stakedTokenRedeemableAmount: BigNumber;
         underlyingTokenUserBalance: BigNumber;
         rewardsToClaim: BigNumber;
         userCooldownTimestamp: number;
@@ -1420,8 +1487,9 @@ export class StakedTokenDataProvider extends Contract {
         distributionPerSecond: BigNumber;
         distributionEnd: BigNumber;
       },
-      [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+      [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
         stakedTokenUserBalance: BigNumber;
+        stakedTokenRedeemableAmount: BigNumber;
         underlyingTokenUserBalance: BigNumber;
         rewardsToClaim: BigNumber;
         userCooldownTimestamp: number;
@@ -1448,8 +1516,16 @@ export class StakedTokenDataProvider extends Contract {
         distributionPerSecond: BigNumber;
         distributionEnd: BigNumber;
       };
-      stkAaveUserData: [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+      stkAaveUserData: [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        number,
+        BigNumber
+      ] & {
         stakedTokenUserBalance: BigNumber;
+        stakedTokenRedeemableAmount: BigNumber;
         underlyingTokenUserBalance: BigNumber;
         rewardsToClaim: BigNumber;
         userCooldownTimestamp: number;
@@ -1474,8 +1550,16 @@ export class StakedTokenDataProvider extends Contract {
         distributionPerSecond: BigNumber;
         distributionEnd: BigNumber;
       };
-      stkBptUserData: [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+      stkBptUserData: [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        number,
+        BigNumber
+      ] & {
         stakedTokenUserBalance: BigNumber;
+        stakedTokenRedeemableAmount: BigNumber;
         underlyingTokenUserBalance: BigNumber;
         rewardsToClaim: BigNumber;
         userCooldownTimestamp: number;
@@ -1557,8 +1641,9 @@ export class StakedTokenDataProvider extends Contract {
         distributionPerSecond: BigNumber;
         distributionEnd: BigNumber;
       },
-      [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+      [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
         stakedTokenUserBalance: BigNumber;
+        stakedTokenRedeemableAmount: BigNumber;
         underlyingTokenUserBalance: BigNumber;
         rewardsToClaim: BigNumber;
         userCooldownTimestamp: number;
@@ -1584,8 +1669,16 @@ export class StakedTokenDataProvider extends Contract {
         distributionPerSecond: BigNumber;
         distributionEnd: BigNumber;
       };
-      stkAaveUserData: [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+      stkAaveUserData: [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        number,
+        BigNumber
+      ] & {
         stakedTokenUserBalance: BigNumber;
+        stakedTokenRedeemableAmount: BigNumber;
         underlyingTokenUserBalance: BigNumber;
         rewardsToClaim: BigNumber;
         userCooldownTimestamp: number;
@@ -1618,8 +1711,9 @@ export class StakedTokenDataProvider extends Contract {
         distributionPerSecond: BigNumber;
         distributionEnd: BigNumber;
       },
-      [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+      [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
         stakedTokenUserBalance: BigNumber;
+        stakedTokenRedeemableAmount: BigNumber;
         underlyingTokenUserBalance: BigNumber;
         rewardsToClaim: BigNumber;
         userCooldownTimestamp: number;
@@ -1645,8 +1739,16 @@ export class StakedTokenDataProvider extends Contract {
         distributionPerSecond: BigNumber;
         distributionEnd: BigNumber;
       };
-      stkAaveUserData: [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+      stkAaveUserData: [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        number,
+        BigNumber
+      ] & {
         stakedTokenUserBalance: BigNumber;
+        stakedTokenRedeemableAmount: BigNumber;
         underlyingTokenUserBalance: BigNumber;
         rewardsToClaim: BigNumber;
         userCooldownTimestamp: number;
@@ -1679,8 +1781,9 @@ export class StakedTokenDataProvider extends Contract {
         distributionPerSecond: BigNumber;
         distributionEnd: BigNumber;
       },
-      [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+      [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
         stakedTokenUserBalance: BigNumber;
+        stakedTokenRedeemableAmount: BigNumber;
         underlyingTokenUserBalance: BigNumber;
         rewardsToClaim: BigNumber;
         userCooldownTimestamp: number;
@@ -1706,8 +1809,16 @@ export class StakedTokenDataProvider extends Contract {
         distributionPerSecond: BigNumber;
         distributionEnd: BigNumber;
       };
-      stkBptUserData: [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+      stkBptUserData: [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        number,
+        BigNumber
+      ] & {
         stakedTokenUserBalance: BigNumber;
+        stakedTokenRedeemableAmount: BigNumber;
         underlyingTokenUserBalance: BigNumber;
         rewardsToClaim: BigNumber;
         userCooldownTimestamp: number;
@@ -1740,8 +1851,9 @@ export class StakedTokenDataProvider extends Contract {
         distributionPerSecond: BigNumber;
         distributionEnd: BigNumber;
       },
-      [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+      [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
         stakedTokenUserBalance: BigNumber;
+        stakedTokenRedeemableAmount: BigNumber;
         underlyingTokenUserBalance: BigNumber;
         rewardsToClaim: BigNumber;
         userCooldownTimestamp: number;
@@ -1767,8 +1879,16 @@ export class StakedTokenDataProvider extends Contract {
         distributionPerSecond: BigNumber;
         distributionEnd: BigNumber;
       };
-      stkBptUserData: [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+      stkBptUserData: [
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        number,
+        BigNumber
+      ] & {
         stakedTokenUserBalance: BigNumber;
+        stakedTokenRedeemableAmount: BigNumber;
         underlyingTokenUserBalance: BigNumber;
         rewardsToClaim: BigNumber;
         userCooldownTimestamp: number;
@@ -2050,8 +2170,9 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         },
-        [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -2076,8 +2197,9 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         },
-        [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -2108,10 +2230,12 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           number,
           BigNumber
         ] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -2136,8 +2260,16 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         };
-        stkBptUserData: [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        stkBptUserData: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          number,
+          BigNumber
+        ] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -2171,8 +2303,9 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         },
-        [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -2197,8 +2330,9 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         },
-        [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -2229,10 +2363,12 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           number,
           BigNumber
         ] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -2257,8 +2393,16 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         };
-        stkBptUserData: [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        stkBptUserData: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          number,
+          BigNumber
+        ] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -2340,8 +2484,9 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         },
-        [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -2371,10 +2516,12 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           number,
           BigNumber
         ] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -2407,8 +2554,9 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         },
-        [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -2438,10 +2586,12 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           number,
           BigNumber
         ] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -2474,8 +2624,9 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         },
-        [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -2501,8 +2652,16 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         };
-        stkBptUserData: [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        stkBptUserData: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          number,
+          BigNumber
+        ] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -2535,8 +2694,9 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         },
-        [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        [BigNumber, BigNumber, BigNumber, BigNumber, number, BigNumber] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
@@ -2562,8 +2722,16 @@ export class StakedTokenDataProvider extends Contract {
           distributionPerSecond: BigNumber;
           distributionEnd: BigNumber;
         };
-        stkBptUserData: [BigNumber, BigNumber, BigNumber, number, BigNumber] & {
+        stkBptUserData: [
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          BigNumber,
+          number,
+          BigNumber
+        ] & {
           stakedTokenUserBalance: BigNumber;
+          stakedTokenRedeemableAmount: BigNumber;
           underlyingTokenUserBalance: BigNumber;
           rewardsToClaim: BigNumber;
           userCooldownTimestamp: number;
