@@ -18,10 +18,13 @@ describe('UiStakeDataProvider', () => {
   jest.spyOn(StakedTokenDataProvider__factory, 'connect').mockReturnValue({
     getGeneralStakeUIData: async () => Promise.resolve(GeneralStakeUIDataRaw),
     getUserStakeUIData: async () => Promise.resolve(GetUserStakeUIDataRaw),
-    getGeneralStakeUIDataHumanized: async () => Promise.resolve(GeneralStakeUIDataHumanized),
-    getUserStakeUIDataHumanized: async () => Promise.resolve(GetUserStakeUIDataHumanized),
+    getGeneralStakeUIDataHumanized: async () =>
+      Promise.resolve(GeneralStakeUIDataHumanized),
+    getUserStakeUIDataHumanized: async () =>
+      Promise.resolve(GetUserStakeUIDataHumanized),
     getAllStakedTokenData: async () => Promise.resolve(GeneralStakeUIDataRaw),
-    getAllStakedTokenUserData: async () => Promise.resolve(GetUserStakeTotalsRaw),
+    getAllStakedTokenUserData: async () =>
+      Promise.resolve(GetUserStakeTotalsRaw),
   } as unknown as StakedTokenDataProvider);
 
   describe('Init', () => {
