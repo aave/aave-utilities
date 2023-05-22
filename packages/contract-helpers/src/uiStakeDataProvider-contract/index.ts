@@ -98,8 +98,8 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
         stakeTokenRedeemableAmount:
           contractResult.stkBptData.stakedTokenRedeemableAmount.toString(),
         userCooldownAmount:
-          contractResult.stkAaveData.userCooldownAmount.toString(),
-        userCooldownTimestamp: contractResult.stkAaveData.userCooldownTimestamp,
+          contractResult.stkBptData.userCooldownAmount.toString(),
+        userCooldownTimestamp: contractResult.stkBptData.userCooldownTimestamp,
         userIncentivesToClaim:
           contractResult.stkBptData.rewardsToClaim.toString(),
       },
