@@ -212,9 +212,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -231,9 +233,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -252,9 +256,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -271,9 +277,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -298,9 +306,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -317,9 +327,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -338,9 +350,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -357,9 +371,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -385,9 +401,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -412,9 +430,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -441,9 +461,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -475,9 +497,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -518,9 +542,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -545,9 +571,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -574,9 +602,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -608,9 +638,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -650,9 +682,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -670,9 +704,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -696,9 +732,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -716,9 +754,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -743,9 +783,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -771,9 +813,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -813,9 +857,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -841,9 +887,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -883,9 +931,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -911,9 +961,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -953,9 +1005,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -981,9 +1035,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -1022,9 +1078,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -1042,9 +1100,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -1068,9 +1128,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -1088,9 +1150,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -1143,9 +1207,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1162,9 +1228,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1183,9 +1251,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1202,9 +1272,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1229,9 +1301,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1248,9 +1322,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1269,9 +1345,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1288,9 +1366,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1316,9 +1396,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1343,9 +1425,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1372,9 +1456,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1406,9 +1492,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1449,9 +1537,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1476,9 +1566,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1505,9 +1597,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1539,9 +1633,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1580,9 +1676,11 @@ export class StakedTokenDataProvider extends Contract {
       BigNumber,
       BigNumber,
       BigNumber,
+      BigNumber,
       BigNumber
     ] & {
       stakedTokenTotalSupply: BigNumber;
+      stakedTokenTotalRedeemableAmount: BigNumber;
       stakeCooldownSeconds: BigNumber;
       stakeUnstakeWindow: BigNumber;
       stakedTokenPriceEth: BigNumber;
@@ -1604,9 +1702,11 @@ export class StakedTokenDataProvider extends Contract {
       BigNumber,
       BigNumber,
       BigNumber,
+      BigNumber,
       BigNumber
     ] & {
       stakedTokenTotalSupply: BigNumber;
+      stakedTokenTotalRedeemableAmount: BigNumber;
       stakeCooldownSeconds: BigNumber;
       stakeUnstakeWindow: BigNumber;
       stakedTokenPriceEth: BigNumber;
@@ -1630,9 +1730,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1658,9 +1760,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1700,9 +1804,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1728,9 +1834,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1770,9 +1878,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1798,9 +1908,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1840,9 +1952,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1868,9 +1982,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -1908,9 +2024,11 @@ export class StakedTokenDataProvider extends Contract {
       BigNumber,
       BigNumber,
       BigNumber,
+      BigNumber,
       BigNumber
     ] & {
       stakedTokenTotalSupply: BigNumber;
+      stakedTokenTotalRedeemableAmount: BigNumber;
       stakeCooldownSeconds: BigNumber;
       stakeUnstakeWindow: BigNumber;
       stakedTokenPriceEth: BigNumber;
@@ -1932,9 +2050,11 @@ export class StakedTokenDataProvider extends Contract {
       BigNumber,
       BigNumber,
       BigNumber,
+      BigNumber,
       BigNumber
     ] & {
       stakedTokenTotalSupply: BigNumber;
+      stakedTokenTotalRedeemableAmount: BigNumber;
       stakeCooldownSeconds: BigNumber;
       stakeUnstakeWindow: BigNumber;
       stakedTokenPriceEth: BigNumber;
@@ -1986,9 +2106,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2005,9 +2127,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2026,9 +2150,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2045,9 +2171,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2072,9 +2200,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2091,9 +2221,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2112,9 +2244,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2131,9 +2265,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2159,9 +2295,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2186,9 +2324,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2215,9 +2355,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2249,9 +2391,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2292,9 +2436,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2319,9 +2465,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2348,9 +2496,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2382,9 +2532,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2423,9 +2575,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -2447,9 +2601,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -2473,9 +2629,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2501,9 +2659,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2543,9 +2703,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2571,9 +2733,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2613,9 +2777,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2641,9 +2807,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2683,9 +2851,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2711,9 +2881,11 @@ export class StakedTokenDataProvider extends Contract {
           BigNumber,
           BigNumber,
           BigNumber,
+          BigNumber,
           BigNumber
         ] & {
           stakedTokenTotalSupply: BigNumber;
+          stakedTokenTotalRedeemableAmount: BigNumber;
           stakeCooldownSeconds: BigNumber;
           stakeUnstakeWindow: BigNumber;
           stakedTokenPriceEth: BigNumber;
@@ -2751,9 +2923,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
@@ -2775,9 +2949,11 @@ export class StakedTokenDataProvider extends Contract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         stakedTokenTotalSupply: BigNumber;
+        stakedTokenTotalRedeemableAmount: BigNumber;
         stakeCooldownSeconds: BigNumber;
         stakeUnstakeWindow: BigNumber;
         stakedTokenPriceEth: BigNumber;
