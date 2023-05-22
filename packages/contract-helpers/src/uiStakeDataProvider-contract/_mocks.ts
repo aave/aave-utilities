@@ -6,6 +6,10 @@ export const GeneralStakeUIDataRaw = {
       _hex: '0x0',
       _isBigNumber: true,
     }),
+    stakedTokenTotalRedeemableAmount: BigNumber.from({
+      _hex: '0x0',
+      _isBigNumber: true,
+    }),
     stakeCooldownSeconds: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
@@ -63,6 +67,10 @@ export const GeneralStakeUIDataRaw = {
       _isBigNumber: true,
     }),
     7: BigNumber.from({
+      _hex: '0x0',
+      _isBigNumber: true,
+    }),
+    8: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
     }),
@@ -72,6 +80,10 @@ export const GeneralStakeUIDataRaw = {
       _hex: '0x0',
       _isBigNumber: true,
     }),
+    stakedTokenTotalRedeemableAmount: BigNumber.from({
+      _hex: '0x0',
+      _isBigNumber: true,
+    }),
     stakeCooldownSeconds: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
@@ -129,6 +141,10 @@ export const GeneralStakeUIDataRaw = {
       _isBigNumber: true,
     }),
     7: BigNumber.from({
+      _hex: '0x0',
+      _isBigNumber: true,
+    }),
+    8: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
     }),
@@ -154,10 +170,11 @@ export const GetUserStakeUIDataRaw = {
       _hex: '0x0',
       _isBigNumber: true,
     }),
-    userCooldown: BigNumber.from({
+    userCooldownAmount: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
     }),
+    userCoolddownTimestamp: 0,
     userIncentivesToClaim: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
@@ -182,7 +199,8 @@ export const GetUserStakeUIDataRaw = {
       _hex: '0x0',
       _isBigNumber: true,
     }),
-    5: BigNumber.from({
+    5: 0,
+    6: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
     }),
@@ -200,10 +218,11 @@ export const GetUserStakeUIDataRaw = {
       _hex: '0x0',
       _isBigNumber: true,
     }),
-    userCooldown: BigNumber.from({
+    userCooldownAmount: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
     }),
+    userCooldownTimestamp: 0,
     userIncentivesToClaim: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
@@ -228,7 +247,8 @@ export const GetUserStakeUIDataRaw = {
       _hex: '0x0',
       _isBigNumber: true,
     }),
-    5: BigNumber.from({
+    5: 0,
+    6: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
     }),
@@ -254,7 +274,7 @@ export const GetUserStakeTotalsRaw = {
       _hex: '0x0',
       _isBigNumber: true,
     }),
-    userCooldown: BigNumber.from({
+    userCooldownAmount: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
     }),
@@ -262,10 +282,7 @@ export const GetUserStakeTotalsRaw = {
       _hex: '0x0',
       _isBigNumber: true,
     }),
-    userCooldownAmount: BigNumber.from({
-      _hex: '0x0',
-      _isBigNumber: true,
-    }),
+    userCooldownTimestamp: 0,
     rewardsToClaim: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
@@ -298,7 +315,8 @@ export const GetUserStakeTotalsRaw = {
       _hex: '0x0',
       _isBigNumber: true,
     }),
-    7: BigNumber.from({
+    7: 0,
+    8: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
     }),
@@ -316,7 +334,7 @@ export const GetUserStakeTotalsRaw = {
       _hex: '0x0',
       _isBigNumber: true,
     }),
-    userCooldown: BigNumber.from({
+    userCooldownAmount: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
     }),
@@ -324,10 +342,7 @@ export const GetUserStakeTotalsRaw = {
       _hex: '0x0',
       _isBigNumber: true,
     }),
-    userCooldownAmount: BigNumber.from({
-      _hex: '0x0',
-      _isBigNumber: true,
-    }),
+    userCooldownTimestamp: 0,
     rewardsToClaim: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
@@ -360,7 +375,8 @@ export const GetUserStakeTotalsRaw = {
       _hex: '0x0',
       _isBigNumber: true,
     }),
-    7: BigNumber.from({
+    7: 0,
+    8: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
     }),
@@ -374,6 +390,7 @@ export const GetUserStakeTotalsRaw = {
 export const GeneralStakeUIDataHumanized = {
   aave: {
     stakeTokenTotalSupply: '0',
+    stakeTokenTotalRedeemableAmount: '0',
     stakeCooldownSeconds: 0,
     stakeUnstakeWindow: 0,
     stakeTokenPriceEth: '0',
@@ -384,6 +401,7 @@ export const GeneralStakeUIDataHumanized = {
   },
   bpt: {
     stakeTokenTotalSupply: '0',
+    stakeTokenTotalRedeemableAmount: '0',
     stakeCooldownSeconds: 0,
     stakeUnstakeWindow: 0,
     stakeTokenPriceEth: '0',
@@ -400,14 +418,16 @@ export const GetUserStakeUIDataHumanized = {
     stakeTokenUserBalance: '0',
     underlyingTokenUserBalance: '0',
     stakeTokenRedeemableAmount: '0',
-    userCooldown: 0,
+    userCooldownTimestamp: 0,
+    userCooldownAmount: '0',
     userIncentivesToClaim: '0',
   },
   bpt: {
     stakeTokenUserBalance: '0',
     underlyingTokenUserBalance: '0',
     stakeTokenRedeemableAmount: '0',
-    userCooldown: 0,
+    userCooldownTimestamp: 0,
+    userCooldownAmount: '0',
     userIncentivesToClaim: '0',
   },
   ethPriceUsd: '0',

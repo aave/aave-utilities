@@ -54,6 +54,7 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
         stakedTokenRedeemableAmount:
           stkAaveUserData.stakedTokenRedeemableAmount,
         userCooldownAmount: stkAaveUserData.userCooldownAmount,
+        userCooldownTimestamp: stkAaveUserData.userCooldownTimestamp,
         rewardsToClaim: stkAaveUserData.rewardsToClaim,
       },
       stkBptData: {
@@ -62,6 +63,7 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
         underlyingTokenUserBalance: stkBptUserData.underlyingTokenUserBalance,
         stakedTokenRedeemableAmount: stkBptUserData.stakedTokenRedeemableAmount,
         userCooldownAmount: stkBptUserData.userCooldownAmount,
+        userCooldownTimestamp: stkBptUserData.userCooldownTimestamp,
         rewardsToClaim: stkBptUserData.rewardsToClaim,
       },
       ethPrice,
@@ -82,7 +84,9 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
           contractResult.stkAaveData.underlyingTokenUserBalance.toString(),
         stakeTokenRedeemableAmount:
           contractResult.stkAaveData.stakedTokenRedeemableAmount.toString(),
-        userCooldown: contractResult.stkAaveData.userCooldownAmount.toNumber(),
+        userCooldownAmount:
+          contractResult.stkAaveData.userCooldownAmount.toString(),
+        userCooldownTimestamp: contractResult.stkAaveData.userCooldownTimestamp,
         userIncentivesToClaim:
           contractResult.stkAaveData.rewardsToClaim.toString(),
       },
@@ -93,7 +97,9 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
           contractResult.stkBptData.underlyingTokenUserBalance.toString(),
         stakeTokenRedeemableAmount:
           contractResult.stkBptData.stakedTokenRedeemableAmount.toString(),
-        userCooldown: contractResult.stkBptData.userCooldownAmount.toNumber(),
+        userCooldownAmount:
+          contractResult.stkAaveData.userCooldownAmount.toString(),
+        userCooldownTimestamp: contractResult.stkAaveData.userCooldownTimestamp,
         userIncentivesToClaim:
           contractResult.stkBptData.rewardsToClaim.toString(),
       },
@@ -119,6 +125,8 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
       aave: {
         stakeTokenTotalSupply:
           contractResult.stkAaveData.stakedTokenTotalSupply.toString(),
+        stakeTokenTotalRedeemableAmount:
+          contractResult.stkAaveData.stakedTokenTotalRedeemableAmount.toString(),
         stakeCooldownSeconds:
           contractResult.stkAaveData.stakeCooldownSeconds.toNumber(),
         stakeUnstakeWindow:
@@ -135,6 +143,8 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
       bpt: {
         stakeTokenTotalSupply:
           contractResult.stkBptData.stakedTokenTotalSupply.toString(),
+        stakeTokenTotalRedeemableAmount:
+          contractResult.stkAaveData.stakedTokenTotalRedeemableAmount.toString(),
         stakeCooldownSeconds:
           contractResult.stkBptData.stakeCooldownSeconds.toNumber(),
         stakeUnstakeWindow:

@@ -3,6 +3,7 @@ import { BigNumber } from 'ethers';
 export type GeneralStakeUIData = {
   stkAaveData: {
     stakedTokenTotalSupply: BigNumber;
+    stakedTokenTotalRedeemableAmount: BigNumber;
     stakeCooldownSeconds: BigNumber;
     stakeUnstakeWindow: BigNumber;
     rewardTokenPriceEth: BigNumber;
@@ -13,6 +14,7 @@ export type GeneralStakeUIData = {
   };
   stkBptData: {
     stakedTokenTotalSupply: BigNumber;
+    stakedTokenTotalRedeemableAmount: BigNumber;
     stakeCooldownSeconds: BigNumber;
     stakeUnstakeWindow: BigNumber;
     rewardTokenPriceEth: BigNumber;
@@ -30,6 +32,7 @@ export type GetUserStakeUIData = {
     underlyingTokenUserBalance: BigNumber;
     stakedTokenRedeemableAmount: BigNumber;
     userCooldownAmount: BigNumber;
+    userCooldownTimestamp: number;
     rewardsToClaim: BigNumber;
   };
   stkBptData: {
@@ -37,6 +40,7 @@ export type GetUserStakeUIData = {
     underlyingTokenUserBalance: BigNumber;
     stakedTokenRedeemableAmount: BigNumber;
     userCooldownAmount: BigNumber;
+    userCooldownTimestamp: number;
     rewardsToClaim: BigNumber;
   };
   ethPrice: BigNumber;
@@ -45,6 +49,7 @@ export type GetUserStakeUIData = {
 export type GeneralStakeUIDataHumanized = {
   aave: {
     stakeTokenTotalSupply: string;
+    stakeTokenTotalRedeemableAmount: string;
     stakeCooldownSeconds: number;
     stakeUnstakeWindow: number;
     stakeTokenPriceEth: string;
@@ -55,6 +60,7 @@ export type GeneralStakeUIDataHumanized = {
   };
   bpt: {
     stakeTokenTotalSupply: string;
+    stakeTokenTotalRedeemableAmount: string;
     stakeCooldownSeconds: number;
     stakeUnstakeWindow: number;
     stakeTokenPriceEth: string;
@@ -71,14 +77,16 @@ export type GetUserStakeUIDataHumanized = {
     stakeTokenUserBalance: string;
     underlyingTokenUserBalance: string;
     stakeTokenRedeemableAmount: string;
-    userCooldown: number;
+    userCooldownAmount: string;
+    userCooldownTimestamp: number;
     userIncentivesToClaim: string;
   };
   bpt: {
     stakeTokenUserBalance: string;
     underlyingTokenUserBalance: string;
     stakeTokenRedeemableAmount: string;
-    userCooldown: number;
+    userCooldownAmount: string;
+    userCooldownTimestamp: number;
     userIncentivesToClaim: string;
   };
   ethPriceUsd: string;
