@@ -585,7 +585,7 @@ export function GovDelegationValidator(
   };
 }
 
-export function StackeUiDataProviderValidator(
+export function StakeUiDataProviderValidator(
   target: any,
   propertyName: string,
   descriptor: TypedPropertyDescriptor<any>,

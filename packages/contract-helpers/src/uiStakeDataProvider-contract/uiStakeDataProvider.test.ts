@@ -1,12 +1,13 @@
-import { providers } from 'ethers';
+import { BigNumber, providers } from 'ethers';
 import {
   GeneralStakeUIDataHumanized,
   GeneralStakeUIDataRaw,
+  GetUserStakeTotalsRaw,
   GetUserStakeUIDataHumanized,
   GetUserStakeUIDataRaw,
 } from './_mocks';
-import { StakeUiHelperFactory } from './typechain/StakeUiHelperFactory';
-import { StakeUiHelperI } from './typechain/StakeUiHelperI';
+import { StakedTokenDataProvider } from './typechain/StakedTokenDataProvider';
+import { StakedTokenDataProvider__factory } from './typechain/StakedTokenDataProviderFactory';
 import { UiStakeDataProvider, UiStakeDataProviderInterface } from './index';
 
 describe('UiStakeDataProvider', () => {
@@ -14,10 +15,17 @@ describe('UiStakeDataProvider', () => {
   const uiStakeDataProvider = '0x0000000000000000000000000000000000000002';
   const dataProvider: providers.Provider = new providers.JsonRpcProvider();
 
-  jest.spyOn(StakeUiHelperFactory, 'connect').mockReturnValue({
+  jest.spyOn(StakedTokenDataProvider__factory, 'connect').mockReturnValue({
     getGeneralStakeUIData: async () => Promise.resolve(GeneralStakeUIDataRaw),
     getUserStakeUIData: async () => Promise.resolve(GetUserStakeUIDataRaw),
-  } as unknown as StakeUiHelperI);
+    getGeneralStakeUIDataHumanized: async () =>
+      Promise.resolve(GeneralStakeUIDataHumanized),
+    getUserStakeUIDataHumanized: async () =>
+      Promise.resolve(GetUserStakeUIDataHumanized),
+    getAllStakedTokenData: async () => Promise.resolve(GeneralStakeUIDataRaw),
+    getAllStakedTokenUserData: async () =>
+      Promise.resolve(GetUserStakeTotalsRaw),
+  } as unknown as StakedTokenDataProvider);
 
   describe('Init', () => {
     it('Expects to create the instance', () => {
@@ -36,7 +44,9 @@ describe('UiStakeDataProvider', () => {
     });
     it('Expects to get user raw data', async () => {
       const rawData = await instance.getUserStakeUIData({ user });
-      expect(rawData).toEqual(GetUserStakeUIDataRaw);
+      expect(rawData.stkAaveData.stakedTokenUserBalance).toEqual(
+        BigNumber.from(0),
+      );
     });
     it('Expects to fail if user not eth address', async () => {
       const user = 'asdf';
