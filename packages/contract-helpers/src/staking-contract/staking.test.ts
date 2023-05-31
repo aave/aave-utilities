@@ -300,7 +300,9 @@ describe('StakingService', () => {
       const tx: transactionType = await stakeTxObj[0].tx();
       expect(tx.to).toEqual(TOKEN_STAKING_ADDRESS);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(gasLimitRecommendations[ProtocolAction.stake].limit),
+      );
 
       const decoded = utils.defaultAbiCoder.decode(
         ['address', 'uint256'],
@@ -313,7 +315,9 @@ describe('StakingService', () => {
       // gas price
       const gasPrice: GasType | null = await stakeTxObj[0].gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.stake].limit,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object when all params passed and no onBehalfOf with approval needed', async () => {
@@ -352,7 +356,9 @@ describe('StakingService', () => {
       const tx: transactionType = await stakeTxObj[1].tx();
       expect(tx.to).toEqual(TOKEN_STAKING_ADDRESS);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(gasLimitRecommendations[ProtocolAction.stake].limit),
+      );
 
       const decoded = utils.defaultAbiCoder.decode(
         ['address', 'uint256'],
@@ -366,7 +372,7 @@ describe('StakingService', () => {
       const gasPrice: GasType | null = await stakeTxObj[1].gas();
       expect(gasPrice).not.toBeNull();
       expect(gasPrice?.gasLimit).toEqual(
-        gasLimitRecommendations[ProtocolAction.default].limit,
+        gasLimitRecommendations[ProtocolAction.stake].limit,
       );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
@@ -600,7 +606,11 @@ describe('StakingService', () => {
       const tx: transactionType = await claimRewardsTxObj[0].tx();
       expect(tx.to).toEqual(TOKEN_STAKING_ADDRESS);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.claimRewards].limit,
+        ),
+      );
 
       const decoded = utils.defaultAbiCoder.decode(
         ['address', 'uint256'],
@@ -613,7 +623,9 @@ describe('StakingService', () => {
       // gas price
       const gasPrice: GasType | null = await claimRewardsTxObj[0].gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.claimRewards].limit,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object when all params passed with -1 amount', async () => {
@@ -628,7 +640,11 @@ describe('StakingService', () => {
       const tx: transactionType = await claimRewardsTxObj[0].tx();
       expect(tx.to).toEqual(TOKEN_STAKING_ADDRESS);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.claimRewards].limit,
+        ),
+      );
 
       const decoded = utils.defaultAbiCoder.decode(
         ['address', 'uint256'],
@@ -641,7 +657,9 @@ describe('StakingService', () => {
       // gas price
       const gasPrice: GasType | null = await claimRewardsTxObj[0].gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.claimRewards].limit,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects to fail when not initialized with TOKEN_STAKING_ADDRESS', async () => {
