@@ -119,6 +119,9 @@ export enum ProtocolAction {
   vote = 'vote',
   approval = 'approval',
   creditDelegationApproval = 'creditDelegationApproval',
+  stake = 'stake',
+  claimRewards = 'claimRewards',
+  setUsageAsCollateral = 'setUsageAsCollateral',
 }
 
 export enum GovernanceVote {

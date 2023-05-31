@@ -4,6 +4,7 @@ import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
   EthereumTransactionTypeExtended,
+  ProtocolAction,
   tEthereumAddress,
   transactionType,
 } from '../commons/types';
@@ -210,7 +211,6 @@ export class StakingService
       txs.push(approveTx);
     }
 
-    console.log(stakingContract);
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>
         stakingContract.populateTransaction.stake(
@@ -218,12 +218,17 @@ export class StakingService
           convertedAmount,
         ),
       from: user,
+      action: ProtocolAction.stake,
     });
 
     txs.push({
       tx: txCallback,
       txType: eEthereumTxType.STAKE_ACTION,
-      gas: this.generateTxPriceEstimation(txs, txCallback),
+      gas: this.generateTxPriceEstimation(
+        txs,
+        txCallback,
+        ProtocolAction.stake,
+      ),
     });
 
     return txs;
@@ -311,13 +316,18 @@ export class StakingService
         stakingContract.populateTransaction.claimRewards(user, convertedAmount),
       from: user,
       gasSurplus: 20,
+      action: ProtocolAction.claimRewards,
     });
 
     return [
       {
         tx: txCallback,
         txType: eEthereumTxType.STAKE_ACTION,
-        gas: this.generateTxPriceEstimation([], txCallback),
+        gas: this.generateTxPriceEstimation(
+          [],
+          txCallback,
+          ProtocolAction.claimRewards,
+        ),
       },
     ];
   }
