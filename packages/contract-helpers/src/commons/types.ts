@@ -121,6 +121,7 @@ export enum ProtocolAction {
   creditDelegationApproval = 'creditDelegationApproval',
   stake = 'stake',
   claimRewards = 'claimRewards',
+  claimRewardsAndStake = 'claimRewardsAndStake',
   setUsageAsCollateral = 'setUsageAsCollateral',
 }
 
