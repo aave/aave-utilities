@@ -1,4 +1,4 @@
-import { providers } from 'ethers';
+import { providers, CallOverrides } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import { UiPoolDataProvider as UiPoolDataProviderContract } from './typechain/UiPoolDataProvider';
 import { UiPoolDataProviderFactory } from './typechain/UiPoolDataProviderFactory';
@@ -36,6 +36,7 @@ export interface UiPoolDataProviderContext {
   uiPoolDataProviderAddress: string;
   provider: providers.Provider;
   chainId: number;
+  blockNumber?: number;
 }
 
 export interface UiPoolDataProviderInterface {
@@ -60,6 +61,8 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
   private readonly _contract: UiPoolDataProviderContract;
 
   private readonly chainId: number;
+
+  private readonly overrides: CallOverrides = {};
   /**
    * Constructor
    * @param context The ui pool data provider context
@@ -74,6 +77,9 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
       context.provider,
     );
     this.chainId = context.chainId;
+    if (context.blockNumber) {
+      this.overrides.blockTag = context.blockNumber;
+    }
   }
 
   /**
@@ -86,7 +92,10 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
       throw new Error('Lending pool address is not valid');
     }
 
-    return this._contract.getReservesList(lendingPoolAddressProvider);
+    return this._contract.getReservesList(
+      lendingPoolAddressProvider,
+      this.overrides,
+    );
   }
 
   /**
@@ -99,7 +108,10 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
       throw new Error('Lending pool address is not valid');
     }
 
-    return this._contract.getReservesData(lendingPoolAddressProvider);
+    return this._contract.getReservesData(
+      lendingPoolAddressProvider,
+      this.overrides,
+    );
   }
 
   /**
@@ -117,7 +129,11 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
       throw new Error('User address is not a valid ethereum address');
     }
 
-    return this._contract.getUserReservesData(lendingPoolAddressProvider, user);
+    return this._contract.getUserReservesData(
+      lendingPoolAddressProvider,
+      user,
+      this.overrides,
+    );
   }
 
   public async getReservesHumanized(

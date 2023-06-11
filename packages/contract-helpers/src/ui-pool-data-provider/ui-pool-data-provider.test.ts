@@ -49,6 +49,17 @@ describe('UiPoolDataProvider', () => {
 
       expect(instance instanceof UiPoolDataProvider).toEqual(true);
     });
+
+    it('should work if blocknumber provided', () => {
+      const instance = new UiPoolDataProvider({
+        uiPoolDataProviderAddress: mockValidEthereumAddress,
+        provider: new providers.JsonRpcProvider(),
+        chainId: 137,
+        blockNumber: 10000,
+      });
+
+      expect(instance instanceof UiPoolDataProvider).toEqual(true);
+    });
   });
 
   describe('getReservesList - to get 100% in coverage :( pointless test', () => {
