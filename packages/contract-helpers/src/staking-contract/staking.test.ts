@@ -6,8 +6,8 @@ import {
   transactionType,
 } from '../commons/types';
 import { gasLimitRecommendations, valueToWei } from '../commons/utils';
-import { IStakedToken } from './typechain/IStakedToken';
-import { IStakedToken__factory } from './typechain/IStakedToken__factory';
+import { IStakedAaveV3 } from './typechain/IStakedAaveV3';
+import { IStakedAaveV3__factory } from './typechain/IStakedAaveV3__factory';
 import { StakingService } from './index';
 
 jest.mock('../commons/gasStation', () => {
@@ -72,10 +72,12 @@ describe('StakingService', () => {
           address: '0x0000000000000000000000000000000000000006',
         }),
       );
-      const spy = jest.spyOn(IStakedToken__factory, 'connect').mockReturnValue({
-        STAKED_TOKEN: async () =>
-          Promise.resolve('0x0000000000000000000000000000000000000006'),
-      } as unknown as IStakedToken);
+      const spy = jest
+        .spyOn(IStakedAaveV3__factory, 'connect')
+        .mockReturnValue({
+          STAKED_TOKEN: async () =>
+            Promise.resolve('0x0000000000000000000000000000000000000006'),
+        } as unknown as IStakedAaveV3);
 
       const nonce = 1;
 
@@ -187,10 +189,12 @@ describe('StakingService', () => {
         .spyOn(instance.erc20Service, 'decimalsOf')
         .mockReturnValue(Promise.resolve(decimals));
 
-      const spy = jest.spyOn(IStakedToken__factory, 'connect').mockReturnValue({
-        STAKED_TOKEN: async () =>
-          Promise.resolve('0x0000000000000000000000000000000000000006'),
-      } as unknown as IStakedToken);
+      const spy = jest
+        .spyOn(IStakedAaveV3__factory, 'connect')
+        .mockReturnValue({
+          STAKED_TOKEN: async () =>
+            Promise.resolve('0x0000000000000000000000000000000000000006'),
+        } as unknown as IStakedAaveV3);
 
       const stakeTxObj = await instance.stakeWithPermit(
         user,
@@ -278,16 +282,18 @@ describe('StakingService', () => {
       jest.clearAllMocks();
     });
 
-    const { populateTransaction } = IStakedToken__factory.connect(
+    const { populateTransaction } = IStakedAaveV3__factory.connect(
       TOKEN_STAKING_ADDRESS,
       provider,
     );
     it('Expects the tx object when all params passed with no approval needed', async () => {
-      const spy = jest.spyOn(IStakedToken__factory, 'connect').mockReturnValue({
-        populateTransaction,
-        STAKED_TOKEN: async () =>
-          Promise.resolve('0x0000000000000000000000000000000000000006'),
-      } as unknown as IStakedToken);
+      const spy = jest
+        .spyOn(IStakedAaveV3__factory, 'connect')
+        .mockReturnValue({
+          populateTransaction,
+          STAKED_TOKEN: async () =>
+            Promise.resolve('0x0000000000000000000000000000000000000006'),
+        } as unknown as IStakedAaveV3);
       const instance = new StakingService(provider, { TOKEN_STAKING_ADDRESS });
 
       jest
@@ -307,7 +313,9 @@ describe('StakingService', () => {
       const tx: transactionType = await stakeTxObj[0].tx();
       expect(tx.to).toEqual(TOKEN_STAKING_ADDRESS);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(gasLimitRecommendations[ProtocolAction.stake].limit),
+      );
 
       const decoded = utils.defaultAbiCoder.decode(
         ['address', 'uint256'],
@@ -320,15 +328,19 @@ describe('StakingService', () => {
       // gas price
       const gasPrice: GasType | null = await stakeTxObj[0].gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.stake].limit,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object when all params passed and no onBehalfOf with approval needed', async () => {
-      const spy = jest.spyOn(IStakedToken__factory, 'connect').mockReturnValue({
-        populateTransaction,
-        STAKED_TOKEN: async () =>
-          Promise.resolve('0x0000000000000000000000000000000000000006'),
-      } as unknown as IStakedToken);
+      const spy = jest
+        .spyOn(IStakedAaveV3__factory, 'connect')
+        .mockReturnValue({
+          populateTransaction,
+          STAKED_TOKEN: async () =>
+            Promise.resolve('0x0000000000000000000000000000000000000006'),
+        } as unknown as IStakedAaveV3);
       const instance = new StakingService(provider, { TOKEN_STAKING_ADDRESS });
 
       jest
@@ -359,7 +371,9 @@ describe('StakingService', () => {
       const tx: transactionType = await stakeTxObj[1].tx();
       expect(tx.to).toEqual(TOKEN_STAKING_ADDRESS);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(gasLimitRecommendations[ProtocolAction.stake].limit),
+      );
 
       const decoded = utils.defaultAbiCoder.decode(
         ['address', 'uint256'],
@@ -373,7 +387,7 @@ describe('StakingService', () => {
       const gasPrice: GasType | null = await stakeTxObj[1].gas();
       expect(gasPrice).not.toBeNull();
       expect(gasPrice?.gasLimit).toEqual(
-        gasLimitRecommendations[ProtocolAction.default].limit,
+        gasLimitRecommendations[ProtocolAction.stake].limit,
       );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
@@ -422,16 +436,18 @@ describe('StakingService', () => {
       jest.clearAllMocks();
     });
 
-    const { populateTransaction } = IStakedToken__factory.connect(
+    const { populateTransaction } = IStakedAaveV3__factory.connect(
       TOKEN_STAKING_ADDRESS,
       provider,
     );
     it('Expects the tx object when all params passed and specific amount', async () => {
-      const spy = jest.spyOn(IStakedToken__factory, 'connect').mockReturnValue({
-        populateTransaction,
-        STAKED_TOKEN: async () =>
-          Promise.resolve('0x0000000000000000000000000000000000000006'),
-      } as unknown as IStakedToken);
+      const spy = jest
+        .spyOn(IStakedAaveV3__factory, 'connect')
+        .mockReturnValue({
+          populateTransaction,
+          STAKED_TOKEN: async () =>
+            Promise.resolve('0x0000000000000000000000000000000000000006'),
+        } as unknown as IStakedAaveV3);
       const instance = new StakingService(provider, { TOKEN_STAKING_ADDRESS });
 
       jest
@@ -464,11 +480,13 @@ describe('StakingService', () => {
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object when all params passed and -1 amount', async () => {
-      const spy = jest.spyOn(IStakedToken__factory, 'connect').mockReturnValue({
-        populateTransaction,
-        STAKED_TOKEN: async () =>
-          Promise.resolve('0x0000000000000000000000000000000000000006'),
-      } as unknown as IStakedToken);
+      const spy = jest
+        .spyOn(IStakedAaveV3__factory, 'connect')
+        .mockReturnValue({
+          populateTransaction,
+          STAKED_TOKEN: async () =>
+            Promise.resolve('0x0000000000000000000000000000000000000006'),
+        } as unknown as IStakedAaveV3);
       const instance = new StakingService(provider, { TOKEN_STAKING_ADDRESS });
 
       const amount = '-1';
@@ -528,6 +546,145 @@ describe('StakingService', () => {
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
   });
+  describe('claimRewardsAndStake', () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    const { populateTransaction } = IStakedAaveV3__factory.connect(
+      TOKEN_STAKING_ADDRESS,
+      provider,
+    );
+    it('Expects the tx object when all params passed and specific amount', async () => {
+      const spy = jest
+        .spyOn(IStakedAaveV3__factory, 'connect')
+        .mockReturnValue({
+          populateTransaction,
+          STAKED_TOKEN: async () =>
+            Promise.resolve('0x0000000000000000000000000000000000000006'),
+        } as unknown as IStakedAaveV3);
+      const instance = new StakingService(provider, {
+        TOKEN_STAKING_ADDRESS,
+      });
+
+      jest
+        .spyOn(instance.erc20Service, 'decimalsOf')
+        .mockReturnValueOnce(Promise.resolve(decimals));
+
+      const redeemAndStakeTxObj = await instance.claimRewardsAndStake(
+        user,
+        amount,
+      );
+      console.log(redeemAndStakeTxObj);
+
+      expect(spy).toHaveBeenCalled();
+      expect(redeemAndStakeTxObj.length).toEqual(1);
+      expect(redeemAndStakeTxObj[0].txType).toEqual(
+        eEthereumTxType.STAKE_ACTION,
+      );
+
+      const tx: transactionType = await redeemAndStakeTxObj[0].tx();
+      expect(tx.to).toEqual(TOKEN_STAKING_ADDRESS);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(user);
+      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
+
+      // gas price
+      const gasPrice: GasType | null = await redeemAndStakeTxObj[0].gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects the tx object when all params passed and -1 amount', async () => {
+      const spy = jest
+        .spyOn(IStakedAaveV3__factory, 'connect')
+        .mockReturnValue({
+          populateTransaction,
+          STAKED_TOKEN: async () =>
+            Promise.resolve('0x0000000000000000000000000000000000000006'),
+        } as unknown as IStakedAaveV3);
+      const instance = new StakingService(provider, {
+        TOKEN_STAKING_ADDRESS,
+      });
+
+      const amount = '-1';
+      const redeemAndStakeTxObj = await instance.claimRewardsAndStake(
+        user,
+        amount,
+      );
+
+      expect(spy).toHaveBeenCalled();
+      expect(redeemAndStakeTxObj.length).toEqual(1);
+      expect(redeemAndStakeTxObj[0].txType).toEqual(
+        eEthereumTxType.STAKE_ACTION,
+      );
+
+      const tx: transactionType = await redeemAndStakeTxObj[0].tx();
+      expect(tx.to).toEqual(TOKEN_STAKING_ADDRESS);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+
+      const decoded = utils.defaultAbiCoder.decode(
+        ['address', 'uint256'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
+
+      expect(decoded[0]).toEqual(user);
+      expect(decoded[1]).toEqual(constants.MaxUint256);
+
+      // gas price
+      const gasPrice: GasType | null = await redeemAndStakeTxObj[0].gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects to fail when not initialized with TOKEN_STAKING_ADDRESS', async () => {
+      const instance = new StakingService(provider, {
+        TOKEN_STAKING_ADDRESS: 'asdf',
+      });
+      const claimRewardsAndStake = await instance.claimRewardsAndStake(
+        user,
+        amount,
+      );
+      expect(claimRewardsAndStake).toEqual([]);
+    });
+    it('Expects to fail when user not eth address', async () => {
+      const instance = new StakingService(provider, {
+        TOKEN_STAKING_ADDRESS,
+      });
+      const user = 'asdf';
+      await expect(async () =>
+        instance.claimRewardsAndStake(user, amount),
+      ).rejects.toThrowError(
+        `Address: ${user} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when amount not positive', async () => {
+      const instance = new StakingService(provider, {
+        TOKEN_STAKING_ADDRESS,
+      });
+      const amount = '0';
+      await expect(async () =>
+        instance.claimRewardsAndStake(user, amount),
+      ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
+    });
+    it('Expects to fail when amount not number', async () => {
+      const instance = new StakingService(provider, {
+        TOKEN_STAKING_ADDRESS,
+      });
+      const amount = 'asdf';
+      await expect(async () =>
+        instance.claimRewardsAndStake(user, amount),
+      ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
+    });
+  });
   describe('cooldown', () => {
     afterEach(() => {
       jest.clearAllMocks();
@@ -582,16 +739,18 @@ describe('StakingService', () => {
       jest.clearAllMocks();
     });
 
-    const { populateTransaction } = IStakedToken__factory.connect(
+    const { populateTransaction } = IStakedAaveV3__factory.connect(
       TOKEN_STAKING_ADDRESS,
       provider,
     );
     it('Expects the tx object when all params passed with specific amount', async () => {
-      const spy = jest.spyOn(IStakedToken__factory, 'connect').mockReturnValue({
-        populateTransaction,
-        REWARD_TOKEN: async () =>
-          Promise.resolve('0x0000000000000000000000000000000000000006'),
-      } as unknown as IStakedToken);
+      const spy = jest
+        .spyOn(IStakedAaveV3__factory, 'connect')
+        .mockReturnValue({
+          populateTransaction,
+          REWARD_TOKEN: async () =>
+            Promise.resolve('0x0000000000000000000000000000000000000006'),
+        } as unknown as IStakedAaveV3);
       const instance = new StakingService(provider, { TOKEN_STAKING_ADDRESS });
 
       jest
@@ -607,7 +766,11 @@ describe('StakingService', () => {
       const tx: transactionType = await claimRewardsTxObj[0].tx();
       expect(tx.to).toEqual(TOKEN_STAKING_ADDRESS);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.claimRewards].limit,
+        ),
+      );
 
       const decoded = utils.defaultAbiCoder.decode(
         ['address', 'uint256'],
@@ -620,7 +783,9 @@ describe('StakingService', () => {
       // gas price
       const gasPrice: GasType | null = await claimRewardsTxObj[0].gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.claimRewards].limit,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object when all params passed with -1 amount', async () => {
@@ -635,7 +800,11 @@ describe('StakingService', () => {
       const tx: transactionType = await claimRewardsTxObj[0].tx();
       expect(tx.to).toEqual(TOKEN_STAKING_ADDRESS);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.claimRewards].limit,
+        ),
+      );
 
       const decoded = utils.defaultAbiCoder.decode(
         ['address', 'uint256'],
@@ -648,7 +817,9 @@ describe('StakingService', () => {
       // gas price
       const gasPrice: GasType | null = await claimRewardsTxObj[0].gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.claimRewards].limit,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects to fail when not initialized with TOKEN_STAKING_ADDRESS', async () => {

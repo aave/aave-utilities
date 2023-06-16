@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.17.7 (2023-06-16)
+
+**Note:** Version bump only for package @aave/contract-helpers
+
+
+
+
+
+## 1.17.6 (2023-06-01)
+
+
+### Bug Fixes
+
+* gas limits ([#543](https://github.com/aave/aave-utilities/issues/543)) ([cd4e533](https://github.com/aave/aave-utilities/commit/cd4e533c8c469306abaf4a9c1b0a1066b59cf875))
+
+
+
+
+
+## 1.17.5 (2023-05-23)
+
+**Note:** Version bump only for package @aave/contract-helpers
+
+
+
+
+
+## 1.17.4 (2023-05-05)
+
+**Note:** Version bump only for package @aave/contract-helpers
+
+
+
+
+
 ## 1.17.3 (2023-05-02)
 
 ### Bug Fixes

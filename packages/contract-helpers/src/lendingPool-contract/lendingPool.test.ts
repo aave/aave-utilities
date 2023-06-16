@@ -1468,7 +1468,11 @@ describe('LendingPool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(LENDING_POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.setUsageAsCollateral].limit,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -1482,7 +1486,9 @@ describe('LendingPool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.setUsageAsCollateral].limit,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object passing all params with usage as collateral false', async () => {
@@ -1503,7 +1509,11 @@ describe('LendingPool', () => {
       const tx: transactionType = await txObj.tx();
       expect(tx.to).toEqual(LENDING_POOL);
       expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      expect(tx.gasLimit).toEqual(
+        BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.setUsageAsCollateral].limit,
+        ),
+      );
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
 
       const decoded = utils.defaultAbiCoder.decode(
@@ -1517,7 +1527,9 @@ describe('LendingPool', () => {
       // gas price
       const gasPrice: GasType | null = await txObj.gas();
       expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasLimit).toEqual(
+        gasLimitRecommendations[ProtocolAction.setUsageAsCollateral].limit,
+      );
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects to fail when lendingPoolAddress not provided', () => {

@@ -118,6 +118,18 @@ export const gasLimitRecommendations: GasRecommendationType = {
     limit: '125000',
     recommended: '125000',
   },
+  [ProtocolAction.stake]: {
+    limit: '395000',
+    recommended: '395000',
+  },
+  [ProtocolAction.claimRewards]: {
+    limit: '275000',
+    recommended: '275000',
+  },
+  [ProtocolAction.setUsageAsCollateral]: {
+    limit: '138000',
+    recommended: '138000',
+  },
 };
 
 export const mintAmountsPerToken: Record<string, string> = {
