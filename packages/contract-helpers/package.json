@@ -1,6 +1,6 @@
 {
   "name": "@aave/contract-helpers",
-  "version": "1.17.6",
+  "version": "1.17.7",
   "sideEffects": false,
   "license": "MIT",
   "description": "",
