@@ -158,10 +158,10 @@ describe('StakingService', () => {
           address: '0x0000000000000000000000000000000000000006',
         }),
       );
-      jest.spyOn(IStakedToken__factory, 'connect').mockReturnValue({
+      jest.spyOn(IStakedAaveV3__factory, 'connect').mockReturnValue({
         STAKED_TOKEN: async () =>
           Promise.resolve('0x0000000000000000000000000000000000000006'),
-      } as unknown as IStakedToken);
+      } as unknown as IStakedAaveV3);
 
       jest
         .spyOn(instance.erc20_2612Service, 'getNonce')
