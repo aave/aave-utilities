@@ -2,6 +2,7 @@ import { providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import { UiPoolDataProvider as UiPoolDataProviderContract } from './typechain/UiPoolDataProvider';
 import { UiPoolDataProviderFactory } from './typechain/UiPoolDataProviderFactory';
+import { ChainId } from '../commons/types';
 import {
   ReservesData,
   UserReserveData,
@@ -32,6 +33,8 @@ const ammSymbolMap: Record<string, string> = {
   '0x59a19d8c652fa0284f44113d0ff9aba70bd46fb4': 'BPTBALWETH',
 };
 
+const bridgedUSDCAddress = "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8".toLowerCase();
+
 export interface UiPoolDataProviderContext {
   uiPoolDataProviderAddress: string;
   provider: providers.Provider;
@@ -60,6 +63,20 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
   private readonly _contract: UiPoolDataProviderContract;
 
   private readonly chainId: number;
+
+  private filterReserveData(reservesRaw: ReservesData[0]): ReservesData[0] {
+    //replace the symbol USDC with USDC.e if we are on arbitrum
+    if (this.chainId == ChainId.arbitrum_one) {
+      reservesRaw.forEach((reserve) => {
+        if (reserve.underlyingAsset.toLowerCase() == bridgedUSDCAddress) {
+          reserve.symbol = 'USDC.e';
+        }
+      });
+    }
+
+    return reservesRaw;
+  }
+
   /**
    * Constructor
    * @param context The ui pool data provider context
@@ -99,7 +116,10 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
       throw new Error('Lending pool address is not valid');
     }
 
-    return this._contract.getReservesData(lendingPoolAddressProvider);
+    let rawData = await this._contract.getReservesData(lendingPoolAddressProvider);
+
+    rawData[0] = this.filterReserveData(rawData[0]);
+    return rawData;
   }
 
   /**
