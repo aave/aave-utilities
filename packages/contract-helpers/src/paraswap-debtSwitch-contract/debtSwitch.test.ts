@@ -66,7 +66,6 @@ describe('DebtSwitchAdapterService', () => {
         sigV: 0,
       });
 
-      console.log(txObj);
       expect(txObj.from).toEqual(user);
       expect(txObj.to).toEqual(debtSwitchAdapterAddress);
       // function selector
