@@ -22,6 +22,7 @@ export type DebtSwitchType = {
   repayAll: boolean;
   txCalldata: string;
   deadline: BigNumberish;
+  signedAmount: string;
   sigV: BigNumberish;
   sigR: BytesLike;
   sigS: BytesLike;
@@ -61,6 +62,7 @@ export class DebtSwitchAdapterService
     sigV,
     sigR,
     sigS,
+    signedAmount,
   }: DebtSwitchType): PopulatedTransaction {
     const txParamsStruct: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct = {
       debtAsset,
@@ -75,7 +77,7 @@ export class DebtSwitchAdapterService
     const creditDelParamsStruct: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct =
       {
         debtToken: newDebtAsset,
-        value: maxNewDebtAmount,
+        value: signedAmount,
         deadline,
         v: sigV,
         r: sigR,
