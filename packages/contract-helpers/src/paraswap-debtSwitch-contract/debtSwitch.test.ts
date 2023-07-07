@@ -26,10 +26,11 @@ describe('DebtSwitchAdapterService', () => {
   });
   describe('debtSwitch', () => {
     const user = '0x0000000000000000000000000000000000000002';
-    const debtAsset = '0x0000000000000000000000000000000000000003';
+    const debtAssetUnderlying = '0x0000000000000000000000000000000000000003';
     const debtRepayAmount = '1000000';
     const debtRateMode = 2;
-    const newDebtAsset = '0x0000000000000000000000000000000000000004';
+    const newAssetUnderlying = '0x0000000000000000000000000000000000000004';
+    const newAssetDebtToken = '0x0000000000000000000000000000000000000005';
     const maxNewDebtAmount = '1000000';
     const signedAmount = '1500000';
 
@@ -54,12 +55,13 @@ describe('DebtSwitchAdapterService', () => {
     it('Expects the tx object when sending all correct params', async () => {
       const txObj: PopulatedTransaction = swapInstance.debtSwitch({
         user,
-        debtAsset,
+        debtAssetUnderlying,
         debtRepayAmount,
         debtRateMode,
         txCalldata,
         repayAll,
-        newDebtAsset,
+        newAssetUnderlying,
+        newAssetDebtToken,
         maxNewDebtAmount,
         deadline: 0,
         sigR: '0x0000000000000000000000000000000000000000000000000000000000000000',
@@ -75,12 +77,13 @@ describe('DebtSwitchAdapterService', () => {
 
       const txObjRepayAllFalse: PopulatedTransaction = swapInstance.debtSwitch({
         user,
-        debtAsset,
+        debtAssetUnderlying,
         debtRepayAmount,
         debtRateMode,
         txCalldata,
         repayAll: false,
-        newDebtAsset,
+        newAssetUnderlying,
+        newAssetDebtToken,
         maxNewDebtAmount,
         deadline: 0,
         sigR: '0x0000000000000000000000000000000000000000000000000000000000000000',

@@ -14,10 +14,11 @@ import { ParaSwapDebtSwapAdapter__factory } from './typechain/ParaSwapDebtSwitch
 
 export type DebtSwitchType = {
   user: string;
-  debtAsset: string;
+  debtAssetUnderlying: string;
   debtRepayAmount: string;
   debtRateMode: number;
-  newDebtAsset: string;
+  newAssetDebtToken: string;
+  newAssetUnderlying: string;
   maxNewDebtAmount: string;
   repayAll: boolean;
   txCalldata: string;
@@ -51,10 +52,11 @@ export class DebtSwitchAdapterService
 
   public debtSwitch({
     user,
-    debtAsset,
+    debtAssetUnderlying,
     debtRepayAmount,
     debtRateMode,
-    newDebtAsset,
+    newAssetDebtToken,
+    newAssetUnderlying,
     maxNewDebtAmount,
     repayAll,
     txCalldata,
@@ -65,10 +67,10 @@ export class DebtSwitchAdapterService
     signedAmount,
   }: DebtSwitchType): PopulatedTransaction {
     const txParamsStruct: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct = {
-      debtAsset,
+      debtAsset: debtAssetUnderlying,
       debtRepayAmount,
       debtRateMode,
-      newDebtAsset,
+      newDebtAsset: newAssetUnderlying,
       maxNewDebtAmount,
       offset: repayAll ? augustusToAmountOffsetFromCalldata(txCalldata) : 0,
       paraswapData: txCalldata,
@@ -76,7 +78,7 @@ export class DebtSwitchAdapterService
 
     const creditDelParamsStruct: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct =
       {
-        debtToken: newDebtAsset,
+        debtToken: newAssetDebtToken,
         value: signedAmount,
         deadline,
         v: sigV,
