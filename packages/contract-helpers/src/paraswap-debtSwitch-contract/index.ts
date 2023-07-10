@@ -3,6 +3,7 @@ import {
   BytesLike,
   PopulatedTransaction,
   providers,
+  utils,
 } from 'ethers';
 import BaseService from '../commons/BaseService';
 import { augustusToAmountOffsetFromCalldata } from '../commons/utils';
@@ -22,6 +23,7 @@ export type DebtSwitchType = {
   maxNewDebtAmount: string;
   repayAll: boolean;
   txCalldata: string;
+  augustus: string;
   deadline: BigNumberish;
   signedAmount: string;
   sigV: BigNumberish;
@@ -60,12 +62,18 @@ export class DebtSwitchAdapterService
     maxNewDebtAmount,
     repayAll,
     txCalldata,
+    augustus,
     deadline,
     sigV,
     sigR,
     sigS,
     signedAmount,
   }: DebtSwitchType): PopulatedTransaction {
+    const callDataEncoded = utils.defaultAbiCoder.encode(
+      ['bytes', 'address'],
+      [txCalldata, augustus],
+    );
+
     const txParamsStruct: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct = {
       debtAsset: debtAssetUnderlying,
       debtRepayAmount,
@@ -73,7 +81,7 @@ export class DebtSwitchAdapterService
       newDebtAsset: newAssetUnderlying,
       maxNewDebtAmount,
       offset: repayAll ? augustusToAmountOffsetFromCalldata(txCalldata) : 0,
-      paraswapData: txCalldata,
+      paraswapData: callDataEncoded,
     };
 
     const creditDelParamsStruct: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct =

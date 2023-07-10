@@ -31,6 +31,7 @@ describe('DebtSwitchAdapterService', () => {
     const debtRateMode = 2;
     const newAssetUnderlying = '0x0000000000000000000000000000000000000004';
     const newAssetDebtToken = '0x0000000000000000000000000000000000000005';
+    const augustus = '0x0000000000000000000000000000000000000006';
     const maxNewDebtAmount = '1000000';
     const signedAmount = '1500000';
 
@@ -59,6 +60,7 @@ describe('DebtSwitchAdapterService', () => {
         debtRepayAmount,
         debtRateMode,
         txCalldata,
+        augustus,
         repayAll,
         newAssetUnderlying,
         newAssetDebtToken,
@@ -81,6 +83,7 @@ describe('DebtSwitchAdapterService', () => {
         debtRepayAmount,
         debtRateMode,
         txCalldata,
+        augustus,
         repayAll: false,
         newAssetUnderlying,
         newAssetDebtToken,
