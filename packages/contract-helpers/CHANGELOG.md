@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.18.0 (2023-07-12)
+
+
+### Features
+
+* debt switch ([#548](https://github.com/aave/aave-utilities/issues/548)) ([8c943d7](https://github.com/aave/aave-utilities/commit/8c943d78eda94f6e330e343d3cded9286ac2079c))
+
+
+
+
+
 ## 1.17.8 (2023-06-22)
 
 **Note:** Version bump only for package @aave/contract-helpers
