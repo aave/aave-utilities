@@ -73,6 +73,10 @@ describe('Utils', () => {
       const offset = augustusToAmountOffsetFromCalldata('0xb66bcbac');
       expect(offset).toEqual(164);
     });
+    it('Expects 68', () => {
+      const offset = augustusToAmountOffsetFromCalldata('0x87a63926');
+      expect(offset).toEqual(68);
+    });
     it('Expects Error', () => {
       expect(() => augustusToAmountOffsetFromCalldata('asdf')).toThrowError(
         `Unrecognized function selector for Augustus`,
