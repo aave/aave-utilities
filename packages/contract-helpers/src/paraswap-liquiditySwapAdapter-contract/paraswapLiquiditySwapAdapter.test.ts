@@ -106,6 +106,36 @@ describe('LiquiditySwapAdapterService', () => {
 
       expect(offset).toEqual(68);
     });
+    it('Expects 68 when Augustus V5 directUniV3Swap', () => {
+      const callData = '0xa6866da90000000000otherCallData000000000';
+      const offset = augustusFromAmountOffsetFromCalldata(callData);
+
+      expect(offset).toEqual(68);
+    });
+    it('Expects 68 when Augustus V5 directCurveV2Swap', () => {
+      const callData = '0x58f151000000000000otherCallData000000000';
+      const offset = augustusFromAmountOffsetFromCalldata(callData);
+
+      expect(offset).toEqual(68);
+    });
+    it('Expects 68 when Augustus V5 directCurveV1Swap', () => {
+      const callData = '0x3865bde60000000000otherCallData000000000';
+      const offset = augustusFromAmountOffsetFromCalldata(callData);
+
+      expect(offset).toEqual(68);
+    });
+    it('Expects 68 when Augustus V5 directBalancerV2GivenOutSwap', () => {
+      const callData = '0x19fc5be00000000000otherCallData000000000';
+      const offset = augustusFromAmountOffsetFromCalldata(callData);
+
+      expect(offset).toEqual(68);
+    });
+    it('Expects 68 when Augustus V5 directBalancerV2GivenInSwap', () => {
+      const callData = '0xb22f4db80000000000otherCallData000000000';
+      const offset = augustusFromAmountOffsetFromCalldata(callData);
+
+      expect(offset).toEqual(68);
+    });
     it('Expects to fail if non recognizable Augustus function selector', () => {
       const callData = 'bad calldata';
       expect(() => augustusFromAmountOffsetFromCalldata(callData)).toThrowError(
