@@ -1,94 +1,143 @@
 # Change Log
 
-All notable changes to this project will be documented in this file. See
-[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 ## 1.18.1 (2023-07-12)
 
 **Note:** Version bump only for package @aave/math-utils
 
+
+
+
+
 # 1.18.0 (2023-07-12)
+
 
 ### Features
 
-- debt switch ([#548](https://github.com/aave/aave-utilities/issues/548))
-  ([8c943d7](https://github.com/aave/aave-utilities/commit/8c943d78eda94f6e330e343d3cded9286ac2079c))
+* debt switch ([#548](https://github.com/aave/aave-utilities/issues/548)) ([8c943d7](https://github.com/aave/aave-utilities/commit/8c943d78eda94f6e330e343d3cded9286ac2079c))
+
+
+
+
 
 ## 1.17.8 (2023-06-22)
 
 **Note:** Version bump only for package @aave/math-utils
 
+
+
+
+
 ## 1.17.7 (2023-06-16)
 
 **Note:** Version bump only for package @aave/math-utils
 
+
+
+
+
 ## 1.17.6 (2023-06-01)
+
 
 ### Bug Fixes
 
-- gas limits ([#543](https://github.com/aave/aave-utilities/issues/543))
-  ([cd4e533](https://github.com/aave/aave-utilities/commit/cd4e533c8c469306abaf4a9c1b0a1066b59cf875))
+* gas limits ([#543](https://github.com/aave/aave-utilities/issues/543)) ([cd4e533](https://github.com/aave/aave-utilities/commit/cd4e533c8c469306abaf4a9c1b0a1066b59cf875))
+
+
+
+
 
 ## 1.17.5 (2023-05-23)
 
 **Note:** Version bump only for package @aave/math-utils
 
+
+
+
+
 ## 1.17.4 (2023-05-05)
 
 **Note:** Version bump only for package @aave/math-utils
 
+
+
+
+
 ## 1.17.3 (2023-05-02)
+
 
 ### Bug Fixes
 
-- decimal formatting in credit delegation approval checks
-  ([#538](https://github.com/aave/aave-utilities/issues/538))
-  ([27eef6b](https://github.com/aave/aave-utilities/commit/27eef6b182f671fc9b4eb13cbd3712be17949c5c))
+* decimal formatting in credit delegation approval checks ([#538](https://github.com/aave/aave-utilities/issues/538)) ([27eef6b](https://github.com/aave/aave-utilities/commit/27eef6b182f671fc9b4eb13cbd3712be17949c5c))
+
+
+
+
 
 ## 1.17.2 (2023-05-01)
 
+
 ### Bug Fixes
 
-- integer rounding for migration credit delegation approval buffer
-  ([#537](https://github.com/aave/aave-utilities/issues/537))
-  ([3eef29e](https://github.com/aave/aave-utilities/commit/3eef29eb2e79bce2e1289c951fa00628bc5d4868))
+* integer rounding for migration credit delegation approval buffer ([#537](https://github.com/aave/aave-utilities/issues/537)) ([3eef29e](https://github.com/aave/aave-utilities/commit/3eef29eb2e79bce2e1289c951fa00628bc5d4868))
+
+
+
+
 
 ## 1.17.1 (2023-05-01)
 
 **Note:** Version bump only for package @aave/math-utils
 
+
+
+
+
 # 1.17.0 (2023-04-27)
+
 
 ### Features
 
-- fixed available debt in isolated reserve in case that debt > ma…
-  ([#532](https://github.com/aave/aave-utilities/issues/532))
-  ([7a2ea1e](https://github.com/aave/aave-utilities/commit/7a2ea1e94a26008247b4c4c045641291ff20261b))
+* fixed available debt in isolated reserve in case that debt > ma… ([#532](https://github.com/aave/aave-utilities/issues/532)) ([7a2ea1e](https://github.com/aave/aave-utilities/commit/7a2ea1e94a26008247b4c4c045641291ff20261b))
+
+
+
+
 
 # 1.16.0 (2023-04-17)
 
+
 ### Features
 
-- update borrow methods SDK
-  ([#527](https://github.com/aave/aave-utilities/issues/527))
-  ([da31b83](https://github.com/aave/aave-utilities/commit/da31b836dd7a85da0dbfe664b67612b1f261c7a7))
+* update borrow methods SDK ([#527](https://github.com/aave/aave-utilities/issues/527)) ([da31b83](https://github.com/aave/aave-utilities/commit/da31b836dd7a85da0dbfe664b67612b1f261c7a7))
+
+
+
+
 
 # 1.15.0 (2023-04-12)
 
+
 ### Features
 
-- add Scroll Alpha chainId
-  ([#528](https://github.com/aave/aave-utilities/issues/528))
-  ([3418c70](https://github.com/aave/aave-utilities/commit/3418c7087796397ed535fc7a3522445fb44f94c5))
+* add Scroll Alpha chainId ([#528](https://github.com/aave/aave-utilities/issues/528)) ([3418c70](https://github.com/aave/aave-utilities/commit/3418c7087796397ed535fc7a3522445fb44f94c5))
+
+
+
+
 
 # 1.14.0 (2023-04-05)
 
+
 ### Features
 
-- tx bundle refactor ([#514](https://github.com/aave/aave-utilities/issues/514))
-  ([fc5c937](https://github.com/aave/aave-utilities/commit/fc5c9378b48a14a31df9fdbe435095a3e81390a2)),
-  closes [#524](https://github.com/aave/aave-utilities/issues/524)
-  [#504](https://github.com/aave/aave-utilities/issues/504)
+* tx bundle refactor ([#514](https://github.com/aave/aave-utilities/issues/514)) ([fc5c937](https://github.com/aave/aave-utilities/commit/fc5c9378b48a14a31df9fdbe435095a3e81390a2)), closes [#524](https://github.com/aave/aave-utilities/issues/524) [#504](https://github.com/aave/aave-utilities/issues/504)
+
+
+
+
 
 # Change Log
 
@@ -98,6 +147,10 @@ All notable changes to this project will be documented in this file. See
 ## 1.13.7 (2023-04-04)
 
 **Note:** Version bump only for package @aave/math-utils
+
+
+
+
 
 ## 1.13.6 (2023-03-03)
 

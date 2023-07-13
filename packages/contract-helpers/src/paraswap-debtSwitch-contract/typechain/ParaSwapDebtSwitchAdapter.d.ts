@@ -11,95 +11,98 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from 'ethers';
+} from "ethers";
 import type {
   FunctionFragment,
   Result,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+} from "@ethersproject/abi";
+import type { Listener, Provider } from "@ethersproject/providers";
 import type {
   TypedEventFilter,
   TypedEvent,
   TypedListener,
   OnEvent,
-} from './common';
+} from "./common";
 
 export declare namespace ParaSwapDebtSwapAdapter {
   export type DebtSwapParamsStruct = {
-    debtAsset: string;
-    debtRepayAmount: BigNumberish;
-    debtRateMode: BigNumberish;
-    newDebtAsset: string;
-    maxNewDebtAmount: BigNumberish;
-    offset: BigNumberish;
-    paraswapData: BytesLike;
+      debtAsset: string;
+      debtRepayAmount: BigNumberish;
+      debtRateMode: BigNumberish;
+      newDebtAsset: string;
+      maxNewDebtAmount: BigNumberish;
+      offset: BigNumberish;
+      paraswapData: BytesLike;
   };
 
   export type DebtSwapParamsStructOutput = [
-    string,
-    BigNumber,
-    BigNumber,
-    string,
-    BigNumber,
-    BigNumber,
-    string,
+      string,
+      BigNumber,
+      BigNumber,
+      string,
+      BigNumber,
+      BigNumber,
+      string
   ] & {
-    debtAsset: string;
-    debtRepayAmount: BigNumber;
-    debtRateMode: BigNumber;
-    newDebtAsset: string;
-    maxNewDebtAmount: BigNumber;
-    offset: BigNumber;
-    paraswapData: string;
+      debtAsset: string;
+      debtRepayAmount: BigNumber;
+      debtRateMode: BigNumber;
+      newDebtAsset: string;
+      maxNewDebtAmount: BigNumber;
+      offset: BigNumber;
+      paraswapData: string;
   };
 
   export type CreditDelegationInputStruct = {
-    debtToken: string;
-    value: BigNumberish;
-    deadline: BigNumberish;
-    v: BigNumberish;
-    r: BytesLike;
-    s: BytesLike;
+      debtToken: string;
+      value: BigNumberish;
+      deadline: BigNumberish;
+      v: BigNumberish;
+      r: BytesLike;
+      s: BytesLike;
   };
 
   export type CreditDelegationInputStructOutput = [
-    string,
-    BigNumber,
-    BigNumber,
-    number,
-    string,
-    string,
+      string,
+      BigNumber,
+      BigNumber,
+      number,
+      string,
+      string
   ] & {
-    debtToken: string;
-    value: BigNumber;
-    deadline: BigNumber;
-    v: number;
-    r: string;
-    s: string;
+      debtToken: string;
+      value: BigNumber;
+      deadline: BigNumber;
+      v: number;
+      r: string;
+      s: string;
   };
 }
 
 export interface ParaSwapDebtSwapAdapterInterface extends utils.Interface {
   functions: {
-    'swapDebt((address,uint256,uint256,address,uint256,uint256,bytes),(address,uint256,uint256,uint8,bytes32,bytes32))': FunctionFragment;
+      "swapDebt((address,uint256,uint256,address,uint256,uint256,bytes),(address,uint256,uint256,uint8,bytes32,bytes32))": FunctionFragment;
   };
 
-  getFunction(nameOrSignatureOrTopic: 'swapDebt'): FunctionFragment;
+  getFunction(
+      nameOrSignatureOrTopic:
+          | "swapDebt"
+  ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: 'swapDebt',
-    values: [
-      ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
-      ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
-    ],
+      functionFragment: "swapDebt",
+      values: [
+          ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
+          ParaSwapDebtSwapAdapter.CreditDelegationInputStruct
+      ]
   ): string;
 
   events: {
-    'Swapped(address,address,uint256,uint256)': EventFragment;
+      "Swapped(address,address,uint256,uint256)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: 'Swapped'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Swapped"): EventFragment;
 }
 
 export interface SwappedEventObject {
@@ -123,17 +126,17 @@ export interface ParaSwapDebtSwapAdapter extends BaseContract {
   interface: ParaSwapDebtSwapAdapterInterface;
 
   queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
-    fromBlockOrBlockhash?: string | number | undefined,
-    toBlock?: string | number | undefined,
+      event: TypedEventFilter<TEvent>,
+      fromBlockOrBlockhash?: string | number | undefined,
+      toBlock?: string | number | undefined
   ): Promise<Array<TEvent>>;
 
   listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>,
+      eventFilter?: TypedEventFilter<TEvent>
   ): Array<TypedListener<TEvent>>;
   listeners(eventName?: string): Array<Listener>;
   removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>,
+      eventFilter: TypedEventFilter<TEvent>
   ): this;
   removeAllListeners(eventName?: string): this;
   off: OnEvent<this>;
@@ -142,55 +145,56 @@ export interface ParaSwapDebtSwapAdapter extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    swapDebt(
-      debtSwapParams: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
-      creditDelegationPermit: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
-      overrides?: Overrides & { from?: string },
-    ): Promise<ContractTransaction>;
+      swapDebt(
+          debtSwapParams: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
+          creditDelegationPermit: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
+          overrides?: Overrides & { from?: string }
+      ): Promise<ContractTransaction>;
   };
 
   swapDebt(
-    debtSwapParams: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
-    creditDelegationPermit: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
-    overrides?: Overrides & { from?: string },
+      debtSwapParams: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
+      creditDelegationPermit: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
+      overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    swapDebt(
-      debtSwapParams: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
-      creditDelegationPermit: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
-      overrides?: CallOverrides,
-    ): Promise<void>;
+      swapDebt(
+          debtSwapParams: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
+          creditDelegationPermit: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
+          overrides?: CallOverrides
+      ): Promise<void>;
+
   };
 
   filters: {
-    'Swapped(address,address,uint256,uint256)'(
-      fromAsset?: string | null,
-      toAsset?: string | null,
-      fromAmount?: null,
-      receivedAmount?: null,
-    ): SwappedEventFilter;
-    Swapped(
-      fromAsset?: string | null,
-      toAsset?: string | null,
-      fromAmount?: null,
-      receivedAmount?: null,
-    ): SwappedEventFilter;
+      "Swapped(address,address,uint256,uint256)"(
+          fromAsset?: string | null,
+          toAsset?: string | null,
+          fromAmount?: null,
+          receivedAmount?: null
+      ): SwappedEventFilter;
+      Swapped(
+          fromAsset?: string | null,
+          toAsset?: string | null,
+          fromAmount?: null,
+          receivedAmount?: null
+      ): SwappedEventFilter;
   };
 
   estimateGas: {
-    swapDebt(
-      debtSwapParams: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
-      creditDelegationPermit: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
-      overrides?: Overrides & { from?: string },
-    ): Promise<BigNumber>;
+      swapDebt(
+          debtSwapParams: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
+          creditDelegationPermit: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
+          overrides?: Overrides & { from?: string }
+      ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    swapDebt(
-      debtSwapParams: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
-      creditDelegationPermit: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
-      overrides?: Overrides & { from?: string },
-    ): Promise<PopulatedTransaction>;
+      swapDebt(
+          debtSwapParams: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
+          creditDelegationPermit: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
+          overrides?: Overrides & { from?: string }
+      ): Promise<PopulatedTransaction>;
   };
 }
