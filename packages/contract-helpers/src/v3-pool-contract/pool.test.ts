@@ -2,12 +2,9 @@ import { BigNumber, constants, providers, utils } from 'ethers';
 import {
   eEthereumTxType,
   EthereumTransactionTypeExtended,
-  // EthereumTransactionTypeExtended,
   GasType,
   InterestRate,
   ProtocolAction,
-  // InterestRate,
-  // ProtocolAction,
   transactionType,
 } from '../commons/types';
 import {
@@ -15,8 +12,6 @@ import {
   DEFAULT_NULL_VALUE_ON_TX,
   gasLimitRecommendations,
   SURPLUS,
-  // gasLimitRecommendations,
-  // SURPLUS,
   valueToWei,
 } from '../commons/utils';
 import { Pool } from './index';
