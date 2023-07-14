@@ -178,7 +178,11 @@ export class StakingService
     txs.push({
       tx: txCallback,
       txType: eEthereumTxType.STAKE_ACTION,
-      gas: this.generateTxPriceEstimation(txs, txCallback),
+      gas: this.generateTxPriceEstimation(
+        txs,
+        txCallback,
+        ProtocolAction.stakeWithPermit,
+      ),
     });
 
     return txs;
