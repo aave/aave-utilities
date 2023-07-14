@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.18.2 (2023-07-14)
+
+
+### Bug Fixes
+
+* remove commented imports ([#552](https://github.com/aave/aave-utilities/issues/552)) ([91a2772](https://github.com/aave/aave-utilities/commit/91a2772477ce2d9a809114dcbe2535c234603c38))
+
+
+
+
+
 ## 1.18.1 (2023-07-12)
 
 **Note:** Version bump only for package @aave/math-utils
