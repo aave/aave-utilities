@@ -455,9 +455,7 @@ export function SignStakingValidator(
   descriptor.value = function () {
     if (
       // @ts-expect-error todo: check why this ignore is needed
-      !utils.isAddress(this.stakingContractAddress) ||
-      // @ts-expect-error todo: check why this ignore is needed
-      !utils.isAddress(this.stakingHelperContractAddress)
+      !utils.isAddress(this.stakingContractAddress)
     ) {
       console.error(`[StakingValidator] You need to pass valid addresses`);
       return [];

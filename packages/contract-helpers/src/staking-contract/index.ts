@@ -20,8 +20,6 @@ import {
 } from '../commons/validators/paramValidators';
 import { ERC20_2612Interface, ERC20_2612Service } from '../erc20-2612';
 import { ERC20Service, IERC20ServiceInterface } from '../erc20-contract';
-import { IAaveStakingHelper } from './typechain/IAaveStakingHelper';
-import { IAaveStakingHelper__factory } from './typechain/IAaveStakingHelper__factory';
 import { IStakedAaveV3 } from './typechain/IStakedAaveV3';
 import { IStakedAaveV3__factory } from './typechain/IStakedAaveV3__factory';
 
@@ -51,6 +49,7 @@ export interface StakingInterface {
     user: tEthereumAddress,
     amount: string,
     signature: string,
+    deadline: string,
   ) => Promise<EthereumTransactionTypeExtended[]>;
   claimRewardsAndStake: (
     user: tEthereumAddress,
@@ -60,18 +59,13 @@ export interface StakingInterface {
 
 type StakingServiceConfig = {
   TOKEN_STAKING_ADDRESS: string;
-  STAKING_HELPER_ADDRESS?: string;
 };
 
 export class StakingService
   extends BaseService<IStakedAaveV3>
   implements StakingInterface
 {
-  readonly stakingHelperContract: IAaveStakingHelper;
-
   public readonly stakingContractAddress: tEthereumAddress;
-
-  readonly stakingHelperContractAddress: tEthereumAddress;
 
   readonly erc20Service: IERC20ServiceInterface;
 
@@ -88,21 +82,13 @@ export class StakingService
     this.erc20_2612Service = new ERC20_2612Service(provider);
 
     this.stakingContractAddress = stakingServiceConfig.TOKEN_STAKING_ADDRESS;
-    this.stakingHelperContractAddress =
-      stakingServiceConfig.STAKING_HELPER_ADDRESS ?? '';
-
-    if (this.stakingHelperContractAddress !== '') {
-      this.stakingHelperContract = IAaveStakingHelper__factory.connect(
-        this.stakingHelperContractAddress,
-        provider,
-      );
-    }
   }
 
   @SignStakingValidator
   public async signStaking(
     @isEthAddress() user: tEthereumAddress,
     @isPositiveAmount() amount: string,
+    deadline: string,
   ): Promise<string> {
     const { getTokenData } = this.erc20Service;
     const stakingContract: IStakedAaveV3 = this.getContractInstance(
@@ -148,10 +134,10 @@ export class StakingService
       },
       message: {
         owner: user,
-        spender: this.stakingHelperContractAddress,
+        spender: stakedToken,
         value: convertedAmount,
         nonce,
-        deadline: constants.MaxUint256.toString(),
+        deadline,
       },
     };
 
@@ -163,6 +149,7 @@ export class StakingService
     @isEthAddress() user: tEthereumAddress,
     @isPositiveAmount() amount: string,
     signature: SignatureLike,
+    deadline: string,
   ): Promise<EthereumTransactionTypeExtended[]> {
     const txs: EthereumTransactionTypeExtended[] = [];
     const { decimalsOf } = this.erc20Service;
@@ -177,9 +164,10 @@ export class StakingService
 
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>
-        this.stakingHelperContract.populateTransaction.stake(
+        stakingContract.populateTransaction.stakeWithPermit(
           user,
           convertedAmount,
+          deadline,
           sig.v,
           sig.r,
           sig.s,
