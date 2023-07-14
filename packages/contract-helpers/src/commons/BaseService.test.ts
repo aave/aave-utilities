@@ -197,7 +197,7 @@ describe('BaseService', () => {
       expect(gas?.gasLimit).toEqual('1');
       expect(gas?.gasPrice).toEqual('2');
     });
-    xit('Expects null when no gas limit', async () => {
+    it.skip('Expects null when no gas limit', async () => {
       const txCallback = async () => ({});
       const txs = [
         {

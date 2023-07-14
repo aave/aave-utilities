@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
+import { calculateCompoundedInterest } from '../../pool-math';
 import { rayMul } from '../../ray.math';
-import { calculateCompoundedInterest } from '../compounded-interest/calculate-compounded-interest';
 
 export interface CalculateReserveDebtRequest {
   totalScaledVariableDebt: string;

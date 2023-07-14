@@ -116,6 +116,7 @@ export enum ProtocolAction {
   migrateV3 = 'migrateV3',
   supplyWithPermit = 'supplyWithPermit',
   repayWithPermit = 'repayWithPermit',
+  stakeWithPermit = 'stakeWithPermit',
   vote = 'vote',
   approval = 'approval',
   creditDelegationApproval = 'creditDelegationApproval',
