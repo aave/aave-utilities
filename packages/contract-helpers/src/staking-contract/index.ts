@@ -134,7 +134,7 @@ export class StakingService
       },
       message: {
         owner: user,
-        spender: stakedToken,
+        spender: this.stakingContractAddress,
         value: convertedAmount,
         nonce,
         deadline,

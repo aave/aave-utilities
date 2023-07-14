@@ -98,9 +98,7 @@ describe('StakingService', () => {
       expect(domain.chainId).toEqual(1);
 
       expect(message.owner).toEqual(user);
-      expect(message.spender).toEqual(
-        '0x0000000000000000000000000000000000000006',
-      );
+      expect(message.spender).toEqual(TOKEN_STAKING_ADDRESS);
       expect(message.nonce).toEqual(nonce);
       expect(message.value).toEqual(valueToWei(amount, decimals));
       expect(message.deadline).toEqual(deadline);
