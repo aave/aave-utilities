@@ -368,7 +368,7 @@ const userSummary = formatUserSummary({
   marketReferenceCurrencyDecimals:
     baseCurrencyData.marketReferenceCurrencyDecimals,
   userReserves: userReservesArray,
-  formattedReserves,
+  formattedReserves: formattedPoolReserves,
   userEmodeCategoryId: userReserves.userEmodeCategoryId,
 });
 ```
@@ -421,7 +421,7 @@ const userSummary = formatUserSummaryAndIncentives({
   marketReferenceCurrencyDecimals:
     baseCurrencyData.marketReferenceCurrencyDecimals,
   userReserves: userReservesArray,
-  formattedReserves,
+  formattedReserves: formattedPoolReserves,
   userEmodeCategoryId: userReserves.userEmodeCategoryId,
   reserveIncentives,
   userIncentives,
