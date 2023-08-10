@@ -106,10 +106,6 @@ export const gasLimitRecommendations: GasRecommendationType = {
     limit: '350000',
     recommended: '350000',
   },
-  [ProtocolAction.stake]: {
-    limit: '350000',
-    recommended: '350000',
-  },
   [ProtocolAction.stakeWithPermit]: {
     limit: '400000',
     recommended: '400000',
@@ -129,6 +125,10 @@ export const gasLimitRecommendations: GasRecommendationType = {
   [ProtocolAction.setUsageAsCollateral]: {
     limit: '138000',
     recommended: '138000',
+  },
+  [ProtocolAction.withdrawAndSwap]: {
+    limit: '1000000',
+    recommended: '1000000',
   },
 };
 

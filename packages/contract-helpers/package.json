@@ -11,6 +11,7 @@
     "prebuild": "npm run clean",
     "build": "cd ../.. && tsc -p packages/contract-helpers/tsconfig.json && tsc -p packages/contract-helpers/tsconfig.json --module commonjs --outDir ./packages/contract-helpers/dist/cjs",
     "test": "cd ../.. && yarn test packages/contract-helpers",
+    "test:watch": "cd ../.. && yarn test --watch packages/contract-helpers",
     "cover": "cd ../.. && yarn cover packages/contract-helpers",
     "commit": "cd ../.. && yarn commit",
     "prepublishOnly": "yarn build"

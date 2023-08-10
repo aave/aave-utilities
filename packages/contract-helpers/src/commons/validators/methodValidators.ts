@@ -396,6 +396,31 @@ export function LiquiditySwapValidator(
   };
 }
 
+export function WithdrawAndSwapValidator(
+  target: any,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<any>,
+): any {
+  const method = descriptor.value;
+  descriptor.value = function () {
+    // @ts-expect-error todo: check why this ignore is needed
+    if (!utils.isAddress(this.withdrawAndSwapAdapterAddress)) {
+      console.error(
+        `[WithdrawAndSwapValidator] You need to pass valid addresses`,
+      );
+      return [];
+    }
+
+    isEthAddressValidator(target, propertyName, arguments);
+
+    amountGtThan0Validator(target, propertyName, arguments);
+
+    amountGtThan0OrMinus1(target, propertyName, arguments);
+
+    return method.apply(this, arguments);
+  };
+}
+
 export function RepayWithCollateralValidator(
   target: any,
   propertyName: string,
