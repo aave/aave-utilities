@@ -62,6 +62,7 @@ export enum ChainId {
   sepolia = 11155111,
   scroll_alpha = 534353,
   metis_andromeda = 1088,
+  base = 8453,
 }
 export type ConstantAddressesByNetwork = Record<
   string,
