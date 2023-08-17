@@ -35,6 +35,7 @@ export const ChainIdToNetwork: Record<number, string> = {
   11155111: 'sepolia',
   534353: 'scroll_alpha',
   1088: 'metis_andromeda',
+  8453: 'base',
 };
 
 export enum ChainId {
