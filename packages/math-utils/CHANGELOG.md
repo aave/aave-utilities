@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.19.0 (2023-08-21)
+
+
+### Features
+
+* add Scroll Sepolia and Scroll chainIds ([#554](https://github.com/aave/aave-utilities/issues/554)) ([7510d22](https://github.com/aave/aave-utilities/commit/7510d227dd358f3420d7788a9feaaa72f09e8e9e))
+
+
+
+
+
 ## 1.18.3 (2023-08-18)
 
 **Note:** Version bump only for package @aave/math-utils
