@@ -537,7 +537,7 @@ describe('PoolBundle', () => {
 
     const instance = new PoolBundle(provider, config);
 
-    it('generates repay tx data with generateTxData', () => {
+    it('generates repay tx data with generateTxData with variable debt', () => {
       const result = instance.repayTxBuilder.generateTxData({
         user: USER,
         reserve: TOKEN,
@@ -562,6 +562,22 @@ describe('PoolBundle', () => {
       expect(differentParamsSameResult.from).toEqual(USER);
       expect(differentParamsSameResult.data).toEqual(
         '0x573ade810000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003',
+      );
+    });
+
+    it('generates repay tx data with generateTxData with stable debt', () => {
+      const result = instance.repayTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        interestRateMode: InterestRate.Stable,
+        onBehalfOf: USER,
+      });
+
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0x573ade810000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000003',
       );
     });
 
@@ -593,7 +609,7 @@ describe('PoolBundle', () => {
       );
     });
 
-    it('generates signed tx with generateSignedTxData', () => {
+    it('generates signed tx with generateSignedTxData with variable debt', () => {
       const result = instance.repayTxBuilder.generateSignedTxData({
         user: USER,
         reserve: TOKEN,
@@ -627,6 +643,25 @@ describe('PoolBundle', () => {
         '0xee3e210b00000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000002710000000000000000000000000000000000000000000000000000000000000001c532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4',
       );
     });
+
+    it('generates signed tx with generateSignedTxData with stable debt', () => {
+      const result = instance.repayTxBuilder.generateSignedTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        onBehalfOf: USER,
+        interestRateMode: InterestRate.Stable,
+        signature:
+          '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c',
+        deadline: '10000',
+      });
+
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0xee3e210b00000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000002710000000000000000000000000000000000000000000000000000000000000001c532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4',
+      );
+    });
   });
 
   describe('RepayWithATokenTxBuilder', () => {
@@ -641,7 +676,7 @@ describe('PoolBundle', () => {
 
     const instance = new PoolBundle(provider, config);
 
-    it('generates repayWithAToken tx data with generateTxData', () => {
+    it('generates repayWithAToken tx data with generateTxData with variable rate', () => {
       const result = instance.repayWithATokensTxBuilder.generateTxData({
         user: USER,
         reserve: TOKEN,
@@ -653,6 +688,21 @@ describe('PoolBundle', () => {
       expect(result.from).toEqual(USER);
       expect(result.data).toEqual(
         '0x2dad97d4000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002',
+      );
+    });
+
+    it('generates repayWithAToken tx data with generateTxData with stable debt', () => {
+      const result = instance.repayWithATokensTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        rateMode: InterestRate.Stable,
+      });
+
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0x2dad97d4000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001',
       );
     });
 

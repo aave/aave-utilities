@@ -246,7 +246,7 @@ describe('LendingPoolBundle', () => {
 
     const instance = new LendingPoolBundle(provider, config);
 
-    it('generates repay tx data with generateTxData', () => {
+    it('generates repay tx data with generateTxData with variable debt', () => {
       const result = instance.repayTxBuilder.generateTxData({
         user: USER,
         reserve: TOKEN,
@@ -272,7 +272,23 @@ describe('LendingPoolBundle', () => {
       );
     });
 
-    it('generates repay tx for WETHGateway data with generateTxData', () => {
+    it('generates repay tx data with generateTxData with stable debt', () => {
+      const result = instance.repayTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        onBehalfOf: USER,
+        interestRateMode: InterestRate.Stable,
+      });
+
+      expect(result.to).toEqual(LENDING_POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0x573ade810000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000003',
+      );
+    });
+
+    it('generates repay tx for WETHGateway data with generateTxData with variable debt', () => {
       const result = instance.repayTxBuilder.generateTxData({
         user: USER,
         reserve: API_ETH_MOCK_ADDRESS.toLowerCase(),
