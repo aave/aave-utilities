@@ -1,5 +1,5 @@
 import { BigNumber, PopulatedTransaction, providers } from 'ethers';
-import { WithdrawAndSwapAdapterService } from './index';
+import { WithdrawAndSwitchAdapterService } from './index';
 
 jest.mock('../commons/gasStation', () => {
   return {
@@ -11,29 +11,29 @@ jest.mock('../commons/gasStation', () => {
   };
 });
 
-describe('WithdrawAndSwapAdapterService', () => {
-  const withdrawAndSwapAdapterAddress =
+describe('WithdrawAndSwitchAdapterService', () => {
+  const withdrawAndSwitchAdapterAddress =
     '0x0000000000000000000000000000000000000001';
   describe('Initialization', () => {
     const provider = new providers.JsonRpcProvider();
     it('Expects to initialize with full params', () => {
       expect(
         () =>
-          new WithdrawAndSwapAdapterService(
+          new WithdrawAndSwitchAdapterService(
             provider,
-            withdrawAndSwapAdapterAddress,
+            withdrawAndSwitchAdapterAddress,
           ),
       ).not.toThrow();
     });
     it('Expects to initialize without withdraw and swap adapter address', () => {
-      expect(() => new WithdrawAndSwapAdapterService(provider)).not.toThrow();
+      expect(() => new WithdrawAndSwitchAdapterService(provider)).not.toThrow();
     });
   });
-  describe('withdrawAndSwap', () => {
+  describe('withdrawAndSwitch', () => {
     const user = '0x0000000000000000000000000000000000000002';
-    const assetToSwapFrom = '0x0000000000000000000000000000000000000003';
-    const assetToSwapTo = '0x0000000000000000000000000000000000000004';
-    const amountToSwap = '1000000';
+    const assetToSwitchFrom = '0x0000000000000000000000000000000000000003';
+    const assetToSwitchTo = '0x0000000000000000000000000000000000000004';
+    const amountToSwitch = '1000000';
     const minAmountToReceive = '10000000';
     const augustus = '0x0000000000000000000000000000000000000006';
     const permitParams = {
@@ -41,7 +41,7 @@ describe('WithdrawAndSwapAdapterService', () => {
       r: '0x0000000000000000000000000000000000000000000000000000000000000000',
       s: '0x0000000000000000000000000000000000000000000000000000000000000000',
       v: 0,
-      amount: amountToSwap,
+      amount: amountToSwitch,
     };
 
     const txCalldata =
@@ -52,9 +52,9 @@ describe('WithdrawAndSwapAdapterService', () => {
       .spyOn(provider, 'getGasPrice')
       .mockImplementation(async () => Promise.resolve(BigNumber.from(1)));
 
-    const swapInstance = new WithdrawAndSwapAdapterService(
+    const switchInstance = new WithdrawAndSwitchAdapterService(
       provider,
-      withdrawAndSwapAdapterAddress,
+      withdrawAndSwitchAdapterAddress,
     );
 
     afterEach(() => {
@@ -62,38 +62,38 @@ describe('WithdrawAndSwapAdapterService', () => {
     });
 
     it('Expects the tx object when sending all correct params', async () => {
-      const txObj: PopulatedTransaction = swapInstance.withdrawAndSwap({
+      const txObj: PopulatedTransaction = switchInstance.withdrawAndSwitch({
         user,
-        assetToSwapFrom,
-        assetToSwapTo,
-        amountToSwap,
+        assetToSwitchFrom,
+        assetToSwitchTo,
+        amountToSwitch,
         minAmountToReceive,
         permitParams,
-        swapCallData: txCalldata,
-        swapAll: true,
+        switchCallData: txCalldata,
+        switchAll: true,
         augustus,
       });
 
       expect(txObj.from).toEqual(user);
-      expect(txObj.to).toEqual(withdrawAndSwapAdapterAddress);
+      expect(txObj.to).toEqual(withdrawAndSwitchAdapterAddress);
       // function selector
       expect(txObj.data?.substring(0, 10)).toEqual('0x5fd73e07');
 
       const txObjRepayAllFalse: PopulatedTransaction =
-        swapInstance.withdrawAndSwap({
+        switchInstance.withdrawAndSwitch({
           user,
-          assetToSwapFrom,
-          assetToSwapTo,
-          amountToSwap,
+          assetToSwitchFrom,
+          assetToSwitchTo,
+          amountToSwitch,
           minAmountToReceive,
           permitParams,
-          swapCallData: txCalldata,
-          swapAll: false,
+          switchCallData: txCalldata,
+          switchAll: false,
           augustus,
         });
 
       expect(txObjRepayAllFalse.from).toEqual(user);
-      expect(txObjRepayAllFalse.to).toEqual(withdrawAndSwapAdapterAddress);
+      expect(txObjRepayAllFalse.to).toEqual(withdrawAndSwitchAdapterAddress);
       // function selector
       expect(txObjRepayAllFalse.data?.substring(0, 10)).toEqual('0x5fd73e07');
     });

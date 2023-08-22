@@ -396,7 +396,7 @@ export function LiquiditySwapValidator(
   };
 }
 
-export function WithdrawAndSwapValidator(
+export function WithdrawAndSwitchValidator(
   target: any,
   propertyName: string,
   descriptor: TypedPropertyDescriptor<any>,
@@ -404,9 +404,9 @@ export function WithdrawAndSwapValidator(
   const method = descriptor.value;
   descriptor.value = function () {
     // @ts-expect-error todo: check why this ignore is needed
-    if (!utils.isAddress(this.withdrawAndSwapAdapterAddress)) {
+    if (!utils.isAddress(this.withdrawAndSwitchAdapterAddress)) {
       console.error(
-        `[WithdrawAndSwapValidator] You need to pass valid addresses`,
+        `[WithdrawAndSwitchValidator] You need to pass valid addresses`,
       );
       return [];
     }

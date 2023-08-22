@@ -126,7 +126,7 @@ export const gasLimitRecommendations: GasRecommendationType = {
     limit: '138000',
     recommended: '138000',
   },
-  [ProtocolAction.withdrawAndSwap]: {
+  [ProtocolAction.withdrawAndSwitch]: {
     limit: '1000000',
     recommended: '1000000',
   },

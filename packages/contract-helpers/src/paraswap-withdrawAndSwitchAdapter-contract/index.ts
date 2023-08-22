@@ -1,7 +1,7 @@
 import { BytesLike, PopulatedTransaction, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
 import { PermitSignature, tEthereumAddress } from '../commons/types';
-import { WithdrawAndSwapValidator } from '../commons/validators/methodValidators';
+import { WithdrawAndSwitchValidator } from '../commons/validators/methodValidators';
 import {
   isEthAddress,
   isPositiveAmount,
@@ -13,82 +13,84 @@ import {
 } from './typechain/ParaSwapWithdrawSwapAdapter';
 import { ParaSwapWithdrawSwapAdapter__factory } from './typechain/ParaSwapWithdrawSwapAdapter__factory';
 
-export type WithdrawAndSwapMethodType = {
+export type WithdrawAndSwitchMethodType = {
   user: tEthereumAddress;
-  assetToSwapFrom: tEthereumAddress;
-  assetToSwapTo: tEthereumAddress;
-  amountToSwap: string; // wei
+  assetToSwitchFrom: tEthereumAddress;
+  assetToSwitchTo: tEthereumAddress;
+  amountToSwitch: string; // wei
   minAmountToReceive: string; // wei
   permitParams: PermitSignature;
-  swapCallData: BytesLike;
+  switchCallData: BytesLike;
   augustus: tEthereumAddress;
-  swapAll: boolean;
+  switchAll: boolean;
 };
 
-export interface WithdrawSwapAdapterInterface {
-  withdrawAndSwap: (args: WithdrawAndSwapMethodType) => PopulatedTransaction;
+export interface WithdrawSwitchAdapterInterface {
+  withdrawAndSwitch: (
+    args: WithdrawAndSwitchMethodType,
+  ) => PopulatedTransaction;
 }
 
-export class WithdrawAndSwapAdapterService
+export class WithdrawAndSwitchAdapterService
   extends BaseService<ParaSwapWithdrawSwapAdapter>
-  implements WithdrawSwapAdapterInterface
+  implements WithdrawSwitchAdapterInterface
 {
-  readonly withdrawAndSwapAdapterAddress: string;
+  readonly withdrawAndSwitchAdapterAddress: string;
   readonly contractInterface: ParaSwapWithdrawSwapAdapterInterface;
 
   constructor(
     provider: providers.Provider,
-    withdrawSwapAdapterAddress?: string,
+    withdrawSwitchAdapterAddress?: string,
   ) {
     super(provider, ParaSwapWithdrawSwapAdapter__factory);
 
-    this.withdrawAndSwapAdapterAddress = withdrawSwapAdapterAddress ?? '';
+    this.withdrawAndSwitchAdapterAddress = withdrawSwitchAdapterAddress ?? '';
 
     this.contractInterface =
       ParaSwapWithdrawSwapAdapter__factory.createInterface();
 
-    this.withdrawAndSwap = this.withdrawAndSwap.bind(this);
+    this.withdrawAndSwitch = this.withdrawAndSwitch.bind(this);
   }
 
-  @WithdrawAndSwapValidator
-  public withdrawAndSwap(
+  @WithdrawAndSwitchValidator
+  public withdrawAndSwitch(
     @isEthAddress('user')
-    @isEthAddress('assetToSwapFrom')
-    @isEthAddress('assetToSwapTo')
+    @isEthAddress('assetToSwitchFrom')
+    @isEthAddress('assetToSwitchTo')
     @isEthAddress('augustus')
-    @isPositiveAmount('amountToSwap')
+    @isPositiveAmount('amountToSwitch')
     @isPositiveAmount('minAmountToReceive')
     {
       user,
-      assetToSwapFrom,
-      assetToSwapTo,
-      amountToSwap,
+      assetToSwitchFrom,
+      assetToSwitchTo,
+      amountToSwitch,
       minAmountToReceive,
       permitParams,
       augustus,
-      swapCallData,
-      swapAll,
-    }: WithdrawAndSwapMethodType,
+      switchCallData,
+      switchAll,
+    }: WithdrawAndSwitchMethodType,
   ): PopulatedTransaction {
     const actionTx: PopulatedTransaction = {};
 
     const txData = this.contractInterface.encodeFunctionData(
       'withdrawAndSwap',
       [
-        assetToSwapFrom,
-        assetToSwapTo,
-        amountToSwap,
+        assetToSwitchFrom,
+        assetToSwitchTo,
+        amountToSwitch,
         minAmountToReceive,
-        swapAll
-          ? augustusFromAmountOffsetFromCalldata(swapCallData as string)
+        switchAll
+          ? augustusFromAmountOffsetFromCalldata(switchCallData as string)
           : 0,
-        swapCallData,
+        switchCallData,
         augustus,
         permitParams,
       ],
     );
 
-    actionTx.to = this.withdrawAndSwapAdapterAddress;
+    actionTx.to = this.withdrawAndSwitchAdapterAddress;
     actionTx.data = txData;
     actionTx.from = user;
 
