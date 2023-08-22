@@ -237,4 +237,55 @@ describe('LendingPoolBundle', () => {
       );
     });
   });
+
+  describe('RepayTxBuilder', () => {
+    const config = {
+      LENDING_POOL,
+      WETH_GATEWAY,
+    };
+
+    const instance = new LendingPoolBundle(provider, config);
+
+    it('generates repay tx data with generateTxData', () => {
+      const result = instance.repayTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        onBehalfOf: USER,
+        interestRateMode: InterestRate.Variable,
+      });
+
+      const differentParamsSameResult = instance.repayTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        interestRateMode: InterestRate.Variable,
+      });
+
+      expect(result.to).toEqual(LENDING_POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0x573ade810000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003',
+      );
+      expect(differentParamsSameResult.data).toEqual(
+        '0x573ade810000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003',
+      );
+    });
+
+    it('generates repay tx for WETHGateway data with generateTxData', () => {
+      const result = instance.repayTxBuilder.generateTxData({
+        user: USER,
+        reserve: API_ETH_MOCK_ADDRESS.toLowerCase(),
+        amount: '1',
+        onBehalfOf: USER,
+        interestRateMode: InterestRate.Variable,
+      });
+      expect(result.to).toEqual(WETH_GATEWAY);
+      expect(result.from).toEqual(USER);
+      expect(result.value).toEqual(BigNumber.from('1'));
+      expect(result.data).toEqual(
+        '0x02c5fcf80000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003',
+      );
+    });
+  });
 });

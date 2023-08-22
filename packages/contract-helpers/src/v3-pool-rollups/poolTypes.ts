@@ -28,6 +28,7 @@ export type LPRepayParamsType = {
   reserve: tEthereumAddress;
   amount: string;
   numericRateMode: number;
+  onBehalfOf?: string;
 };
 
 export type LPSupplyWithPermitType = {
@@ -51,6 +52,7 @@ export type LPRepayWithPermitParamsType = {
   permitV: BigNumberish;
   permitR: BytesLike;
   permitS: BytesLike;
+  onBehalfOf?: string;
 };
 
 export type LPRepayWithATokensType = {

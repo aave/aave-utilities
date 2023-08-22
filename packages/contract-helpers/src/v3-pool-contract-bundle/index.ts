@@ -5,6 +5,8 @@ import {
   BorrowTxBuilder,
   InterestRate,
   ProtocolAction,
+  RepayTxBuilder,
+  RepayWithATokensTxBuilder,
   tEthereumAddress,
 } from '../commons/types';
 import {
@@ -96,6 +98,8 @@ export class PoolBundle
 
   supplyTxBuilder: SupplyTxBuilder;
   borrowTxBuilder: BorrowTxBuilder;
+  repayTxBuilder: RepayTxBuilder;
+  repayWithATokensTxBuilder: RepayWithATokensTxBuilder;
 
   constructor(
     provider: providers.Provider,
@@ -323,6 +327,106 @@ export class PoolBundle
           actionTx.data = txData;
           actionTx.gasLimit = BigNumber.from(
             gasLimitRecommendations[ProtocolAction.borrow].recommended,
+          );
+        }
+
+        return actionTx;
+      },
+    };
+
+    this.repayTxBuilder = {
+      generateTxData: ({
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        onBehalfOf,
+      }) => {
+        let actionTx: PopulatedTransaction = {};
+        const numericRateMode =
+          interestRateMode === InterestRate.Variable ? 2 : 1;
+        const onBehalfOfParam = onBehalfOf ?? user;
+        if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
+          actionTx = this.wethGatewayService.generateRepayEthTxData({
+            lendingPool: this.poolAddress,
+            user,
+            amount,
+            interestRateMode,
+            onBehalfOf: onBehalfOfParam,
+          });
+        } else {
+          const txData = this.contractInterface.encodeFunctionData('repay', [
+            reserve,
+            amount,
+            numericRateMode,
+            onBehalfOfParam,
+          ]);
+          actionTx.to = this.poolAddress;
+          actionTx.from = user;
+          actionTx.data = txData;
+          actionTx.gasLimit = BigNumber.from(
+            gasLimitRecommendations[ProtocolAction.repay].recommended,
+          );
+        }
+
+        return actionTx;
+      },
+      generateSignedTxData: ({
+        onBehalfOf,
+        signature,
+        deadline,
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+      }) => {
+        const decomposedSignature: Signature = splitSignature(signature);
+        const populatedTx: PopulatedTransaction = {};
+        const numericRateMode =
+          interestRateMode === InterestRate.Variable ? 2 : 1;
+        const onBehalfOfParam = onBehalfOf ?? user;
+        const txData = this.contractInterface.encodeFunctionData(
+          'repayWithPermit',
+          [
+            reserve,
+            amount,
+            numericRateMode,
+            onBehalfOfParam,
+            deadline,
+            decomposedSignature.v,
+            decomposedSignature.r,
+            decomposedSignature.s,
+          ],
+        );
+        populatedTx.to = this.poolAddress;
+        populatedTx.from = user;
+        populatedTx.data = txData;
+        populatedTx.gasLimit = BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.repayWithPermit].recommended,
+        );
+        return populatedTx;
+      },
+    };
+
+    this.repayWithATokensTxBuilder = {
+      generateTxData: ({ rateMode, user, amount, reserve }) => {
+        const actionTx: PopulatedTransaction = {};
+        const numericRateMode = rateMode === InterestRate.Variable ? 2 : 1;
+        if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
+          throw new Error(
+            'Can not repay with aTokens with eth. Should be WETH instead',
+          );
+        } else {
+          const txData = this.contractInterface.encodeFunctionData(
+            'repayWithATokens',
+            [reserve, amount, numericRateMode],
+          );
+          actionTx.to = this.poolAddress;
+          actionTx.from = user;
+          actionTx.data = txData;
+          actionTx.gasLimit = BigNumber.from(
+            gasLimitRecommendations[ProtocolAction.repayWithATokens]
+              .recommended,
           );
         }
 

@@ -20,6 +20,7 @@ import {
 import {
   LPBorrowParamsType,
   LPDepositParamsType,
+  LPRepayParamsType,
 } from '../lendingPool-contract/lendingPoolTypes';
 import {
   ILendingPool,
@@ -41,6 +42,10 @@ export type DepositTxBuilder = {
     referralCode,
   }: LPDepositParamsType) => PopulatedTransaction;
   getApprovedAmount: ({ user, token }: TokenOwner) => Promise<ApproveType>;
+};
+
+export type LPRepayTxBuilder = {
+  generateTxData: (args: LPRepayParamsType) => PopulatedTransaction;
 };
 
 export interface LendingPoolBundleInterface {
@@ -65,6 +70,7 @@ export class LendingPoolBundle
 
   depositTxBuilder: DepositTxBuilder;
   borrowTxBuilder: Omit<BorrowTxBuilder, 'useOptimizedPath' | 'encodedTxData'>;
+  repayTxBuilder: LPRepayTxBuilder;
 
   constructor(
     provider: providers.Provider,
@@ -188,6 +194,42 @@ export class LendingPoolBundle
           );
         }
 
+        return actionTx;
+      },
+    };
+    this.repayTxBuilder = {
+      generateTxData: ({
+        user,
+        reserve,
+        onBehalfOf,
+        interestRateMode,
+        amount,
+      }) => {
+        const actionTx: PopulatedTransaction = {};
+        if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
+          return this.wethGatewayService.generateRepayEthTxData({
+            lendingPool: this.lendingPoolAddress,
+            user,
+            amount,
+            interestRateMode,
+            onBehalfOf,
+          });
+        }
+
+        const numericRateMode =
+          interestRateMode === InterestRate.Variable ? 2 : 1;
+        const txData = this.contractInterface.encodeFunctionData('repay', [
+          reserve,
+          amount,
+          numericRateMode,
+          onBehalfOf ?? user,
+        ]);
+        actionTx.to = this.lendingPoolAddress;
+        actionTx.from = user;
+        actionTx.data = txData;
+        actionTx.gasLimit = BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.repay].recommended,
+        );
         return actionTx;
       },
     };

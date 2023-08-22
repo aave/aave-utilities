@@ -1,5 +1,10 @@
 import { BigNumber, BytesLike, PopulatedTransaction } from 'ethers';
-import { LPBorrowParamsType } from '../v3-pool-contract/lendingPoolTypes';
+import {
+  LPBorrowParamsType,
+  LPRepayParamsType,
+  LPRepayWithATokensType,
+  LPRepayWithPermitParamsType,
+} from '../v3-pool-contract/lendingPoolTypes';
 
 export type tEthereumAddress = string;
 export type ENS = string; // something.eth
@@ -109,6 +114,8 @@ export enum ProtocolAction {
   liquidationCall = 'liquidationCall',
   liquidationFlash = 'liquidationFlash',
   repay = 'repay',
+  repayETH = 'repayETH',
+  repayWithATokens = 'repayWithATokens',
   swapCollateral = 'swapCollateral',
   repayCollateral = 'repayCollateral',
   withdrawETH = 'withdrawETH',
@@ -337,4 +344,15 @@ export type BorrowTxBuilder = {
     useOptimizedPath,
     encodedTxData,
   }: LPBorrowParamsType) => PopulatedTransaction;
+};
+
+export type RepayTxBuilder = {
+  generateTxData: (params: LPRepayParamsType) => PopulatedTransaction;
+  generateSignedTxData: (
+    params: LPRepayWithPermitParamsType,
+  ) => PopulatedTransaction;
+};
+
+export type RepayWithATokensTxBuilder = {
+  generateTxData: (params: LPRepayWithATokensType) => PopulatedTransaction;
 };
