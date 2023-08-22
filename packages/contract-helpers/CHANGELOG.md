@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.20.0 (2023-08-22)
+
+
+### Features
+
+* withdraw and swap ([#555](https://github.com/aave/aave-utilities/issues/555)) ([ca6c230](https://github.com/aave/aave-utilities/commit/ca6c230f39536ba34313ba5ec8295267742216a3))
+
+
+
+
+
 # 1.19.0 (2023-08-21)
 
 
