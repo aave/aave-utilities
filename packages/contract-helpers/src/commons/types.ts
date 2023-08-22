@@ -135,6 +135,7 @@ export enum ProtocolAction {
   claimRewards = 'claimRewards',
   claimRewardsAndStake = 'claimRewardsAndStake',
   setUsageAsCollateral = 'setUsageAsCollateral',
+  withdrawAndSwitch = 'withdrawAndSwitch',
 }
 
 export enum GovernanceVote {

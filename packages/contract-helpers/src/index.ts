@@ -29,6 +29,7 @@ export * from './gho';
 export * from './v3-migration-contract';
 export * from './erc20-2612';
 export * from './paraswap-debtSwitch-contract';
+export * from './paraswap-withdrawAndSwitchAdapter-contract';
 
 // commons
 export * from './commons/types';
