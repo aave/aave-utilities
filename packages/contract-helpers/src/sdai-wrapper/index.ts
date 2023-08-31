@@ -1,5 +1,5 @@
 import { Signature, SignatureLike, splitSignature } from '@ethersproject/bytes';
-import { PopulatedTransaction, providers } from 'ethers';
+import { BigNumber, PopulatedTransaction, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
   BaseTokenWrapper,
@@ -17,8 +17,8 @@ interface SupplyTokenWithPermitParams {
 }
 
 export interface SavingsDaiTokenWrapperServiceInterface {
-  getTokenInForTokenOut: (amount: string, user: string) => PopulatedTransaction;
-  getTokenOutForTokenIn: (amount: string, user: string) => PopulatedTransaction;
+  getTokenInForTokenOut: (amount: string) => Promise<BigNumber>;
+  getTokenOutForTokenIn: (amount: string) => Promise<BigNumber>;
   supplyToken: (
     amount: string,
     onBehalfOf: string,
@@ -47,6 +47,8 @@ export class SavingsDaiTokenWrapperService
   readonly savingsDaiTokenWrapperAddress: string;
   readonly contractInterface: SavingsDaiTokenWrapperInterface;
 
+  private readonly _contract: SavingsDaiTokenWrapper;
+
   constructor(
     provider: providers.Provider,
     savingsDaiTokenWrapperAddress: string,
@@ -54,6 +56,10 @@ export class SavingsDaiTokenWrapperService
     super(provider, SavingsDaiTokenWrapper__factory);
     this.savingsDaiTokenWrapperAddress = savingsDaiTokenWrapperAddress;
     this.contractInterface = SavingsDaiTokenWrapper__factory.createInterface();
+    this._contract = SavingsDaiTokenWrapper__factory.connect(
+      savingsDaiTokenWrapperAddress,
+      provider,
+    );
 
     this.getTokenInForTokenOut = this.getTokenInForTokenOut.bind(this);
     this.getTokenOutForTokenIn = this.getTokenOutForTokenIn.bind(this);
@@ -63,33 +69,12 @@ export class SavingsDaiTokenWrapperService
     this.withdrawTokenWithPermit = this.withdrawTokenWithPermit.bind(this);
   }
 
-  public getTokenInForTokenOut(
-    amount: string,
-    user: string,
-  ): PopulatedTransaction {
-    const data = this.contractInterface.encodeFunctionData(
-      'getTokenInForTokenOut',
-      [amount],
-    );
-
-    return {
-      to: this.savingsDaiTokenWrapperAddress,
-      from: user,
-      data,
-    };
+  public async getTokenInForTokenOut(amount: string): Promise<BigNumber> {
+    return this._contract.getTokenInForTokenOut(amount);
   }
 
-  public getTokenOutForTokenIn(amount: string, user: string) {
-    const data = this.contractInterface.encodeFunctionData(
-      'getTokenOutForTokenIn',
-      [amount],
-    );
-
-    return {
-      to: this.savingsDaiTokenWrapperAddress,
-      from: user,
-      data,
-    };
+  public async getTokenOutForTokenIn(amount: string): Promise<BigNumber> {
+    return this._contract.getTokenOutForTokenIn(amount);
   }
 
   public supplyToken(amount: string, onBehalfOf: string, referralCode: string) {
