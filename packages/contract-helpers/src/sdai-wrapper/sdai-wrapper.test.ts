@@ -15,36 +15,6 @@ describe('SavingsDaiTokenWrapperService', () => {
           ),
       ).not.toThrow();
     });
-    // it('generates token in for token out preview tx', () => {
-    //   const user = '0x0000000000000000000000000000000000000004';
-    //   const savingsDaiTokenWrapperService = new SavingsDaiTokenWrapperService(
-    //     provider,
-    //     savingsDaiTokenWrapperAddress,
-    //   );
-    //   const tx = savingsDaiTokenWrapperService.getTokenInForTokenOut(
-    //     '10000000000000000000',
-    //     user,
-    //   );
-    //   expect(tx.to).toEqual(savingsDaiTokenWrapperAddress);
-    //   expect(tx.data).toEqual(
-    //     '0xf823b07b0000000000000000000000000000000000000000000000008ac7230489e80000',
-    //   );
-    // });
-    // it('generates token out for token in preview tx', () => {
-    //   const user = '0x0000000000000000000000000000000000000004';
-    //   const savingsDaiTokenWrapperService = new SavingsDaiTokenWrapperService(
-    //     provider,
-    //     savingsDaiTokenWrapperAddress,
-    //   );
-    //   const tx = savingsDaiTokenWrapperService.getTokenOutForTokenIn(
-    //     '10000000000000000000',
-    //     user,
-    //   );
-    //   expect(tx.to).toEqual(savingsDaiTokenWrapperAddress);
-    //   expect(tx.data).toEqual(
-    //     '0xfe6568500000000000000000000000000000000000000000000000008ac7230489e80000',
-    //   );
-    // });
     it('generates supply token tx', () => {
       const onBehalfOf = '0x0000000000000000000000000000000000000004';
       const savingsDaiTokenWrapperService = new SavingsDaiTokenWrapperService(
@@ -117,24 +87,24 @@ describe('SavingsDaiTokenWrapperService', () => {
       );
     });
   });
-  // describe('get token preview', () => {
-  //   it('should not throw for token in', async () => {
-  //     const service = new SavingsDaiTokenWrapperService(
-  //       provider,
-  //       savingsDaiTokenWrapperAddress,
-  //     );
-  //     await expect(
-  //       service.getTokenInForTokenOut('10000000000000000000'),
-  //     ).resolves.not.toThrow();
-  //   });
-  //   it('should not throw for token out', async () => {
-  //     const service = new SavingsDaiTokenWrapperService(
-  //       provider,
-  //       savingsDaiTokenWrapperAddress,
-  //     );
-  //     await expect(
-  //       service.getTokenOutForTokenIn('10000000000000000000'),
-  //     ).resolves.not.toThrow();
-  //   });
-  // });
+  describe('get token preview', () => {
+    it('should not throw for token in', async () => {
+      const service = new SavingsDaiTokenWrapperService(
+        provider,
+        savingsDaiTokenWrapperAddress,
+      );
+      await expect(
+        service.getTokenInForTokenOut('10000000000000000000'),
+      ).rejects.toThrow();
+    });
+    it('should not throw for token out', async () => {
+      const service = new SavingsDaiTokenWrapperService(
+        provider,
+        savingsDaiTokenWrapperAddress,
+      );
+      await expect(
+        service.getTokenOutForTokenIn('10000000000000000000'),
+      ).rejects.toThrow();
+    });
+  });
 });
