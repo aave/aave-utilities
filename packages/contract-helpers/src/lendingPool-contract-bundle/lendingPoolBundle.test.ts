@@ -303,5 +303,21 @@ describe('LendingPoolBundle', () => {
         '0x02c5fcf80000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003',
       );
     });
+
+    it('generates repay tx data with generateTxData with variable debt and max repay', () => {
+      const result = instance.repayTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '-1',
+        onBehalfOf: USER,
+        interestRateMode: InterestRate.Variable,
+      });
+
+      expect(result.to).toEqual(LENDING_POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0x573ade810000000000000000000000000000000000000000000000000000000000000004ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003',
+      );
+    });
   });
 });

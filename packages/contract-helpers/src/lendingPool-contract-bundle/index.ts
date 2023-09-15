@@ -1,4 +1,4 @@
-import { providers, PopulatedTransaction, BigNumber } from 'ethers';
+import { providers, PopulatedTransaction, BigNumber, constants } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
   BorrowTxBuilder,
@@ -220,7 +220,7 @@ export class LendingPoolBundle
           interestRateMode === InterestRate.Variable ? 2 : 1;
         const txData = this.contractInterface.encodeFunctionData('repay', [
           reserve,
-          amount,
+          amount === '-1' ? constants.MaxUint256.toString() : amount,
           numericRateMode,
           onBehalfOf ?? user,
         ]);

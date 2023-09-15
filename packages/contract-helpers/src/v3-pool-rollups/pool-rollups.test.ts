@@ -287,6 +287,84 @@ describe('L2Pool', () => {
       expect(txData.from).toEqual(user);
       expect(txData.data).toEqual(encodedBorrowTxData);
     });
+
+    it('Generate repay tx data with encoded parameter', async () => {
+      const instance: L2PoolInterface = new L2Pool(provider, config);
+
+      const encoder = instance.getEncoder();
+
+      const encodedTxData = await encoder.encodeRepayParams(reserve, 1, '0');
+
+      const txData = instance.generateEncodedSupplyTxData({
+        user,
+        encodedTxData,
+      });
+
+      const encodedRepayTxData =
+        '0xf7a738400000000000000000000000000000000000000000000000000000006d6168616d';
+      expect(txData.to).toEqual(l2PoolAddress);
+      expect(txData.from).toEqual(user);
+      expect(txData.data).toEqual(encodedRepayTxData);
+    });
+
+    it('Generate repayWithATokens tx data with encoded parameter', async () => {
+      const instance: L2PoolInterface = new L2Pool(provider, config);
+
+      const encoder = instance.getEncoder();
+
+      const encodedTxData = await encoder.encodeRepayWithATokensParams(
+        reserve,
+        1,
+        '0',
+      );
+
+      const txData = instance.generateEncodedRepayWithATokensTxData({
+        user,
+        encodedTxData,
+      });
+
+      const encodedRepayTxData =
+        '0xdc7c0bff0000000000000000000000000000000000000000000000000000006d6168616d';
+      expect(txData.to).toEqual(l2PoolAddress);
+      expect(txData.from).toEqual(user);
+      expect(txData.data).toEqual(encodedRepayTxData);
+    });
+
+    it('Generate repayWithPermit tx data with encoded parameter', async () => {
+      const instance: L2PoolInterface = new L2Pool(provider, config);
+
+      const encoder = instance.getEncoder();
+
+      const signature =
+        '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c';
+      const decomposedSignature = splitSignature(signature);
+      expect(instance).toBeDefined();
+      expect(encoder).toBeDefined();
+
+      const encodedTxData = await encoder.encodeRepayWithPermitParams(
+        reserve,
+        1,
+        '0',
+        '10000',
+        decomposedSignature.v,
+        decomposedSignature.r,
+        decomposedSignature.s,
+      );
+
+      expect(encodedTxData).toBeDefined();
+
+      const txData = instance.generateEncodedRepayWithPermitTxData({
+        user,
+        encodedTxData: encodedTxData[0],
+        signature,
+      });
+
+      const encodedRepayWithPermitTxData =
+        '0x94b576de0000000000000000000000000000000000000000000000000000006d6168616d532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4';
+      expect(txData.to).toEqual(l2PoolAddress);
+      expect(txData.from).toEqual(user);
+      expect(txData.data).toEqual(encodedRepayWithPermitTxData);
+    });
   });
   describe('getEncoder', () => {
     const instance: L2PoolInterface = new L2Pool(provider, config);

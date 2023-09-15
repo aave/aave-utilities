@@ -53,6 +53,19 @@ export interface L2PoolInterface {
     user: string;
     signature: string;
   }) => PopulatedTransaction;
+  generateEncodedRepayTxData: (args: {
+    encodedTxData: string;
+    user: string;
+  }) => PopulatedTransaction;
+  generateEncodedRepayWithPermitTxData: (args: {
+    encodedTxData: string;
+    user: string;
+    signature: string;
+  }) => PopulatedTransaction;
+  generateEncodedRepayWithATokensTxData: (args: {
+    encodedTxData: string;
+    user: string;
+  }) => PopulatedTransaction;
   supplyWithPermit: (
     args: LPSupplyWithPermitType,
     txs: EthereumTransactionTypeExtended[],
@@ -124,6 +137,22 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
     encodedTxData: string;
     user: string;
     signature: string;
+  }) => PopulatedTransaction;
+
+  generateEncodedRepayTxData: (args: {
+    encodedTxData: string;
+    user: string;
+  }) => PopulatedTransaction;
+
+  generateEncodedRepayWithPermitTxData: (args: {
+    encodedTxData: string;
+    user: string;
+    signature: string;
+  }) => PopulatedTransaction;
+
+  generateEncodedRepayWithATokensTxData: (args: {
+    encodedTxData: string;
+    user: string;
   }) => PopulatedTransaction;
 
   constructor(provider: providers.Provider, l2PoolConfig?: L2PoolConfigType) {
@@ -280,6 +309,58 @@ export class L2Pool extends BaseService<IL2Pool> implements L2PoolInterface {
       actionTx.from = user;
       actionTx.gasLimit = BigNumber.from(
         gasLimitRecommendations[ProtocolAction.supplyWithPermit].limit,
+      );
+      return actionTx;
+    };
+
+    this.generateEncodedRepayTxData = ({ encodedTxData, user }) => {
+      const actionTx: PopulatedTransaction = {};
+      const txData = this.l2PoolContractInstance.encodeFunctionData('repay', [
+        encodedTxData,
+      ]);
+
+      actionTx.to = this.l2PoolAddress;
+      actionTx.data = txData;
+      actionTx.from = user;
+      actionTx.gasLimit = BigNumber.from(
+        gasLimitRecommendations[ProtocolAction.repay].limit,
+      );
+      return actionTx;
+    };
+
+    this.generateEncodedRepayWithPermitTxData = ({
+      encodedTxData,
+      user,
+      signature,
+    }) => {
+      const actionTx: PopulatedTransaction = {};
+      const decomposedSignature: Signature = splitSignature(signature);
+      const txData = this.l2PoolContractInstance.encodeFunctionData(
+        'repayWithPermit',
+        [encodedTxData, decomposedSignature.r, decomposedSignature.s],
+      );
+
+      actionTx.to = this.l2PoolAddress;
+      actionTx.data = txData;
+      actionTx.from = user;
+      actionTx.gasLimit = BigNumber.from(
+        gasLimitRecommendations[ProtocolAction.repayWithPermit].limit,
+      );
+      return actionTx;
+    };
+
+    this.generateEncodedRepayWithATokensTxData = ({ encodedTxData, user }) => {
+      const actionTx: PopulatedTransaction = {};
+      const txData = this.l2PoolContractInstance.encodeFunctionData(
+        'repayWithATokens',
+        [encodedTxData],
+      );
+
+      actionTx.to = this.l2PoolAddress;
+      actionTx.data = txData;
+      actionTx.from = user;
+      actionTx.gasLimit = BigNumber.from(
+        gasLimitRecommendations[ProtocolAction.repayWithATokens].limit,
       );
       return actionTx;
     };

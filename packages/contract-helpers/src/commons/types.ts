@@ -3,7 +3,7 @@ import {
   LPBorrowParamsType,
   LPRepayParamsType,
   LPRepayWithATokensType,
-  LPRepayWithPermitParamsType,
+  LPSignedRepayParamsType,
 } from '../v3-pool-contract/lendingPoolTypes';
 
 export type tEthereumAddress = string;
@@ -356,7 +356,7 @@ export type BorrowTxBuilder = {
 export type RepayTxBuilder = {
   generateTxData: (params: LPRepayParamsType) => PopulatedTransaction;
   generateSignedTxData: (
-    params: LPRepayWithPermitParamsType,
+    params: LPSignedRepayParamsType,
   ) => PopulatedTransaction;
 };
 

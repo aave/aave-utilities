@@ -609,6 +609,45 @@ describe('PoolBundle', () => {
       );
     });
 
+    it('generates repay tx data with generateTxData and L2POOL with encoded txData', () => {
+      const result = instance.repayTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        onBehalfOf: USER,
+        interestRateMode: InterestRate.Variable,
+        useOptimizedPath: true,
+        encodedTxData:
+          '0x0000000000000000000000000000000000000000000000000000006d6168616d',
+      });
+
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0x563dd6130000000000000000000000000000000000000000000000000000006d6168616d',
+      );
+    });
+
+    it('generates signed repay tx data with generateSignedTxData and L2POOL with encoded txData', () => {
+      const result = instance.repayTxBuilder.generateSignedTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        onBehalfOf: USER,
+        interestRateMode: InterestRate.Variable,
+        signature:
+          '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c',
+        deadline: '10000',
+        useOptimizedPath: true,
+      });
+
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0xee3e210b00000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000002710000000000000000000000000000000000000000000000000000000000000001c532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4',
+      );
+    });
+
     it('generates signed tx with generateSignedTxData with variable debt', () => {
       const result = instance.repayTxBuilder.generateSignedTxData({
         user: USER,
@@ -716,6 +755,24 @@ describe('PoolBundle', () => {
         });
 
       expect(generateData).toThrow();
+    });
+
+    it('generates repay tx data with generateTxData and L2POOL with encoded txData', () => {
+      const result = instance.repayWithATokensTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        rateMode: InterestRate.Variable,
+        useOptimizedPath: true,
+        encodedTxData:
+          '0x0000000000000000000000000000000000000000000000000000006d6168616d',
+      });
+
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0xdc7c0bff0000000000000000000000000000000000000000000000000000006d6168616d',
+      );
     });
   });
 });
