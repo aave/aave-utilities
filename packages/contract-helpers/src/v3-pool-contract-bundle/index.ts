@@ -1,5 +1,5 @@
 import { Signature, splitSignature } from '@ethersproject/bytes';
-import { BigNumber, PopulatedTransaction, providers } from 'ethers';
+import { BigNumber, PopulatedTransaction, constants, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
   BorrowTxBuilder,
@@ -367,7 +367,7 @@ export class PoolBundle
         const actionTx: PopulatedTransaction = {};
         const txData = this.contractInterface.encodeFunctionData('repay', [
           reserve,
-          amount,
+          amount === '-1' ? constants.MaxUint256.toString() : amount,
           numericRateMode,
           onBehalfOfParam,
         ]);
@@ -407,7 +407,7 @@ export class PoolBundle
           'repayWithPermit',
           [
             reserve,
-            amount,
+            amount === '-1' ? constants.MaxUint256.toString() : amount,
             numericRateMode,
             onBehalfOfParam,
             deadline,
@@ -452,7 +452,11 @@ export class PoolBundle
 
         const txData = this.contractInterface.encodeFunctionData(
           'repayWithATokens',
-          [reserve, amount, numericRateMode],
+          [
+            reserve,
+            amount === '-1' ? constants.MaxUint256.toString() : amount,
+            numericRateMode,
+          ],
         );
         actionTx.to = this.poolAddress;
         actionTx.from = user;
