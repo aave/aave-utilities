@@ -565,6 +565,22 @@ describe('PoolBundle', () => {
       );
     });
 
+    it('generates repay tx data with generateTxData with variable debt and max input', () => {
+      const result = instance.repayTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '-1',
+        interestRateMode: InterestRate.Variable,
+        onBehalfOf: USER,
+      });
+
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0x573ade810000000000000000000000000000000000000000000000000000000000000004ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003',
+      );
+    });
+
     it('generates repay tx data with generateTxData with stable debt', () => {
       const result = instance.repayTxBuilder.generateTxData({
         user: USER,
@@ -685,6 +701,24 @@ describe('PoolBundle', () => {
       );
     });
 
+    it('generates signed tx with generateSignedTxData with variable debt and max input', () => {
+      const result = instance.repayTxBuilder.generateSignedTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '-1',
+        onBehalfOf: USER,
+        interestRateMode: InterestRate.Variable,
+        signature:
+          '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c',
+        deadline: '10000',
+      });
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0xee3e210b0000000000000000000000000000000000000000000000000000000000000004ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000002710000000000000000000000000000000000000000000000000000000000000001c532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4',
+      );
+    });
+
     it('generates signed tx with generateSignedTxData with stable debt', () => {
       const result = instance.repayTxBuilder.generateSignedTxData({
         user: USER,
@@ -729,6 +763,21 @@ describe('PoolBundle', () => {
       expect(result.from).toEqual(USER);
       expect(result.data).toEqual(
         '0x2dad97d4000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002',
+      );
+    });
+
+    it('generates repayWithAToken tx data with generateTxData with variable rate and max input', () => {
+      const result = instance.repayWithATokensTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '-1',
+        rateMode: InterestRate.Variable,
+      });
+
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0x2dad97d40000000000000000000000000000000000000000000000000000000000000004ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000002',
       );
     });
 
