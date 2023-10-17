@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.21.0 (2023-10-04)
+
+
+### Features
+
+* updated debt switch interface ([#559](https://github.com/aave/aave-utilities/issues/559)) ([b108c62](https://github.com/aave/aave-utilities/commit/b108c620cf0e3e446840c166b660695ebd66563b))
+
+
+
+
+
 # 1.20.0 (2023-08-22)
 
 ### Features

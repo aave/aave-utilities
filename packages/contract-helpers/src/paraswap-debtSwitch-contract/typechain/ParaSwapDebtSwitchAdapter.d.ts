@@ -11,99 +11,258 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from "ethers";
+} from 'ethers';
 import type {
   FunctionFragment,
   Result,
   EventFragment,
-} from "@ethersproject/abi";
-import type { Listener, Provider } from "@ethersproject/providers";
+} from '@ethersproject/abi';
+import type { Listener, Provider } from '@ethersproject/providers';
 import type {
   TypedEventFilter,
   TypedEvent,
   TypedListener,
   OnEvent,
-} from "./common";
+} from './common';
 
 export declare namespace ParaSwapDebtSwapAdapter {
   export type DebtSwapParamsStruct = {
-      debtAsset: string;
-      debtRepayAmount: BigNumberish;
-      debtRateMode: BigNumberish;
-      newDebtAsset: string;
-      maxNewDebtAmount: BigNumberish;
-      offset: BigNumberish;
-      paraswapData: BytesLike;
+    debtAsset: string;
+    debtRepayAmount: BigNumberish;
+    debtRateMode: BigNumberish;
+    newDebtAsset: string;
+    maxNewDebtAmount: BigNumberish;
+    extraCollateralAsset: string;
+    extraCollateralAmount: BigNumberish;
+    offset: BigNumberish;
+    paraswapData: BytesLike;
   };
 
   export type DebtSwapParamsStructOutput = [
-      string,
-      BigNumber,
-      BigNumber,
-      string,
-      BigNumber,
-      BigNumber,
-      string
+    string,
+    BigNumber,
+    BigNumber,
+    string,
+    BigNumber,
+    string,
+    BigNumber,
+    BigNumber,
+    string,
   ] & {
-      debtAsset: string;
-      debtRepayAmount: BigNumber;
-      debtRateMode: BigNumber;
-      newDebtAsset: string;
-      maxNewDebtAmount: BigNumber;
-      offset: BigNumber;
-      paraswapData: string;
+    debtAsset: string;
+    debtRepayAmount: BigNumber;
+    debtRateMode: BigNumber;
+    newDebtAsset: string;
+    maxNewDebtAmount: BigNumber;
+    extraCollateralAsset: string;
+    extraCollateralAmount: BigNumber;
+    offset: BigNumber;
+    paraswapData: string;
   };
 
   export type CreditDelegationInputStruct = {
-      debtToken: string;
-      value: BigNumberish;
-      deadline: BigNumberish;
-      v: BigNumberish;
-      r: BytesLike;
-      s: BytesLike;
+    debtToken: string;
+    value: BigNumberish;
+    deadline: BigNumberish;
+    v: BigNumberish;
+    r: BytesLike;
+    s: BytesLike;
   };
 
   export type CreditDelegationInputStructOutput = [
-      string,
-      BigNumber,
-      BigNumber,
-      number,
-      string,
-      string
+    string,
+    BigNumber,
+    BigNumber,
+    number,
+    string,
+    string,
   ] & {
-      debtToken: string;
-      value: BigNumber;
-      deadline: BigNumber;
-      v: number;
-      r: string;
-      s: string;
+    debtToken: string;
+    value: BigNumber;
+    deadline: BigNumber;
+    v: number;
+    r: string;
+    s: string;
+  };
+
+  export type PermitInputStruct = {
+    aToken: string;
+    value: BigNumberish;
+    deadline: BigNumberish;
+    v: BigNumberish;
+    r: BytesLike;
+    s: BytesLike;
+  };
+
+  export type PermitInputStructOutput = [
+    string,
+    BigNumber,
+    BigNumber,
+    number,
+    string,
+    string,
+  ] & {
+    aToken: string;
+    value: BigNumber;
+    deadline: BigNumber;
+    v: number;
+    r: string;
+    s: string;
   };
 }
 
 export interface ParaSwapDebtSwapAdapterInterface extends utils.Interface {
   functions: {
-      "swapDebt((address,uint256,uint256,address,uint256,uint256,bytes),(address,uint256,uint256,uint8,bytes32,bytes32))": FunctionFragment;
+    'ADDRESSES_PROVIDER()': FunctionFragment;
+    'AUGUSTUS_REGISTRY()': FunctionFragment;
+    'MAX_SLIPPAGE_PERCENT()': FunctionFragment;
+    'ORACLE()': FunctionFragment;
+    'POOL()': FunctionFragment;
+    'REFERRER()': FunctionFragment;
+    'executeOperation(address[],uint256[],uint256[],address,bytes)': FunctionFragment;
+    'owner()': FunctionFragment;
+    'renewAllowance(address)': FunctionFragment;
+    'renounceOwnership()': FunctionFragment;
+    'rescueTokens(address)': FunctionFragment;
+    'swapDebt((address,uint256,uint256,address,uint256,address,uint256,uint256,bytes),(address,uint256,uint256,uint8,bytes32,bytes32),(address,uint256,uint256,uint8,bytes32,bytes32))': FunctionFragment;
+    'transferOwnership(address)': FunctionFragment;
   };
 
   getFunction(
-      nameOrSignatureOrTopic:
-          | "swapDebt"
+    nameOrSignatureOrTopic:
+      | 'ADDRESSES_PROVIDER'
+      | 'AUGUSTUS_REGISTRY'
+      | 'MAX_SLIPPAGE_PERCENT'
+      | 'ORACLE'
+      | 'POOL'
+      | 'REFERRER'
+      | 'executeOperation'
+      | 'owner'
+      | 'renewAllowance'
+      | 'renounceOwnership'
+      | 'rescueTokens'
+      | 'swapDebt'
+      | 'transferOwnership',
   ): FunctionFragment;
 
   encodeFunctionData(
-      functionFragment: "swapDebt",
-      values: [
-          ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
-          ParaSwapDebtSwapAdapter.CreditDelegationInputStruct
-      ]
+    functionFragment: 'ADDRESSES_PROVIDER',
+    values?: undefined,
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'AUGUSTUS_REGISTRY',
+    values?: undefined,
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'MAX_SLIPPAGE_PERCENT',
+    values?: undefined,
+  ): string;
+  encodeFunctionData(functionFragment: 'ORACLE', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'POOL', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'REFERRER', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'executeOperation',
+    values: [string[], BigNumberish[], BigNumberish[], string, BytesLike],
+  ): string;
+  encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'renewAllowance',
+    values: [string],
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'renounceOwnership',
+    values?: undefined,
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'rescueTokens',
+    values: [string],
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'swapDebt',
+    values: [
+      ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
+      ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
+      ParaSwapDebtSwapAdapter.PermitInputStruct,
+    ],
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'transferOwnership',
+    values: [string],
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: 'ADDRESSES_PROVIDER',
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'AUGUSTUS_REGISTRY',
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'MAX_SLIPPAGE_PERCENT',
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(functionFragment: 'ORACLE', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'POOL', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'REFERRER', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'executeOperation',
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'renewAllowance',
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'renounceOwnership',
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'rescueTokens',
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(functionFragment: 'swapDebt', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'transferOwnership',
+    data: BytesLike,
+  ): Result;
+
   events: {
-      "Swapped(address,address,uint256,uint256)": EventFragment;
+    'Bought(address,address,uint256,uint256)': EventFragment;
+    'OwnershipTransferred(address,address)': EventFragment;
+    'Swapped(address,address,uint256,uint256)': EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "Swapped"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Bought'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Swapped'): EventFragment;
 }
+
+export interface BoughtEventObject {
+  fromAsset: string;
+  toAsset: string;
+  amountSold: BigNumber;
+  receivedAmount: BigNumber;
+}
+export type BoughtEvent = TypedEvent<
+  [string, string, BigNumber, BigNumber],
+  BoughtEventObject
+>;
+
+export type BoughtEventFilter = TypedEventFilter<BoughtEvent>;
+
+export interface OwnershipTransferredEventObject {
+  previousOwner: string;
+  newOwner: string;
+}
+export type OwnershipTransferredEvent = TypedEvent<
+  [string, string],
+  OwnershipTransferredEventObject
+>;
+
+export type OwnershipTransferredEventFilter =
+  TypedEventFilter<OwnershipTransferredEvent>;
 
 export interface SwappedEventObject {
   fromAsset: string;
@@ -126,17 +285,17 @@ export interface ParaSwapDebtSwapAdapter extends BaseContract {
   interface: ParaSwapDebtSwapAdapterInterface;
 
   queryFilter<TEvent extends TypedEvent>(
-      event: TypedEventFilter<TEvent>,
-      fromBlockOrBlockhash?: string | number | undefined,
-      toBlock?: string | number | undefined
+    event: TypedEventFilter<TEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined,
   ): Promise<Array<TEvent>>;
 
   listeners<TEvent extends TypedEvent>(
-      eventFilter?: TypedEventFilter<TEvent>
+    eventFilter?: TypedEventFilter<TEvent>,
   ): Array<TypedListener<TEvent>>;
   listeners(eventName?: string): Array<Listener>;
   removeAllListeners<TEvent extends TypedEvent>(
-      eventFilter: TypedEventFilter<TEvent>
+    eventFilter: TypedEventFilter<TEvent>,
   ): this;
   removeAllListeners(eventName?: string): this;
   off: OnEvent<this>;
@@ -145,56 +304,288 @@ export interface ParaSwapDebtSwapAdapter extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-      swapDebt(
-          debtSwapParams: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
-          creditDelegationPermit: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
-          overrides?: Overrides & { from?: string }
-      ): Promise<ContractTransaction>;
-  };
+    ADDRESSES_PROVIDER(overrides?: CallOverrides): Promise<[string]>;
 
-  swapDebt(
+    AUGUSTUS_REGISTRY(overrides?: CallOverrides): Promise<[string]>;
+
+    MAX_SLIPPAGE_PERCENT(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    ORACLE(overrides?: CallOverrides): Promise<[string]>;
+
+    POOL(overrides?: CallOverrides): Promise<[string]>;
+
+    REFERRER(overrides?: CallOverrides): Promise<[number]>;
+
+    executeOperation(
+      assets: string[],
+      amounts: BigNumberish[],
+      arg2: BigNumberish[],
+      initiator: string,
+      params: BytesLike,
+      overrides?: Overrides & { from?: string },
+    ): Promise<ContractTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<[string]>;
+
+    renewAllowance(
+      reserve: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<ContractTransaction>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string },
+    ): Promise<ContractTransaction>;
+
+    rescueTokens(
+      token: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<ContractTransaction>;
+
+    swapDebt(
       debtSwapParams: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
       creditDelegationPermit: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
-      overrides?: Overrides & { from?: string }
+      collateralATokenPermit: ParaSwapDebtSwapAdapter.PermitInputStruct,
+      overrides?: Overrides & { from?: string },
+    ): Promise<ContractTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<ContractTransaction>;
+  };
+
+  ADDRESSES_PROVIDER(overrides?: CallOverrides): Promise<string>;
+
+  AUGUSTUS_REGISTRY(overrides?: CallOverrides): Promise<string>;
+
+  MAX_SLIPPAGE_PERCENT(overrides?: CallOverrides): Promise<BigNumber>;
+
+  ORACLE(overrides?: CallOverrides): Promise<string>;
+
+  POOL(overrides?: CallOverrides): Promise<string>;
+
+  REFERRER(overrides?: CallOverrides): Promise<number>;
+
+  executeOperation(
+    assets: string[],
+    amounts: BigNumberish[],
+    arg2: BigNumberish[],
+    initiator: string,
+    params: BytesLike,
+    overrides?: Overrides & { from?: string },
+  ): Promise<ContractTransaction>;
+
+  owner(overrides?: CallOverrides): Promise<string>;
+
+  renewAllowance(
+    reserve: string,
+    overrides?: Overrides & { from?: string },
+  ): Promise<ContractTransaction>;
+
+  renounceOwnership(
+    overrides?: Overrides & { from?: string },
+  ): Promise<ContractTransaction>;
+
+  rescueTokens(
+    token: string,
+    overrides?: Overrides & { from?: string },
+  ): Promise<ContractTransaction>;
+
+  swapDebt(
+    debtSwapParams: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
+    creditDelegationPermit: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
+    collateralATokenPermit: ParaSwapDebtSwapAdapter.PermitInputStruct,
+    overrides?: Overrides & { from?: string },
+  ): Promise<ContractTransaction>;
+
+  transferOwnership(
+    newOwner: string,
+    overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
   callStatic: {
-      swapDebt(
-          debtSwapParams: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
-          creditDelegationPermit: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
-          overrides?: CallOverrides
-      ): Promise<void>;
+    ADDRESSES_PROVIDER(overrides?: CallOverrides): Promise<string>;
 
+    AUGUSTUS_REGISTRY(overrides?: CallOverrides): Promise<string>;
+
+    MAX_SLIPPAGE_PERCENT(overrides?: CallOverrides): Promise<BigNumber>;
+
+    ORACLE(overrides?: CallOverrides): Promise<string>;
+
+    POOL(overrides?: CallOverrides): Promise<string>;
+
+    REFERRER(overrides?: CallOverrides): Promise<number>;
+
+    executeOperation(
+      assets: string[],
+      amounts: BigNumberish[],
+      arg2: BigNumberish[],
+      initiator: string,
+      params: BytesLike,
+      overrides?: CallOverrides,
+    ): Promise<boolean>;
+
+    owner(overrides?: CallOverrides): Promise<string>;
+
+    renewAllowance(reserve: string, overrides?: CallOverrides): Promise<void>;
+
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    rescueTokens(token: string, overrides?: CallOverrides): Promise<void>;
+
+    swapDebt(
+      debtSwapParams: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
+      creditDelegationPermit: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
+      collateralATokenPermit: ParaSwapDebtSwapAdapter.PermitInputStruct,
+      overrides?: CallOverrides,
+    ): Promise<void>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: CallOverrides,
+    ): Promise<void>;
   };
 
   filters: {
-      "Swapped(address,address,uint256,uint256)"(
-          fromAsset?: string | null,
-          toAsset?: string | null,
-          fromAmount?: null,
-          receivedAmount?: null
-      ): SwappedEventFilter;
-      Swapped(
-          fromAsset?: string | null,
-          toAsset?: string | null,
-          fromAmount?: null,
-          receivedAmount?: null
-      ): SwappedEventFilter;
+    'Bought(address,address,uint256,uint256)'(
+      fromAsset?: string | null,
+      toAsset?: string | null,
+      amountSold?: null,
+      receivedAmount?: null,
+    ): BoughtEventFilter;
+    Bought(
+      fromAsset?: string | null,
+      toAsset?: string | null,
+      amountSold?: null,
+      receivedAmount?: null,
+    ): BoughtEventFilter;
+
+    'OwnershipTransferred(address,address)'(
+      previousOwner?: string | null,
+      newOwner?: string | null,
+    ): OwnershipTransferredEventFilter;
+    OwnershipTransferred(
+      previousOwner?: string | null,
+      newOwner?: string | null,
+    ): OwnershipTransferredEventFilter;
+
+    'Swapped(address,address,uint256,uint256)'(
+      fromAsset?: string | null,
+      toAsset?: string | null,
+      fromAmount?: null,
+      receivedAmount?: null,
+    ): SwappedEventFilter;
+    Swapped(
+      fromAsset?: string | null,
+      toAsset?: string | null,
+      fromAmount?: null,
+      receivedAmount?: null,
+    ): SwappedEventFilter;
   };
 
   estimateGas: {
-      swapDebt(
-          debtSwapParams: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
-          creditDelegationPermit: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
-          overrides?: Overrides & { from?: string }
-      ): Promise<BigNumber>;
+    ADDRESSES_PROVIDER(overrides?: CallOverrides): Promise<BigNumber>;
+
+    AUGUSTUS_REGISTRY(overrides?: CallOverrides): Promise<BigNumber>;
+
+    MAX_SLIPPAGE_PERCENT(overrides?: CallOverrides): Promise<BigNumber>;
+
+    ORACLE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    POOL(overrides?: CallOverrides): Promise<BigNumber>;
+
+    REFERRER(overrides?: CallOverrides): Promise<BigNumber>;
+
+    executeOperation(
+      assets: string[],
+      amounts: BigNumberish[],
+      arg2: BigNumberish[],
+      initiator: string,
+      params: BytesLike,
+      overrides?: Overrides & { from?: string },
+    ): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    renewAllowance(
+      reserve: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<BigNumber>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string },
+    ): Promise<BigNumber>;
+
+    rescueTokens(
+      token: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<BigNumber>;
+
+    swapDebt(
+      debtSwapParams: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
+      creditDelegationPermit: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
+      collateralATokenPermit: ParaSwapDebtSwapAdapter.PermitInputStruct,
+      overrides?: Overrides & { from?: string },
+    ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-      swapDebt(
-          debtSwapParams: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
-          creditDelegationPermit: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
-          overrides?: Overrides & { from?: string }
-      ): Promise<PopulatedTransaction>;
+    ADDRESSES_PROVIDER(
+      overrides?: CallOverrides,
+    ): Promise<PopulatedTransaction>;
+
+    AUGUSTUS_REGISTRY(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    MAX_SLIPPAGE_PERCENT(
+      overrides?: CallOverrides,
+    ): Promise<PopulatedTransaction>;
+
+    ORACLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    POOL(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    REFERRER(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    executeOperation(
+      assets: string[],
+      amounts: BigNumberish[],
+      arg2: BigNumberish[],
+      initiator: string,
+      params: BytesLike,
+      overrides?: Overrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    renewAllowance(
+      reserve: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
+
+    rescueTokens(
+      token: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
+
+    swapDebt(
+      debtSwapParams: ParaSwapDebtSwapAdapter.DebtSwapParamsStruct,
+      creditDelegationPermit: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct,
+      collateralATokenPermit: ParaSwapDebtSwapAdapter.PermitInputStruct,
+      overrides?: Overrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
   };
 }

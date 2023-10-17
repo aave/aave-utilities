@@ -21,14 +21,25 @@ export type DebtSwitchType = {
   newAssetDebtToken: string;
   newAssetUnderlying: string;
   maxNewDebtAmount: string;
+  extraCollateralAsset: string;
+  extraCollateralAmount: string;
   repayAll: boolean;
   txCalldata: string;
   augustus: string;
-  deadline: BigNumberish;
-  signedAmount: string;
-  sigV: BigNumberish;
-  sigR: BytesLike;
-  sigS: BytesLike;
+  creditDelegationPermit: {
+    value: BigNumberish;
+    deadline: BigNumberish;
+    v: BigNumberish;
+    r: BytesLike;
+    s: BytesLike;
+  };
+  collateralPermit: {
+    value: BigNumberish;
+    deadline: BigNumberish;
+    v: BigNumberish;
+    r: BytesLike;
+    s: BytesLike;
+  };
 };
 
 export interface ParaswapDebtSwitchInterface {
@@ -63,11 +74,10 @@ export class DebtSwitchAdapterService
     repayAll,
     txCalldata,
     augustus,
-    deadline,
-    sigV,
-    sigR,
-    sigS,
-    signedAmount,
+    extraCollateralAsset,
+    extraCollateralAmount,
+    creditDelegationPermit,
+    collateralPermit,
   }: DebtSwitchType): PopulatedTransaction {
     const callDataEncoded = utils.defaultAbiCoder.encode(
       ['bytes', 'address'],
@@ -82,23 +92,27 @@ export class DebtSwitchAdapterService
       maxNewDebtAmount,
       offset: repayAll ? augustusToAmountOffsetFromCalldata(txCalldata) : 0,
       paraswapData: callDataEncoded,
+      extraCollateralAsset,
+      extraCollateralAmount,
     };
 
     const creditDelParamsStruct: ParaSwapDebtSwapAdapter.CreditDelegationInputStruct =
       {
         debtToken: newAssetDebtToken,
-        value: signedAmount,
-        deadline,
-        v: sigV,
-        r: sigR,
-        s: sigS,
+        ...creditDelegationPermit,
       };
+
+    const permitInput: ParaSwapDebtSwapAdapter.PermitInputStruct = {
+      aToken: extraCollateralAsset,
+      ...collateralPermit,
+    };
 
     const actionTx: PopulatedTransaction = {};
 
     const txData = this.contractInterface.encodeFunctionData('swapDebt', [
       txParamsStruct,
       creditDelParamsStruct,
+      permitInput,
     ]);
 
     actionTx.to = this.debtSwitchAddress;
