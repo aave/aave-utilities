@@ -351,6 +351,12 @@ export type BorrowTxBuilder = {
     useOptimizedPath,
     encodedTxData,
   }: LPBorrowParamsType) => PopulatedTransaction;
+  encodeBorrowParams: ({
+    reserve,
+    amount,
+    interestRateMode,
+    referralCode,
+  }: Omit<LPBorrowParamsType, 'user'>) => Promise<string>;
 };
 
 export type RepayTxBuilder = {
@@ -358,8 +364,28 @@ export type RepayTxBuilder = {
   generateSignedTxData: (
     params: LPSignedRepayParamsType,
   ) => PopulatedTransaction;
+  encodeRepayParams: ({
+    reserve,
+    amount,
+    interestRateMode,
+  }: Omit<LPRepayParamsType, 'user'>) => Promise<string>;
+  encodeRepayWithPermitParams: ({
+    reserve,
+    amount,
+    interestRateMode,
+    deadline,
+    signature,
+  }: Pick<
+    LPSignedRepayParamsType,
+    'reserve' | 'amount' | 'interestRateMode' | 'signature' | 'deadline'
+  >) => Promise<[string, string, string]>;
 };
 
 export type RepayWithATokensTxBuilder = {
   generateTxData: (params: LPRepayWithATokensType) => PopulatedTransaction;
+  encodeRepayWithATokensParams: ({
+    reserve,
+    amount,
+    rateMode,
+  }: Omit<LPRepayWithATokensType, 'user'>) => Promise<string>;
 };

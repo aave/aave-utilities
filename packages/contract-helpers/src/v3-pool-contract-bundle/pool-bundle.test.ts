@@ -1,6 +1,8 @@
 import { BigNumber, providers } from 'ethers';
 import { InterestRate } from '../commons/types';
 import { API_ETH_MOCK_ADDRESS } from '../commons/utils';
+import { L2Encoder } from '../v3-pool-rollups/typechain/L2Encoder';
+import { L2Encoder__factory } from '../v3-pool-rollups/typechain/L2Encoder__factory';
 import { PoolBundle } from './index';
 
 jest.mock('../commons/gasStation', () => {
@@ -28,6 +30,31 @@ describe('PoolBundle', () => {
     '0x0000000000000000000000000000000000000004';
   const SWAP_COLLATERAL_ADAPTER = '0x0000000000000000000000000000000000000005';
   const L2_ENCODER = '0x0000000000000000000000000000000000000020';
+
+  const encodedArg =
+    '0x0000000000000000000000000000000000000000000000000000006d6168616d';
+  const permitR =
+    '0x0000000000000000000000000000000000000000000000000000000000000000';
+  const permitS =
+    '0x0000000000000000000000000000000000000000000000000000000000000000';
+
+  const encoderSpy = jest.spyOn(L2Encoder__factory, 'connect').mockReturnValue({
+    encodeSupplyParams: async () => Promise.resolve(encodedArg),
+    encodeSupplyWithPermitParams: async () =>
+      Promise.resolve([encodedArg, permitR, permitS]),
+    encodeWithdrawParams: async () => Promise.resolve(encodedArg),
+    encodeBorrowParams: async () => Promise.resolve(encodedArg),
+    encodeRepayParams: async () => Promise.resolve(encodedArg),
+    encodeRepayWithPermitParams: async () =>
+      Promise.resolve([encodedArg, permitR, permitS]),
+    encodeRepayWithATokensParams: async () => Promise.resolve(encodedArg),
+    encodeSwapBorrowRateMode: async () => Promise.resolve(encodedArg),
+    encodeSetUserUseReserveAsCollateral: async () =>
+      Promise.resolve(encodedArg),
+    encodeLiquidationCall: async () =>
+      Promise.resolve([encodedArg, encodedArg]),
+  } as unknown as L2Encoder);
+
   describe('Initialization', () => {
     const config = {
       POOL,
@@ -326,6 +353,46 @@ describe('PoolBundle', () => {
         '0x680dd47c0000000000000000000000000000000000000000000000000000006d6168616d532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4',
       );
     });
+
+    it('encodes supply params for L2', async () => {
+      await instance.supplyTxBuilder.encodeSupplyParams({
+        reserve: TOKEN,
+        amount: '1',
+        referralCode: '1',
+      });
+      expect(encoderSpy).toHaveBeenCalled();
+    });
+
+    it('encodes supply params for L2 without referral code', async () => {
+      await instance.supplyTxBuilder.encodeSupplyParams({
+        reserve: TOKEN,
+        amount: '1',
+      });
+      expect(encoderSpy).toHaveBeenCalled();
+    });
+
+    it('encodes supply with permit parmas for L2', async () => {
+      await instance.supplyTxBuilder.encodeSupplyWithPermitParams({
+        reserve: TOKEN,
+        amount: '1',
+        referralCode: '1',
+        deadline: '10000',
+        signature:
+          '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c',
+      });
+      expect(encoderSpy).toHaveBeenCalled();
+    });
+
+    it('encodes supply with permit parmas for L2 without referral code', async () => {
+      await instance.supplyTxBuilder.encodeSupplyWithPermitParams({
+        reserve: TOKEN,
+        amount: '1',
+        deadline: '10000',
+        signature:
+          '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c',
+      });
+      expect(encoderSpy).toHaveBeenCalled();
+    });
   });
 
   describe('BorrowTxBuilder', () => {
@@ -522,6 +589,25 @@ describe('PoolBundle', () => {
 
       // Will be identical to variable, since tx data is pre-encoded, rate mode has no effect
       expect(resultStable.data).toEqual(txData);
+    });
+
+    it('encodes borrow params for L2', async () => {
+      await instance.borrowTxBuilder.encodeBorrowParams({
+        reserve: TOKEN,
+        amount: '1',
+        interestRateMode: InterestRate.Variable,
+        referralCode: '1',
+      });
+      expect(encoderSpy).toHaveBeenCalled();
+    });
+
+    it('encodes borrow params for L2 without referral code', async () => {
+      await instance.borrowTxBuilder.encodeBorrowParams({
+        reserve: TOKEN,
+        amount: '1',
+        interestRateMode: InterestRate.Variable,
+      });
+      expect(encoderSpy).toHaveBeenCalled();
     });
   });
 
@@ -737,6 +823,27 @@ describe('PoolBundle', () => {
         '0xee3e210b00000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000002710000000000000000000000000000000000000000000000000000000000000001c532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4',
       );
     });
+
+    it('encodes repay params for L2', async () => {
+      await instance.repayTxBuilder.encodeRepayParams({
+        reserve: TOKEN,
+        amount: '1',
+        interestRateMode: InterestRate.Variable,
+      });
+      expect(encoderSpy).toHaveBeenCalled();
+    });
+
+    it('encodes repay with permit params for L2', async () => {
+      await instance.repayTxBuilder.encodeRepayWithPermitParams({
+        reserve: TOKEN,
+        amount: '1',
+        interestRateMode: InterestRate.Variable,
+        deadline: '10000',
+        signature:
+          '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c',
+      });
+      expect(encoderSpy).toHaveBeenCalled();
+    });
   });
 
   describe('RepayWithATokenTxBuilder', () => {
@@ -824,6 +931,15 @@ describe('PoolBundle', () => {
       expect(result.data).toEqual(
         '0xdc7c0bff0000000000000000000000000000000000000000000000000000006d6168616d',
       );
+    });
+
+    it('encodes repay with aToken params for L2', async () => {
+      await instance.repayWithATokensTxBuilder.encodeRepayWithATokensParams({
+        reserve: TOKEN,
+        amount: '1',
+        rateMode: InterestRate.Variable,
+      });
+      expect(encoderSpy).toHaveBeenCalled();
     });
   });
 });

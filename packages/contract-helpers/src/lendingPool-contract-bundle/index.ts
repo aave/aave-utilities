@@ -5,6 +5,7 @@ import {
   InterestRate,
   LendingPoolMarketConfig,
   ProtocolAction,
+  RepayTxBuilder,
   tEthereumAddress,
 } from '../commons/types';
 import {
@@ -20,7 +21,6 @@ import {
 import {
   LPBorrowParamsType,
   LPDepositParamsType,
-  LPRepayParamsType,
 } from '../lendingPool-contract/lendingPoolTypes';
 import {
   ILendingPool,
@@ -44,12 +44,10 @@ export type DepositTxBuilder = {
   getApprovedAmount: ({ user, token }: TokenOwner) => Promise<ApproveType>;
 };
 
-export type LPRepayTxBuilder = {
-  generateTxData: (args: LPRepayParamsType) => PopulatedTransaction;
-};
-
 export interface LendingPoolBundleInterface {
   depositTxBuilder: DepositTxBuilder;
+  borrowTxBuilder: Pick<BorrowTxBuilder, 'generateTxData'>;
+  repayTxBuilder: Pick<RepayTxBuilder, 'generateTxData'>;
 }
 
 export class LendingPoolBundle
@@ -69,8 +67,8 @@ export class LendingPoolBundle
   readonly wethGatewayAddress: tEthereumAddress;
 
   depositTxBuilder: DepositTxBuilder;
-  borrowTxBuilder: Omit<BorrowTxBuilder, 'useOptimizedPath' | 'encodedTxData'>;
-  repayTxBuilder: LPRepayTxBuilder;
+  borrowTxBuilder: Pick<BorrowTxBuilder, 'generateTxData'>;
+  repayTxBuilder: Pick<RepayTxBuilder, 'generateTxData'>;
 
   constructor(
     provider: providers.Provider,
