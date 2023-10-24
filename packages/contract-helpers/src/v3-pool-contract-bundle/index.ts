@@ -343,12 +343,15 @@ export class PoolBundle
         interestRateMode,
         referralCode,
       }): Promise<string> => {
+        const numericRateMode =
+          interestRateMode === InterestRate.Variable ? 2 : 1;
+
         return this.l2PoolService
           .getEncoder()
           .encodeBorrowParams(
             reserve,
             amount,
-            interestRateMode,
+            numericRateMode,
             referralCode ?? '0',
           );
       },
@@ -445,9 +448,15 @@ export class PoolBundle
         return populatedTx;
       },
       encodeRepayParams: async ({ reserve, amount, interestRateMode }) => {
+        const numericRateMode =
+          interestRateMode === InterestRate.Variable ? 2 : 1;
+
+        const repayAmount =
+          amount === '-1' ? constants.MaxUint256.toString() : amount;
+
         return this.l2PoolService
           .getEncoder()
-          .encodeRepayParams(reserve, amount, interestRateMode);
+          .encodeRepayParams(reserve, repayAmount, numericRateMode);
       },
       encodeRepayWithPermitParams: async ({
         reserve,
@@ -457,12 +466,17 @@ export class PoolBundle
         deadline,
       }) => {
         const decomposedSignature: Signature = splitSignature(signature);
+        const numericRateMode =
+          interestRateMode === InterestRate.Variable ? 2 : 1;
+        const repayAmount =
+          amount === '-1' ? constants.MaxUint256.toString() : amount;
+
         return this.l2PoolService
           .getEncoder()
           .encodeRepayWithPermitParams(
             reserve,
-            amount,
-            interestRateMode,
+            repayAmount,
+            numericRateMode,
             deadline,
             decomposedSignature.v,
             decomposedSignature.r,
@@ -513,9 +527,13 @@ export class PoolBundle
         return actionTx;
       },
       encodeRepayWithATokensParams: async ({ reserve, amount, rateMode }) => {
+        const numericRateMode = rateMode === InterestRate.Variable ? 2 : 1;
+        const repayAmount =
+          amount === '-1' ? constants.MaxUint256.toString() : amount;
+
         return this.l2PoolService
           .getEncoder()
-          .encodeRepayWithATokensParams(reserve, amount, rateMode);
+          .encodeRepayWithATokensParams(reserve, repayAmount, numericRateMode);
       },
     };
   }
