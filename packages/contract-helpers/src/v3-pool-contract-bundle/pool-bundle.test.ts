@@ -591,22 +591,31 @@ describe('PoolBundle', () => {
       expect(resultStable.data).toEqual(txData);
     });
 
-    it('encodes borrow params for L2', async () => {
+    it('encodes variable borrow params for L2', async () => {
       await instance.borrowTxBuilder.encodeBorrowParams({
         reserve: TOKEN,
         amount: '1',
         interestRateMode: InterestRate.Variable,
         referralCode: '1',
       });
-      expect(encoderSpy).toHaveBeenCalled();
-    });
 
-    it('encodes borrow params for L2 without referral code', async () => {
+      expect(encoderSpy).toHaveBeenCalled();
+
+      await instance.borrowTxBuilder.encodeBorrowParams({
+        reserve: TOKEN,
+        amount: '-1',
+        interestRateMode: InterestRate.Stable,
+        referralCode: '1',
+      });
+
+      expect(encoderSpy).toHaveBeenCalled();
+
       await instance.borrowTxBuilder.encodeBorrowParams({
         reserve: TOKEN,
         amount: '1',
         interestRateMode: InterestRate.Variable,
       });
+
       expect(encoderSpy).toHaveBeenCalled();
     });
   });
@@ -831,13 +840,28 @@ describe('PoolBundle', () => {
         interestRateMode: InterestRate.Variable,
       });
       expect(encoderSpy).toHaveBeenCalled();
-    });
 
-    it('encodes repay with permit params for L2', async () => {
+      await instance.repayTxBuilder.encodeRepayParams({
+        reserve: TOKEN,
+        amount: '-1',
+        interestRateMode: InterestRate.Stable,
+      });
+      expect(encoderSpy).toHaveBeenCalled();
+
       await instance.repayTxBuilder.encodeRepayWithPermitParams({
         reserve: TOKEN,
         amount: '1',
         interestRateMode: InterestRate.Variable,
+        deadline: '10000',
+        signature:
+          '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c',
+      });
+      expect(encoderSpy).toHaveBeenCalled();
+
+      await instance.repayTxBuilder.encodeRepayWithPermitParams({
+        reserve: TOKEN,
+        amount: '-1',
+        interestRateMode: InterestRate.Stable,
         deadline: '10000',
         signature:
           '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c',
@@ -936,8 +960,15 @@ describe('PoolBundle', () => {
     it('encodes repay with aToken params for L2', async () => {
       await instance.repayWithATokensTxBuilder.encodeRepayWithATokensParams({
         reserve: TOKEN,
-        amount: '1',
+        amount: '-1',
         rateMode: InterestRate.Variable,
+      });
+      expect(encoderSpy).toHaveBeenCalled();
+
+      await instance.repayWithATokensTxBuilder.encodeRepayWithATokensParams({
+        reserve: TOKEN,
+        amount: '1',
+        rateMode: InterestRate.Stable,
       });
       expect(encoderSpy).toHaveBeenCalled();
     });
