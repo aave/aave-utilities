@@ -25,7 +25,7 @@ import type {
   OnEvent,
 } from './common';
 
-export declare namespace BaseTokenWrapper {
+export declare namespace IBaseTokenWrapper {
   export type PermitSignatureStruct = {
     deadline: BigNumberish;
     v: BigNumberish;
@@ -50,7 +50,8 @@ export interface SavingsDaiTokenWrapperInterface extends utils.Interface {
     'getTokenOutForTokenIn(uint256)': FunctionFragment;
     'owner()': FunctionFragment;
     'renounceOwnership()': FunctionFragment;
-    'rescueTokens(address)': FunctionFragment;
+    'rescueETH(address,uint256)': FunctionFragment;
+    'rescueTokens(address,address,uint256)': FunctionFragment;
     'supplyToken(uint256,address,uint16)': FunctionFragment;
     'supplyTokenWithPermit(uint256,address,uint16,(uint256,uint8,bytes32,bytes32))': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
@@ -67,6 +68,7 @@ export interface SavingsDaiTokenWrapperInterface extends utils.Interface {
       | 'getTokenOutForTokenIn'
       | 'owner'
       | 'renounceOwnership'
+      | 'rescueETH'
       | 'rescueTokens'
       | 'supplyToken'
       | 'supplyTokenWithPermit'
@@ -92,8 +94,12 @@ export interface SavingsDaiTokenWrapperInterface extends utils.Interface {
     values?: undefined,
   ): string;
   encodeFunctionData(
+    functionFragment: 'rescueETH',
+    values: [string, BigNumberish],
+  ): string;
+  encodeFunctionData(
     functionFragment: 'rescueTokens',
-    values: [string],
+    values: [string, string, BigNumberish],
   ): string;
   encodeFunctionData(
     functionFragment: 'supplyToken',
@@ -105,7 +111,7 @@ export interface SavingsDaiTokenWrapperInterface extends utils.Interface {
       BigNumberish,
       string,
       BigNumberish,
-      BaseTokenWrapper.PermitSignatureStruct,
+      IBaseTokenWrapper.PermitSignatureStruct,
     ],
   ): string;
   encodeFunctionData(
@@ -118,7 +124,7 @@ export interface SavingsDaiTokenWrapperInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'withdrawTokenWithPermit',
-    values: [BigNumberish, string, BaseTokenWrapper.PermitSignatureStruct],
+    values: [BigNumberish, string, IBaseTokenWrapper.PermitSignatureStruct],
   ): string;
 
   decodeFunctionResult(functionFragment: 'POOL', data: BytesLike): Result;
@@ -137,6 +143,7 @@ export interface SavingsDaiTokenWrapperInterface extends utils.Interface {
     functionFragment: 'renounceOwnership',
     data: BytesLike,
   ): Result;
+  decodeFunctionResult(functionFragment: 'rescueETH', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'rescueTokens',
     data: BytesLike,
@@ -230,8 +237,16 @@ export interface SavingsDaiTokenWrapper extends BaseContract {
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
+    rescueETH(
+      to: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string },
+    ): Promise<ContractTransaction>;
+
     rescueTokens(
       token: string,
+      to: string,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
@@ -246,7 +261,7 @@ export interface SavingsDaiTokenWrapper extends BaseContract {
       amount: BigNumberish,
       onBehalfOf: string,
       referralCode: BigNumberish,
-      signature: BaseTokenWrapper.PermitSignatureStruct,
+      signature: IBaseTokenWrapper.PermitSignatureStruct,
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
@@ -264,7 +279,7 @@ export interface SavingsDaiTokenWrapper extends BaseContract {
     withdrawTokenWithPermit(
       amount: BigNumberish,
       to: string,
-      signature: BaseTokenWrapper.PermitSignatureStruct,
+      signature: IBaseTokenWrapper.PermitSignatureStruct,
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
   };
@@ -291,8 +306,16 @@ export interface SavingsDaiTokenWrapper extends BaseContract {
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
+  rescueETH(
+    to: string,
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string },
+  ): Promise<ContractTransaction>;
+
   rescueTokens(
     token: string,
+    to: string,
+    amount: BigNumberish,
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
@@ -307,7 +330,7 @@ export interface SavingsDaiTokenWrapper extends BaseContract {
     amount: BigNumberish,
     onBehalfOf: string,
     referralCode: BigNumberish,
-    signature: BaseTokenWrapper.PermitSignatureStruct,
+    signature: IBaseTokenWrapper.PermitSignatureStruct,
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
@@ -325,7 +348,7 @@ export interface SavingsDaiTokenWrapper extends BaseContract {
   withdrawTokenWithPermit(
     amount: BigNumberish,
     to: string,
-    signature: BaseTokenWrapper.PermitSignatureStruct,
+    signature: IBaseTokenWrapper.PermitSignatureStruct,
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
@@ -350,7 +373,18 @@ export interface SavingsDaiTokenWrapper extends BaseContract {
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    rescueTokens(token: string, overrides?: CallOverrides): Promise<void>;
+    rescueETH(
+      to: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<void>;
+
+    rescueTokens(
+      token: string,
+      to: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<void>;
 
     supplyToken(
       amount: BigNumberish,
@@ -363,7 +397,7 @@ export interface SavingsDaiTokenWrapper extends BaseContract {
       amount: BigNumberish,
       onBehalfOf: string,
       referralCode: BigNumberish,
-      signature: BaseTokenWrapper.PermitSignatureStruct,
+      signature: IBaseTokenWrapper.PermitSignatureStruct,
       overrides?: CallOverrides,
     ): Promise<void>;
 
@@ -376,14 +410,14 @@ export interface SavingsDaiTokenWrapper extends BaseContract {
       amount: BigNumberish,
       to: string,
       overrides?: CallOverrides,
-    ): Promise<void>;
+    ): Promise<BigNumber>;
 
     withdrawTokenWithPermit(
       amount: BigNumberish,
       to: string,
-      signature: BaseTokenWrapper.PermitSignatureStruct,
+      signature: IBaseTokenWrapper.PermitSignatureStruct,
       overrides?: CallOverrides,
-    ): Promise<void>;
+    ): Promise<BigNumber>;
   };
 
   filters: {
@@ -420,8 +454,16 @@ export interface SavingsDaiTokenWrapper extends BaseContract {
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
+    rescueETH(
+      to: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string },
+    ): Promise<BigNumber>;
+
     rescueTokens(
       token: string,
+      to: string,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
@@ -436,7 +478,7 @@ export interface SavingsDaiTokenWrapper extends BaseContract {
       amount: BigNumberish,
       onBehalfOf: string,
       referralCode: BigNumberish,
-      signature: BaseTokenWrapper.PermitSignatureStruct,
+      signature: IBaseTokenWrapper.PermitSignatureStruct,
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
@@ -454,7 +496,7 @@ export interface SavingsDaiTokenWrapper extends BaseContract {
     withdrawTokenWithPermit(
       amount: BigNumberish,
       to: string,
-      signature: BaseTokenWrapper.PermitSignatureStruct,
+      signature: IBaseTokenWrapper.PermitSignatureStruct,
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
   };
@@ -482,8 +524,16 @@ export interface SavingsDaiTokenWrapper extends BaseContract {
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
+    rescueETH(
+      to: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
+
     rescueTokens(
       token: string,
+      to: string,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
@@ -498,7 +548,7 @@ export interface SavingsDaiTokenWrapper extends BaseContract {
       amount: BigNumberish,
       onBehalfOf: string,
       referralCode: BigNumberish,
-      signature: BaseTokenWrapper.PermitSignatureStruct,
+      signature: IBaseTokenWrapper.PermitSignatureStruct,
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
@@ -516,7 +566,7 @@ export interface SavingsDaiTokenWrapper extends BaseContract {
     withdrawTokenWithPermit(
       amount: BigNumberish,
       to: string,
-      signature: BaseTokenWrapper.PermitSignatureStruct,
+      signature: IBaseTokenWrapper.PermitSignatureStruct,
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
   };
