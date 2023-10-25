@@ -2,7 +2,7 @@ import { Signature, SignatureLike, splitSignature } from '@ethersproject/bytes';
 import { BigNumber, PopulatedTransaction, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
-  BaseTokenWrapper,
+  IBaseTokenWrapper,
   SavingsDaiTokenWrapper,
   SavingsDaiTokenWrapperInterface,
 } from './typechain/SavingsDaiTokenWrapper';
@@ -100,7 +100,7 @@ export class SavingsDaiTokenWrapperService
   }: SupplyTokenWithPermitParams) {
     const sig: Signature = splitSignature(signature);
 
-    const permitStruct: BaseTokenWrapper.PermitSignatureStruct = {
+    const permitStruct: IBaseTokenWrapper.PermitSignatureStruct = {
       deadline,
       v: sig.v,
       r: sig.r,
@@ -140,7 +140,7 @@ export class SavingsDaiTokenWrapperService
   ) {
     const sig: Signature = splitSignature(signature);
 
-    const permitStruct: BaseTokenWrapper.PermitSignatureStruct = {
+    const permitStruct: IBaseTokenWrapper.PermitSignatureStruct = {
       deadline,
       v: sig.v,
       r: sig.r,
