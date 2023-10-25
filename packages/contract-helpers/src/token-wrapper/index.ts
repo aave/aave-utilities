@@ -74,7 +74,11 @@ export class TokenWrapperService
     return this._contract.getTokenOutForTokenIn(amount);
   }
 
-  public supplyToken(amount: string, onBehalfOf: string, referralCode: string) {
+  public supplyToken(
+    amount: string,
+    onBehalfOf: string,
+    referralCode: string,
+  ): PopulatedTransaction {
     const data = this.contractInterface.encodeFunctionData('supplyToken', [
       amount,
       onBehalfOf,
@@ -94,7 +98,7 @@ export class TokenWrapperService
     referralCode,
     deadline,
     signature,
-  }: SupplyTokenWithPermitParams) {
+  }: SupplyTokenWithPermitParams): PopulatedTransaction {
     const sig: Signature = splitSignature(signature);
 
     const permitStruct: IBaseTokenWrapper.PermitSignatureStruct = {
@@ -116,7 +120,7 @@ export class TokenWrapperService
     };
   }
 
-  public withdrawToken(amount: string, user: string) {
+  public withdrawToken(amount: string, user: string): PopulatedTransaction {
     const data = this.contractInterface.encodeFunctionData('withdrawToken', [
       amount,
       user,
@@ -134,7 +138,7 @@ export class TokenWrapperService
     user: string,
     deadline: string,
     signature: SignatureLike,
-  ) {
+  ): PopulatedTransaction {
     const sig: Signature = splitSignature(signature);
 
     const permitStruct: IBaseTokenWrapper.PermitSignatureStruct = {
