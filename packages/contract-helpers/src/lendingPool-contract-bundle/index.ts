@@ -1,10 +1,11 @@
-import { providers, PopulatedTransaction, BigNumber } from 'ethers';
+import { providers, PopulatedTransaction, BigNumber, constants } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
   BorrowTxBuilder,
   InterestRate,
   LendingPoolMarketConfig,
   ProtocolAction,
+  RepayTxBuilder,
   tEthereumAddress,
 } from '../commons/types';
 import {
@@ -45,6 +46,8 @@ export type DepositTxBuilder = {
 
 export interface LendingPoolBundleInterface {
   depositTxBuilder: DepositTxBuilder;
+  borrowTxBuilder: Pick<BorrowTxBuilder, 'generateTxData'>;
+  repayTxBuilder: Pick<RepayTxBuilder, 'generateTxData'>;
 }
 
 export class LendingPoolBundle
@@ -64,7 +67,8 @@ export class LendingPoolBundle
   readonly wethGatewayAddress: tEthereumAddress;
 
   depositTxBuilder: DepositTxBuilder;
-  borrowTxBuilder: Omit<BorrowTxBuilder, 'useOptimizedPath' | 'encodedTxData'>;
+  borrowTxBuilder: Pick<BorrowTxBuilder, 'generateTxData'>;
+  repayTxBuilder: Pick<RepayTxBuilder, 'generateTxData'>;
 
   constructor(
     provider: providers.Provider,
@@ -188,6 +192,42 @@ export class LendingPoolBundle
           );
         }
 
+        return actionTx;
+      },
+    };
+    this.repayTxBuilder = {
+      generateTxData: ({
+        user,
+        reserve,
+        onBehalfOf,
+        interestRateMode,
+        amount,
+      }) => {
+        const actionTx: PopulatedTransaction = {};
+        if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
+          return this.wethGatewayService.generateRepayEthTxData({
+            lendingPool: this.lendingPoolAddress,
+            user,
+            amount,
+            interestRateMode,
+            onBehalfOf,
+          });
+        }
+
+        const numericRateMode =
+          interestRateMode === InterestRate.Variable ? 2 : 1;
+        const txData = this.contractInterface.encodeFunctionData('repay', [
+          reserve,
+          amount === '-1' ? constants.MaxUint256.toString() : amount,
+          numericRateMode,
+          onBehalfOf ?? user,
+        ]);
+        actionTx.to = this.lendingPoolAddress;
+        actionTx.from = user;
+        actionTx.data = txData;
+        actionTx.gasLimit = BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.repay].recommended,
+        );
         return actionTx;
       },
     };

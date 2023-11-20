@@ -113,6 +113,69 @@ describe('WethGatewayService', () => {
       );
     });
   });
+  describe('generateRepayEthTxData', () => {
+    it('generates repayETH tx data with variable debt', () => {
+      const provider: providers.Provider = new providers.JsonRpcProvider();
+      const erc20Service = new ERC20Service(provider);
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+      const user = '0x0000000000000000000000000000000000000003';
+      const txData = weth.generateRepayEthTxData({
+        lendingPool,
+        user,
+        amount: '1',
+        interestRateMode: InterestRate.Variable,
+      });
+
+      expect(txData.to).toEqual(wethGatewayAddress);
+      expect(txData.from).toEqual(user);
+      expect(txData.data).toEqual(
+        '0x02c5fcf80000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003',
+      );
+
+      const onBehalfOf = '0x0000000000000000000000000000000000000004';
+
+      const txDataUpdatedParams = weth.generateRepayEthTxData({
+        lendingPool,
+        user,
+        amount: '1',
+        onBehalfOf,
+        interestRateMode: InterestRate.Variable,
+      });
+
+      expect(txDataUpdatedParams.to).toEqual(wethGatewayAddress);
+      expect(txDataUpdatedParams.from).toEqual(user);
+      expect(txDataUpdatedParams.data).toEqual(
+        '0x02c5fcf80000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000004',
+      );
+    });
+
+    it('generates repayETH tx data with stable debt', () => {
+      const provider: providers.Provider = new providers.JsonRpcProvider();
+      const erc20Service = new ERC20Service(provider);
+      const weth = new WETHGatewayService(
+        provider,
+        erc20Service,
+        wethGatewayAddress,
+      );
+      const user = '0x0000000000000000000000000000000000000003';
+      const txData = weth.generateRepayEthTxData({
+        lendingPool,
+        user,
+        amount: '1',
+        interestRateMode: InterestRate.Stable,
+      });
+
+      expect(txData.to).toEqual(wethGatewayAddress);
+      expect(txData.from).toEqual(user);
+      expect(txData.data).toEqual(
+        '0x02c5fcf80000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000003',
+      );
+    });
+  });
   describe('depositETH', () => {
     const user = '0x0000000000000000000000000000000000000003';
     const onBehalfOf = '0x0000000000000000000000000000000000000004';

@@ -50,6 +50,12 @@ export type LPRepayParamsType = {
   interestRateMode: InterestRate;
   onBehalfOf?: tEthereumAddress;
   useOptimizedPath?: boolean;
+  encodedTxData?: string;
+};
+
+export type LPSignedRepayParamsType = LPRepayParamsType & {
+  signature: string;
+  deadline: string;
 };
 
 export type LPSwapBorrowRateMode = {
@@ -147,6 +153,7 @@ export type LPRepayWithPermitParamsType = {
   signature: SignatureLike;
   useOptimizedPath?: boolean;
   deadline: string;
+  encodedTxData?: string;
 };
 
 export type LPSignERC20ApprovalType = {
@@ -167,6 +174,7 @@ export type LPRepayWithATokensType = {
   amount: string;
   rateMode: InterestRate;
   useOptimizedPath?: boolean;
+  encodedTxData?: string;
 };
 
 export type LPReserveData = {

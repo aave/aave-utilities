@@ -62,6 +62,7 @@ export interface WETHGatewayInterface {
     args: WETHDepositParamsType,
   ) => PopulatedTransaction;
   generateBorrowEthTxData: (args: WETHBorrowParamsType) => PopulatedTransaction;
+  generateRepayEthTxData: (args: WETHRepayParamsType) => PopulatedTransaction;
   depositETH: (
     args: WETHDepositParamsType,
   ) => EthereumTransactionTypeExtended[];
@@ -91,6 +92,8 @@ export class WETHGatewayService
   ) => PopulatedTransaction;
 
   generateBorrowEthTxData: (args: WETHBorrowParamsType) => PopulatedTransaction;
+
+  generateRepayEthTxData: (args: WETHRepayParamsType) => PopulatedTransaction;
 
   constructor(
     provider: providers.Provider,
@@ -149,6 +152,33 @@ export class WETHGatewayService
         from: args.user,
         gasLimit: BigNumber.from(
           gasLimitRecommendations[ProtocolAction.borrowETH].limit,
+        ),
+      };
+      return actionTx;
+    };
+
+    this.generateRepayEthTxData = ({
+      interestRateMode,
+      lendingPool,
+      amount,
+      user,
+      onBehalfOf,
+    }) => {
+      const numericRateMode =
+        interestRateMode === InterestRate.Variable ? 2 : 1;
+      const txData = this.wethGatewayInstance.encodeFunctionData('repayETH', [
+        lendingPool,
+        amount,
+        numericRateMode,
+        onBehalfOf ?? user,
+      ]);
+      const actionTx: PopulatedTransaction = {
+        data: txData,
+        to: this.wethGatewayAddress,
+        from: user,
+        value: BigNumber.from(amount),
+        gasLimit: BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.repayETH].limit,
         ),
       };
       return actionTx;

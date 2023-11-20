@@ -1,10 +1,12 @@
 import { Signature, splitSignature } from '@ethersproject/bytes';
-import { BigNumber, PopulatedTransaction, providers } from 'ethers';
+import { BigNumber, PopulatedTransaction, constants, providers } from 'ethers';
 import BaseService from '../commons/BaseService';
 import {
   BorrowTxBuilder,
   InterestRate,
   ProtocolAction,
+  RepayTxBuilder,
+  RepayWithATokensTxBuilder,
   tEthereumAddress,
 } from '../commons/types';
 import {
@@ -33,10 +35,6 @@ import { IPool, IPoolInterface } from '../v3-pool-contract/typechain/IPool';
 import { IPool__factory } from '../v3-pool-contract/typechain/IPool__factory';
 import { L2Pool, L2PoolInterface } from '../v3-pool-rollups';
 import {
-  LPSupplyWithPermitType as LPSupplyWithPermitTypeL2,
-  LPBorrowParamsType as LPBorrowParamsTypeL2,
-} from '../v3-pool-rollups/poolTypes';
-import {
   WETHGatewayInterface,
   WETHGatewayService,
 } from '../wethgateway-contract';
@@ -62,6 +60,23 @@ export type SupplyTxBuilder = {
     encodedTxData,
   }: LPSignedSupplyParamsType) => PopulatedTransaction;
   getApprovedAmount: ({ user, token }: TokenOwner) => Promise<ApproveType>;
+  encodeSupplyParams: ({
+    reserve,
+    amount,
+    referralCode,
+  }: Pick<
+    LPSupplyParamsType,
+    'reserve' | 'amount' | 'referralCode'
+  >) => Promise<string>;
+  encodeSupplyWithPermitParams: ({
+    reserve,
+    amount,
+    referralCode,
+    signature,
+  }: Pick<
+    LPSignedSupplyParamsType,
+    'reserve' | 'amount' | 'referralCode' | 'signature' | 'deadline'
+  >) => Promise<[string, string, string]>;
 };
 
 export interface PoolBundleInterface {
@@ -96,6 +111,8 @@ export class PoolBundle
 
   supplyTxBuilder: SupplyTxBuilder;
   borrowTxBuilder: BorrowTxBuilder;
+  repayTxBuilder: RepayTxBuilder;
+  repayWithATokensTxBuilder: RepayWithATokensTxBuilder;
 
   constructor(
     provider: providers.Provider,
@@ -152,6 +169,13 @@ export class PoolBundle
         useOptimizedPath,
         encodedTxData,
       }: LPSupplyParamsType): PopulatedTransaction => {
+        if (useOptimizedPath && encodedTxData) {
+          return this.l2PoolService.generateEncodedSupplyTxData({
+            encodedTxData,
+            user,
+          });
+        }
+
         let actionTx: PopulatedTransaction = {};
         const onBehalfOfParam = onBehalfOf ?? user;
         const referralCodeParam = referralCode ?? '0';
@@ -163,22 +187,6 @@ export class PoolBundle
             onBehalfOf: onBehalfOfParam,
             referralCode: referralCodeParam,
           });
-        } else if (useOptimizedPath) {
-          if (encodedTxData) {
-            actionTx = this.l2PoolService.generateEncodedSupplyTxData({
-              encodedTxData,
-              user,
-            });
-          } else {
-            const args: LPSupplyParamsType = {
-              user,
-              reserve,
-              amount,
-              onBehalfOf: onBehalfOfParam,
-              referralCode: referralCodeParam,
-            };
-            actionTx = this.l2PoolService.generateSupplyTxData(args);
-          }
         } else {
           const txData = this.contractInterface.encodeFunctionData('supply', [
             reserve,
@@ -207,57 +215,68 @@ export class PoolBundle
         deadline,
         encodedTxData,
       }: LPSignedSupplyParamsType): PopulatedTransaction => {
-        const decomposedSignature: Signature = splitSignature(signature);
-        let populatedTx: PopulatedTransaction = {};
-        const onBehalfOfParam = onBehalfOf ?? user;
-        const referralCodeParam = referralCode ?? '0';
-        if (useOptimizedPath) {
-          if (encodedTxData) {
-            populatedTx =
-              this.l2PoolService.generateEncodedSupplyWithPermitTxData({
-                encodedTxData,
-                user,
-                signature,
-              });
-          } else {
-            const args: LPSupplyWithPermitTypeL2 = {
-              user,
-              reserve,
-              amount,
-              referralCode: referralCodeParam,
-              onBehalfOf: onBehalfOfParam,
-              permitR: decomposedSignature.r,
-              permitS: decomposedSignature.s,
-              permitV: decomposedSignature.v,
-              deadline: Number(deadline),
-            };
-            populatedTx =
-              this.l2PoolService.generateSupplyWithPermitTxData(args);
-          }
-        } else {
-          const txData = this.contractInterface.encodeFunctionData(
-            'supplyWithPermit',
-            [
-              reserve,
-              amount,
-              onBehalfOfParam,
-              referralCodeParam,
-              deadline,
-              decomposedSignature.v,
-              decomposedSignature.r,
-              decomposedSignature.s,
-            ],
-          );
-          populatedTx.to = this.poolAddress;
-          populatedTx.from = user;
-          populatedTx.data = txData;
-          populatedTx.gasLimit = BigNumber.from(
-            gasLimitRecommendations[ProtocolAction.supplyWithPermit]
-              .recommended,
-          );
+        if (useOptimizedPath && encodedTxData) {
+          return this.l2PoolService.generateEncodedSupplyWithPermitTxData({
+            encodedTxData,
+            user,
+            signature,
+          });
         }
 
+        const decomposedSignature: Signature = splitSignature(signature);
+        const populatedTx: PopulatedTransaction = {};
+        const onBehalfOfParam = onBehalfOf ?? user;
+        const referralCodeParam = referralCode ?? '0';
+        const txData = this.contractInterface.encodeFunctionData(
+          'supplyWithPermit',
+          [
+            reserve,
+            amount,
+            onBehalfOfParam,
+            referralCodeParam,
+            deadline,
+            decomposedSignature.v,
+            decomposedSignature.r,
+            decomposedSignature.s,
+          ],
+        );
+        populatedTx.to = this.poolAddress;
+        populatedTx.from = user;
+        populatedTx.data = txData;
+        populatedTx.gasLimit = BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.supplyWithPermit].recommended,
+        );
+
         return populatedTx;
+      },
+      encodeSupplyParams: async ({
+        reserve,
+        amount,
+        referralCode,
+      }): Promise<string> => {
+        return this.l2PoolService
+          .getEncoder()
+          .encodeSupplyParams(reserve, amount, referralCode ?? '0');
+      },
+      encodeSupplyWithPermitParams: async ({
+        reserve,
+        amount,
+        signature,
+        deadline,
+        referralCode,
+      }): Promise<[string, string, string]> => {
+        const decomposedSignature: Signature = splitSignature(signature);
+        return this.l2PoolService
+          .getEncoder()
+          .encodeSupplyWithPermitParams(
+            reserve,
+            amount,
+            referralCode ?? '0',
+            deadline,
+            decomposedSignature.v,
+            decomposedSignature.r,
+            decomposedSignature.s,
+          );
       },
     };
 
@@ -273,6 +292,13 @@ export class PoolBundle
         useOptimizedPath,
         encodedTxData,
       }: LPBorrowParamsType): PopulatedTransaction => {
+        if (useOptimizedPath && encodedTxData) {
+          return this.l2PoolService.generateEncodedBorrowTxData({
+            encodedTxData,
+            user,
+          });
+        }
+
         let actionTx: PopulatedTransaction = {};
         const referralCodeParam = referralCode ?? '0';
         const onBehalfOfParam = onBehalfOf ?? user;
@@ -293,23 +319,6 @@ export class PoolBundle
             interestRateMode,
             referralCode: referralCodeParam,
           });
-        } else if (useOptimizedPath) {
-          if (encodedTxData) {
-            actionTx = this.l2PoolService.generateEncodedBorrowTxData({
-              encodedTxData,
-              user,
-            });
-          } else {
-            const args: LPBorrowParamsTypeL2 = {
-              user,
-              reserve,
-              amount,
-              onBehalfOf: onBehalfOfParam,
-              referralCode: referralCodeParam,
-              numericRateMode,
-            };
-            actionTx = this.l2PoolService.generateBorrowTxData(args);
-          }
         } else {
           const txData = this.contractInterface.encodeFunctionData('borrow', [
             reserve,
@@ -327,6 +336,204 @@ export class PoolBundle
         }
 
         return actionTx;
+      },
+      encodeBorrowParams: async ({
+        reserve,
+        amount,
+        interestRateMode,
+        referralCode,
+      }): Promise<string> => {
+        const numericRateMode =
+          interestRateMode === InterestRate.Variable ? 2 : 1;
+
+        return this.l2PoolService
+          .getEncoder()
+          .encodeBorrowParams(
+            reserve,
+            amount,
+            numericRateMode,
+            referralCode ?? '0',
+          );
+      },
+    };
+
+    this.repayTxBuilder = {
+      generateTxData: ({
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        onBehalfOf,
+        useOptimizedPath,
+        encodedTxData,
+      }) => {
+        const numericRateMode =
+          interestRateMode === InterestRate.Variable ? 2 : 1;
+        const onBehalfOfParam = onBehalfOf ?? user;
+        if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
+          return this.wethGatewayService.generateRepayEthTxData({
+            lendingPool: this.poolAddress,
+            user,
+            amount,
+            interestRateMode,
+            onBehalfOf: onBehalfOfParam,
+          });
+        }
+
+        if (useOptimizedPath && encodedTxData) {
+          return this.l2PoolService.generateEncodedRepayTxData({
+            encodedTxData,
+            user,
+          });
+        }
+
+        const actionTx: PopulatedTransaction = {};
+        const txData = this.contractInterface.encodeFunctionData('repay', [
+          reserve,
+          amount === '-1' ? constants.MaxUint256.toString() : amount,
+          numericRateMode,
+          onBehalfOfParam,
+        ]);
+        actionTx.to = this.poolAddress;
+        actionTx.from = user;
+        actionTx.data = txData;
+        actionTx.gasLimit = BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.repay].recommended,
+        );
+        return actionTx;
+      },
+      generateSignedTxData: ({
+        onBehalfOf,
+        signature,
+        deadline,
+        user,
+        reserve,
+        amount,
+        interestRateMode,
+        useOptimizedPath,
+        encodedTxData,
+      }) => {
+        const decomposedSignature: Signature = splitSignature(signature);
+        const populatedTx: PopulatedTransaction = {};
+        const numericRateMode =
+          interestRateMode === InterestRate.Variable ? 2 : 1;
+        const onBehalfOfParam = onBehalfOf ?? user;
+        if (useOptimizedPath && encodedTxData) {
+          return this.l2PoolService.generateEncodedRepayWithPermitTxData({
+            encodedTxData,
+            user,
+            signature,
+          });
+        }
+
+        const txData = this.contractInterface.encodeFunctionData(
+          'repayWithPermit',
+          [
+            reserve,
+            amount === '-1' ? constants.MaxUint256.toString() : amount,
+            numericRateMode,
+            onBehalfOfParam,
+            deadline,
+            decomposedSignature.v,
+            decomposedSignature.r,
+            decomposedSignature.s,
+          ],
+        );
+        populatedTx.to = this.poolAddress;
+        populatedTx.from = user;
+        populatedTx.data = txData;
+        populatedTx.gasLimit = BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.repayWithPermit].recommended,
+        );
+        return populatedTx;
+      },
+      encodeRepayParams: async ({ reserve, amount, interestRateMode }) => {
+        const numericRateMode =
+          interestRateMode === InterestRate.Variable ? 2 : 1;
+
+        const repayAmount =
+          amount === '-1' ? constants.MaxUint256.toString() : amount;
+
+        return this.l2PoolService
+          .getEncoder()
+          .encodeRepayParams(reserve, repayAmount, numericRateMode);
+      },
+      encodeRepayWithPermitParams: async ({
+        reserve,
+        amount,
+        interestRateMode,
+        signature,
+        deadline,
+      }) => {
+        const decomposedSignature: Signature = splitSignature(signature);
+        const numericRateMode =
+          interestRateMode === InterestRate.Variable ? 2 : 1;
+        const repayAmount =
+          amount === '-1' ? constants.MaxUint256.toString() : amount;
+
+        return this.l2PoolService
+          .getEncoder()
+          .encodeRepayWithPermitParams(
+            reserve,
+            repayAmount,
+            numericRateMode,
+            deadline,
+            decomposedSignature.v,
+            decomposedSignature.r,
+            decomposedSignature.s,
+          );
+      },
+    };
+
+    this.repayWithATokensTxBuilder = {
+      generateTxData: ({
+        rateMode,
+        user,
+        amount,
+        reserve,
+        useOptimizedPath,
+        encodedTxData,
+      }) => {
+        const actionTx: PopulatedTransaction = {};
+        const numericRateMode = rateMode === InterestRate.Variable ? 2 : 1;
+        if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
+          throw new Error(
+            'Can not repay with aTokens with eth. Should be WETH instead',
+          );
+        }
+
+        if (useOptimizedPath && encodedTxData) {
+          return this.l2PoolService.generateEncodedRepayWithATokensTxData({
+            encodedTxData,
+            user,
+          });
+        }
+
+        const txData = this.contractInterface.encodeFunctionData(
+          'repayWithATokens',
+          [
+            reserve,
+            amount === '-1' ? constants.MaxUint256.toString() : amount,
+            numericRateMode,
+          ],
+        );
+        actionTx.to = this.poolAddress;
+        actionTx.from = user;
+        actionTx.data = txData;
+        actionTx.gasLimit = BigNumber.from(
+          gasLimitRecommendations[ProtocolAction.repayWithATokens].recommended,
+        );
+
+        return actionTx;
+      },
+      encodeRepayWithATokensParams: async ({ reserve, amount, rateMode }) => {
+        const numericRateMode = rateMode === InterestRate.Variable ? 2 : 1;
+        const repayAmount =
+          amount === '-1' ? constants.MaxUint256.toString() : amount;
+
+        return this.l2PoolService
+          .getEncoder()
+          .encodeRepayWithATokensParams(reserve, repayAmount, numericRateMode);
       },
     };
   }

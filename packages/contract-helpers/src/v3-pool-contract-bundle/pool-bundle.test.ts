@@ -1,6 +1,8 @@
 import { BigNumber, providers } from 'ethers';
 import { InterestRate } from '../commons/types';
 import { API_ETH_MOCK_ADDRESS } from '../commons/utils';
+import { L2Encoder } from '../v3-pool-rollups/typechain/L2Encoder';
+import { L2Encoder__factory } from '../v3-pool-rollups/typechain/L2Encoder__factory';
 import { PoolBundle } from './index';
 
 jest.mock('../commons/gasStation', () => {
@@ -28,6 +30,31 @@ describe('PoolBundle', () => {
     '0x0000000000000000000000000000000000000004';
   const SWAP_COLLATERAL_ADAPTER = '0x0000000000000000000000000000000000000005';
   const L2_ENCODER = '0x0000000000000000000000000000000000000020';
+
+  const encodedArg =
+    '0x0000000000000000000000000000000000000000000000000000006d6168616d';
+  const permitR =
+    '0x0000000000000000000000000000000000000000000000000000000000000000';
+  const permitS =
+    '0x0000000000000000000000000000000000000000000000000000000000000000';
+
+  const encoderSpy = jest.spyOn(L2Encoder__factory, 'connect').mockReturnValue({
+    encodeSupplyParams: async () => Promise.resolve(encodedArg),
+    encodeSupplyWithPermitParams: async () =>
+      Promise.resolve([encodedArg, permitR, permitS]),
+    encodeWithdrawParams: async () => Promise.resolve(encodedArg),
+    encodeBorrowParams: async () => Promise.resolve(encodedArg),
+    encodeRepayParams: async () => Promise.resolve(encodedArg),
+    encodeRepayWithPermitParams: async () =>
+      Promise.resolve([encodedArg, permitR, permitS]),
+    encodeRepayWithATokensParams: async () => Promise.resolve(encodedArg),
+    encodeSwapBorrowRateMode: async () => Promise.resolve(encodedArg),
+    encodeSetUserUseReserveAsCollateral: async () =>
+      Promise.resolve(encodedArg),
+    encodeLiquidationCall: async () =>
+      Promise.resolve([encodedArg, encodedArg]),
+  } as unknown as L2Encoder);
+
   describe('Initialization', () => {
     const config = {
       POOL,
@@ -326,6 +353,46 @@ describe('PoolBundle', () => {
         '0x680dd47c0000000000000000000000000000000000000000000000000000006d6168616d532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4',
       );
     });
+
+    it('encodes supply params for L2', async () => {
+      await instance.supplyTxBuilder.encodeSupplyParams({
+        reserve: TOKEN,
+        amount: '1',
+        referralCode: '1',
+      });
+      expect(encoderSpy).toHaveBeenCalled();
+    });
+
+    it('encodes supply params for L2 without referral code', async () => {
+      await instance.supplyTxBuilder.encodeSupplyParams({
+        reserve: TOKEN,
+        amount: '1',
+      });
+      expect(encoderSpy).toHaveBeenCalled();
+    });
+
+    it('encodes supply with permit parmas for L2', async () => {
+      await instance.supplyTxBuilder.encodeSupplyWithPermitParams({
+        reserve: TOKEN,
+        amount: '1',
+        referralCode: '1',
+        deadline: '10000',
+        signature:
+          '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c',
+      });
+      expect(encoderSpy).toHaveBeenCalled();
+    });
+
+    it('encodes supply with permit parmas for L2 without referral code', async () => {
+      await instance.supplyTxBuilder.encodeSupplyWithPermitParams({
+        reserve: TOKEN,
+        amount: '1',
+        deadline: '10000',
+        signature:
+          '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c',
+      });
+      expect(encoderSpy).toHaveBeenCalled();
+    });
   });
 
   describe('BorrowTxBuilder', () => {
@@ -522,6 +589,388 @@ describe('PoolBundle', () => {
 
       // Will be identical to variable, since tx data is pre-encoded, rate mode has no effect
       expect(resultStable.data).toEqual(txData);
+    });
+
+    it('encodes variable borrow params for L2', async () => {
+      await instance.borrowTxBuilder.encodeBorrowParams({
+        reserve: TOKEN,
+        amount: '1',
+        interestRateMode: InterestRate.Variable,
+        referralCode: '1',
+      });
+
+      expect(encoderSpy).toHaveBeenCalled();
+
+      await instance.borrowTxBuilder.encodeBorrowParams({
+        reserve: TOKEN,
+        amount: '-1',
+        interestRateMode: InterestRate.Stable,
+        referralCode: '1',
+      });
+
+      expect(encoderSpy).toHaveBeenCalled();
+
+      await instance.borrowTxBuilder.encodeBorrowParams({
+        reserve: TOKEN,
+        amount: '1',
+        interestRateMode: InterestRate.Variable,
+      });
+
+      expect(encoderSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('RepayTxBuilder', () => {
+    const config = {
+      POOL,
+      FLASH_LIQUIDATION_ADAPTER,
+      REPAY_WITH_COLLATERAL_ADAPTER,
+      SWAP_COLLATERAL_ADAPTER,
+      WETH_GATEWAY,
+      L2_ENCODER,
+    };
+
+    const instance = new PoolBundle(provider, config);
+
+    it('generates repay tx data with generateTxData with variable debt', () => {
+      const result = instance.repayTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        interestRateMode: InterestRate.Variable,
+        onBehalfOf: USER,
+      });
+
+      const differentParamsSameResult = instance.repayTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        interestRateMode: InterestRate.Variable,
+      });
+
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0x573ade810000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003',
+      );
+      expect(differentParamsSameResult.to).toEqual(POOL);
+      expect(differentParamsSameResult.from).toEqual(USER);
+      expect(differentParamsSameResult.data).toEqual(
+        '0x573ade810000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003',
+      );
+    });
+
+    it('generates repay tx data with generateTxData with variable debt and max input', () => {
+      const result = instance.repayTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '-1',
+        interestRateMode: InterestRate.Variable,
+        onBehalfOf: USER,
+      });
+
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0x573ade810000000000000000000000000000000000000000000000000000000000000004ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003',
+      );
+    });
+
+    it('generates repay tx data with generateTxData with stable debt', () => {
+      const result = instance.repayTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        interestRateMode: InterestRate.Stable,
+        onBehalfOf: USER,
+      });
+
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0x573ade810000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000003',
+      );
+    });
+
+    it('generates repay tx for WETHGateway data with generateTxData', () => {
+      const result = instance.repayTxBuilder.generateTxData({
+        user: USER,
+        reserve: API_ETH_MOCK_ADDRESS.toLowerCase(),
+        amount: '1',
+        onBehalfOf: USER,
+        interestRateMode: InterestRate.Variable,
+      });
+
+      const differentParamsSameResult = instance.repayTxBuilder.generateTxData({
+        user: USER,
+        reserve: API_ETH_MOCK_ADDRESS.toLowerCase(),
+        amount: '1',
+        interestRateMode: InterestRate.Variable,
+      });
+      expect(result.to).toEqual(WETH_GATEWAY);
+      expect(result.from).toEqual(USER);
+      expect(result.value).toEqual(BigNumber.from('1'));
+      expect(result.data).toEqual(
+        '0x02c5fcf80000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003',
+      );
+      expect(differentParamsSameResult.to).toEqual(WETH_GATEWAY);
+      expect(differentParamsSameResult.from).toEqual(USER);
+      expect(differentParamsSameResult.data).toEqual(
+        '0x02c5fcf80000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003',
+      );
+    });
+
+    it('generates repay tx data with generateTxData and L2POOL with encoded txData', () => {
+      const result = instance.repayTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        onBehalfOf: USER,
+        interestRateMode: InterestRate.Variable,
+        useOptimizedPath: true,
+        encodedTxData:
+          '0x0000000000000000000000000000000000000000000000000000006d6168616d',
+      });
+
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0x563dd6130000000000000000000000000000000000000000000000000000006d6168616d',
+      );
+    });
+
+    it('generates signed repay tx data with generateSignedTxData and L2POOL with encoded txData', () => {
+      const result = instance.repayTxBuilder.generateSignedTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        onBehalfOf: USER,
+        interestRateMode: InterestRate.Variable,
+        signature:
+          '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c',
+        deadline: '10000',
+        useOptimizedPath: true,
+        encodedTxData:
+          '0x0000000000000000000000000000000000000000000000000000006d6168616d',
+      });
+
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0x94b576de0000000000000000000000000000000000000000000000000000006d6168616d532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4',
+      );
+    });
+
+    it('generates signed tx with generateSignedTxData with variable debt', () => {
+      const result = instance.repayTxBuilder.generateSignedTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        onBehalfOf: USER,
+        interestRateMode: InterestRate.Variable,
+        signature:
+          '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c',
+        deadline: '10000',
+      });
+
+      const differentParamsSameResult =
+        instance.repayTxBuilder.generateSignedTxData({
+          user: USER,
+          reserve: TOKEN,
+          amount: '1',
+          interestRateMode: InterestRate.Variable,
+          signature:
+            '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c',
+          deadline: '10000',
+        });
+
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0xee3e210b00000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000002710000000000000000000000000000000000000000000000000000000000000001c532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4',
+      );
+      expect(differentParamsSameResult.to).toEqual(POOL);
+      expect(differentParamsSameResult.from).toEqual(USER);
+      expect(differentParamsSameResult.data).toEqual(
+        '0xee3e210b00000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000002710000000000000000000000000000000000000000000000000000000000000001c532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4',
+      );
+    });
+
+    it('generates signed tx with generateSignedTxData with variable debt and max input', () => {
+      const result = instance.repayTxBuilder.generateSignedTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '-1',
+        onBehalfOf: USER,
+        interestRateMode: InterestRate.Variable,
+        signature:
+          '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c',
+        deadline: '10000',
+      });
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0xee3e210b0000000000000000000000000000000000000000000000000000000000000004ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000002710000000000000000000000000000000000000000000000000000000000000001c532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4',
+      );
+    });
+
+    it('generates signed tx with generateSignedTxData with stable debt', () => {
+      const result = instance.repayTxBuilder.generateSignedTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        onBehalfOf: USER,
+        interestRateMode: InterestRate.Stable,
+        signature:
+          '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c',
+        deadline: '10000',
+      });
+
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0xee3e210b00000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000002710000000000000000000000000000000000000000000000000000000000000001c532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4',
+      );
+    });
+
+    it('encodes repay params for L2', async () => {
+      await instance.repayTxBuilder.encodeRepayParams({
+        reserve: TOKEN,
+        amount: '1',
+        interestRateMode: InterestRate.Variable,
+      });
+      expect(encoderSpy).toHaveBeenCalled();
+
+      await instance.repayTxBuilder.encodeRepayParams({
+        reserve: TOKEN,
+        amount: '-1',
+        interestRateMode: InterestRate.Stable,
+      });
+      expect(encoderSpy).toHaveBeenCalled();
+
+      await instance.repayTxBuilder.encodeRepayWithPermitParams({
+        reserve: TOKEN,
+        amount: '1',
+        interestRateMode: InterestRate.Variable,
+        deadline: '10000',
+        signature:
+          '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c',
+      });
+      expect(encoderSpy).toHaveBeenCalled();
+
+      await instance.repayTxBuilder.encodeRepayWithPermitParams({
+        reserve: TOKEN,
+        amount: '-1',
+        interestRateMode: InterestRate.Stable,
+        deadline: '10000',
+        signature:
+          '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c',
+      });
+      expect(encoderSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('RepayWithATokenTxBuilder', () => {
+    const config = {
+      POOL,
+      FLASH_LIQUIDATION_ADAPTER,
+      REPAY_WITH_COLLATERAL_ADAPTER,
+      SWAP_COLLATERAL_ADAPTER,
+      WETH_GATEWAY,
+      L2_ENCODER,
+    };
+
+    const instance = new PoolBundle(provider, config);
+
+    it('generates repayWithAToken tx data with generateTxData with variable rate', () => {
+      const result = instance.repayWithATokensTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        rateMode: InterestRate.Variable,
+      });
+
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0x2dad97d4000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002',
+      );
+    });
+
+    it('generates repayWithAToken tx data with generateTxData with variable rate and max input', () => {
+      const result = instance.repayWithATokensTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '-1',
+        rateMode: InterestRate.Variable,
+      });
+
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0x2dad97d40000000000000000000000000000000000000000000000000000000000000004ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000002',
+      );
+    });
+
+    it('generates repayWithAToken tx data with generateTxData with stable debt', () => {
+      const result = instance.repayWithATokensTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        rateMode: InterestRate.Stable,
+      });
+
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0x2dad97d4000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001',
+      );
+    });
+
+    it('should throw error if ETH mock address is passed', () => {
+      const generateData = () =>
+        instance.repayWithATokensTxBuilder.generateTxData({
+          user: USER,
+          reserve: API_ETH_MOCK_ADDRESS,
+          amount: '1',
+          rateMode: InterestRate.Variable,
+        });
+
+      expect(generateData).toThrow();
+    });
+
+    it('generates repay tx data with generateTxData and L2POOL with encoded txData', () => {
+      const result = instance.repayWithATokensTxBuilder.generateTxData({
+        user: USER,
+        reserve: TOKEN,
+        amount: '1',
+        rateMode: InterestRate.Variable,
+        useOptimizedPath: true,
+        encodedTxData:
+          '0x0000000000000000000000000000000000000000000000000000006d6168616d',
+      });
+
+      expect(result.to).toEqual(POOL);
+      expect(result.from).toEqual(USER);
+      expect(result.data).toEqual(
+        '0xdc7c0bff0000000000000000000000000000000000000000000000000000006d6168616d',
+      );
+    });
+
+    it('encodes repay with aToken params for L2', async () => {
+      await instance.repayWithATokensTxBuilder.encodeRepayWithATokensParams({
+        reserve: TOKEN,
+        amount: '-1',
+        rateMode: InterestRate.Variable,
+      });
+      expect(encoderSpy).toHaveBeenCalled();
+
+      await instance.repayWithATokensTxBuilder.encodeRepayWithATokensParams({
+        reserve: TOKEN,
+        amount: '1',
+        rateMode: InterestRate.Stable,
+      });
+      expect(encoderSpy).toHaveBeenCalled();
     });
   });
 });
