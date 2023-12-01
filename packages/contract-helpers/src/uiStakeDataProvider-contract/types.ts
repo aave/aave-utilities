@@ -23,7 +23,7 @@ export type GeneralStakeUIData = {
     stakedTokenPriceEth: BigNumber;
     stakeApy: BigNumber;
   };
-  stkGHO: {
+  stkGho: {
     stakedTokenTotalSupply: BigNumber;
     stakedTokenTotalRedeemableAmount: BigNumber;
     stakeCooldownSeconds: BigNumber;
@@ -54,7 +54,7 @@ export type GetUserStakeUIData = {
     userCooldownTimestamp: number;
     rewardsToClaim: BigNumber;
   };
-  stkGHO: {
+  stkGho: {
     stakedTokenUserBalance: BigNumber;
     underlyingTokenUserBalance: BigNumber;
     stakedTokenRedeemableAmount: BigNumber;
@@ -89,7 +89,7 @@ export type GeneralStakeUIDataHumanized = {
     distributionEnd: string;
   };
 
-  stkGHO: {
+  gho: {
     stakeTokenTotalSupply: string;
     stakeTokenTotalRedeemableAmount: string;
     stakeCooldownSeconds: number;
@@ -121,7 +121,7 @@ export type GetUserStakeUIDataHumanized = {
     userCooldownTimestamp: number;
     userIncentivesToClaim: string;
   };
-  stkGHO: {
+  gho: {
     stakeTokenUserBalance: string;
     underlyingTokenUserBalance: string;
     stakeTokenRedeemableAmount: string;

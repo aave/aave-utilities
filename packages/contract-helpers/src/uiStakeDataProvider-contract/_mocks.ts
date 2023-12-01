@@ -150,7 +150,7 @@ export const GeneralStakeUIDataRaw = {
     }),
   },
 
-  stkGHO: {
+  stkGho: {
     stakedTokenTotalSupply: BigNumber.from({
       _hex: '0x0',
       _isBigNumber: true,
@@ -486,7 +486,7 @@ export const GeneralStakeUIDataHumanized = {
     distributionPerSecond: '0',
     distributionEnd: '0',
   },
-  stkGHO: {
+  gho: {
     stakeTokenTotalSupply: '0',
     stakeTokenTotalRedeemableAmount: '0',
     stakeCooldownSeconds: 0,
@@ -517,7 +517,7 @@ export const GetUserStakeUIDataHumanized = {
     userCooldownAmount: '0',
     userIncentivesToClaim: '0',
   },
-  stkGHO: {
+  gho: {
     stakeTokenUserBalance: '0',
     underlyingTokenUserBalance: '0',
     stakeTokenRedeemableAmount: '0',

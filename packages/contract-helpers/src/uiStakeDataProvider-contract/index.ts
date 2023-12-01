@@ -66,7 +66,7 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
         userCooldownTimestamp: stkBptUserData.userCooldownTimestamp,
         rewardsToClaim: stkBptUserData.rewardsToClaim,
       },
-      stkGHO: {
+      stkGho: {
         ...stkAaveData,
         stakedTokenUserBalance: stkAaveUserData.stakedTokenUserBalance,
         underlyingTokenUserBalance: stkAaveUserData.underlyingTokenUserBalance,
@@ -113,7 +113,7 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
         userIncentivesToClaim:
           contractResult.stkBptData.rewardsToClaim.toString(),
       },
-      stkGHO: {
+      gho: {
         stakeTokenUserBalance:
           contractResult.stkAaveData.stakedTokenUserBalance.toString(),
         underlyingTokenUserBalance:
@@ -137,7 +137,7 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
     return {
       stkAaveData,
       stkBptData,
-      stkGHO: stkAaveData,
+      stkGho: stkAaveData,
       ethPrice,
     };
   }
@@ -182,22 +182,22 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
           contractResult.stkBptData.distributionPerSecond.toString(),
         distributionEnd: contractResult.stkBptData.distributionEnd.toString(),
       },
-      stkGHO: {
+      gho: {
         stakeTokenTotalSupply:
-          contractResult.stkGHO.stakedTokenTotalSupply.toString(),
+          contractResult.stkGho.stakedTokenTotalSupply.toString(),
         stakeTokenTotalRedeemableAmount:
-          contractResult.stkGHO.stakedTokenTotalRedeemableAmount.toString(),
+          contractResult.stkGho.stakedTokenTotalRedeemableAmount.toString(),
         stakeCooldownSeconds:
-          contractResult.stkGHO.stakeCooldownSeconds.toNumber(),
-        stakeUnstakeWindow: contractResult.stkGHO.stakeUnstakeWindow.toNumber(),
+          contractResult.stkGho.stakeCooldownSeconds.toNumber(),
+        stakeUnstakeWindow: contractResult.stkGho.stakeUnstakeWindow.toNumber(),
         stakeTokenPriceEth:
-          contractResult.stkGHO.stakedTokenPriceEth.toString(),
+          contractResult.stkGho.stakedTokenPriceEth.toString(),
         rewardTokenPriceEth:
-          contractResult.stkGHO.rewardTokenPriceEth.toString(),
-        stakeApy: contractResult.stkGHO.stakeApy.toString(),
+          contractResult.stkGho.rewardTokenPriceEth.toString(),
+        stakeApy: contractResult.stkGho.stakeApy.toString(),
         distributionPerSecond:
-          contractResult.stkGHO.distributionPerSecond.toString(),
-        distributionEnd: contractResult.stkGHO.distributionEnd.toString(),
+          contractResult.stkGho.distributionPerSecond.toString(),
+        distributionEnd: contractResult.stkGho.distributionEnd.toString(),
       },
       ethPriceUsd: contractResult.ethPrice.toString(),
     };
