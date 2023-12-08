@@ -34,7 +34,7 @@ export enum ProposalV3State {
 
 export type ProposalPayload = {
   chain: number;
-  accessLevel: number;
+  accessLevel: AccessLevel;
   payloadsController: string;
   payloadId: number;
 };
