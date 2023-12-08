@@ -5,6 +5,54 @@ import {
 } from '../typechain/GovernanceDataHelper';
 import { GovernanceDataHelper__factory } from '../typechain/factories/GovernanceDataHelper__factory';
 
+export enum ProposalState {
+  /** proposal does not exist */
+  Null,
+  /** created, waiting for a cooldown to initiate the balances snapshot */
+  Created,
+  /** balances snapshot set, voting in progress */
+  Active,
+  /** voting results submitted, but proposal is under grace period when guardian can cancel it */
+  Queued,
+  /** results sent to the execution chain(s) */
+  Executed,
+  /** voting was not successful */
+  Failed,
+  /** got cancelled by guardian, or because proposition power of creator dropped below allowed minimum */
+  Cancelled,
+  Expired,
+}
+
+export type ProposalPayload = {
+  chain: number;
+  accessLevel: number;
+  payloadsController: string;
+  payloadId: number;
+};
+
+export type Proposal = {
+  state: ProposalState;
+  accessLevel: number;
+  creationTime: number;
+  votingDuration: number;
+  votingActivationTime: number;
+  queuingTime: number;
+  cancelTimestamp: number;
+  creator: string;
+  votingPortal: string;
+  snapshotBlockHash: string;
+  ipfsHash: string;
+  forVotes: string;
+  againstVotes: string;
+  cancellationFee: string;
+};
+
+export type ProposalData = {
+  id: string;
+  votingChainId: number;
+  proposalData: Proposal;
+};
+
 export interface GovernanceDataHelperInterface {
   getConstants: (
     govCore: string,
@@ -15,7 +63,7 @@ export interface GovernanceDataHelperInterface {
     from: number,
     to: number,
     pageSize: number,
-  ) => Promise<IGovernanceDataHelper.ProposalStruct[]>;
+  ) => Promise<ProposalData[]>;
   getRepresentationData: (
     govCore: string,
     wallet: string,
@@ -53,7 +101,35 @@ export class GovernanceDataHelperService
     to: number,
     pageSize: number,
   ) {
-    return this._contract.getProposalsData(govCore, from, to, pageSize);
+    const data = await this._contract.getProposalsData(
+      govCore,
+      from,
+      to,
+      pageSize,
+    );
+
+    return data.map<ProposalData>(proposalData => {
+      return {
+        id: proposalData.id.toString(),
+        votingChainId: proposalData.votingChainId.toNumber(),
+        proposalData: {
+          state: proposalData.proposalData.state,
+          accessLevel: proposalData.proposalData.accessLevel,
+          creationTime: proposalData.proposalData.creationTime,
+          votingDuration: proposalData.proposalData.votingDuration,
+          votingActivationTime: proposalData.proposalData.votingActivationTime,
+          queuingTime: proposalData.proposalData.queuingTime,
+          cancelTimestamp: proposalData.proposalData.cancelTimestamp,
+          creator: proposalData.proposalData.creator,
+          votingPortal: proposalData.proposalData.votingPortal,
+          snapshotBlockHash: proposalData.proposalData.snapshotBlockHash,
+          ipfsHash: proposalData.proposalData.ipfsHash,
+          forVotes: proposalData.proposalData.forVotes.toString(),
+          againstVotes: proposalData.proposalData.againstVotes.toString(),
+          cancellationFee: proposalData.proposalData.cancellationFee.toString(),
+        },
+      };
+    });
   }
 
   public async getRepresentationData(
