@@ -62,6 +62,35 @@ export type ProposalData = {
   proposalData: ProposalV3;
 };
 
+export type VotingConfig = {
+  accessLevel: AccessLevel;
+  config: {
+    coolDownBeforeVotingStart: string;
+    votingDuration: string;
+    yesThreshold: string;
+    yesNoDifferential: string;
+    minPropositionPower: string;
+  };
+};
+
+export type Constants = {
+  votingConfigs: VotingConfig[];
+  precisionDivider: string;
+  cooldownPeriod: string;
+  expirationTime: string;
+  cancellationFee: string;
+};
+
+export type Representative = {
+  chainId: number;
+  representative: string;
+};
+
+export type Rpresented = {
+  chainId: number;
+  votersRepresented: string[];
+};
+
 export interface GovernanceDataHelperInterface {
   getConstants: (
     govCore: string,
@@ -77,12 +106,10 @@ export interface GovernanceDataHelperInterface {
     govCore: string,
     wallet: string,
     chainIds: number[],
-  ) => Promise<
-    [
-      IGovernanceDataHelper.RepresentativesStruct[],
-      IGovernanceDataHelper.RepresentedStruct[],
-    ]
-  >;
+  ) => Promise<{
+    Representatives: Representative[];
+    Represented: Rpresented[];
+  }>;
 }
 
 export class GovernanceDataHelperService
@@ -100,8 +127,31 @@ export class GovernanceDataHelperService
     );
   }
 
-  public async getConstants(govCore: string, accessLevels: number[]) {
-    return this._contract.getConstants(govCore, accessLevels);
+  public async getConstants(
+    govCore: string,
+    accessLevels: number[],
+  ): Promise<Constants> {
+    const data = await this._contract.getConstants(govCore, accessLevels);
+    return {
+      votingConfigs: data.votingConfigs.map<VotingConfig>(votingConfig => {
+        return {
+          accessLevel: votingConfig.accessLevel,
+          config: {
+            coolDownBeforeVotingStart:
+              votingConfig.config.coolDownBeforeVotingStart.toString(),
+            votingDuration: votingConfig.config.votingDuration.toString(),
+            yesThreshold: votingConfig.config.yesThreshold.toString(),
+            yesNoDifferential: votingConfig.config.yesNoDifferential.toString(),
+            minPropositionPower:
+              votingConfig.config.minPropositionPower.toString(),
+          },
+        };
+      }),
+      precisionDivider: data.precisionDivider.toString(),
+      cooldownPeriod: data.cooldownPeriod.toString(),
+      expirationTime: data.expirationTime.toString(),
+      cancellationFee: data.cancellationFee.toString(),
+    };
   }
 
   public async getProposalsData(
@@ -145,7 +195,26 @@ export class GovernanceDataHelperService
     govCore: string,
     wallet: string,
     chainIds: number[],
-  ) {
-    return this._contract.getRepresentationData(govCore, wallet, chainIds);
+  ): Promise<{ Representatives: Representative[]; Represented: Rpresented[] }> {
+    const data = await this._contract.getRepresentationData(
+      govCore,
+      wallet,
+      chainIds,
+    );
+
+    return {
+      Representatives: data[0].map<Representative>(representative => {
+        return {
+          chainId: representative.chainId.toNumber(),
+          representative: representative.representative,
+        };
+      }),
+      Represented: data[1].map<Rpresented>(represented => {
+        return {
+          chainId: represented.chainId.toNumber(),
+          votersRepresented: represented.votersRepresented,
+        };
+      }),
+    };
   }
 }
