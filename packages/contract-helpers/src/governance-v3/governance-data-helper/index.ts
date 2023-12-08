@@ -5,6 +5,15 @@ import {
 } from '../typechain/GovernanceDataHelper';
 import { GovernanceDataHelper__factory } from '../typechain/factories/GovernanceDataHelper__factory';
 
+export enum AccessLevel {
+  /** Do not use */
+  None,
+  /** listing assets, changes of assets params, updates of the protocol etc */
+  Short_Executor,
+  /** payloads controller updates */
+  Long_Executor,
+}
+
 export enum ProposalV3State {
   /** proposal does not exist */
   Null,
@@ -32,7 +41,7 @@ export type ProposalPayload = {
 
 export type ProposalV3 = {
   state: ProposalV3State;
-  accessLevel: number;
+  accessLevel: AccessLevel;
   creationTime: number;
   votingDuration: number;
   votingActivationTime: number;
