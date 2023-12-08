@@ -5,7 +5,7 @@ import {
 } from '../typechain/GovernanceDataHelper';
 import { GovernanceDataHelper__factory } from '../typechain/factories/GovernanceDataHelper__factory';
 
-export enum ProposalState {
+export enum ProposalV3State {
   /** proposal does not exist */
   Null,
   /** created, waiting for a cooldown to initiate the balances snapshot */
@@ -30,8 +30,8 @@ export type ProposalPayload = {
   payloadId: number;
 };
 
-export type Proposal = {
-  state: ProposalState;
+export type ProposalV3 = {
+  state: ProposalV3State;
   accessLevel: number;
   creationTime: number;
   votingDuration: number;
@@ -50,7 +50,7 @@ export type Proposal = {
 export type ProposalData = {
   id: string;
   votingChainId: number;
-  proposalData: Proposal;
+  proposalData: ProposalV3;
 };
 
 export interface GovernanceDataHelperInterface {
