@@ -1,8 +1,5 @@
 import { providers } from 'ethers';
-import {
-  GovernanceDataHelper as GovernanceDataHelperContract,
-  IGovernanceDataHelper,
-} from '../typechain/GovernanceDataHelper';
+import { GovernanceDataHelper as GovernanceDataHelperContract } from '../typechain/GovernanceDataHelper';
 import { GovernanceDataHelper__factory } from '../typechain/factories/GovernanceDataHelper__factory';
 
 export enum AccessLevel {
@@ -67,8 +64,8 @@ export type VotingConfig = {
   config: {
     coolDownBeforeVotingStart: string;
     votingDuration: string;
-    yesThreshold: string;
-    yesNoDifferential: string;
+    quorum: string;
+    differential: string;
     minPropositionPower: string;
   };
 };
@@ -92,10 +89,7 @@ export type Rpresented = {
 };
 
 export interface GovernanceDataHelperInterface {
-  getConstants: (
-    govCore: string,
-    accessLevels: number[],
-  ) => Promise<IGovernanceDataHelper.ConstantsStruct>;
+  getConstants: (govCore: string, accessLevels: number[]) => Promise<Constants>;
   getProposalsData: (
     govCore: string,
     from: number,
@@ -132,21 +126,24 @@ export class GovernanceDataHelperService
     accessLevels: number[],
   ): Promise<Constants> {
     const data = await this._contract.getConstants(govCore, accessLevels);
+
+    const votingConfigs = data.votingConfigs.map<VotingConfig>(votingConfig => {
+      return {
+        accessLevel: votingConfig.accessLevel,
+        config: {
+          coolDownBeforeVotingStart:
+            votingConfig.config.coolDownBeforeVotingStart.toString(),
+          votingDuration: votingConfig.config.votingDuration.toString(),
+          quorum: votingConfig.config.yesThreshold.toString(),
+          differential: votingConfig.config.yesNoDifferential.toString(),
+          minPropositionPower:
+            votingConfig.config.minPropositionPower.toString(),
+        },
+      };
+    });
+
     return {
-      votingConfigs: data.votingConfigs.map<VotingConfig>(votingConfig => {
-        return {
-          accessLevel: votingConfig.accessLevel,
-          config: {
-            coolDownBeforeVotingStart:
-              votingConfig.config.coolDownBeforeVotingStart.toString(),
-            votingDuration: votingConfig.config.votingDuration.toString(),
-            yesThreshold: votingConfig.config.yesThreshold.toString(),
-            yesNoDifferential: votingConfig.config.yesNoDifferential.toString(),
-            minPropositionPower:
-              votingConfig.config.minPropositionPower.toString(),
-          },
-        };
-      }),
+      votingConfigs,
       precisionDivider: data.precisionDivider.toString(),
       cooldownPeriod: data.cooldownPeriod.toString(),
       expirationTime: data.expirationTime.toString(),
