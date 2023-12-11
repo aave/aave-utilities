@@ -32,6 +32,7 @@ export * from './paraswap-debtSwitch-contract';
 export * from './paraswap-withdrawAndSwitchAdapter-contract';
 export * from './governance-v3/governance-data-helper';
 export * from './governance-v3/voting-machine-data-helper';
+export * from './governance-v3/governance-core';
 
 // commons
 export * from './commons/types';
