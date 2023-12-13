@@ -1,25 +1,52 @@
-import { providers } from 'ethers';
-import { GovernanceCore } from '../typechain/GovernanceCore';
+import { ChainId } from 'contract-helpers/src/commons/types';
+import { BigNumber, PopulatedTransaction, providers } from 'ethers';
+import {
+  GovernanceCore,
+  GovernanceCoreInterface,
+} from '../typechain/GovernanceCore';
 import { GovernanceCore__factory } from '../typechain/factories/GovernanceCore__factory';
 
-export interface GovernanceCoreInterface {
+export interface GovernanceCoreServiceInterface {
   getProposalCount: () => Promise<number>;
+  updateRepresentativesForChain: (
+    user: string,
+    representatives: Array<{ representative: string; chainId: ChainId }>,
+  ) => PopulatedTransaction;
 }
-export class GovernanceCoreService implements GovernanceCoreInterface {
-  private readonly _contract: GovernanceCore;
+export class GovernanceCoreService implements GovernanceCoreServiceInterface {
+  private readonly _contractInterface: GovernanceCoreInterface;
+  private readonly _contractInstance: GovernanceCore;
 
   constructor(
     governanceCoreContractAddress: string,
     provider: providers.Provider,
   ) {
-    this._contract = GovernanceCore__factory.connect(
+    this._contractInterface = GovernanceCore__factory.createInterface();
+    this._contractInstance = GovernanceCore__factory.connect(
       governanceCoreContractAddress,
       provider,
     );
   }
 
   public async getProposalCount(): Promise<number> {
-    const count = await this._contract.getProposalsCount();
+    const count = await this._contractInstance.getProposalsCount();
     return count.toNumber();
+  }
+
+  public updateRepresentativesForChain(
+    user: string,
+    representatives: Array<{ representative: string; chainId: ChainId }>,
+  ): PopulatedTransaction {
+    const actionTx: PopulatedTransaction = {
+      data: this._contractInterface.encodeFunctionData(
+        'updateRepresentativesForChain',
+        [representatives],
+      ),
+      to: this._contractInstance.address,
+      from: user,
+      gasLimit: BigNumber.from('1000000'),
+    };
+
+    return actionTx;
   }
 }
