@@ -33,6 +33,7 @@ export * from './paraswap-withdrawAndSwitchAdapter-contract';
 export * from './governance-v3/governance-data-helper';
 export * from './governance-v3/voting-machine-data-helper';
 export * from './governance-v3/governance-core';
+export * from './governance-v3/aave-token-v3';
 
 // commons
 export * from './commons/types';
