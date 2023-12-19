@@ -18,10 +18,13 @@ export class AaveTokenV3Service {
     return this._contract.balanceOf(user);
   }
 
-  public async getPowerCurrent(
+  public async getPowerAt(
+    blockNumber: number,
     user: string,
     delegationType: GovernancePowerType,
   ) {
-    return this._contract.getPowerCurrent(user, delegationType);
+    return this._contract.functions.getPowerCurrent(user, delegationType, {
+      blockTag: blockNumber,
+    });
   }
 }
