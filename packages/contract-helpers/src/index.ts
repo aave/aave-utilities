@@ -34,6 +34,7 @@ export * from './governance-v3/governance-data-helper';
 export * from './governance-v3/voting-machine-data-helper';
 export * from './governance-v3/governance-core';
 export * from './governance-v3/aave-token-v3';
+export * from './governance-v3/payloads-data-helper';
 
 // commons
 export * from './commons/types';
