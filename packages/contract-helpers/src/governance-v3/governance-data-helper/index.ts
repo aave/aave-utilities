@@ -51,6 +51,7 @@ export type ProposalV3 = {
   forVotes: string;
   againstVotes: string;
   cancellationFee: string;
+  payloads: ProposalPayload[];
 };
 
 export type ProposalData = {
@@ -183,6 +184,16 @@ export class GovernanceDataHelperService
           forVotes: proposalData.proposalData.forVotes.toString(),
           againstVotes: proposalData.proposalData.againstVotes.toString(),
           cancellationFee: proposalData.proposalData.cancellationFee.toString(),
+          payloads: proposalData.proposalData.payloads.map<ProposalPayload>(
+            payload => {
+              return {
+                chain: payload.chain.toNumber(),
+                accessLevel: payload.accessLevel,
+                payloadsController: payload.payloadsController,
+                payloadId: payload.payloadId,
+              };
+            },
+          ),
         },
       };
     });
