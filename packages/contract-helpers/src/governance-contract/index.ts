@@ -86,7 +86,8 @@ type AaveGovernanceServiceConfig = {
 
 export class AaveGovernanceService
   extends BaseService<IAaveGovernanceV2>
-  implements AaveGovernanceInterface {
+  implements AaveGovernanceInterface
+{
   readonly aaveGovernanceV2Address: string;
 
   readonly aaveGovernanceV2HelperAddress: string;
@@ -148,7 +149,10 @@ export class AaveGovernanceService
   @GovHelperValidator
   public async getProposal(
     @is0OrPositiveAmount('proposalId')
-    { proposalId, overrides }: GovGetProposalType & { overrides?: CallOverrides },
+    {
+      proposalId,
+      overrides,
+    }: GovGetProposalType & { overrides?: CallOverrides },
   ) {
     const helper: IGovernanceV2Helper = IGovernanceV2Helper__factory.connect(
       this.aaveGovernanceV2HelperAddress,
@@ -157,7 +161,7 @@ export class AaveGovernanceService
     const result = await helper.getProposal(
       proposalId,
       this.aaveGovernanceV2Address,
-      overrides
+      overrides,
     );
 
     return humanizeProposal(result);
