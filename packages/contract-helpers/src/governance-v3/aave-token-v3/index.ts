@@ -40,10 +40,14 @@ export class AaveTokenV3Service {
     }
   }
 
-  public getDelegateeData(
+  public async getDelegateeData(
     user: string,
   ) {
-    return this._contract.getDelegates(user)
+    const data = await this._contract.getDelegates(user);
+    return {
+      votingDelegatee: data[0],
+      propositionDelegatee: data[1],
+    }
   }
 
   public getDelegateTxData(
