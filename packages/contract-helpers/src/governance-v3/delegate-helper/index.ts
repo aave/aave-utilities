@@ -18,16 +18,7 @@ export type MetaDelegateParams = {
   signature: SignatureLike;
 };
 
-export type GovPrepareDelegateSigByType = {
-  delegatee: tEthereumAddress | ENS;
-  type: string;
-  nonce: string;
-  expiry: string;
-  governanceTokenName: string;
-  governanceToken: tEthereumAddress;
-};
-
-interface DelegateMetaSigParams {
+export type DelegateMetaSigParams = {
   underlyingAsset: tEthereumAddress;
   delegatee: tEthereumAddress | ENS;
   delegationType: DelegationType;
@@ -37,7 +28,7 @@ interface DelegateMetaSigParams {
   nonce: string;
   connectedChainId: number;
   deadline: string;
-}
+};
 
 export class MetaDelegateHelperService {
   private readonly _contractInterface: MetaDelegateHelperInterface;
