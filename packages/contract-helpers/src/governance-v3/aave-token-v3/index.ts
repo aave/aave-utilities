@@ -8,6 +8,13 @@ export enum GovernancePowerType {
   ALL,
 }
 
+interface Eip712Domain {
+  name: string;
+  version: string;
+  chainId: BigNumber;
+  verifyingContract: string;
+}
+
 export class AaveTokenV3Service {
   readonly _contract: AaveTokenV3;
   readonly _contractInterface = AaveTokenV3__factory.createInterface();
@@ -73,5 +80,9 @@ export class AaveTokenV3Service {
       from: user,
       gasLimit: BigNumber.from('1000000'),
     };
+  }
+
+  public async getEip712Domain(): Promise<Eip712Domain> {
+    return this._contract.functions.eip712Domain();
   }
 }
