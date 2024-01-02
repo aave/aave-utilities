@@ -9,7 +9,7 @@ import {
 import {
   tEthereumAddress,
   ENS,
-  EthereumTransactionTypeExtended,
+  // EthereumTransactionTypeExtended,
 } from '../../commons/types';
 import {
   // MetaDelegateHelperInterface,
