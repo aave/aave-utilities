@@ -165,7 +165,6 @@ export class StakingService
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>
         stakingContract.populateTransaction.stakeWithPermit(
-          user,
           convertedAmount,
           deadline,
           sig.v,
