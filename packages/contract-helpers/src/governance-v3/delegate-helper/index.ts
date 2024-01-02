@@ -1,7 +1,20 @@
 import { SignatureLike } from '@ethersproject/bytes';
-import { BigNumber, PopulatedTransaction, Signature, utils } from 'ethers';
-import { tEthereumAddress, ENS } from '../../commons/types';
-import { MetaDelegateHelperInterface } from '../typechain/MetaDelegateHelper';
+import {
+  BigNumber,
+  PopulatedTransaction,
+  Signature,
+  utils,
+  providers,
+} from 'ethers';
+import {
+  tEthereumAddress,
+  ENS,
+  EthereumTransactionTypeExtended,
+} from '../../commons/types';
+import {
+  MetaDelegateHelperInterface,
+  MetaDelegateHelper,
+} from '../typechain/MetaDelegateHelper';
 import { MetaDelegateHelper__factory } from '../typechain/factories/MetaDelegateHelper__factory';
 export enum DelegationType {
   VOTING,
@@ -10,12 +23,14 @@ export enum DelegationType {
 }
 
 export type MetaDelegateParams = {
-  underlyingAsset: string;
-  delegationType: DelegationType;
   delegator: string;
   delegatee: string;
+  underlyingAsset: string;
   deadline: string;
-  signature: SignatureLike;
+  v: number;
+  r: string;
+  s: string;
+  delegationType: number;
 };
 
 export type DelegateMetaSigParams = {
@@ -31,54 +46,63 @@ export type DelegateMetaSigParams = {
 };
 
 export class MetaDelegateHelperService {
-  private readonly _contractInterface: MetaDelegateHelperInterface;
+  readonly _contract: MetaDelegateHelper;
 
-  constructor(private readonly metaDelegateHelperContracAddress: string) {
-    this._contractInterface = MetaDelegateHelper__factory.createInterface();
+  readonly _contractInterface = MetaDelegateHelper__factory.createInterface();
+  private readonly metaDelegateHelperContractAddress: string;
+
+  // constructor(private readonly metaDelegateHelperContracAddress: string) {
+  //   this._contractInterface = MetaDelegateHelper__factory.createInterface();
+  // }
+
+  constructor(
+    metaDelegateHelperContractAddress: string,
+    provider: providers.Provider,
+  ) {
+    this.metaDelegateHelperContractAddress = metaDelegateHelperContractAddress; // Assign the contract address
+
+    this._contract = MetaDelegateHelper__factory.connect(
+      metaDelegateHelperContractAddress,
+      provider,
+    );
   }
 
   public batchMetaDelegate(
     user: string,
     delegateParams: MetaDelegateParams[],
   ): PopulatedTransaction {
-    const params = delegateParams.map(p => {
-      const sig: Signature = utils.splitSignature(p.signature);
-      return {
-        ...p,
-        v: sig.v,
-        r: sig.r,
-        s: sig.s,
-      };
-    });
+    // const params = delegateParams.map(p => {
+    //   const sig: Signature = utils.splitSignature(p.signature);
+    //   return {
+    //     ...p,
+    //     v: sig.v,
+    //     r: sig.r,
+    //     s: sig.s,
+    //   };
+    // });
 
     const tx: PopulatedTransaction = {
       data: this._contractInterface.encodeFunctionData('batchMetaDelegate', [
-        params,
+        delegateParams,
       ]),
-      to: this.metaDelegateHelperContracAddress,
+      to: this.metaDelegateHelperContractAddress,
       from: user,
-      gasLimit: BigNumber.from('1000000'),
+      gasLimit: BigNumber.from('10000000'),
     };
     return tx;
   }
 
-  // @GovDelegationValidator
-  public async prepareV3DelegateByTypeSignature(
-    // @isEthAddressOrENS('delegatee')
-    // @isEthAddress('governanceToken')
-    // @is0OrPositiveAmount('nonce')
-    {
-      underlyingAsset,
-      delegatee,
-      delegationType,
-      delegator,
-      increaseNonce,
-      governanceTokenName,
-      nonce,
-      connectedChainId,
-      deadline,
-    }: DelegateMetaSigParams,
-  ): Promise<string> {
+  public async prepareV3DelegateByTypeSignature({
+    underlyingAsset,
+    delegatee,
+    delegationType,
+    delegator,
+    increaseNonce,
+    governanceTokenName,
+    nonce,
+    connectedChainId,
+    deadline,
+  }: DelegateMetaSigParams): Promise<string> {
     const isAllDelegate = Number(delegationType) === Number(DelegationType.ALL);
 
     const sigBaseType = [
