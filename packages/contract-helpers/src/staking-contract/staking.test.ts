@@ -220,18 +220,17 @@ describe('StakingService', () => {
       expect(tx.gasLimit).toEqual(BigNumber.from(1));
 
       const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'uint256', 'uint256', 'uint8', 'bytes32', 'bytes32'],
+        ['uint256', 'uint256', 'uint8', 'bytes32', 'bytes32'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
-      expect(decoded[0]).toEqual(user);
-      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
-      expect(decoded[2]).toEqual(BigNumber.from(deadline));
-      expect(decoded[3]).toEqual(28);
-      expect(decoded[4]).toEqual(
+      expect(decoded[0]).toEqual(BigNumber.from(valueToWei(amount, 18)));
+      expect(decoded[1]).toEqual(BigNumber.from(deadline));
+      expect(decoded[2]).toEqual(28);
+      expect(decoded[3]).toEqual(
         '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e',
       );
-      expect(decoded[5]).toEqual(
+      expect(decoded[4]).toEqual(
         '0x47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4',
       );
 
