@@ -128,7 +128,6 @@ export class StakingService
           { name: 'owner', type: 'address' },
           { name: 'spender', type: 'address' },
           { name: 'value', type: 'uint256' },
-          { name: 'nonce', type: 'uint256' },
           { name: 'deadline', type: 'uint256' },
         ],
       },
@@ -143,7 +142,6 @@ export class StakingService
         owner: user,
         spender: this.stakingContractAddress,
         value: convertedAmount,
-        nonce,
         deadline,
       },
     };
