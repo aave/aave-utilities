@@ -37,24 +37,20 @@ export class AaveTokenV3Service {
     });
   }
 
-  public async getPowers(
-    user: string,
-  ) {
+  public async getPowers(user: string) {
     const powers = await this._contract.getPowersCurrent(user);
     return {
       votingPower: powers[0],
-      propositionPower: powers[1]
-    }
+      propositionPower: powers[1],
+    };
   }
 
-  public async getDelegateeData(
-    user: string,
-  ) {
+  public async getDelegateeData(user: string) {
     const data = await this._contract.getDelegates(user);
     return {
       votingDelegatee: data[0],
       propositionDelegatee: data[1],
-    }
+    };
   }
 
   public getDelegateTxData(

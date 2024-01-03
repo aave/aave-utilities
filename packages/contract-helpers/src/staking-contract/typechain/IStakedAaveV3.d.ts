@@ -39,7 +39,7 @@ export declare namespace DistributionTypes {
   };
 }
 
-export interface IStakedAaveV3Interface extends utils.Interface {
+export interface StakedAaveV3Interface extends utils.Interface {
   functions: {
     'CLAIM_HELPER_ROLE()': FunctionFragment;
     'COOLDOWN_ADMIN_ROLE()': FunctionFragment;
@@ -1041,7 +1041,7 @@ export type UserIndexUpdatedEvent = TypedEvent<
 export type UserIndexUpdatedEventFilter =
   TypedEventFilter<UserIndexUpdatedEvent>;
 
-export interface IStakedAaveV3 extends BaseContract {
+export interface StakedAaveV3 extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
