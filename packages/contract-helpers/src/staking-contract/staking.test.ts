@@ -114,7 +114,7 @@ describe('StakingService', () => {
 
       expect(message.owner).toEqual(user);
       expect(message.spender).toEqual(TOKEN_STAKING_ADDRESS);
-      // expect(message.nonce).toEqual(nonce);
+      expect(message.nonce).toEqual(nonce);
       expect(message.value).toEqual(valueToWei(amount, decimals));
       expect(message.deadline).toEqual(deadline);
     });
