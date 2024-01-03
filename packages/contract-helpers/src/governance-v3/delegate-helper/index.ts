@@ -1,20 +1,6 @@
-// import { SignatureLike } from '@ethersproject/bytes';
-import {
-  BigNumber,
-  PopulatedTransaction,
-  // Signature,
-  // utils,
-  providers,
-} from 'ethers';
-import {
-  tEthereumAddress,
-  ENS,
-  // EthereumTransactionTypeExtended,
-} from '../../commons/types';
-import {
-  // MetaDelegateHelperInterface,
-  MetaDelegateHelper,
-} from '../typechain/MetaDelegateHelper';
+import { BigNumber, PopulatedTransaction, providers } from 'ethers';
+import { tEthereumAddress, ENS } from '../../commons/types';
+import { MetaDelegateHelper } from '../typechain/MetaDelegateHelper';
 import { MetaDelegateHelper__factory } from '../typechain/factories/MetaDelegateHelper__factory';
 export enum DelegationType {
   VOTING,
@@ -51,10 +37,6 @@ export class MetaDelegateHelperService {
   readonly _contractInterface = MetaDelegateHelper__factory.createInterface();
   private readonly metaDelegateHelperContractAddress: string;
 
-  // constructor(private readonly metaDelegateHelperContracAddress: string) {
-  //   this._contractInterface = MetaDelegateHelper__factory.createInterface();
-  // }
-
   constructor(
     metaDelegateHelperContractAddress: string,
     provider: providers.Provider,
@@ -71,23 +53,13 @@ export class MetaDelegateHelperService {
     user: string,
     delegateParams: MetaDelegateParams[],
   ): PopulatedTransaction {
-    // const params = delegateParams.map(p => {
-    //   const sig: Signature = utils.splitSignature(p.signature);
-    //   return {
-    //     ...p,
-    //     v: sig.v,
-    //     r: sig.r,
-    //     s: sig.s,
-    //   };
-    // });
-
     const tx: PopulatedTransaction = {
       data: this._contractInterface.encodeFunctionData('batchMetaDelegate', [
         delegateParams,
       ]),
       to: this.metaDelegateHelperContractAddress,
       from: user,
-      gasLimit: BigNumber.from('10000000'),
+      gasLimit: BigNumber.from('10000000'), // NOTE should this come from client?
     };
     return tx;
   }
