@@ -1,5 +1,6 @@
+import { gasLimitRecommendations } from 'contract-helpers/src/commons/utils';
 import { BigNumber, PopulatedTransaction, providers } from 'ethers';
-import { tEthereumAddress, ENS } from '../../commons/types';
+import { tEthereumAddress, ENS, ProtocolAction } from '../../commons/types';
 import { MetaDelegateHelper } from '../typechain/MetaDelegateHelper';
 import { MetaDelegateHelper__factory } from '../typechain/factories/MetaDelegateHelper__factory';
 export enum DelegationType {
@@ -59,7 +60,9 @@ export class MetaDelegateHelperService {
       ]),
       to: this.metaDelegateHelperContractAddress,
       from: user,
-      gasLimit: BigNumber.from('10000000'), // NOTE should this come from client?
+      gasLimit: BigNumber.from(
+        gasLimitRecommendations[ProtocolAction.batchMetaDelegate],
+      ),
     };
     return tx;
   }
@@ -75,7 +78,7 @@ export class MetaDelegateHelperService {
     connectedChainId,
     deadline,
   }: DelegateMetaSigParams): Promise<string> {
-    const isAllDelegate = Number(delegationType) === Number(DelegationType.ALL);
+    const isAllDelegate = delegationType === DelegationType.ALL;
 
     const sigBaseType = [
       { name: 'nonce', type: 'uint256' },
