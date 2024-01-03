@@ -20,6 +20,7 @@ import {
 } from '../commons/validators/paramValidators';
 import { ERC20_2612Interface, ERC20_2612Service } from '../erc20-2612';
 import { ERC20Service, IERC20ServiceInterface } from '../erc20-contract';
+import { AaveTokenV3Service } from '../governance-v3/aave-token-v3';
 import { StakedAaveV3 } from './typechain/IStakedAaveV3';
 import { StakedAaveV3__factory } from './typechain/IStakedAaveV3__factory';
 
@@ -71,6 +72,8 @@ export class StakingService
 
   readonly erc20_2612Service: ERC20_2612Interface;
 
+  readonly aaveTokenV3Service: AaveTokenV3Service;
+
   constructor(
     provider: providers.Provider,
     stakingServiceConfig: StakingServiceConfig,
@@ -80,6 +83,11 @@ export class StakingService
     this.erc20Service = new ERC20Service(provider);
 
     this.erc20_2612Service = new ERC20_2612Service(provider);
+
+    this.aaveTokenV3Service = new AaveTokenV3Service(
+      stakingServiceConfig.TOKEN_STAKING_ADDRESS,
+      provider,
+    );
 
     this.stakingContractAddress = stakingServiceConfig.TOKEN_STAKING_ADDRESS;
   }
@@ -96,9 +104,10 @@ export class StakingService
     );
     // eslint-disable-next-line new-cap
     const stakedToken: string = await stakingContract.STAKED_TOKEN();
-    const { name, decimals } = await getTokenData(stakedToken);
+    const { decimals } = await getTokenData(stakedToken);
     const convertedAmount: string = valueToWei(amount, decimals);
     const { chainId } = await this.provider.getNetwork();
+    const { name, version } = await this.aaveTokenV3Service.getEip712Domain();
 
     const nonce = await this.erc20_2612Service.getNonce({
       token: stakedToken,
@@ -128,7 +137,7 @@ export class StakingService
       primaryType: 'Permit',
       domain: {
         name,
-        version: '1',
+        version,
         chainId,
         verifyingContract: stakedToken,
       },
