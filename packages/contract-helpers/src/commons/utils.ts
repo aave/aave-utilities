@@ -138,6 +138,10 @@ export const gasLimitRecommendations: GasRecommendationType = {
     limit: '1000000',
     recommended: '1000000',
   },
+  [ProtocolAction.batchMetaDelegate]: {
+    limit: '200000',
+    recommended: '200000',
+  },
 };
 
 export const mintAmountsPerToken: Record<string, string> = {
