@@ -144,6 +144,7 @@ export enum ProtocolAction {
   setUsageAsCollateral = 'setUsageAsCollateral',
   withdrawAndSwitch = 'withdrawAndSwitch',
   batchMetaDelegate = 'batchMetaDelegate',
+  updateRepresentatives = 'updateRepresentatives',
 }
 
 export enum GovernanceVote {

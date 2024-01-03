@@ -1,4 +1,5 @@
-import { ChainId } from 'contract-helpers/src/commons/types';
+import { ChainId, ProtocolAction } from 'contract-helpers/src/commons/types';
+import { gasLimitRecommendations } from 'contract-helpers/src/commons/utils';
 import { BigNumber, PopulatedTransaction, providers } from 'ethers';
 import {
   GovernanceCore,
@@ -44,7 +45,9 @@ export class GovernanceCoreService implements GovernanceCoreServiceInterface {
       ),
       to: this._contractInstance.address,
       from: user,
-      gasLimit: BigNumber.from('1000000'),
+      gasLimit: BigNumber.from(
+        gasLimitRecommendations[ProtocolAction.updateRepresentatives].limit,
+      ),
     };
 
     return actionTx;
