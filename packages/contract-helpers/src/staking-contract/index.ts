@@ -137,7 +137,7 @@ export class StakingService
         name,
         version,
         chainId,
-        verifyingContract: stakedToken,
+        verifyingContract: this.stakingContractAddress,
       },
       message: {
         owner: user,
