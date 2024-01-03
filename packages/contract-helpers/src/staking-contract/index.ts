@@ -72,8 +72,6 @@ export class StakingService
 
   readonly erc20_2612Service: ERC20_2612Interface;
 
-  readonly aaveTokenV3Service: AaveTokenV3Service;
-
   constructor(
     provider: providers.Provider,
     stakingServiceConfig: StakingServiceConfig,
@@ -83,11 +81,6 @@ export class StakingService
     this.erc20Service = new ERC20Service(provider);
 
     this.erc20_2612Service = new ERC20_2612Service(provider);
-
-    this.aaveTokenV3Service = new AaveTokenV3Service(
-      stakingServiceConfig.TOKEN_STAKING_ADDRESS,
-      provider,
-    );
 
     this.stakingContractAddress = stakingServiceConfig.TOKEN_STAKING_ADDRESS;
   }
@@ -107,7 +100,12 @@ export class StakingService
     const { decimals } = await getTokenData(stakedToken);
     const convertedAmount: string = valueToWei(amount, decimals);
     const { chainId } = await this.provider.getNetwork();
-    const { name, version } = await this.aaveTokenV3Service.getEip712Domain();
+
+    const aaveTokenV3Service = new AaveTokenV3Service(
+      this.stakingContractAddress,
+      this.provider,
+    );
+    const { name, version } = await aaveTokenV3Service.getEip712Domain();
 
     const nonce = await this.erc20_2612Service.getNonce({
       token: stakedToken,

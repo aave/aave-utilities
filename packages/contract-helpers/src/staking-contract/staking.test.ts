@@ -6,6 +6,8 @@ import {
   transactionType,
 } from '../commons/types';
 import { gasLimitRecommendations, valueToWei } from '../commons/utils';
+import { AaveTokenV3 } from '../governance-v3/typechain/AaveTokenV3';
+import { AaveTokenV3__factory } from '../governance-v3/typechain/factories/AaveTokenV3__factory';
 import { StakedAaveV3 } from './typechain/IStakedAaveV3';
 import { StakedAaveV3__factory } from './typechain/IStakedAaveV3__factory';
 import { StakingService } from './index';
@@ -75,6 +77,20 @@ describe('StakingService', () => {
           Promise.resolve('0x0000000000000000000000000000000000000006'),
       } as unknown as StakedAaveV3);
 
+      const aaveV3TokenSpy = jest
+        .spyOn(AaveTokenV3__factory, 'connect')
+        .mockReturnValue({
+          functions: {
+            eip712Domain: async () =>
+              Promise.resolve({
+                name: 'mockToken',
+                version: '2',
+                chainId: BigNumber.from(1),
+                verifyingContract: TOKEN_STAKING_ADDRESS,
+              }),
+          },
+        } as unknown as AaveTokenV3);
+
       const nonce = 1;
 
       jest
@@ -88,6 +104,7 @@ describe('StakingService', () => {
       );
 
       expect(spy).toHaveBeenCalled();
+      expect(aaveV3TokenSpy).toHaveBeenCalled();
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const { primaryType, domain, message } = await JSON.parse(signature);
