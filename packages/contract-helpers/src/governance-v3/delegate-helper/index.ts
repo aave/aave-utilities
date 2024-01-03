@@ -1,6 +1,6 @@
-import { gasLimitRecommendations } from 'contract-helpers/src/commons/utils';
 import { BigNumber, PopulatedTransaction, providers } from 'ethers';
 import { tEthereumAddress, ENS, ProtocolAction } from '../../commons/types';
+import { gasLimitRecommendations } from '../../commons/utils';
 import { MetaDelegateHelper } from '../typechain/MetaDelegateHelper';
 import { MetaDelegateHelper__factory } from '../typechain/factories/MetaDelegateHelper__factory';
 export enum DelegationType {

@@ -1,6 +1,6 @@
-import { ChainId, ProtocolAction } from 'contract-helpers/src/commons/types';
-import { gasLimitRecommendations } from 'contract-helpers/src/commons/utils';
 import { BigNumber, PopulatedTransaction, providers } from 'ethers';
+import { ChainId, ProtocolAction } from '../../commons/types';
+import { gasLimitRecommendations } from '../../commons/utils';
 import {
   GovernanceCore,
   GovernanceCoreInterface,
