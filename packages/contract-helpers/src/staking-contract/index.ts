@@ -102,7 +102,7 @@ export class StakingService
     const { chainId } = await this.provider.getNetwork();
 
     const aaveTokenV3Service = new AaveTokenV3Service(
-      this.stakingContractAddress,
+      stakedToken,
       this.provider,
     );
     const { name, version } = await aaveTokenV3Service.getEip712Domain();
