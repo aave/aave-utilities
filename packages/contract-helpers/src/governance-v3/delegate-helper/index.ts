@@ -61,7 +61,7 @@ export class MetaDelegateHelperService {
       to: this.metaDelegateHelperContractAddress,
       from: user,
       gasLimit: BigNumber.from(
-        gasLimitRecommendations[ProtocolAction.batchMetaDelegate],
+        gasLimitRecommendations[ProtocolAction.batchMetaDelegate].limit,
       ),
     };
     return tx;

@@ -74,7 +74,7 @@ export class AaveTokenV3Service {
       ...tx,
       to: this._contract.address,
       from: user,
-      gasLimit: BigNumber.from('1000000'),
+      gasLimit: BigNumber.from('100000'),
     };
   }
 
