@@ -22,7 +22,7 @@ import { providers } from 'ethers';
 describe('UiStakeDataProvider', () => {
   // const user = '0x0000000000000000000000000000000000000001';
   // const uiStakeDataProvider = '0x0000000000000000000000000000000000000002';
-  const dataProvider: providers.Provider = new providers.JsonRpcProvider();
+  // const dataProvider: providers.Provider = new providers.JsonRpcProvider();
 
   //   jest.spyOn(StakedTokenDataProvider__factory, 'connect').mockReturnValue({
   //     // getGeneralStakeUIData: async () => Promise.resolve(GeneralStakeUIDataRaw),
