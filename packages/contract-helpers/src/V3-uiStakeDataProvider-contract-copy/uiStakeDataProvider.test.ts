@@ -1,23 +1,23 @@
-import { BigNumber, providers } from 'ethers';
-import {
-  GeneralStakeUIDataHumanized,
-  GeneralStakeUIDataRaw,
-  GetUserStakeTotalsRaw,
-  GetUserStakeUIDataHumanized,
-  GetUserStakeUIDataRaw,
-} from './_mocks';
-import {
-  Abi as IStakedTokenDataProvider,
-  Abi__factory as StakedTokenDataProvider__factory,
-} from './typechain';
-import {
-  StakedTokenData,
-  HumanizedStakeResponse,
-  // GeneralStakeUIData,
-  // GeneralStakeUIDataHumanized,
-  // GetUserStakeUIData,
-  // GetUserStakeUIDataHumanized,
-} from './types';
+import { providers } from 'ethers';
+// import {
+//   GeneralStakeUIDataHumanized,
+//   GeneralStakeUIDataRaw,
+//   GetUserStakeTotalsRaw,
+//   GetUserStakeUIDataHumanized,
+//   GetUserStakeUIDataRaw,
+// } from './_mocks';
+// import {
+//   Abi as IStakedTokenDataProvider,
+//   Abi__factory as StakedTokenDataProvider__factory,
+// } from './typechain';
+// import {
+//   StakedTokenData,
+//   HumanizedStakeResponse,
+//   // GeneralStakeUIData,
+//   // GeneralStakeUIDataHumanized,
+//   // GetUserStakeUIData,
+//   // GetUserStakeUIDataHumanized,
+// } from './types';
 
 describe('UiStakeDataProvider', () => {
   const user = '0x0000000000000000000000000000000000000001';
