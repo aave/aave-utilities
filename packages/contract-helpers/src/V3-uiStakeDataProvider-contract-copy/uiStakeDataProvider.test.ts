@@ -20,8 +20,8 @@ import { providers } from 'ethers';
 // } from './types';
 
 describe('UiStakeDataProvider', () => {
-  const user = '0x0000000000000000000000000000000000000001';
-  const uiStakeDataProvider = '0x0000000000000000000000000000000000000002';
+  // const user = '0x0000000000000000000000000000000000000001';
+  // const uiStakeDataProvider = '0x0000000000000000000000000000000000000002';
   const dataProvider: providers.Provider = new providers.JsonRpcProvider();
 
   //   jest.spyOn(StakedTokenDataProvider__factory, 'connect').mockReturnValue({
