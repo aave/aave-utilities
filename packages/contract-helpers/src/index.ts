@@ -31,6 +31,12 @@ export * from './erc20-2612';
 export * from './paraswap-debtSwitch-contract';
 export * from './paraswap-withdrawAndSwitchAdapter-contract';
 export * from './token-wrapper';
+export * from './governance-v3/governance-data-helper';
+export * from './governance-v3/voting-machine-data-helper';
+export * from './governance-v3/governance-core';
+export * from './governance-v3/aave-token-v3';
+export * from './governance-v3/payloads-data-helper';
+export * from './governance-v3/delegate-helper';
 
 // commons
 export * from './commons/types';
