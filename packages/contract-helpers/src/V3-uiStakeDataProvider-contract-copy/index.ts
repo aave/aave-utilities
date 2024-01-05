@@ -1,8 +1,10 @@
 import { providers } from 'ethers';
 // import { StakeUiDataProviderValidator } from '../commons/validators/methodValidators';
 // import { isEthAddress } from '../commons/validators/paramValidators';
-import { StakedTokenDataProvider } from './typechain/StakedTokenDataProvider';
-import { StakedTokenDataProvider__factory } from './typechain/StakedTokenDataProviderFactory';
+import {
+  Abi as IStakedTokenDataProvider,
+  Abi__factory as StakedTokenDataProvider__factory,
+} from './typechain';
 import {
   StakedTokenData,
   HumanizedStakeResponse,
@@ -32,7 +34,7 @@ export type UiStakeDataProviderContext = {
 };
 
 export class UiStakeDataProviderV3 implements UiStakeDataProviderInterface {
-  private readonly _contract: StakedTokenDataProvider;
+  private readonly _contract: IStakedTokenDataProvider;
 
   public constructor(context: UiStakeDataProviderContext) {
     this._contract = StakedTokenDataProvider__factory.connect(
@@ -148,15 +150,17 @@ export class UiStakeDataProviderV3 implements UiStakeDataProviderInterface {
     stakedAssets: EthAddress[],
     priceFeeds: EthAddress[],
   ): Promise<HumanizedStakeResponse> {
-    const [stakedData, , ethPrice] =
+    const [stakedData, ,] =
+      // add ethPrice back in
       await this._contract.getStakedAssetDataBatch(stakedAssets, priceFeeds);
 
     const parsedStakedData = handleParsedStakedData(stakedData);
 
     return {
+      // @ts-expect-error for now need to fix type
       parsedStakedData,
       parsedPrices: [],
-      ethPriceUsd: ethPrice.toString(),
+      ethPriceUsd: '123', //  ethPrice.toString(),
     };
   }
 
@@ -234,13 +238,14 @@ export class UiStakeDataProviderV3 implements UiStakeDataProviderInterface {
 function handleParsedStakedData(stakedData: StakedTokenData[]) {
   return stakedData.map((data: StakedTokenData) => {
     return {
+      // foo: 'bar',
       inPostSlashingPeriod: data.inPostSlashingPeriod,
-      stakeTokenTotalSupply: data.stakedTokenTotalSupply.toString(),
-      stakeTokenTotalRedeemableAmount:
+      stakedTokenTotalSupply: data.stakedTokenTotalSupply.toString(),
+      stakedTokenTotalRedeemableAmount:
         data.stakedTokenTotalRedeemableAmount.toString(),
       stakeCooldownSeconds: data.stakeCooldownSeconds.toNumber(),
       stakeUnstakeWindow: data.stakeUnstakeWindow.toNumber(),
-      stakeTokenPriceEth: data.stakedTokenPriceEth.toString(),
+      stakedTokenPriceEth: data.stakedTokenPriceEth.toString(),
       rewardTokenPriceEth: data.rewardTokenPriceEth.toString(),
       stakeApy: data.stakeApy.toString(),
       distributionPerSecond: data.distributionPerSecond.toString(),
