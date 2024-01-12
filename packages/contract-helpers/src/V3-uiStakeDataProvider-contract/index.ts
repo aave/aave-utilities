@@ -58,7 +58,7 @@ export class UiStakeDataProviderV3 implements UiStakeDataProviderInterface {
       stakedAssets,
       oracles,
     );
-    const parsedUserStakedData = await handleUserStakedData(stakedUserData);
+    const parsedUserStakedData = handleUserStakedData(stakedUserData);
 
     return {
       stakeUserData: parsedUserStakedData,
@@ -75,7 +75,7 @@ export class UiStakeDataProviderV3 implements UiStakeDataProviderInterface {
       oracles,
     );
 
-    const parsedStakedData = await handleParsedStakedData(stakedData);
+    const parsedStakedData = handleParsedStakedData(stakedData);
 
     return { stakeData: parsedStakedData, ethPriceUsd: ethPrice.toString() };
   }
