@@ -182,23 +182,6 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
           contractResult.stkBptData.distributionPerSecond.toString(),
         distributionEnd: contractResult.stkBptData.distributionEnd.toString(),
       },
-      gho: {
-        stakeTokenTotalSupply:
-          contractResult.stkGho.stakedTokenTotalSupply.toString(),
-        stakeTokenTotalRedeemableAmount:
-          contractResult.stkGho.stakedTokenTotalRedeemableAmount.toString(),
-        stakeCooldownSeconds:
-          contractResult.stkGho.stakeCooldownSeconds.toNumber(),
-        stakeUnstakeWindow: contractResult.stkGho.stakeUnstakeWindow.toNumber(),
-        stakeTokenPriceEth:
-          contractResult.stkGho.stakedTokenPriceEth.toString(),
-        rewardTokenPriceEth:
-          contractResult.stkGho.rewardTokenPriceEth.toString(),
-        stakeApy: contractResult.stkGho.stakeApy.toString(),
-        distributionPerSecond:
-          contractResult.stkGho.distributionPerSecond.toString(),
-        distributionEnd: contractResult.stkGho.distributionEnd.toString(),
-      },
       ethPriceUsd: contractResult.ethPrice.toString(),
     };
   }
