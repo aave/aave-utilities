@@ -2641,5 +2641,3 @@ welcome();
 ```
 
 </details>
-
-deploy

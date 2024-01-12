@@ -22,8 +22,7 @@
     "release:check": "lerna changed",
     "release:latest": "lerna publish --yes --conventional-commits --create-release github --message 'chore(release): publish [ci skip]'",
     "release:canary": "lerna publish --canary --ignore-scripts",
-    "prepare": "husky install",
-    "generate": "typechain --target ethers-v5 --out-dir packages/contract-helpers/src/v3-uiStakeDataProvider-contract/typechain './packages/contract-helpers/src/staking-contract/abis/*.json'"
+    "prepare": "husky install"
   },
   "workspaces": [
     "packages/*"
@@ -76,9 +75,5 @@
     "ts-jest": "^29.0.3",
     "typescript": "4.8.4",
     "xo": "^0.46.4"
-  },
-  "dependencies": {
-    "@typechain/ethers-v5": "^11.1.2",
-    "typechain": "^8.3.2"
   }
 }
