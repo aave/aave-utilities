@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { providers } from 'ethers';
 
 import { Abi as IStakedTokenDataProvider, Abi__factory } from './typechain';

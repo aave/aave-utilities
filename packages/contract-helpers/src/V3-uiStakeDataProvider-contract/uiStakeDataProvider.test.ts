@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 // import { providers } from 'ethers';
 // import {
 //   GeneralStakeUIDataHumanized,

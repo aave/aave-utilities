@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { BigNumber } from 'ethers';
 
 export const GeneralStakeUIDataRaw = {
