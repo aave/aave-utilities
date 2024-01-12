@@ -66,16 +66,6 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
         userCooldownTimestamp: stkBptUserData.userCooldownTimestamp,
         rewardsToClaim: stkBptUserData.rewardsToClaim,
       },
-      stkGho: {
-        ...stkAaveData,
-        stakedTokenUserBalance: stkAaveUserData.stakedTokenUserBalance,
-        underlyingTokenUserBalance: stkAaveUserData.underlyingTokenUserBalance,
-        stakedTokenRedeemableAmount:
-          stkAaveUserData.stakedTokenRedeemableAmount,
-        userCooldownAmount: stkAaveUserData.userCooldownAmount,
-        userCooldownTimestamp: stkAaveUserData.userCooldownTimestamp,
-        rewardsToClaim: stkAaveUserData.rewardsToClaim,
-      },
       ethPrice,
     };
   }
@@ -113,19 +103,6 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
         userIncentivesToClaim:
           contractResult.stkBptData.rewardsToClaim.toString(),
       },
-      gho: {
-        stakeTokenUserBalance:
-          contractResult.stkAaveData.stakedTokenUserBalance.toString(),
-        underlyingTokenUserBalance:
-          contractResult.stkAaveData.underlyingTokenUserBalance.toString(),
-        stakeTokenRedeemableAmount:
-          contractResult.stkAaveData.stakedTokenRedeemableAmount.toString(),
-        userCooldownAmount:
-          contractResult.stkAaveData.userCooldownAmount.toString(),
-        userCooldownTimestamp: contractResult.stkAaveData.userCooldownTimestamp,
-        userIncentivesToClaim:
-          contractResult.stkAaveData.rewardsToClaim.toString(),
-      },
       ethPriceUsd: contractResult.ethPrice.toString(),
     };
   }
@@ -137,7 +114,6 @@ export class UiStakeDataProvider implements UiStakeDataProviderInterface {
     return {
       stkAaveData,
       stkBptData,
-      stkGho: stkAaveData,
       ethPrice,
     };
   }
