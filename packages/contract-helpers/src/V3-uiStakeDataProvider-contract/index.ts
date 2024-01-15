@@ -12,7 +12,7 @@ import {
 
 type EthAddress = string;
 
-export interface UiStakeDataProviderInterface {
+export interface UiStakeDataProviderInterfaceV3 {
   getStakedAssetDataBatch: (
     stakedAssets: EthAddress[],
     oracles: EthAddress[],
@@ -29,7 +29,7 @@ export type UiStakeDataProviderContext = {
   provider: providers.Provider;
 };
 
-export class UiStakeDataProviderV3 implements UiStakeDataProviderInterface {
+export class UiStakeDataProviderV3 implements UiStakeDataProviderInterfaceV3 {
   private readonly _contract: IStakedTokenDataProvider;
 
   public constructor(context: UiStakeDataProviderContext) {
@@ -59,11 +59,12 @@ export class UiStakeDataProviderV3 implements UiStakeDataProviderInterface {
       stakedAssets,
       oracles,
     );
+
     const parsedUserStakedData = handleUserStakedData(stakedUserData);
 
     return {
       stakeUserData: parsedUserStakedData,
-      ethPriceUsd: ethPrice.toString(), // ethPrice.toString(),
+      ethPriceUsd: ethPrice.toString(),
     };
   }
 
@@ -77,7 +78,6 @@ export class UiStakeDataProviderV3 implements UiStakeDataProviderInterface {
     );
 
     const parsedStakedData = handleParsedStakedData(stakedData);
-
     return { stakeData: parsedStakedData, ethPriceUsd: ethPrice.toString() };
   }
 }
