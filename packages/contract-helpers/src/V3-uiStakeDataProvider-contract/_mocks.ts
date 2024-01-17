@@ -9,8 +9,8 @@ export const GeneralStakeUIDataHumanized = {
       stakeTokenTotalRedeemableAmount: '0',
       stakeCooldownSeconds: 0,
       stakeUnstakeWindow: 0,
-      stakeTokenPriceUsd: '0',
-      rewardTokenPriceUsd: '0',
+      stakeTokenPriceUSD: '0',
+      rewardTokenPriceUSD: '0',
       stakeApy: '0',
       distributionPerSecond: '0',
       distributionEnd: '0',
@@ -118,11 +118,11 @@ export const mockStakedData = [
         _hex: '0x0',
         _isBigNumber: true,
       }),
-      stakedTokenPriceUSD: BigNumber.from({
+      stakedTokenPriceUsd: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
       }),
-      rewardTokenPriceUSD: BigNumber.from({
+      rewardTokenPriceUsd: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
       }),
