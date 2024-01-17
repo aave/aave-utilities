@@ -5,10 +5,10 @@ export type StakedTokenData = {
   stakedTokenTotalRedeemableAmount: BigNumber;
   stakeCooldownSeconds: BigNumber;
   stakeUnstakeWindow: BigNumber;
-  rewardTokenPriceEth: BigNumber;
+  rewardTokenPriceUsd: BigNumber;
   distributionEnd: BigNumber;
   distributionPerSecond: BigNumber;
-  stakedTokenPriceEth: BigNumber;
+  stakedTokenPriceUsd: BigNumber;
   stakeApy: BigNumber;
   inPostSlashingPeriod: boolean;
 };
@@ -38,8 +38,8 @@ export type GeneralStakeUIDataHumanized = {
     stakeTokenTotalRedeemableAmount: string;
     stakeCooldownSeconds: number;
     stakeUnstakeWindow: number;
-    stakeTokenPriceEth: string;
-    rewardTokenPriceEth: string;
+    stakeTokenPriceUSD: string;
+    rewardTokenPriceUSD: string;
     stakeApy: string;
     distributionPerSecond: string;
     distributionEnd: string;
