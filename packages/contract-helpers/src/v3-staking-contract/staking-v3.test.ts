@@ -179,116 +179,116 @@ describe('StakingServiceV3', () => {
       expect(signature).toEqual('');
     });
   });
-  // describe('stakeWithPermit', () => {
-  //   // const message = 'victor washington'
-  //   const signature =
-  //     '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c';
+  describe('stakeWithPermit', () => {
+    // const message = 'victor washington'
+    const signature =
+      '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c';
 
-  //   const { populateTransaction } = IStakedAaveV3__factory.connect(
-  //     TOKEN_STAKING_ADDRESS,
-  //     provider,
-  //   );
+    const { populateTransaction } = IStakedAaveV3__factory.connect(
+      TOKEN_STAKING_ADDRESS,
+      provider,
+    );
 
-  //   afterEach(() => {
-  //     jest.clearAllMocks();
-  //   });
-  //   it('Expects the tx object when all params passed', async () => {
-  //     const instance = new StakingServiceV3(provider, {
-  //       TOKEN_STAKING_ADDRESS,
-  //     });
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    it('Expects the tx object when all params passed', async () => {
+      const instance = new StakingServiceV3(provider, {
+        TOKEN_STAKING_ADDRESS,
+      });
 
-  //     jest
-  //       .spyOn(instance.erc20Service, 'decimalsOf')
-  //       .mockReturnValue(Promise.resolve(decimals));
+      jest
+        .spyOn(instance.erc20Service, 'decimalsOf')
+        .mockReturnValue(Promise.resolve(decimals));
 
-  //     const spy = jest
-  //       .spyOn(IStakedAaveV3__factory, 'connect')
-  //       .mockReturnValue({
-  //         populateTransaction,
-  //         STAKED_TOKEN: async () =>
-  //           Promise.resolve('0x0000000000000000000000000000000000000006'),
-  //       } as unknown as IStakedAaveV3);
+      const spy = jest
+        .spyOn(IStakedAaveV3__factory, 'connect')
+        .mockReturnValue({
+          populateTransaction,
+          STAKED_TOKEN: async () =>
+            Promise.resolve('0x0000000000000000000000000000000000000006'),
+        } as unknown as IStakedAaveV3);
 
-  //     const stakeTxObj = await instance.stakeWithPermit(
-  //       user,
-  //       amount,
-  //       signature,
-  //       deadline,
-  //     );
+      const stakeTxObj = await instance.stakeWithPermit(
+        user,
+        amount,
+        signature,
+        deadline,
+      );
 
-  //     expect(spy).toHaveBeenCalled();
-  //     expect(stakeTxObj.length).toEqual(1);
-  //     expect(stakeTxObj[0].txType).toEqual(eEthereumTxType.STAKE_ACTION);
+      expect(spy).toHaveBeenCalled();
+      expect(stakeTxObj.length).toEqual(1);
+      expect(stakeTxObj[0].txType).toEqual(eEthereumTxType.STAKE_ACTION);
 
-  //     const tx: transactionType = await stakeTxObj[0].tx();
-  //     expect(tx.to).toEqual(TOKEN_STAKING_ADDRESS);
-  //     expect(tx.from).toEqual(user);
-  //     expect(tx.gasLimit).toEqual(BigNumber.from(1));
+      const tx: transactionType = await stakeTxObj[0].tx();
+      expect(tx.to).toEqual(TOKEN_STAKING_ADDRESS);
+      expect(tx.from).toEqual(user);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
 
-  //     const decoded = utils.defaultAbiCoder.decode(
-  //       ['address', 'uint256', 'uint256', 'uint8', 'bytes32', 'bytes32'],
-  //       utils.hexDataSlice(tx.data ?? '', 4),
-  //     );
+      const decoded = utils.defaultAbiCoder.decode(
+        ['uint256', 'uint256', 'uint8', 'bytes32', 'bytes32'],
+        utils.hexDataSlice(tx.data ?? '', 4),
+      );
 
-  //     expect(decoded[0]).toEqual(user);
-  //     expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
-  //     expect(decoded[2]).toEqual(BigNumber.from(deadline));
-  //     expect(decoded[3]).toEqual(28);
-  //     expect(decoded[4]).toEqual(
-  //       '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e',
-  //     );
-  //     expect(decoded[5]).toEqual(
-  //       '0x47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4',
-  //     );
+      // expect(decoded[0]).toEqual(user);
+      expect(decoded[0]).toEqual(BigNumber.from(valueToWei(amount, 18)));
+      expect(decoded[1]).toEqual(BigNumber.from(deadline));
+      expect(decoded[2]).toEqual(28);
+      expect(decoded[3]).toEqual(
+        '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e',
+      );
+      expect(decoded[4]).toEqual(
+        '0x47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4',
+      );
 
-  //     // gas price
-  //     const gasPrice: GasType | null = await stakeTxObj[0].gas();
-  //     expect(gasPrice).not.toBeNull();
-  //     expect(gasPrice?.gasLimit).toEqual('1');
-  //     expect(gasPrice?.gasPrice).toEqual('1');
-  //   });
-  //   it('Expects to fail when not initialized with TOKEN_STAKING_ADDRESS', async () => {
-  //     const instance = new StakingServiceV3(provider, {
-  //       TOKEN_STAKING_ADDRESS: 'asdf',
-  //     });
-  //     const stake = await instance.stakeWithPermit(
-  //       user,
-  //       amount,
-  //       signature,
-  //       deadline,
-  //     );
-  //     expect(stake).toEqual([]);
-  //   });
-  //   it('Expects to fail when user not eth address', async () => {
-  //     const instance = new StakingServiceV3(provider, {
-  //       TOKEN_STAKING_ADDRESS,
-  //     });
-  //     const user = 'asdf';
-  //     await expect(async () =>
-  //       instance.stakeWithPermit(user, amount, signature, deadline),
-  //     ).rejects.toThrowError(
-  //       `Address: ${user} is not a valid ethereum Address`,
-  //     );
-  //   });
-  //   it('Expects to fail when amount not positive', async () => {
-  //     const instance = new StakingServiceV3(provider, {
-  //       TOKEN_STAKING_ADDRESS,
-  //     });
-  //     const amount = '0';
-  //     await expect(async () =>
-  //       instance.stakeWithPermit(user, amount, signature, deadline),
-  //     ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
-  //   });
-  //   it('Expects to fail when amount not number', async () => {
-  //     const instance = new StakingServiceV3(provider, {
-  //       TOKEN_STAKING_ADDRESS,
-  //     });
-  //     const amount = 'asdf';
-  //     await expect(async () =>
-  //       instance.stakeWithPermit(user, amount, signature, deadline),
-  //     ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
-  //   });
-  // });
+      // gas price
+      const gasPrice: GasType | null = await stakeTxObj[0].gas();
+      expect(gasPrice).not.toBeNull();
+      expect(gasPrice?.gasLimit).toEqual('1');
+      expect(gasPrice?.gasPrice).toEqual('1');
+    });
+    it('Expects to fail when not initialized with TOKEN_STAKING_ADDRESS', async () => {
+      const instance = new StakingServiceV3(provider, {
+        TOKEN_STAKING_ADDRESS: 'asdf',
+      });
+      const stake = await instance.stakeWithPermit(
+        user,
+        amount,
+        signature,
+        deadline,
+      );
+      expect(stake).toEqual([]);
+    });
+    it('Expects to fail when user not eth address', async () => {
+      const instance = new StakingServiceV3(provider, {
+        TOKEN_STAKING_ADDRESS,
+      });
+      const user = 'asdf';
+      await expect(async () =>
+        instance.stakeWithPermit(user, amount, signature, deadline),
+      ).rejects.toThrowError(
+        `Address: ${user} is not a valid ethereum Address`,
+      );
+    });
+    it('Expects to fail when amount not positive', async () => {
+      const instance = new StakingServiceV3(provider, {
+        TOKEN_STAKING_ADDRESS,
+      });
+      const amount = '0';
+      await expect(async () =>
+        instance.stakeWithPermit(user, amount, signature, deadline),
+      ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
+    });
+    it('Expects to fail when amount not number', async () => {
+      const instance = new StakingServiceV3(provider, {
+        TOKEN_STAKING_ADDRESS,
+      });
+      const amount = 'asdf';
+      await expect(async () =>
+        instance.stakeWithPermit(user, amount, signature, deadline),
+      ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
+    });
+  });
   describe('stake', () => {
     afterEach(() => {
       jest.clearAllMocks();

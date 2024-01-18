@@ -172,10 +172,10 @@ export class StakingServiceV3
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>
         stakingContract.populateTransaction.stakeWithPermit(
-          user,
+          // user,
           convertedAmount,
           deadline,
-          // sig.v, // todo how does sig change?
+          sig.v, // todo how does sig change?
           sig.r,
           sig.s,
         ),
