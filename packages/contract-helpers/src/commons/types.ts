@@ -73,6 +73,7 @@ export enum ChainId {
   scroll = 534352,
   metis_andromeda = 1088,
   base = 8453,
+  bnb = 56,
 }
 export type ConstantAddressesByNetwork = Record<
   string,
