@@ -9,6 +9,7 @@ export * from './wallet-balance-provider';
 export * from './cl-feed-registry';
 // export * from './uiStakeDataProvider-contract';
 export * from './V3-uiStakeDataProvider-contract';
+export * from './v3-staking-contract';
 
 // services
 export * from './incentive-controller';
@@ -18,7 +19,7 @@ export * from './lendingPool-contract';
 export * from './lendingPool-contract-bundle';
 export * from './faucet-contract';
 export * from './v3-faucet-contract';
-export * from './staking-contract';
+// export * from './staking-contract';
 export * from './governance-contract';
 export * from './governance-contract/types';
 export * from './governance-power-delegation-contract';
