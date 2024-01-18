@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.22.0 (2024-01-18)
+
+
+### Features
+
+* gov v3 ([#564](https://github.com/aave/aave-utilities/issues/564)) ([335588e](https://github.com/aave/aave-utilities/commit/335588e2e04056b631a47b1ede50594baebd158e)), closes [#567](https://github.com/aave/aave-utilities/issues/567)
+
+
+
+
+
 ## 1.21.1 (2023-11-21)
 
 **Note:** Version bump only for package @aave/math-utils
