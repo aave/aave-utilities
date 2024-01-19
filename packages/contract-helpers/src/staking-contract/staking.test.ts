@@ -6,8 +6,10 @@ import {
   transactionType,
 } from '../commons/types';
 import { gasLimitRecommendations, valueToWei } from '../commons/utils';
-import { IStakedAaveV3 } from './typechain/IStakedAaveV3';
-import { IStakedAaveV3__factory } from './typechain/IStakedAaveV3__factory';
+import { AaveTokenV3 } from '../governance-v3/typechain/AaveTokenV3';
+import { AaveTokenV3__factory } from '../governance-v3/typechain/factories/AaveTokenV3__factory';
+import { StakedAaveV3 } from './typechain/IStakedAaveV3';
+import { StakedAaveV3__factory } from './typechain/IStakedAaveV3__factory';
 import { StakingService } from './index';
 
 jest.mock('../commons/gasStation', () => {
@@ -70,12 +72,24 @@ describe('StakingService', () => {
           address: '0x0000000000000000000000000000000000000006',
         }),
       );
-      const spy = jest
-        .spyOn(IStakedAaveV3__factory, 'connect')
+      const spy = jest.spyOn(StakedAaveV3__factory, 'connect').mockReturnValue({
+        STAKED_TOKEN: async () =>
+          Promise.resolve('0x0000000000000000000000000000000000000006'),
+      } as unknown as StakedAaveV3);
+
+      const aaveV3TokenSpy = jest
+        .spyOn(AaveTokenV3__factory, 'connect')
         .mockReturnValue({
-          STAKED_TOKEN: async () =>
-            Promise.resolve('0x0000000000000000000000000000000000000006'),
-        } as unknown as IStakedAaveV3);
+          functions: {
+            eip712Domain: async () =>
+              Promise.resolve({
+                name: 'mockToken',
+                version: '2',
+                chainId: BigNumber.from(1),
+                verifyingContract: TOKEN_STAKING_ADDRESS,
+              }),
+          },
+        } as unknown as AaveTokenV3);
 
       const nonce = 1;
 
@@ -90,6 +104,7 @@ describe('StakingService', () => {
       );
 
       expect(spy).toHaveBeenCalled();
+      expect(aaveV3TokenSpy).toHaveBeenCalled();
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const { primaryType, domain, message } = await JSON.parse(signature);
@@ -155,10 +170,10 @@ describe('StakingService', () => {
           address: '0x0000000000000000000000000000000000000006',
         }),
       );
-      jest.spyOn(IStakedAaveV3__factory, 'connect').mockReturnValue({
+      jest.spyOn(StakedAaveV3__factory, 'connect').mockReturnValue({
         STAKED_TOKEN: async () =>
           Promise.resolve('0x0000000000000000000000000000000000000006'),
-      } as unknown as IStakedAaveV3);
+      } as unknown as StakedAaveV3);
 
       jest
         .spyOn(instance.erc20_2612Service, 'getNonce')
@@ -178,7 +193,7 @@ describe('StakingService', () => {
     const signature =
       '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c';
 
-    const { populateTransaction } = IStakedAaveV3__factory.connect(
+    const { populateTransaction } = StakedAaveV3__factory.connect(
       TOKEN_STAKING_ADDRESS,
       provider,
     );
@@ -195,13 +210,11 @@ describe('StakingService', () => {
         .spyOn(instance.erc20Service, 'decimalsOf')
         .mockReturnValue(Promise.resolve(decimals));
 
-      const spy = jest
-        .spyOn(IStakedAaveV3__factory, 'connect')
-        .mockReturnValue({
-          populateTransaction,
-          STAKED_TOKEN: async () =>
-            Promise.resolve('0x0000000000000000000000000000000000000006'),
-        } as unknown as IStakedAaveV3);
+      const spy = jest.spyOn(StakedAaveV3__factory, 'connect').mockReturnValue({
+        populateTransaction,
+        STAKED_TOKEN: async () =>
+          Promise.resolve('0x0000000000000000000000000000000000000006'),
+      } as unknown as StakedAaveV3);
 
       const stakeTxObj = await instance.stakeWithPermit(
         user,
@@ -220,18 +233,17 @@ describe('StakingService', () => {
       expect(tx.gasLimit).toEqual(BigNumber.from(1));
 
       const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'uint256', 'uint256', 'uint8', 'bytes32', 'bytes32'],
+        ['uint256', 'uint256', 'uint8', 'bytes32', 'bytes32'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
-      expect(decoded[0]).toEqual(user);
-      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
-      expect(decoded[2]).toEqual(BigNumber.from(deadline));
-      expect(decoded[3]).toEqual(28);
-      expect(decoded[4]).toEqual(
+      expect(decoded[0]).toEqual(BigNumber.from(valueToWei(amount, 18)));
+      expect(decoded[1]).toEqual(BigNumber.from(deadline));
+      expect(decoded[2]).toEqual(28);
+      expect(decoded[3]).toEqual(
         '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e',
       );
-      expect(decoded[5]).toEqual(
+      expect(decoded[4]).toEqual(
         '0x47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb4',
       );
 
@@ -288,18 +300,16 @@ describe('StakingService', () => {
       jest.clearAllMocks();
     });
 
-    const { populateTransaction } = IStakedAaveV3__factory.connect(
+    const { populateTransaction } = StakedAaveV3__factory.connect(
       TOKEN_STAKING_ADDRESS,
       provider,
     );
     it('Expects the tx object when all params passed with no approval needed', async () => {
-      const spy = jest
-        .spyOn(IStakedAaveV3__factory, 'connect')
-        .mockReturnValue({
-          populateTransaction,
-          STAKED_TOKEN: async () =>
-            Promise.resolve('0x0000000000000000000000000000000000000006'),
-        } as unknown as IStakedAaveV3);
+      const spy = jest.spyOn(StakedAaveV3__factory, 'connect').mockReturnValue({
+        populateTransaction,
+        STAKED_TOKEN: async () =>
+          Promise.resolve('0x0000000000000000000000000000000000000006'),
+      } as unknown as StakedAaveV3);
       const instance = new StakingService(provider, { TOKEN_STAKING_ADDRESS });
 
       jest
@@ -340,13 +350,11 @@ describe('StakingService', () => {
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object when all params passed and no onBehalfOf with approval needed', async () => {
-      const spy = jest
-        .spyOn(IStakedAaveV3__factory, 'connect')
-        .mockReturnValue({
-          populateTransaction,
-          STAKED_TOKEN: async () =>
-            Promise.resolve('0x0000000000000000000000000000000000000006'),
-        } as unknown as IStakedAaveV3);
+      const spy = jest.spyOn(StakedAaveV3__factory, 'connect').mockReturnValue({
+        populateTransaction,
+        STAKED_TOKEN: async () =>
+          Promise.resolve('0x0000000000000000000000000000000000000006'),
+      } as unknown as StakedAaveV3);
       const instance = new StakingService(provider, { TOKEN_STAKING_ADDRESS });
 
       jest
@@ -442,18 +450,16 @@ describe('StakingService', () => {
       jest.clearAllMocks();
     });
 
-    const { populateTransaction } = IStakedAaveV3__factory.connect(
+    const { populateTransaction } = StakedAaveV3__factory.connect(
       TOKEN_STAKING_ADDRESS,
       provider,
     );
     it('Expects the tx object when all params passed and specific amount', async () => {
-      const spy = jest
-        .spyOn(IStakedAaveV3__factory, 'connect')
-        .mockReturnValue({
-          populateTransaction,
-          STAKED_TOKEN: async () =>
-            Promise.resolve('0x0000000000000000000000000000000000000006'),
-        } as unknown as IStakedAaveV3);
+      const spy = jest.spyOn(StakedAaveV3__factory, 'connect').mockReturnValue({
+        populateTransaction,
+        STAKED_TOKEN: async () =>
+          Promise.resolve('0x0000000000000000000000000000000000000006'),
+      } as unknown as StakedAaveV3);
       const instance = new StakingService(provider, { TOKEN_STAKING_ADDRESS });
 
       jest
@@ -486,13 +492,11 @@ describe('StakingService', () => {
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object when all params passed and -1 amount', async () => {
-      const spy = jest
-        .spyOn(IStakedAaveV3__factory, 'connect')
-        .mockReturnValue({
-          populateTransaction,
-          STAKED_TOKEN: async () =>
-            Promise.resolve('0x0000000000000000000000000000000000000006'),
-        } as unknown as IStakedAaveV3);
+      const spy = jest.spyOn(StakedAaveV3__factory, 'connect').mockReturnValue({
+        populateTransaction,
+        STAKED_TOKEN: async () =>
+          Promise.resolve('0x0000000000000000000000000000000000000006'),
+      } as unknown as StakedAaveV3);
       const instance = new StakingService(provider, { TOKEN_STAKING_ADDRESS });
 
       const amount = '-1';
@@ -557,18 +561,16 @@ describe('StakingService', () => {
       jest.clearAllMocks();
     });
 
-    const { populateTransaction } = IStakedAaveV3__factory.connect(
+    const { populateTransaction } = StakedAaveV3__factory.connect(
       TOKEN_STAKING_ADDRESS,
       provider,
     );
     it('Expects the tx object when all params passed and specific amount', async () => {
-      const spy = jest
-        .spyOn(IStakedAaveV3__factory, 'connect')
-        .mockReturnValue({
-          populateTransaction,
-          STAKED_TOKEN: async () =>
-            Promise.resolve('0x0000000000000000000000000000000000000006'),
-        } as unknown as IStakedAaveV3);
+      const spy = jest.spyOn(StakedAaveV3__factory, 'connect').mockReturnValue({
+        populateTransaction,
+        STAKED_TOKEN: async () =>
+          Promise.resolve('0x0000000000000000000000000000000000000006'),
+      } as unknown as StakedAaveV3);
       const instance = new StakingService(provider, {
         TOKEN_STAKING_ADDRESS,
       });
@@ -609,13 +611,11 @@ describe('StakingService', () => {
       expect(gasPrice?.gasPrice).toEqual('1');
     });
     it('Expects the tx object when all params passed and -1 amount', async () => {
-      const spy = jest
-        .spyOn(IStakedAaveV3__factory, 'connect')
-        .mockReturnValue({
-          populateTransaction,
-          STAKED_TOKEN: async () =>
-            Promise.resolve('0x0000000000000000000000000000000000000006'),
-        } as unknown as IStakedAaveV3);
+      const spy = jest.spyOn(StakedAaveV3__factory, 'connect').mockReturnValue({
+        populateTransaction,
+        STAKED_TOKEN: async () =>
+          Promise.resolve('0x0000000000000000000000000000000000000006'),
+      } as unknown as StakedAaveV3);
       const instance = new StakingService(provider, {
         TOKEN_STAKING_ADDRESS,
       });
@@ -745,18 +745,16 @@ describe('StakingService', () => {
       jest.clearAllMocks();
     });
 
-    const { populateTransaction } = IStakedAaveV3__factory.connect(
+    const { populateTransaction } = StakedAaveV3__factory.connect(
       TOKEN_STAKING_ADDRESS,
       provider,
     );
     it('Expects the tx object when all params passed with specific amount', async () => {
-      const spy = jest
-        .spyOn(IStakedAaveV3__factory, 'connect')
-        .mockReturnValue({
-          populateTransaction,
-          REWARD_TOKEN: async () =>
-            Promise.resolve('0x0000000000000000000000000000000000000006'),
-        } as unknown as IStakedAaveV3);
+      const spy = jest.spyOn(StakedAaveV3__factory, 'connect').mockReturnValue({
+        populateTransaction,
+        REWARD_TOKEN: async () =>
+          Promise.resolve('0x0000000000000000000000000000000000000006'),
+      } as unknown as StakedAaveV3);
       const instance = new StakingService(provider, { TOKEN_STAKING_ADDRESS });
 
       jest
