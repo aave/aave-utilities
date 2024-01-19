@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.23.0 (2024-01-19)
+
+
+### Features
+
+* add bnb ([#571](https://github.com/aave/aave-utilities/issues/571)) ([5b92d16](https://github.com/aave/aave-utilities/commit/5b92d16a39dfb47e0cae95fd3480863b8f9afc75))
+
+
+
+
+
 # 1.22.0 (2024-01-18)
 
 
