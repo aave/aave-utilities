@@ -30,7 +30,7 @@ import {
   Abi__factory as IStakedAaveV3__factory,
 } from './typechain';
 
-export interface StakingInterface {
+export interface StakingInterfaceV3 {
   stakingContractAddress: tEthereumAddress;
 
   stake: (
@@ -70,7 +70,7 @@ type StakingServiceConfig = {
 
 export class StakingServiceV3
   extends BaseService<IStakedAaveV3>
-  implements StakingInterface
+  implements StakingInterfaceV3
 {
   public readonly stakingContractAddress: tEthereumAddress;
 
@@ -202,6 +202,7 @@ export class StakingServiceV3
     @isEthAddress() onBehalfOf?: tEthereumAddress,
   ): Promise<EthereumTransactionTypeExtended[]> {
     const txs: EthereumTransactionTypeExtended[] = [];
+
     const { decimalsOf, isApproved, approve } = this.erc20Service;
     const stakingContract: IStakedAaveV3 = this.getContractInstance(
       this.stakingContractAddress,
@@ -216,6 +217,7 @@ export class StakingServiceV3
       spender: this.stakingContractAddress,
       amount,
     });
+
     if (!approved) {
       const approveTx = approve({
         user,
