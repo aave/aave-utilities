@@ -158,6 +158,7 @@ export enum GovernanceVote {
 export enum Stake {
   aave = 'aave',
   bpt = 'bpt',
+  gho = 'gho',
 }
 
 export type GasRecommendationType = Record<

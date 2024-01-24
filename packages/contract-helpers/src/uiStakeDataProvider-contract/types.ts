@@ -69,6 +69,7 @@ export type GeneralStakeUIDataHumanized = {
     distributionPerSecond: string;
     distributionEnd: string;
   };
+
   ethPriceUsd: string;
 };
 

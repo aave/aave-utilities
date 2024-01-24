@@ -7,7 +7,9 @@ export * from './v3-UiIncentiveDataProvider-contract';
 export * from './v3-UiPoolDataProvider-contract';
 export * from './wallet-balance-provider';
 export * from './cl-feed-registry';
-export * from './uiStakeDataProvider-contract';
+// export * from './uiStakeDataProvider-contract';
+export * from './V3-uiStakeDataProvider-contract';
+export * from './v3-staking-contract';
 
 // services
 export * from './incentive-controller';
