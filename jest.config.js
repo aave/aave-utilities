@@ -41,7 +41,7 @@ module.exports = {
     'packages/contract-helpers/src/v3-migration-contract/typechain',
     'packages/contract-helpers/src/index.ts',
     'packages/math-utils/src/formatters/reserve/index.ts', // TODO: remove
-    'packages/contract-helpers/src/V3-uiStakeDataProvider-contract/index.ts', // TODO REMOVE, TEMP
+    // 'packages/contract-helpers/src/V3-uiStakeDataProvider-contract/index.ts', // TODO REMOVE, TEMP
   ],
   modulePathIgnorePatterns: ['node_modules'],
   testEnvironment: 'node',

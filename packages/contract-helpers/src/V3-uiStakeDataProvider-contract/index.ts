@@ -98,7 +98,7 @@ function handleUserStakedData(stakeUserData: StakedContractUserData[]) {
 function handleParsedStakedData(stakedData: StakedTokenData[]) {
   return stakedData.map((data: StakedTokenData) => {
     return {
-      inPostSlashingPeriod: data.inPostSlashingPeriod,
+      inPostSlashingPeriod: data.inPostSlashingPeriod || false,
       stakeTokenTotalSupply: data.stakedTokenTotalSupply.toString(),
       stakeTokenTotalRedeemableAmount:
         data.stakedTokenTotalRedeemableAmount.toString(),

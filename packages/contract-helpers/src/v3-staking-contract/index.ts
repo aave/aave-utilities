@@ -20,10 +20,6 @@ import {
 } from '../commons/validators/paramValidators';
 import { ERC20_2612Interface, ERC20_2612Service } from '../erc20-2612';
 import { ERC20Service, IERC20ServiceInterface } from '../erc20-contract';
-// import {
-//   Abi as IStakedAaveV3,
-//   Abi__factory as IStakedAaveV3__factory,
-// } from './typechain';
 
 import {
   Abi as IStakedAaveV3,
@@ -58,10 +54,6 @@ export interface StakingInterfaceV3 {
     signature: string,
     deadline: string,
   ) => Promise<EthereumTransactionTypeExtended[]>;
-  // claimRewardsAndStake: (
-  //   user: tEthereumAddress,
-  //   amount: string,
-  // ) => Promise<EthereumTransactionTypeExtended[]>;
 }
 
 type StakingServiceConfig = {
@@ -324,7 +316,9 @@ export class StakingServiceV3
       const { decimalsOf } = this.erc20Service;
       // eslint-disable-next-line new-cap
       const stakedToken: string = await stakingContract.REWARD_TOKEN();
+
       const stakedTokenDecimals: number = await decimalsOf(stakedToken);
+
       convertedAmount = valueToWei(amount, stakedTokenDecimals);
     }
 
@@ -348,47 +342,4 @@ export class StakingServiceV3
       },
     ];
   }
-
-  // @StakingValidator
-  // public async claimRewardsAndStake(
-  //   @isEthAddress() user: tEthereumAddress,
-  //   @isPositiveOrMinusOneAmount() amount: string,
-  // ): Promise<EthereumTransactionTypeExtended[]> {
-  //   let convertedAmount: string;
-  //   const stakingContract: IStakedAaveV3 = this.getContractInstance(
-  //     this.stakingContractAddress,
-  //   );
-  //   if (amount === '-1') {
-  //     convertedAmount = constants.MaxUint256.toString();
-  //   } else {
-  //     const { decimalsOf } = this.erc20Service;
-  //     // eslint-disable-next-line new-cap
-  //     const stakedToken: string = await stakingContract.STAKED_TOKEN();
-  //     const stakedTokenDecimals: number = await decimalsOf(stakedToken);
-  //     convertedAmount = valueToWei(amount, stakedTokenDecimals);
-  //   }
-
-  //   const txCallback: () => Promise<transactionType> = this.generateTxCallback({
-  //     rawTxMethod: async () =>
-  //       stakingContract.populateTransaction.claimRewardsAndStake(
-  //         user,
-  //         convertedAmount,
-  //       ),
-  //     from: user,
-  //     gasSurplus: 20,
-  //     action: ProtocolAction.claimRewardsAndStake,
-  //   });
-
-  //   return [
-  //     {
-  //       tx: txCallback,
-  //       txType: eEthereumTxType.STAKE_ACTION,
-  //       gas: this.generateTxPriceEstimation(
-  //         [],
-  //         txCallback,
-  //         ProtocolAction.claimRewardsAndStake,
-  //       ),
-  //     },
-  //   ];
-  // }
 }

@@ -4,7 +4,7 @@ import { BigNumber } from 'ethers';
 export const GeneralStakeUIDataHumanized = {
   stakeData: [
     {
-      inPostSlashingPeriod: undefined, // TODO FIX
+      inPostSlashingPeriod: false,
       stakeTokenTotalSupply: '0',
       stakeTokenTotalRedeemableAmount: '0',
       stakeCooldownSeconds: 0,
