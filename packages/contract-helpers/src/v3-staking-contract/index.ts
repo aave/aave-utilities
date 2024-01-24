@@ -21,10 +21,8 @@ import {
 import { ERC20_2612Interface, ERC20_2612Service } from '../erc20-2612';
 import { ERC20Service, IERC20ServiceInterface } from '../erc20-contract';
 
-import {
-  Abi as IStakedAaveV3,
-  Abi__factory as IStakedAaveV3__factory,
-} from './typechain';
+import { Abi as IStakedAaveV3 } from './typechain/Abi';
+import { Abi__factory as IStakedAaveV3__factory } from './typechain/factories/Abi__factory';
 
 export interface StakingInterfaceV3 {
   stakingContractAddress: tEthereumAddress;
