@@ -7,10 +7,13 @@ import {
 } from '../commons/types';
 import { gasLimitRecommendations, valueToWei } from '../commons/utils';
 
-import {
-  Abi as IStakedAaveV3,
-  Abi__factory as IStakedAaveV3__factory,
-} from './typechain';
+// import {
+//   Abi as IStakedAaveV3,
+//   Abi__factory as IStakedAaveV3__factory,
+// } from './typechain';
+
+import { Abi as IStakedAaveV3 } from './typechain/Abi';
+import { Abi__factory as IStakedAaveV3__factory } from './typechain/factories/Abi__factory';
 
 import { StakingServiceV3 } from './index';
 
