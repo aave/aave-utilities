@@ -159,6 +159,7 @@ export enum Stake {
   aave = 'aave',
   bpt = 'bpt',
   gho = 'gho',
+  bptv2 = 'bptv2',
 }
 
 export type GasRecommendationType = Record<
