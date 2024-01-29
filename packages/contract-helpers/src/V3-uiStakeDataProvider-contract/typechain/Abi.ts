@@ -31,6 +31,7 @@ export declare namespace IStakedTokenDataProvider {
     distributionPerSecond: BigNumberish;
     inPostSlashingPeriod: boolean;
     distributionEnd: BigNumberish;
+    maxSlashablePercentage: BigNumberish;
   };
 
   export type StakedTokenDataStructOutput = [
@@ -44,6 +45,7 @@ export declare namespace IStakedTokenDataProvider {
     BigNumber,
     boolean,
     BigNumber,
+    BigNumber,
   ] & {
     stakedTokenTotalSupply: BigNumber;
     stakedTokenTotalRedeemableAmount: BigNumber;
@@ -55,6 +57,7 @@ export declare namespace IStakedTokenDataProvider {
     distributionPerSecond: BigNumber;
     inPostSlashingPeriod: boolean;
     distributionEnd: BigNumber;
+    maxSlashablePercentage: BigNumber;
   };
 
   export type StakedTokenUserDataStruct = {

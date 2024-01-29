@@ -11,6 +11,7 @@ export type StakedTokenData = {
   stakedTokenPriceUsd: BigNumber;
   stakeApy: BigNumber;
   inPostSlashingPeriod: boolean;
+  maxSlashablePercentage: BigNumber;
 };
 
 export type StakedContractUserData = {
@@ -31,30 +32,26 @@ export type StakeUIUserData = {
   userIncentivesToClaim: string;
 };
 
+export type StakeTokenUIData = {
+  inPostSlashingPeriod: boolean;
+  stakeTokenTotalSupply: string;
+  stakeTokenTotalRedeemableAmount: string;
+  stakeCooldownSeconds: number;
+  stakeUnstakeWindow: number;
+  stakeTokenPriceUSD: string;
+  rewardTokenPriceUSD: string;
+  stakeApy: string;
+  distributionPerSecond: string;
+  distributionEnd: string;
+  maxSlashablePercentage: string;
+};
+
 export type GeneralStakeUIDataHumanized = {
-  stakeData: Array<{
-    inPostSlashingPeriod: boolean;
-    stakeTokenTotalSupply: string;
-    stakeTokenTotalRedeemableAmount: string;
-    stakeCooldownSeconds: number;
-    stakeUnstakeWindow: number;
-    stakeTokenPriceUSD: string;
-    rewardTokenPriceUSD: string;
-    stakeApy: string;
-    distributionPerSecond: string;
-    distributionEnd: string;
-  }>;
+  stakeData: StakeTokenUIData[];
   ethPriceUsd: string;
 };
 
 export type GetUserStakeUIDataHumanized = {
-  stakeUserData: Array<{
-    stakeTokenUserBalance: string;
-    underlyingTokenUserBalance: string;
-    stakeTokenRedeemableAmount: string;
-    userCooldownAmount: string;
-    userCooldownTimestamp: number;
-    userIncentivesToClaim: string;
-  }>;
+  stakeUserData: StakeUIUserData[];
   ethPriceUsd: string;
 };
