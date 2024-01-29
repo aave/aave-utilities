@@ -14,6 +14,7 @@ export const GeneralStakeUIDataHumanized = {
       stakeApy: '0',
       distributionPerSecond: '0',
       distributionEnd: '0',
+      maxSlashablePercentage: '0',
     },
   ],
   ethPriceUsd: '0',
@@ -138,6 +139,10 @@ export const mockStakedData = [
         _hex: '0x0',
         _isBigNumber: true,
       }),
+      maxSlashablePercentage: BigNumber.from({
+        _hex: '0x0',
+        _isBigNumber: true,
+      }),
       0: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
@@ -171,6 +176,10 @@ export const mockStakedData = [
         _isBigNumber: true,
       }),
       8: BigNumber.from({
+        _hex: '0x0',
+        _isBigNumber: true,
+      }),
+      9: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
       }),
