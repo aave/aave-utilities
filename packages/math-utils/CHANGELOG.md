@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.24.0 (2024-02-05)
+
+
+### Features
+
+* abpt v2 migration ([#573](https://github.com/aave/aave-utilities/issues/573)) ([75bb4c0](https://github.com/aave/aave-utilities/commit/75bb4c038ea10b8faf42630a7fb580e7317623b8))
+
+
+
+
+
 ## 1.23.1 (2024-01-24)
 
 **Note:** Version bump only for package @aave/math-utils
