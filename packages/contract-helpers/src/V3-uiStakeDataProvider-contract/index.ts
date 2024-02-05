@@ -9,6 +9,8 @@ import {
   GeneralStakeUIDataHumanized,
   StakedContractUserData,
   GetUserStakeUIDataHumanized,
+  StakeTokenUIData,
+  StakeUIUserData,
 } from './types';
 
 type EthAddress = string;
@@ -84,7 +86,7 @@ export class UiStakeDataProviderV3 implements UiStakeDataProviderInterfaceV3 {
 }
 
 function handleUserStakedData(stakeUserData: StakedContractUserData[]) {
-  return stakeUserData.map((data: StakedContractUserData) => {
+  return stakeUserData.map<StakeUIUserData>((data: StakedContractUserData) => {
     return {
       stakeTokenUserBalance: data.stakedTokenUserBalance.toString(),
       underlyingTokenUserBalance: data.underlyingTokenUserBalance.toString(),
@@ -97,7 +99,7 @@ function handleUserStakedData(stakeUserData: StakedContractUserData[]) {
 }
 
 function handleParsedStakedData(stakedData: StakedTokenData[]) {
-  return stakedData.map((data: StakedTokenData) => {
+  return stakedData.map<StakeTokenUIData>((data: StakedTokenData) => {
     return {
       inPostSlashingPeriod: data.inPostSlashingPeriod || false,
       stakeTokenTotalSupply: data.stakedTokenTotalSupply.toString(),
@@ -110,6 +112,7 @@ function handleParsedStakedData(stakedData: StakedTokenData[]) {
       stakeApy: data.stakeApy.toString(),
       distributionPerSecond: data.distributionPerSecond.toString(),
       distributionEnd: data.distributionEnd.toString(),
+      maxSlashablePercentage: data.maxSlashablePercentage.toString(),
     };
   });
 }

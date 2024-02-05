@@ -38,6 +38,7 @@ export * from './governance-v3/governance-core';
 export * from './governance-v3/aave-token-v3';
 export * from './governance-v3/payloads-data-helper';
 export * from './governance-v3/delegate-helper';
+export * from './abpt-migration';
 
 // commons
 export * from './commons/types';
