@@ -149,6 +149,7 @@ export const GeneralStakeUIDataRaw = {
       _isBigNumber: true,
     }),
   },
+
   ethPrice: BigNumber.from({
     _hex: '0x0',
     _isBigNumber: true,

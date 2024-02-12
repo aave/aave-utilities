@@ -7,7 +7,9 @@ export * from './v3-UiIncentiveDataProvider-contract';
 export * from './v3-UiPoolDataProvider-contract';
 export * from './wallet-balance-provider';
 export * from './cl-feed-registry';
-export * from './uiStakeDataProvider-contract';
+// export * from './uiStakeDataProvider-contract';
+export * from './V3-uiStakeDataProvider-contract';
+export * from './v3-staking-contract';
 
 // services
 export * from './incentive-controller';
@@ -37,6 +39,7 @@ export * from './governance-v3/governance-core';
 export * from './governance-v3/aave-token-v3';
 export * from './governance-v3/payloads-data-helper';
 export * from './governance-v3/delegate-helper';
+export * from './abpt-migration';
 
 // commons
 export * from './commons/types';

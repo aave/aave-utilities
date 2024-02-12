@@ -40,7 +40,8 @@ module.exports = {
     'packages/contract-helpers/src/lendingPool-contract/typechain',
     'packages/contract-helpers/src/v3-migration-contract/typechain',
     'packages/contract-helpers/src/index.ts',
-    'packages/math-utils/src/formatters/reserve/index.ts', // TODO: remove
+    'packages/math-utils/src/formatters/reserve/index.ts',
+    'packages/contract-helpers/src/V3-uiStakeDataProvider-contract/index.ts',
   ],
   modulePathIgnorePatterns: ['node_modules'],
   testEnvironment: 'node',
