@@ -43,6 +43,7 @@ export const ChainIdToNetwork: Record<number, string> = {
   534352: 'scroll',
   1088: 'metis_andromeda',
   8453: 'base',
+  56: 'bnb',
 };
 
 export enum ChainId {
@@ -73,6 +74,7 @@ export enum ChainId {
   scroll = 534352,
   metis_andromeda = 1088,
   base = 8453,
+  bnb = 56,
 }
 export type ConstantAddressesByNetwork = Record<
   string,
@@ -143,6 +145,8 @@ export enum ProtocolAction {
   claimRewardsAndStake = 'claimRewardsAndStake',
   setUsageAsCollateral = 'setUsageAsCollateral',
   withdrawAndSwitch = 'withdrawAndSwitch',
+  batchMetaDelegate = 'batchMetaDelegate',
+  updateRepresentatives = 'updateRepresentatives',
 }
 
 export enum GovernanceVote {
@@ -154,6 +158,8 @@ export enum GovernanceVote {
 export enum Stake {
   aave = 'aave',
   bpt = 'bpt',
+  gho = 'gho',
+  bptv2 = 'bptv2',
 }
 
 export type GasRecommendationType = Record<

@@ -39,30 +39,21 @@ export declare namespace DistributionTypes {
   };
 }
 
-export interface StakedAaveV3Interface extends utils.Interface {
+export interface AbiInterface extends utils.Interface {
   functions: {
     'CLAIM_HELPER_ROLE()': FunctionFragment;
     'COOLDOWN_ADMIN_ROLE()': FunctionFragment;
-    'COOLDOWN_SECONDS()': FunctionFragment;
-    'DELEGATE_BY_TYPE_TYPEHASH()': FunctionFragment;
-    'DELEGATE_TYPEHASH()': FunctionFragment;
-    'DISTRIBUTION_END()': FunctionFragment;
     'DOMAIN_SEPARATOR()': FunctionFragment;
-    'EIP712_REVISION()': FunctionFragment;
     'EMISSION_MANAGER()': FunctionFragment;
     'EXCHANGE_RATE_UNIT()': FunctionFragment;
     'INITIAL_EXCHANGE_RATE()': FunctionFragment;
     'LOWER_BOUND()': FunctionFragment;
-    'PERMIT_TYPEHASH()': FunctionFragment;
-    'POWER_SCALE_FACTOR()': FunctionFragment;
     'PRECISION()': FunctionFragment;
-    'REVISION()': FunctionFragment;
     'REWARDS_VAULT()': FunctionFragment;
     'REWARD_TOKEN()': FunctionFragment;
     'SLASH_ADMIN_ROLE()': FunctionFragment;
     'STAKED_TOKEN()': FunctionFragment;
     'UNSTAKE_WINDOW()': FunctionFragment;
-    '_nonces(address)': FunctionFragment;
     'allowance(address,address)': FunctionFragment;
     'approve(address,uint256)': FunctionFragment;
     'assets(address)': FunctionFragment;
@@ -70,36 +61,25 @@ export interface StakedAaveV3Interface extends utils.Interface {
     'claimRewards(address,uint256)': FunctionFragment;
     'claimRewardsAndRedeem(address,uint256,uint256)': FunctionFragment;
     'claimRewardsAndRedeemOnBehalf(address,address,uint256,uint256)': FunctionFragment;
-    'claimRewardsAndStake(address,uint256)': FunctionFragment;
-    'claimRewardsAndStakeOnBehalf(address,address,uint256)': FunctionFragment;
     'claimRewardsOnBehalf(address,address,uint256)': FunctionFragment;
     'claimRoleAdmin(uint256)': FunctionFragment;
     'configureAssets((uint128,uint256,address)[])': FunctionFragment;
     'cooldown()': FunctionFragment;
     'cooldownOnBehalfOf(address)': FunctionFragment;
     'decimals()': FunctionFragment;
-    'decreaseAllowance(address,uint256)': FunctionFragment;
-    'delegate(address)': FunctionFragment;
-    'delegateByType(address,uint8)': FunctionFragment;
+    'distributionEnd()': FunctionFragment;
     'eip712Domain()': FunctionFragment;
     'getAdmin(uint256)': FunctionFragment;
     'getCooldownSeconds()': FunctionFragment;
-    'getDelegateeByType(address,uint8)': FunctionFragment;
-    'getDelegates(address)': FunctionFragment;
     'getExchangeRate()': FunctionFragment;
     'getMaxSlashablePercentage()': FunctionFragment;
     'getPendingAdmin(uint256)': FunctionFragment;
-    'getPowerCurrent(address,uint8)': FunctionFragment;
-    'getPowersCurrent(address)': FunctionFragment;
     'getTotalRewardsBalance(address)': FunctionFragment;
     'getUserAssetData(address,address)': FunctionFragment;
-    'ghoDebtToken()': FunctionFragment;
     'inPostSlashingPeriod()': FunctionFragment;
-    'increaseAllowance(address,uint256)': FunctionFragment;
-    'initialize()': FunctionFragment;
-    'metaDelegate(address,address,uint256,uint8,bytes32,bytes32)': FunctionFragment;
-    'metaDelegateByType(address,address,uint8,uint256,uint8,bytes32,bytes32)': FunctionFragment;
+    'initialize(string,string,address,address,address,uint256,uint256)': FunctionFragment;
     'name()': FunctionFragment;
+    'nonces(address)': FunctionFragment;
     'permit(address,address,uint256,uint256,uint8,bytes32,bytes32)': FunctionFragment;
     'previewRedeem(uint256)': FunctionFragment;
     'previewStake(uint256)': FunctionFragment;
@@ -107,6 +87,7 @@ export interface StakedAaveV3Interface extends utils.Interface {
     'redeemOnBehalf(address,address,uint256)': FunctionFragment;
     'returnFunds(uint256)': FunctionFragment;
     'setCooldownSeconds(uint256)': FunctionFragment;
+    'setDistributionEnd(uint256)': FunctionFragment;
     'setMaxSlashablePercentage(uint256)': FunctionFragment;
     'setPendingAdmin(uint256,address)': FunctionFragment;
     'settleSlashing()': FunctionFragment;
@@ -125,26 +106,17 @@ export interface StakedAaveV3Interface extends utils.Interface {
     nameOrSignatureOrTopic:
       | 'CLAIM_HELPER_ROLE'
       | 'COOLDOWN_ADMIN_ROLE'
-      | 'COOLDOWN_SECONDS'
-      | 'DELEGATE_BY_TYPE_TYPEHASH'
-      | 'DELEGATE_TYPEHASH'
-      | 'DISTRIBUTION_END'
       | 'DOMAIN_SEPARATOR'
-      | 'EIP712_REVISION'
       | 'EMISSION_MANAGER'
       | 'EXCHANGE_RATE_UNIT'
       | 'INITIAL_EXCHANGE_RATE'
       | 'LOWER_BOUND'
-      | 'PERMIT_TYPEHASH'
-      | 'POWER_SCALE_FACTOR'
       | 'PRECISION'
-      | 'REVISION'
       | 'REWARDS_VAULT'
       | 'REWARD_TOKEN'
       | 'SLASH_ADMIN_ROLE'
       | 'STAKED_TOKEN'
       | 'UNSTAKE_WINDOW'
-      | '_nonces'
       | 'allowance'
       | 'approve'
       | 'assets'
@@ -152,36 +124,25 @@ export interface StakedAaveV3Interface extends utils.Interface {
       | 'claimRewards'
       | 'claimRewardsAndRedeem'
       | 'claimRewardsAndRedeemOnBehalf'
-      | 'claimRewardsAndStake'
-      | 'claimRewardsAndStakeOnBehalf'
       | 'claimRewardsOnBehalf'
       | 'claimRoleAdmin'
       | 'configureAssets'
       | 'cooldown'
       | 'cooldownOnBehalfOf'
       | 'decimals'
-      | 'decreaseAllowance'
-      | 'delegate'
-      | 'delegateByType'
+      | 'distributionEnd'
       | 'eip712Domain'
       | 'getAdmin'
       | 'getCooldownSeconds'
-      | 'getDelegateeByType'
-      | 'getDelegates'
       | 'getExchangeRate'
       | 'getMaxSlashablePercentage'
       | 'getPendingAdmin'
-      | 'getPowerCurrent'
-      | 'getPowersCurrent'
       | 'getTotalRewardsBalance'
       | 'getUserAssetData'
-      | 'ghoDebtToken'
       | 'inPostSlashingPeriod'
-      | 'increaseAllowance'
       | 'initialize'
-      | 'metaDelegate'
-      | 'metaDelegateByType'
       | 'name'
+      | 'nonces'
       | 'permit'
       | 'previewRedeem'
       | 'previewStake'
@@ -189,6 +150,7 @@ export interface StakedAaveV3Interface extends utils.Interface {
       | 'redeemOnBehalf'
       | 'returnFunds'
       | 'setCooldownSeconds'
+      | 'setDistributionEnd'
       | 'setMaxSlashablePercentage'
       | 'setPendingAdmin'
       | 'settleSlashing'
@@ -212,27 +174,7 @@ export interface StakedAaveV3Interface extends utils.Interface {
     values?: undefined,
   ): string;
   encodeFunctionData(
-    functionFragment: 'COOLDOWN_SECONDS',
-    values?: undefined,
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'DELEGATE_BY_TYPE_TYPEHASH',
-    values?: undefined,
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'DELEGATE_TYPEHASH',
-    values?: undefined,
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'DISTRIBUTION_END',
-    values?: undefined,
-  ): string;
-  encodeFunctionData(
     functionFragment: 'DOMAIN_SEPARATOR',
-    values?: undefined,
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'EIP712_REVISION',
     values?: undefined,
   ): string;
   encodeFunctionData(
@@ -251,16 +193,7 @@ export interface StakedAaveV3Interface extends utils.Interface {
     functionFragment: 'LOWER_BOUND',
     values?: undefined,
   ): string;
-  encodeFunctionData(
-    functionFragment: 'PERMIT_TYPEHASH',
-    values?: undefined,
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'POWER_SCALE_FACTOR',
-    values?: undefined,
-  ): string;
   encodeFunctionData(functionFragment: 'PRECISION', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'REVISION', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'REWARDS_VAULT',
     values?: undefined,
@@ -281,7 +214,6 @@ export interface StakedAaveV3Interface extends utils.Interface {
     functionFragment: 'UNSTAKE_WINDOW',
     values?: undefined,
   ): string;
-  encodeFunctionData(functionFragment: '_nonces', values: [string]): string;
   encodeFunctionData(
     functionFragment: 'allowance',
     values: [string, string],
@@ -305,14 +237,6 @@ export interface StakedAaveV3Interface extends utils.Interface {
     values: [string, string, BigNumberish, BigNumberish],
   ): string;
   encodeFunctionData(
-    functionFragment: 'claimRewardsAndStake',
-    values: [string, BigNumberish],
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'claimRewardsAndStakeOnBehalf',
-    values: [string, string, BigNumberish],
-  ): string;
-  encodeFunctionData(
     functionFragment: 'claimRewardsOnBehalf',
     values: [string, string, BigNumberish],
   ): string;
@@ -331,13 +255,8 @@ export interface StakedAaveV3Interface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: 'decimals', values?: undefined): string;
   encodeFunctionData(
-    functionFragment: 'decreaseAllowance',
-    values: [string, BigNumberish],
-  ): string;
-  encodeFunctionData(functionFragment: 'delegate', values: [string]): string;
-  encodeFunctionData(
-    functionFragment: 'delegateByType',
-    values: [string, BigNumberish],
+    functionFragment: 'distributionEnd',
+    values?: undefined,
   ): string;
   encodeFunctionData(
     functionFragment: 'eip712Domain',
@@ -352,14 +271,6 @@ export interface StakedAaveV3Interface extends utils.Interface {
     values?: undefined,
   ): string;
   encodeFunctionData(
-    functionFragment: 'getDelegateeByType',
-    values: [string, BigNumberish],
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'getDelegates',
-    values: [string],
-  ): string;
-  encodeFunctionData(
     functionFragment: 'getExchangeRate',
     values?: undefined,
   ): string;
@@ -372,14 +283,6 @@ export interface StakedAaveV3Interface extends utils.Interface {
     values: [BigNumberish],
   ): string;
   encodeFunctionData(
-    functionFragment: 'getPowerCurrent',
-    values: [string, BigNumberish],
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'getPowersCurrent',
-    values: [string],
-  ): string;
-  encodeFunctionData(
     functionFragment: 'getTotalRewardsBalance',
     values: [string],
   ): string;
@@ -388,38 +291,23 @@ export interface StakedAaveV3Interface extends utils.Interface {
     values: [string, string],
   ): string;
   encodeFunctionData(
-    functionFragment: 'ghoDebtToken',
-    values?: undefined,
-  ): string;
-  encodeFunctionData(
     functionFragment: 'inPostSlashingPeriod',
     values?: undefined,
   ): string;
   encodeFunctionData(
-    functionFragment: 'increaseAllowance',
-    values: [string, BigNumberish],
-  ): string;
-  encodeFunctionData(
     functionFragment: 'initialize',
-    values?: undefined,
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'metaDelegate',
-    values: [string, string, BigNumberish, BigNumberish, BytesLike, BytesLike],
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'metaDelegateByType',
     values: [
       string,
       string,
+      string,
+      string,
+      string,
       BigNumberish,
       BigNumberish,
-      BigNumberish,
-      BytesLike,
-      BytesLike,
     ],
   ): string;
   encodeFunctionData(functionFragment: 'name', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'nonces', values: [string]): string;
   encodeFunctionData(
     functionFragment: 'permit',
     values: [
@@ -454,6 +342,10 @@ export interface StakedAaveV3Interface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'setCooldownSeconds',
+    values: [BigNumberish],
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'setDistributionEnd',
     values: [BigNumberish],
   ): string;
   encodeFunctionData(
@@ -511,27 +403,7 @@ export interface StakedAaveV3Interface extends utils.Interface {
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'COOLDOWN_SECONDS',
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'DELEGATE_BY_TYPE_TYPEHASH',
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'DELEGATE_TYPEHASH',
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'DISTRIBUTION_END',
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'DOMAIN_SEPARATOR',
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'EIP712_REVISION',
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
@@ -550,16 +422,7 @@ export interface StakedAaveV3Interface extends utils.Interface {
     functionFragment: 'LOWER_BOUND',
     data: BytesLike,
   ): Result;
-  decodeFunctionResult(
-    functionFragment: 'PERMIT_TYPEHASH',
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'POWER_SCALE_FACTOR',
-    data: BytesLike,
-  ): Result;
   decodeFunctionResult(functionFragment: 'PRECISION', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'REVISION', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'REWARDS_VAULT',
     data: BytesLike,
@@ -580,7 +443,6 @@ export interface StakedAaveV3Interface extends utils.Interface {
     functionFragment: 'UNSTAKE_WINDOW',
     data: BytesLike,
   ): Result;
-  decodeFunctionResult(functionFragment: '_nonces', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'allowance', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'approve', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'assets', data: BytesLike): Result;
@@ -595,14 +457,6 @@ export interface StakedAaveV3Interface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'claimRewardsAndRedeemOnBehalf',
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'claimRewardsAndStake',
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'claimRewardsAndStakeOnBehalf',
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
@@ -624,12 +478,7 @@ export interface StakedAaveV3Interface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'decimals', data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: 'decreaseAllowance',
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(functionFragment: 'delegate', data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: 'delegateByType',
+    functionFragment: 'distributionEnd',
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
@@ -639,14 +488,6 @@ export interface StakedAaveV3Interface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'getAdmin', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'getCooldownSeconds',
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'getDelegateeByType',
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'getDelegates',
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
@@ -662,14 +503,6 @@ export interface StakedAaveV3Interface extends utils.Interface {
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getPowerCurrent',
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'getPowersCurrent',
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'getTotalRewardsBalance',
     data: BytesLike,
   ): Result;
@@ -678,27 +511,12 @@ export interface StakedAaveV3Interface extends utils.Interface {
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'ghoDebtToken',
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'inPostSlashingPeriod',
     data: BytesLike,
   ): Result;
-  decodeFunctionResult(
-    functionFragment: 'increaseAllowance',
-    data: BytesLike,
-  ): Result;
   decodeFunctionResult(functionFragment: 'initialize', data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: 'metaDelegate',
-    data: BytesLike,
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'metaDelegateByType',
-    data: BytesLike,
-  ): Result;
   decodeFunctionResult(functionFragment: 'name', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'nonces', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'permit', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'previewRedeem',
@@ -719,6 +537,10 @@ export interface StakedAaveV3Interface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'setCooldownSeconds',
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'setDistributionEnd',
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
@@ -764,10 +586,11 @@ export interface StakedAaveV3Interface extends utils.Interface {
     'AssetIndexUpdated(address,uint256)': EventFragment;
     'Cooldown(address,uint256)': EventFragment;
     'CooldownSecondsChanged(uint256)': EventFragment;
-    'DelegateChanged(address,address,uint8)': EventFragment;
+    'DistributionEndChanged(uint256)': EventFragment;
     'EIP712DomainChanged()': EventFragment;
     'ExchangeRateChanged(uint216)': EventFragment;
     'FundsReturned(uint256)': EventFragment;
+    'Initialized(uint64)': EventFragment;
     'MaxSlashablePercentageChanged(uint256)': EventFragment;
     'PendingAdminChanged(address,uint256)': EventFragment;
     'Redeem(address,address,uint256,uint256)': EventFragment;
@@ -787,10 +610,11 @@ export interface StakedAaveV3Interface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'AssetIndexUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Cooldown'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'CooldownSecondsChanged'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'DelegateChanged'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'DistributionEndChanged'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'EIP712DomainChanged'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ExchangeRateChanged'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'FundsReturned'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
   getEvent(
     nameOrSignatureOrTopic: 'MaxSlashablePercentageChanged',
   ): EventFragment;
@@ -867,17 +691,16 @@ export type CooldownSecondsChangedEvent = TypedEvent<
 export type CooldownSecondsChangedEventFilter =
   TypedEventFilter<CooldownSecondsChangedEvent>;
 
-export interface DelegateChangedEventObject {
-  delegator: string;
-  delegatee: string;
-  delegationType: number;
+export interface DistributionEndChangedEventObject {
+  endTimestamp: BigNumber;
 }
-export type DelegateChangedEvent = TypedEvent<
-  [string, string, number],
-  DelegateChangedEventObject
+export type DistributionEndChangedEvent = TypedEvent<
+  [BigNumber],
+  DistributionEndChangedEventObject
 >;
 
-export type DelegateChangedEventFilter = TypedEventFilter<DelegateChangedEvent>;
+export type DistributionEndChangedEventFilter =
+  TypedEventFilter<DistributionEndChangedEvent>;
 
 export interface EIP712DomainChangedEventObject {}
 export type EIP712DomainChangedEvent = TypedEvent<
@@ -908,6 +731,13 @@ export type FundsReturnedEvent = TypedEvent<
 >;
 
 export type FundsReturnedEventFilter = TypedEventFilter<FundsReturnedEvent>;
+
+export interface InitializedEventObject {
+  version: BigNumber;
+}
+export type InitializedEvent = TypedEvent<[BigNumber], InitializedEventObject>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export interface MaxSlashablePercentageChangedEventObject {
   newPercentage: BigNumber;
@@ -1041,12 +871,12 @@ export type UserIndexUpdatedEvent = TypedEvent<
 export type UserIndexUpdatedEventFilter =
   TypedEventFilter<UserIndexUpdatedEvent>;
 
-export interface StakedAaveV3 extends BaseContract {
+export interface Abi extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: StakedAaveV3Interface;
+  interface: AbiInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -1072,17 +902,7 @@ export interface StakedAaveV3 extends BaseContract {
 
     COOLDOWN_ADMIN_ROLE(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    COOLDOWN_SECONDS(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    DELEGATE_BY_TYPE_TYPEHASH(overrides?: CallOverrides): Promise<[string]>;
-
-    DELEGATE_TYPEHASH(overrides?: CallOverrides): Promise<[string]>;
-
-    DISTRIBUTION_END(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<[string]>;
-
-    EIP712_REVISION(overrides?: CallOverrides): Promise<[string]>;
 
     EMISSION_MANAGER(overrides?: CallOverrides): Promise<[string]>;
 
@@ -1092,13 +912,7 @@ export interface StakedAaveV3 extends BaseContract {
 
     LOWER_BOUND(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<[string]>;
-
-    POWER_SCALE_FACTOR(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     PRECISION(overrides?: CallOverrides): Promise<[number]>;
-
-    REVISION(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     REWARDS_VAULT(overrides?: CallOverrides): Promise<[string]>;
 
@@ -1110,8 +924,6 @@ export interface StakedAaveV3 extends BaseContract {
 
     UNSTAKE_WINDOW(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    _nonces(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
-
     allowance(
       owner: string,
       spender: string,
@@ -1120,7 +932,7 @@ export interface StakedAaveV3 extends BaseContract {
 
     approve(
       spender: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
@@ -1158,19 +970,6 @@ export interface StakedAaveV3 extends BaseContract {
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
-    claimRewardsAndStake(
-      to: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string },
-    ): Promise<ContractTransaction>;
-
-    claimRewardsAndStakeOnBehalf(
-      from: string,
-      to: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string },
-    ): Promise<ContractTransaction>;
-
     claimRewardsOnBehalf(
       from: string,
       to: string,
@@ -1199,22 +998,7 @@ export interface StakedAaveV3 extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<[number]>;
 
-    decreaseAllowance(
-      spender: string,
-      subtractedValue: BigNumberish,
-      overrides?: Overrides & { from?: string },
-    ): Promise<ContractTransaction>;
-
-    delegate(
-      delegatee: string,
-      overrides?: Overrides & { from?: string },
-    ): Promise<ContractTransaction>;
-
-    delegateByType(
-      delegatee: string,
-      delegationType: BigNumberish,
-      overrides?: Overrides & { from?: string },
-    ): Promise<ContractTransaction>;
+    distributionEnd(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     eip712Domain(overrides?: CallOverrides): Promise<
       [string, string, string, BigNumber, string, string, BigNumber[]] & {
@@ -1232,17 +1016,6 @@ export interface StakedAaveV3 extends BaseContract {
 
     getCooldownSeconds(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    getDelegateeByType(
-      delegator: string,
-      delegationType: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<[string]>;
-
-    getDelegates(
-      delegator: string,
-      overrides?: CallOverrides,
-    ): Promise<[string, string]>;
-
     getExchangeRate(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getMaxSlashablePercentage(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -1251,17 +1024,6 @@ export interface StakedAaveV3 extends BaseContract {
       role: BigNumberish,
       overrides?: CallOverrides,
     ): Promise<[string]>;
-
-    getPowerCurrent(
-      user: string,
-      delegationType: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<[BigNumber]>;
-
-    getPowersCurrent(
-      user: string,
-      overrides?: CallOverrides,
-    ): Promise<[BigNumber, BigNumber]>;
 
     getTotalRewardsBalance(
       staker: string,
@@ -1274,42 +1036,22 @@ export interface StakedAaveV3 extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<[BigNumber]>;
 
-    ghoDebtToken(overrides?: CallOverrides): Promise<[string]>;
-
     inPostSlashingPeriod(overrides?: CallOverrides): Promise<[boolean]>;
 
-    increaseAllowance(
-      spender: string,
-      addedValue: BigNumberish,
-      overrides?: Overrides & { from?: string },
-    ): Promise<ContractTransaction>;
-
     initialize(
-      overrides?: Overrides & { from?: string },
-    ): Promise<ContractTransaction>;
-
-    metaDelegate(
-      delegator: string,
-      delegatee: string,
-      deadline: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
-      overrides?: Overrides & { from?: string },
-    ): Promise<ContractTransaction>;
-
-    metaDelegateByType(
-      delegator: string,
-      delegatee: string,
-      delegationType: BigNumberish,
-      deadline: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
+      name: string,
+      symbol: string,
+      slashingAdmin: string,
+      cooldownPauseAdmin: string,
+      claimHelper: string,
+      maxSlashablePercentage: BigNumberish,
+      cooldownSeconds: BigNumberish,
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
+
+    nonces(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     permit(
       owner: string,
@@ -1352,6 +1094,11 @@ export interface StakedAaveV3 extends BaseContract {
 
     setCooldownSeconds(
       cooldownSeconds: BigNumberish,
+      overrides?: Overrides & { from?: string },
+    ): Promise<ContractTransaction>;
+
+    setDistributionEnd(
+      newDistributionEnd: BigNumberish,
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
@@ -1407,14 +1154,14 @@ export interface StakedAaveV3 extends BaseContract {
 
     transfer(
       to: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
     transferFrom(
       from: string,
       to: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
   };
@@ -1423,17 +1170,7 @@ export interface StakedAaveV3 extends BaseContract {
 
   COOLDOWN_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
-  COOLDOWN_SECONDS(overrides?: CallOverrides): Promise<BigNumber>;
-
-  DELEGATE_BY_TYPE_TYPEHASH(overrides?: CallOverrides): Promise<string>;
-
-  DELEGATE_TYPEHASH(overrides?: CallOverrides): Promise<string>;
-
-  DISTRIBUTION_END(overrides?: CallOverrides): Promise<BigNumber>;
-
   DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
-
-  EIP712_REVISION(overrides?: CallOverrides): Promise<string>;
 
   EMISSION_MANAGER(overrides?: CallOverrides): Promise<string>;
 
@@ -1443,13 +1180,7 @@ export interface StakedAaveV3 extends BaseContract {
 
   LOWER_BOUND(overrides?: CallOverrides): Promise<BigNumber>;
 
-  PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
-
-  POWER_SCALE_FACTOR(overrides?: CallOverrides): Promise<BigNumber>;
-
   PRECISION(overrides?: CallOverrides): Promise<number>;
-
-  REVISION(overrides?: CallOverrides): Promise<BigNumber>;
 
   REWARDS_VAULT(overrides?: CallOverrides): Promise<string>;
 
@@ -1461,8 +1192,6 @@ export interface StakedAaveV3 extends BaseContract {
 
   UNSTAKE_WINDOW(overrides?: CallOverrides): Promise<BigNumber>;
 
-  _nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
   allowance(
     owner: string,
     spender: string,
@@ -1471,7 +1200,7 @@ export interface StakedAaveV3 extends BaseContract {
 
   approve(
     spender: string,
-    amount: BigNumberish,
+    value: BigNumberish,
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
@@ -1509,19 +1238,6 @@ export interface StakedAaveV3 extends BaseContract {
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
-  claimRewardsAndStake(
-    to: string,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string },
-  ): Promise<ContractTransaction>;
-
-  claimRewardsAndStakeOnBehalf(
-    from: string,
-    to: string,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string },
-  ): Promise<ContractTransaction>;
-
   claimRewardsOnBehalf(
     from: string,
     to: string,
@@ -1550,22 +1266,7 @@ export interface StakedAaveV3 extends BaseContract {
 
   decimals(overrides?: CallOverrides): Promise<number>;
 
-  decreaseAllowance(
-    spender: string,
-    subtractedValue: BigNumberish,
-    overrides?: Overrides & { from?: string },
-  ): Promise<ContractTransaction>;
-
-  delegate(
-    delegatee: string,
-    overrides?: Overrides & { from?: string },
-  ): Promise<ContractTransaction>;
-
-  delegateByType(
-    delegatee: string,
-    delegationType: BigNumberish,
-    overrides?: Overrides & { from?: string },
-  ): Promise<ContractTransaction>;
+  distributionEnd(overrides?: CallOverrides): Promise<BigNumber>;
 
   eip712Domain(overrides?: CallOverrides): Promise<
     [string, string, string, BigNumber, string, string, BigNumber[]] & {
@@ -1583,17 +1284,6 @@ export interface StakedAaveV3 extends BaseContract {
 
   getCooldownSeconds(overrides?: CallOverrides): Promise<BigNumber>;
 
-  getDelegateeByType(
-    delegator: string,
-    delegationType: BigNumberish,
-    overrides?: CallOverrides,
-  ): Promise<string>;
-
-  getDelegates(
-    delegator: string,
-    overrides?: CallOverrides,
-  ): Promise<[string, string]>;
-
   getExchangeRate(overrides?: CallOverrides): Promise<BigNumber>;
 
   getMaxSlashablePercentage(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1602,17 +1292,6 @@ export interface StakedAaveV3 extends BaseContract {
     role: BigNumberish,
     overrides?: CallOverrides,
   ): Promise<string>;
-
-  getPowerCurrent(
-    user: string,
-    delegationType: BigNumberish,
-    overrides?: CallOverrides,
-  ): Promise<BigNumber>;
-
-  getPowersCurrent(
-    user: string,
-    overrides?: CallOverrides,
-  ): Promise<[BigNumber, BigNumber]>;
 
   getTotalRewardsBalance(
     staker: string,
@@ -1625,42 +1304,22 @@ export interface StakedAaveV3 extends BaseContract {
     overrides?: CallOverrides,
   ): Promise<BigNumber>;
 
-  ghoDebtToken(overrides?: CallOverrides): Promise<string>;
-
   inPostSlashingPeriod(overrides?: CallOverrides): Promise<boolean>;
 
-  increaseAllowance(
-    spender: string,
-    addedValue: BigNumberish,
-    overrides?: Overrides & { from?: string },
-  ): Promise<ContractTransaction>;
-
   initialize(
-    overrides?: Overrides & { from?: string },
-  ): Promise<ContractTransaction>;
-
-  metaDelegate(
-    delegator: string,
-    delegatee: string,
-    deadline: BigNumberish,
-    v: BigNumberish,
-    r: BytesLike,
-    s: BytesLike,
-    overrides?: Overrides & { from?: string },
-  ): Promise<ContractTransaction>;
-
-  metaDelegateByType(
-    delegator: string,
-    delegatee: string,
-    delegationType: BigNumberish,
-    deadline: BigNumberish,
-    v: BigNumberish,
-    r: BytesLike,
-    s: BytesLike,
+    name: string,
+    symbol: string,
+    slashingAdmin: string,
+    cooldownPauseAdmin: string,
+    claimHelper: string,
+    maxSlashablePercentage: BigNumberish,
+    cooldownSeconds: BigNumberish,
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
   name(overrides?: CallOverrides): Promise<string>;
+
+  nonces(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   permit(
     owner: string,
@@ -1703,6 +1362,11 @@ export interface StakedAaveV3 extends BaseContract {
 
   setCooldownSeconds(
     cooldownSeconds: BigNumberish,
+    overrides?: Overrides & { from?: string },
+  ): Promise<ContractTransaction>;
+
+  setDistributionEnd(
+    newDistributionEnd: BigNumberish,
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
@@ -1758,14 +1422,14 @@ export interface StakedAaveV3 extends BaseContract {
 
   transfer(
     to: string,
-    amount: BigNumberish,
+    value: BigNumberish,
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
   transferFrom(
     from: string,
     to: string,
-    amount: BigNumberish,
+    value: BigNumberish,
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
@@ -1774,17 +1438,7 @@ export interface StakedAaveV3 extends BaseContract {
 
     COOLDOWN_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
-    COOLDOWN_SECONDS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    DELEGATE_BY_TYPE_TYPEHASH(overrides?: CallOverrides): Promise<string>;
-
-    DELEGATE_TYPEHASH(overrides?: CallOverrides): Promise<string>;
-
-    DISTRIBUTION_END(overrides?: CallOverrides): Promise<BigNumber>;
-
     DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<string>;
-
-    EIP712_REVISION(overrides?: CallOverrides): Promise<string>;
 
     EMISSION_MANAGER(overrides?: CallOverrides): Promise<string>;
 
@@ -1794,13 +1448,7 @@ export interface StakedAaveV3 extends BaseContract {
 
     LOWER_BOUND(overrides?: CallOverrides): Promise<BigNumber>;
 
-    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
-
-    POWER_SCALE_FACTOR(overrides?: CallOverrides): Promise<BigNumber>;
-
     PRECISION(overrides?: CallOverrides): Promise<number>;
-
-    REVISION(overrides?: CallOverrides): Promise<BigNumber>;
 
     REWARDS_VAULT(overrides?: CallOverrides): Promise<string>;
 
@@ -1812,8 +1460,6 @@ export interface StakedAaveV3 extends BaseContract {
 
     UNSTAKE_WINDOW(overrides?: CallOverrides): Promise<BigNumber>;
 
-    _nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
     allowance(
       owner: string,
       spender: string,
@@ -1822,7 +1468,7 @@ export interface StakedAaveV3 extends BaseContract {
 
     approve(
       spender: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: CallOverrides,
     ): Promise<boolean>;
 
@@ -1860,19 +1506,6 @@ export interface StakedAaveV3 extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<void>;
 
-    claimRewardsAndStake(
-      to: string,
-      amount: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<BigNumber>;
-
-    claimRewardsAndStakeOnBehalf(
-      from: string,
-      to: string,
-      amount: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<BigNumber>;
-
     claimRewardsOnBehalf(
       from: string,
       to: string,
@@ -1896,19 +1529,7 @@ export interface StakedAaveV3 extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<number>;
 
-    decreaseAllowance(
-      spender: string,
-      subtractedValue: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<boolean>;
-
-    delegate(delegatee: string, overrides?: CallOverrides): Promise<void>;
-
-    delegateByType(
-      delegatee: string,
-      delegationType: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<void>;
+    distributionEnd(overrides?: CallOverrides): Promise<BigNumber>;
 
     eip712Domain(overrides?: CallOverrides): Promise<
       [string, string, string, BigNumber, string, string, BigNumber[]] & {
@@ -1926,17 +1547,6 @@ export interface StakedAaveV3 extends BaseContract {
 
     getCooldownSeconds(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getDelegateeByType(
-      delegator: string,
-      delegationType: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<string>;
-
-    getDelegates(
-      delegator: string,
-      overrides?: CallOverrides,
-    ): Promise<[string, string]>;
-
     getExchangeRate(overrides?: CallOverrides): Promise<BigNumber>;
 
     getMaxSlashablePercentage(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1945,17 +1555,6 @@ export interface StakedAaveV3 extends BaseContract {
       role: BigNumberish,
       overrides?: CallOverrides,
     ): Promise<string>;
-
-    getPowerCurrent(
-      user: string,
-      delegationType: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<BigNumber>;
-
-    getPowersCurrent(
-      user: string,
-      overrides?: CallOverrides,
-    ): Promise<[BigNumber, BigNumber]>;
 
     getTotalRewardsBalance(
       staker: string,
@@ -1968,40 +1567,22 @@ export interface StakedAaveV3 extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
-    ghoDebtToken(overrides?: CallOverrides): Promise<string>;
-
     inPostSlashingPeriod(overrides?: CallOverrides): Promise<boolean>;
 
-    increaseAllowance(
-      spender: string,
-      addedValue: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<boolean>;
-
-    initialize(overrides?: CallOverrides): Promise<void>;
-
-    metaDelegate(
-      delegator: string,
-      delegatee: string,
-      deadline: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
-      overrides?: CallOverrides,
-    ): Promise<void>;
-
-    metaDelegateByType(
-      delegator: string,
-      delegatee: string,
-      delegationType: BigNumberish,
-      deadline: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
+    initialize(
+      name: string,
+      symbol: string,
+      slashingAdmin: string,
+      cooldownPauseAdmin: string,
+      claimHelper: string,
+      maxSlashablePercentage: BigNumberish,
+      cooldownSeconds: BigNumberish,
       overrides?: CallOverrides,
     ): Promise<void>;
 
     name(overrides?: CallOverrides): Promise<string>;
+
+    nonces(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     permit(
       owner: string,
@@ -2041,6 +1622,11 @@ export interface StakedAaveV3 extends BaseContract {
 
     setCooldownSeconds(
       cooldownSeconds: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<void>;
+
+    setDistributionEnd(
+      newDistributionEnd: BigNumberish,
       overrides?: CallOverrides,
     ): Promise<void>;
 
@@ -2094,14 +1680,14 @@ export interface StakedAaveV3 extends BaseContract {
 
     transfer(
       to: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: CallOverrides,
     ): Promise<boolean>;
 
     transferFrom(
       from: string,
       to: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: CallOverrides,
     ): Promise<boolean>;
   };
@@ -2149,16 +1735,12 @@ export interface StakedAaveV3 extends BaseContract {
       cooldownSeconds?: null,
     ): CooldownSecondsChangedEventFilter;
 
-    'DelegateChanged(address,address,uint8)'(
-      delegator?: string | null,
-      delegatee?: string | null,
-      delegationType?: null,
-    ): DelegateChangedEventFilter;
-    DelegateChanged(
-      delegator?: string | null,
-      delegatee?: string | null,
-      delegationType?: null,
-    ): DelegateChangedEventFilter;
+    'DistributionEndChanged(uint256)'(
+      endTimestamp?: null,
+    ): DistributionEndChangedEventFilter;
+    DistributionEndChanged(
+      endTimestamp?: null,
+    ): DistributionEndChangedEventFilter;
 
     'EIP712DomainChanged()'(): EIP712DomainChangedEventFilter;
     EIP712DomainChanged(): EIP712DomainChangedEventFilter;
@@ -2170,6 +1752,9 @@ export interface StakedAaveV3 extends BaseContract {
 
     'FundsReturned(uint256)'(amount?: null): FundsReturnedEventFilter;
     FundsReturned(amount?: null): FundsReturnedEventFilter;
+
+    'Initialized(uint64)'(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
 
     'MaxSlashablePercentageChanged(uint256)'(
       newPercentage?: null,
@@ -2280,17 +1865,7 @@ export interface StakedAaveV3 extends BaseContract {
 
     COOLDOWN_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
-    COOLDOWN_SECONDS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    DELEGATE_BY_TYPE_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
-
-    DELEGATE_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
-
-    DISTRIBUTION_END(overrides?: CallOverrides): Promise<BigNumber>;
-
     DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<BigNumber>;
-
-    EIP712_REVISION(overrides?: CallOverrides): Promise<BigNumber>;
 
     EMISSION_MANAGER(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2300,13 +1875,7 @@ export interface StakedAaveV3 extends BaseContract {
 
     LOWER_BOUND(overrides?: CallOverrides): Promise<BigNumber>;
 
-    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
-
-    POWER_SCALE_FACTOR(overrides?: CallOverrides): Promise<BigNumber>;
-
     PRECISION(overrides?: CallOverrides): Promise<BigNumber>;
-
-    REVISION(overrides?: CallOverrides): Promise<BigNumber>;
 
     REWARDS_VAULT(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2318,8 +1887,6 @@ export interface StakedAaveV3 extends BaseContract {
 
     UNSTAKE_WINDOW(overrides?: CallOverrides): Promise<BigNumber>;
 
-    _nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
     allowance(
       owner: string,
       spender: string,
@@ -2328,7 +1895,7 @@ export interface StakedAaveV3 extends BaseContract {
 
     approve(
       spender: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
@@ -2354,19 +1921,6 @@ export interface StakedAaveV3 extends BaseContract {
       to: string,
       claimAmount: BigNumberish,
       redeemAmount: BigNumberish,
-      overrides?: Overrides & { from?: string },
-    ): Promise<BigNumber>;
-
-    claimRewardsAndStake(
-      to: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string },
-    ): Promise<BigNumber>;
-
-    claimRewardsAndStakeOnBehalf(
-      from: string,
-      to: string,
-      amount: BigNumberish,
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
@@ -2396,22 +1950,7 @@ export interface StakedAaveV3 extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
-    decreaseAllowance(
-      spender: string,
-      subtractedValue: BigNumberish,
-      overrides?: Overrides & { from?: string },
-    ): Promise<BigNumber>;
-
-    delegate(
-      delegatee: string,
-      overrides?: Overrides & { from?: string },
-    ): Promise<BigNumber>;
-
-    delegateByType(
-      delegatee: string,
-      delegationType: BigNumberish,
-      overrides?: Overrides & { from?: string },
-    ): Promise<BigNumber>;
+    distributionEnd(overrides?: CallOverrides): Promise<BigNumber>;
 
     eip712Domain(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2419,34 +1958,12 @@ export interface StakedAaveV3 extends BaseContract {
 
     getCooldownSeconds(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getDelegateeByType(
-      delegator: string,
-      delegationType: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<BigNumber>;
-
-    getDelegates(
-      delegator: string,
-      overrides?: CallOverrides,
-    ): Promise<BigNumber>;
-
     getExchangeRate(overrides?: CallOverrides): Promise<BigNumber>;
 
     getMaxSlashablePercentage(overrides?: CallOverrides): Promise<BigNumber>;
 
     getPendingAdmin(
       role: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<BigNumber>;
-
-    getPowerCurrent(
-      user: string,
-      delegationType: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<BigNumber>;
-
-    getPowersCurrent(
-      user: string,
       overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
@@ -2461,40 +1978,22 @@ export interface StakedAaveV3 extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
-    ghoDebtToken(overrides?: CallOverrides): Promise<BigNumber>;
-
     inPostSlashingPeriod(overrides?: CallOverrides): Promise<BigNumber>;
 
-    increaseAllowance(
-      spender: string,
-      addedValue: BigNumberish,
-      overrides?: Overrides & { from?: string },
-    ): Promise<BigNumber>;
-
-    initialize(overrides?: Overrides & { from?: string }): Promise<BigNumber>;
-
-    metaDelegate(
-      delegator: string,
-      delegatee: string,
-      deadline: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
-      overrides?: Overrides & { from?: string },
-    ): Promise<BigNumber>;
-
-    metaDelegateByType(
-      delegator: string,
-      delegatee: string,
-      delegationType: BigNumberish,
-      deadline: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
+    initialize(
+      name: string,
+      symbol: string,
+      slashingAdmin: string,
+      cooldownPauseAdmin: string,
+      claimHelper: string,
+      maxSlashablePercentage: BigNumberish,
+      cooldownSeconds: BigNumberish,
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
+
+    nonces(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     permit(
       owner: string,
@@ -2537,6 +2036,11 @@ export interface StakedAaveV3 extends BaseContract {
 
     setCooldownSeconds(
       cooldownSeconds: BigNumberish,
+      overrides?: Overrides & { from?: string },
+    ): Promise<BigNumber>;
+
+    setDistributionEnd(
+      newDistributionEnd: BigNumberish,
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
@@ -2592,14 +2096,14 @@ export interface StakedAaveV3 extends BaseContract {
 
     transfer(
       to: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
     transferFrom(
       from: string,
       to: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
   };
@@ -2611,19 +2115,7 @@ export interface StakedAaveV3 extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
-    COOLDOWN_SECONDS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    DELEGATE_BY_TYPE_TYPEHASH(
-      overrides?: CallOverrides,
-    ): Promise<PopulatedTransaction>;
-
-    DELEGATE_TYPEHASH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    DISTRIBUTION_END(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     DOMAIN_SEPARATOR(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    EIP712_REVISION(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     EMISSION_MANAGER(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -2637,15 +2129,7 @@ export interface StakedAaveV3 extends BaseContract {
 
     LOWER_BOUND(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    PERMIT_TYPEHASH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    POWER_SCALE_FACTOR(
-      overrides?: CallOverrides,
-    ): Promise<PopulatedTransaction>;
-
     PRECISION(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    REVISION(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     REWARDS_VAULT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -2657,11 +2141,6 @@ export interface StakedAaveV3 extends BaseContract {
 
     UNSTAKE_WINDOW(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    _nonces(
-      arg0: string,
-      overrides?: CallOverrides,
-    ): Promise<PopulatedTransaction>;
-
     allowance(
       owner: string,
       spender: string,
@@ -2670,7 +2149,7 @@ export interface StakedAaveV3 extends BaseContract {
 
     approve(
       spender: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
@@ -2705,19 +2184,6 @@ export interface StakedAaveV3 extends BaseContract {
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
-    claimRewardsAndStake(
-      to: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string },
-    ): Promise<PopulatedTransaction>;
-
-    claimRewardsAndStakeOnBehalf(
-      from: string,
-      to: string,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string },
-    ): Promise<PopulatedTransaction>;
-
     claimRewardsOnBehalf(
       from: string,
       to: string,
@@ -2746,22 +2212,7 @@ export interface StakedAaveV3 extends BaseContract {
 
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    decreaseAllowance(
-      spender: string,
-      subtractedValue: BigNumberish,
-      overrides?: Overrides & { from?: string },
-    ): Promise<PopulatedTransaction>;
-
-    delegate(
-      delegatee: string,
-      overrides?: Overrides & { from?: string },
-    ): Promise<PopulatedTransaction>;
-
-    delegateByType(
-      delegatee: string,
-      delegationType: BigNumberish,
-      overrides?: Overrides & { from?: string },
-    ): Promise<PopulatedTransaction>;
+    distributionEnd(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     eip712Domain(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -2771,17 +2222,6 @@ export interface StakedAaveV3 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getCooldownSeconds(
-      overrides?: CallOverrides,
-    ): Promise<PopulatedTransaction>;
-
-    getDelegateeByType(
-      delegator: string,
-      delegationType: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<PopulatedTransaction>;
-
-    getDelegates(
-      delegator: string,
       overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
@@ -2796,17 +2236,6 @@ export interface StakedAaveV3 extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
-    getPowerCurrent(
-      user: string,
-      delegationType: BigNumberish,
-      overrides?: CallOverrides,
-    ): Promise<PopulatedTransaction>;
-
-    getPowersCurrent(
-      user: string,
-      overrides?: CallOverrides,
-    ): Promise<PopulatedTransaction>;
-
     getTotalRewardsBalance(
       staker: string,
       overrides?: CallOverrides,
@@ -2818,44 +2247,27 @@ export interface StakedAaveV3 extends BaseContract {
       overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
-    ghoDebtToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     inPostSlashingPeriod(
       overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
-    increaseAllowance(
-      spender: string,
-      addedValue: BigNumberish,
-      overrides?: Overrides & { from?: string },
-    ): Promise<PopulatedTransaction>;
-
     initialize(
-      overrides?: Overrides & { from?: string },
-    ): Promise<PopulatedTransaction>;
-
-    metaDelegate(
-      delegator: string,
-      delegatee: string,
-      deadline: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
-      overrides?: Overrides & { from?: string },
-    ): Promise<PopulatedTransaction>;
-
-    metaDelegateByType(
-      delegator: string,
-      delegatee: string,
-      delegationType: BigNumberish,
-      deadline: BigNumberish,
-      v: BigNumberish,
-      r: BytesLike,
-      s: BytesLike,
+      name: string,
+      symbol: string,
+      slashingAdmin: string,
+      cooldownPauseAdmin: string,
+      claimHelper: string,
+      maxSlashablePercentage: BigNumberish,
+      cooldownSeconds: BigNumberish,
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    nonces(
+      owner: string,
+      overrides?: CallOverrides,
+    ): Promise<PopulatedTransaction>;
 
     permit(
       owner: string,
@@ -2898,6 +2310,11 @@ export interface StakedAaveV3 extends BaseContract {
 
     setCooldownSeconds(
       cooldownSeconds: BigNumberish,
+      overrides?: Overrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
+
+    setDistributionEnd(
+      newDistributionEnd: BigNumberish,
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
@@ -2953,14 +2370,14 @@ export interface StakedAaveV3 extends BaseContract {
 
     transfer(
       to: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
     transferFrom(
       from: string,
       to: string,
-      amount: BigNumberish,
+      value: BigNumberish,
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
   };

@@ -20,11 +20,11 @@ import {
 } from '../commons/validators/paramValidators';
 import { ERC20_2612Interface, ERC20_2612Service } from '../erc20-2612';
 import { ERC20Service, IERC20ServiceInterface } from '../erc20-contract';
-import { AaveTokenV3Service } from '../governance-v3/aave-token-v3';
-import { StakedAaveV3 } from './typechain/IStakedAaveV3';
-import { StakedAaveV3__factory } from './typechain/IStakedAaveV3__factory';
 
-export interface StakingInterface {
+import { Abi as IStakedAaveV3 } from './typechain/Abi';
+import { Abi__factory as IStakedAaveV3__factory } from './typechain/factories/Abi__factory';
+
+export interface StakingInterfaceV3 {
   stakingContractAddress: tEthereumAddress;
 
   stake: (
@@ -52,19 +52,15 @@ export interface StakingInterface {
     signature: string,
     deadline: string,
   ) => Promise<EthereumTransactionTypeExtended[]>;
-  claimRewardsAndStake: (
-    user: tEthereumAddress,
-    amount: string,
-  ) => Promise<EthereumTransactionTypeExtended[]>;
 }
 
 type StakingServiceConfig = {
   TOKEN_STAKING_ADDRESS: string;
 };
 
-export class StakingService
-  extends BaseService<StakedAaveV3>
-  implements StakingInterface
+export class StakingServiceV3
+  extends BaseService<IStakedAaveV3>
+  implements StakingInterfaceV3
 {
   public readonly stakingContractAddress: tEthereumAddress;
 
@@ -76,7 +72,7 @@ export class StakingService
     provider: providers.Provider,
     stakingServiceConfig: StakingServiceConfig,
   ) {
-    super(provider, StakedAaveV3__factory);
+    super(provider, IStakedAaveV3__factory);
 
     this.erc20Service = new ERC20Service(provider);
 
@@ -92,20 +88,14 @@ export class StakingService
     deadline: string,
   ): Promise<string> {
     const { getTokenData } = this.erc20Service;
-    const stakingContract: StakedAaveV3 = this.getContractInstance(
+    const stakingContract: IStakedAaveV3 = this.getContractInstance(
       this.stakingContractAddress,
     );
     // eslint-disable-next-line new-cap
     const stakedToken: string = await stakingContract.STAKED_TOKEN();
-    const { decimals } = await getTokenData(stakedToken);
+    const { name, decimals } = await getTokenData(stakedToken);
     const convertedAmount: string = valueToWei(amount, decimals);
     const { chainId } = await this.provider.getNetwork();
-
-    const aaveTokenV3Service = new AaveTokenV3Service(
-      stakedToken,
-      this.provider,
-    );
-    const { name, version } = await aaveTokenV3Service.getEip712Domain();
 
     const nonce = await this.erc20_2612Service.getNonce({
       token: stakedToken,
@@ -135,7 +125,7 @@ export class StakingService
       primaryType: 'Permit',
       domain: {
         name,
-        version,
+        version: '1',
         chainId,
         verifyingContract: stakedToken,
       },
@@ -160,7 +150,7 @@ export class StakingService
   ): Promise<EthereumTransactionTypeExtended[]> {
     const txs: EthereumTransactionTypeExtended[] = [];
     const { decimalsOf } = this.erc20Service;
-    const stakingContract: StakedAaveV3 = this.getContractInstance(
+    const stakingContract: IStakedAaveV3 = this.getContractInstance(
       this.stakingContractAddress,
     );
     // eslint-disable-next-line new-cap
@@ -172,9 +162,10 @@ export class StakingService
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
       rawTxMethod: async () =>
         stakingContract.populateTransaction.stakeWithPermit(
+          // user,
           convertedAmount,
           deadline,
-          sig.v,
+          sig.v, // todo how does sig change?
           sig.r,
           sig.s,
         ),
@@ -201,8 +192,9 @@ export class StakingService
     @isEthAddress() onBehalfOf?: tEthereumAddress,
   ): Promise<EthereumTransactionTypeExtended[]> {
     const txs: EthereumTransactionTypeExtended[] = [];
+
     const { decimalsOf, isApproved, approve } = this.erc20Service;
-    const stakingContract: StakedAaveV3 = this.getContractInstance(
+    const stakingContract: IStakedAaveV3 = this.getContractInstance(
       this.stakingContractAddress,
     );
     // eslint-disable-next-line new-cap
@@ -215,6 +207,7 @@ export class StakingService
       spender: this.stakingContractAddress,
       amount,
     });
+
     if (!approved) {
       const approveTx = approve({
         user,
@@ -254,7 +247,7 @@ export class StakingService
     @isPositiveOrMinusOneAmount() amount: string,
   ): Promise<EthereumTransactionTypeExtended[]> {
     let convertedAmount: string;
-    const stakingContract: StakedAaveV3 = this.getContractInstance(
+    const stakingContract: IStakedAaveV3 = this.getContractInstance(
       this.stakingContractAddress,
     );
     if (amount === '-1') {
@@ -288,7 +281,7 @@ export class StakingService
   public cooldown(
     @isEthAddress() user: tEthereumAddress,
   ): EthereumTransactionTypeExtended[] {
-    const stakingContract: StakedAaveV3 = this.getContractInstance(
+    const stakingContract: IStakedAaveV3 = this.getContractInstance(
       this.stakingContractAddress,
     );
 
@@ -312,7 +305,7 @@ export class StakingService
     @isPositiveOrMinusOneAmount() amount: string,
   ): Promise<EthereumTransactionTypeExtended[]> {
     let convertedAmount: string;
-    const stakingContract: StakedAaveV3 = this.getContractInstance(
+    const stakingContract: IStakedAaveV3 = this.getContractInstance(
       this.stakingContractAddress,
     );
     if (amount === '-1') {
@@ -321,7 +314,9 @@ export class StakingService
       const { decimalsOf } = this.erc20Service;
       // eslint-disable-next-line new-cap
       const stakedToken: string = await stakingContract.REWARD_TOKEN();
+
       const stakedTokenDecimals: number = await decimalsOf(stakedToken);
+
       convertedAmount = valueToWei(amount, stakedTokenDecimals);
     }
 
@@ -341,49 +336,6 @@ export class StakingService
           [],
           txCallback,
           ProtocolAction.claimRewards,
-        ),
-      },
-    ];
-  }
-
-  @StakingValidator
-  public async claimRewardsAndStake(
-    @isEthAddress() user: tEthereumAddress,
-    @isPositiveOrMinusOneAmount() amount: string,
-  ): Promise<EthereumTransactionTypeExtended[]> {
-    let convertedAmount: string;
-    const stakingContract: StakedAaveV3 = this.getContractInstance(
-      this.stakingContractAddress,
-    );
-    if (amount === '-1') {
-      convertedAmount = constants.MaxUint256.toString();
-    } else {
-      const { decimalsOf } = this.erc20Service;
-      // eslint-disable-next-line new-cap
-      const stakedToken: string = await stakingContract.STAKED_TOKEN();
-      const stakedTokenDecimals: number = await decimalsOf(stakedToken);
-      convertedAmount = valueToWei(amount, stakedTokenDecimals);
-    }
-
-    const txCallback: () => Promise<transactionType> = this.generateTxCallback({
-      rawTxMethod: async () =>
-        stakingContract.populateTransaction.claimRewardsAndStake(
-          user,
-          convertedAmount,
-        ),
-      from: user,
-      gasSurplus: 20,
-      action: ProtocolAction.claimRewardsAndStake,
-    });
-
-    return [
-      {
-        tx: txCallback,
-        txType: eEthereumTxType.STAKE_ACTION,
-        gas: this.generateTxPriceEstimation(
-          [],
-          txCallback,
-          ProtocolAction.claimRewardsAndStake,
         ),
       },
     ];
