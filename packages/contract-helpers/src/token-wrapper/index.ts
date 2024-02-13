@@ -57,13 +57,6 @@ export class TokenWrapperService
       tokenWrapperAddress,
       provider,
     );
-
-    this.getTokenInForTokenOut = this.getTokenInForTokenOut.bind(this);
-    this.getTokenOutForTokenIn = this.getTokenOutForTokenIn.bind(this);
-    this.supplyToken = this.supplyToken.bind(this);
-    this.supplyTokenWithPermit = this.supplyTokenWithPermit.bind(this);
-    this.withdrawToken = this.withdrawToken.bind(this);
-    this.withdrawTokenWithPermit = this.withdrawTokenWithPermit.bind(this);
   }
 
   public async getTokenInForTokenOut(amount: string): Promise<BigNumber> {
