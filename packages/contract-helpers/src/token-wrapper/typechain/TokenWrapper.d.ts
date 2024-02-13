@@ -391,7 +391,7 @@ export interface BaseTokenWrapper extends BaseContract {
       onBehalfOf: string,
       referralCode: BigNumberish,
       overrides?: CallOverrides,
-    ): Promise<void>;
+    ): Promise<BigNumber>;
 
     supplyTokenWithPermit(
       amount: BigNumberish,
@@ -399,7 +399,7 @@ export interface BaseTokenWrapper extends BaseContract {
       referralCode: BigNumberish,
       signature: IBaseTokenWrapper.PermitSignatureStruct,
       overrides?: CallOverrides,
-    ): Promise<void>;
+    ): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: string,

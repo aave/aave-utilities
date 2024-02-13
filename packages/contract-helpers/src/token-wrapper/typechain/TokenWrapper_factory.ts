@@ -185,7 +185,13 @@ const _abi = [
       },
     ],
     name: 'supplyToken',
-    outputs: [],
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
     stateMutability: 'nonpayable',
     type: 'function',
   },
@@ -235,7 +241,13 @@ const _abi = [
       },
     ],
     name: 'supplyTokenWithPermit',
-    outputs: [],
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
     stateMutability: 'nonpayable',
     type: 'function',
   },
