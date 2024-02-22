@@ -1,5 +1,21 @@
 # Change Log
 
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# 1.25.0 (2024-02-22)
+
+
+### Features
+
+* sdai token wrapper ([#561](https://github.com/aave/aave-utilities/issues/561)) ([c772112](https://github.com/aave/aave-utilities/commit/c77211216fbcf86d71718c5450bc9aab5ec5a002))
+
+
+
+
+
+# Change Log
+
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
