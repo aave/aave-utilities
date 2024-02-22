@@ -11,19 +11,19 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from "ethers";
+} from 'ethers';
 import type {
   FunctionFragment,
   Result,
   EventFragment,
-} from "@ethersproject/abi";
-import type { Listener, Provider } from "@ethersproject/providers";
+} from '@ethersproject/abi';
+import type { Listener, Provider } from '@ethersproject/providers';
 import type {
   TypedEventFilter,
   TypedEvent,
   TypedListener,
   OnEvent,
-} from "./common";
+} from './common';
 
 export declare namespace IVotingMachineWithProofs {
   export type VotingAssetWithSlotStruct = {
@@ -57,7 +57,7 @@ export declare namespace IVotingMachineWithProofs {
     BigNumber,
     BigNumber,
     BigNumber,
-    BigNumber
+    BigNumber,
   ] & {
     id: BigNumber;
     sentToGovernance: boolean;
@@ -114,206 +114,206 @@ export declare namespace IVotingMachineWithProofs {
 
 export interface VotingMachineInterface extends utils.Interface {
   functions: {
-    "CROSS_CHAIN_CONTROLLER()": FunctionFragment;
-    "DATA_WAREHOUSE()": FunctionFragment;
-    "DOMAIN_SEPARATOR()": FunctionFragment;
-    "GOVERNANCE()": FunctionFragment;
-    "L1_VOTING_PORTAL()": FunctionFragment;
-    "L1_VOTING_PORTAL_CHAIN_ID()": FunctionFragment;
-    "NAME()": FunctionFragment;
-    "REPRESENTATIVES_SLOT()": FunctionFragment;
-    "VOTE_SUBMITTED_BY_REPRESENTATIVE_TYPEHASH()": FunctionFragment;
-    "VOTE_SUBMITTED_TYPEHASH()": FunctionFragment;
-    "VOTING_ASSET_WITH_SLOT_RAW()": FunctionFragment;
-    "VOTING_ASSET_WITH_SLOT_TYPEHASH()": FunctionFragment;
-    "VOTING_STRATEGY()": FunctionFragment;
-    "closeAndSendVote(uint256)": FunctionFragment;
-    "decodeMessage(bytes)": FunctionFragment;
-    "decodeProposalMessage(bytes)": FunctionFragment;
-    "decodeVoteMessage(bytes)": FunctionFragment;
-    "eip712Domain()": FunctionFragment;
-    "getGasLimit()": FunctionFragment;
-    "getProposalById(uint256)": FunctionFragment;
-    "getProposalState(uint256)": FunctionFragment;
-    "getProposalVoteConfiguration(uint256)": FunctionFragment;
-    "getProposalsVoteConfigurationIds(uint256,uint256)": FunctionFragment;
-    "getUserProposalVote(address,uint256)": FunctionFragment;
-    "owner()": FunctionFragment;
-    "receiveCrossChainMessage(address,uint256,bytes)": FunctionFragment;
-    "renounceOwnership()": FunctionFragment;
-    "startProposalVote(uint256)": FunctionFragment;
-    "submitVote(uint256,bool,(address,uint128,bytes)[])": FunctionFragment;
-    "submitVoteAsRepresentative(uint256,bool,address,bytes,(address,uint128,bytes)[])": FunctionFragment;
-    "submitVoteAsRepresentativeBySignature(uint256,address,address,bool,bytes,(address,uint128,bytes)[],(uint8,bytes32,bytes32))": FunctionFragment;
-    "submitVoteBySignature(uint256,address,bool,(address,uint128,bytes)[],uint8,bytes32,bytes32)": FunctionFragment;
-    "transferOwnership(address)": FunctionFragment;
-    "updateGasLimit(uint256)": FunctionFragment;
+    'CROSS_CHAIN_CONTROLLER()': FunctionFragment;
+    'DATA_WAREHOUSE()': FunctionFragment;
+    'DOMAIN_SEPARATOR()': FunctionFragment;
+    'GOVERNANCE()': FunctionFragment;
+    'L1_VOTING_PORTAL()': FunctionFragment;
+    'L1_VOTING_PORTAL_CHAIN_ID()': FunctionFragment;
+    'NAME()': FunctionFragment;
+    'REPRESENTATIVES_SLOT()': FunctionFragment;
+    'VOTE_SUBMITTED_BY_REPRESENTATIVE_TYPEHASH()': FunctionFragment;
+    'VOTE_SUBMITTED_TYPEHASH()': FunctionFragment;
+    'VOTING_ASSET_WITH_SLOT_RAW()': FunctionFragment;
+    'VOTING_ASSET_WITH_SLOT_TYPEHASH()': FunctionFragment;
+    'VOTING_STRATEGY()': FunctionFragment;
+    'closeAndSendVote(uint256)': FunctionFragment;
+    'decodeMessage(bytes)': FunctionFragment;
+    'decodeProposalMessage(bytes)': FunctionFragment;
+    'decodeVoteMessage(bytes)': FunctionFragment;
+    'eip712Domain()': FunctionFragment;
+    'getGasLimit()': FunctionFragment;
+    'getProposalById(uint256)': FunctionFragment;
+    'getProposalState(uint256)': FunctionFragment;
+    'getProposalVoteConfiguration(uint256)': FunctionFragment;
+    'getProposalsVoteConfigurationIds(uint256,uint256)': FunctionFragment;
+    'getUserProposalVote(address,uint256)': FunctionFragment;
+    'owner()': FunctionFragment;
+    'receiveCrossChainMessage(address,uint256,bytes)': FunctionFragment;
+    'renounceOwnership()': FunctionFragment;
+    'startProposalVote(uint256)': FunctionFragment;
+    'submitVote(uint256,bool,(address,uint128,bytes)[])': FunctionFragment;
+    'submitVoteAsRepresentative(uint256,bool,address,bytes,(address,uint128,bytes)[])': FunctionFragment;
+    'submitVoteAsRepresentativeBySignature(uint256,address,address,bool,bytes,(address,uint128,bytes)[],(uint8,bytes32,bytes32))': FunctionFragment;
+    'submitVoteBySignature(uint256,address,bool,(address,uint128,bytes)[],uint8,bytes32,bytes32)': FunctionFragment;
+    'transferOwnership(address)': FunctionFragment;
+    'updateGasLimit(uint256)': FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "CROSS_CHAIN_CONTROLLER"
-      | "DATA_WAREHOUSE"
-      | "DOMAIN_SEPARATOR"
-      | "GOVERNANCE"
-      | "L1_VOTING_PORTAL"
-      | "L1_VOTING_PORTAL_CHAIN_ID"
-      | "NAME"
-      | "REPRESENTATIVES_SLOT"
-      | "VOTE_SUBMITTED_BY_REPRESENTATIVE_TYPEHASH"
-      | "VOTE_SUBMITTED_TYPEHASH"
-      | "VOTING_ASSET_WITH_SLOT_RAW"
-      | "VOTING_ASSET_WITH_SLOT_TYPEHASH"
-      | "VOTING_STRATEGY"
-      | "closeAndSendVote"
-      | "decodeMessage"
-      | "decodeProposalMessage"
-      | "decodeVoteMessage"
-      | "eip712Domain"
-      | "getGasLimit"
-      | "getProposalById"
-      | "getProposalState"
-      | "getProposalVoteConfiguration"
-      | "getProposalsVoteConfigurationIds"
-      | "getUserProposalVote"
-      | "owner"
-      | "receiveCrossChainMessage"
-      | "renounceOwnership"
-      | "startProposalVote"
-      | "submitVote"
-      | "submitVoteAsRepresentative"
-      | "submitVoteAsRepresentativeBySignature"
-      | "submitVoteBySignature"
-      | "transferOwnership"
-      | "updateGasLimit"
+      | 'CROSS_CHAIN_CONTROLLER'
+      | 'DATA_WAREHOUSE'
+      | 'DOMAIN_SEPARATOR'
+      | 'GOVERNANCE'
+      | 'L1_VOTING_PORTAL'
+      | 'L1_VOTING_PORTAL_CHAIN_ID'
+      | 'NAME'
+      | 'REPRESENTATIVES_SLOT'
+      | 'VOTE_SUBMITTED_BY_REPRESENTATIVE_TYPEHASH'
+      | 'VOTE_SUBMITTED_TYPEHASH'
+      | 'VOTING_ASSET_WITH_SLOT_RAW'
+      | 'VOTING_ASSET_WITH_SLOT_TYPEHASH'
+      | 'VOTING_STRATEGY'
+      | 'closeAndSendVote'
+      | 'decodeMessage'
+      | 'decodeProposalMessage'
+      | 'decodeVoteMessage'
+      | 'eip712Domain'
+      | 'getGasLimit'
+      | 'getProposalById'
+      | 'getProposalState'
+      | 'getProposalVoteConfiguration'
+      | 'getProposalsVoteConfigurationIds'
+      | 'getUserProposalVote'
+      | 'owner'
+      | 'receiveCrossChainMessage'
+      | 'renounceOwnership'
+      | 'startProposalVote'
+      | 'submitVote'
+      | 'submitVoteAsRepresentative'
+      | 'submitVoteAsRepresentativeBySignature'
+      | 'submitVoteBySignature'
+      | 'transferOwnership'
+      | 'updateGasLimit',
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "CROSS_CHAIN_CONTROLLER",
-    values?: undefined
+    functionFragment: 'CROSS_CHAIN_CONTROLLER',
+    values?: undefined,
   ): string;
   encodeFunctionData(
-    functionFragment: "DATA_WAREHOUSE",
-    values?: undefined
+    functionFragment: 'DATA_WAREHOUSE',
+    values?: undefined,
   ): string;
   encodeFunctionData(
-    functionFragment: "DOMAIN_SEPARATOR",
-    values?: undefined
+    functionFragment: 'DOMAIN_SEPARATOR',
+    values?: undefined,
   ): string;
   encodeFunctionData(
-    functionFragment: "GOVERNANCE",
-    values?: undefined
+    functionFragment: 'GOVERNANCE',
+    values?: undefined,
   ): string;
   encodeFunctionData(
-    functionFragment: "L1_VOTING_PORTAL",
-    values?: undefined
+    functionFragment: 'L1_VOTING_PORTAL',
+    values?: undefined,
   ): string;
   encodeFunctionData(
-    functionFragment: "L1_VOTING_PORTAL_CHAIN_ID",
-    values?: undefined
+    functionFragment: 'L1_VOTING_PORTAL_CHAIN_ID',
+    values?: undefined,
   ): string;
-  encodeFunctionData(functionFragment: "NAME", values?: undefined): string;
+  encodeFunctionData(functionFragment: 'NAME', values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "REPRESENTATIVES_SLOT",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "VOTE_SUBMITTED_BY_REPRESENTATIVE_TYPEHASH",
-    values?: undefined
+    functionFragment: 'REPRESENTATIVES_SLOT',
+    values?: undefined,
   ): string;
   encodeFunctionData(
-    functionFragment: "VOTE_SUBMITTED_TYPEHASH",
-    values?: undefined
+    functionFragment: 'VOTE_SUBMITTED_BY_REPRESENTATIVE_TYPEHASH',
+    values?: undefined,
   ): string;
   encodeFunctionData(
-    functionFragment: "VOTING_ASSET_WITH_SLOT_RAW",
-    values?: undefined
+    functionFragment: 'VOTE_SUBMITTED_TYPEHASH',
+    values?: undefined,
   ): string;
   encodeFunctionData(
-    functionFragment: "VOTING_ASSET_WITH_SLOT_TYPEHASH",
-    values?: undefined
+    functionFragment: 'VOTING_ASSET_WITH_SLOT_RAW',
+    values?: undefined,
   ): string;
   encodeFunctionData(
-    functionFragment: "VOTING_STRATEGY",
-    values?: undefined
+    functionFragment: 'VOTING_ASSET_WITH_SLOT_TYPEHASH',
+    values?: undefined,
   ): string;
   encodeFunctionData(
-    functionFragment: "closeAndSendVote",
-    values: [BigNumberish]
+    functionFragment: 'VOTING_STRATEGY',
+    values?: undefined,
   ): string;
   encodeFunctionData(
-    functionFragment: "decodeMessage",
-    values: [BytesLike]
+    functionFragment: 'closeAndSendVote',
+    values: [BigNumberish],
   ): string;
   encodeFunctionData(
-    functionFragment: "decodeProposalMessage",
-    values: [BytesLike]
+    functionFragment: 'decodeMessage',
+    values: [BytesLike],
   ): string;
   encodeFunctionData(
-    functionFragment: "decodeVoteMessage",
-    values: [BytesLike]
+    functionFragment: 'decodeProposalMessage',
+    values: [BytesLike],
   ): string;
   encodeFunctionData(
-    functionFragment: "eip712Domain",
-    values?: undefined
+    functionFragment: 'decodeVoteMessage',
+    values: [BytesLike],
   ): string;
   encodeFunctionData(
-    functionFragment: "getGasLimit",
-    values?: undefined
+    functionFragment: 'eip712Domain',
+    values?: undefined,
   ): string;
   encodeFunctionData(
-    functionFragment: "getProposalById",
-    values: [BigNumberish]
+    functionFragment: 'getGasLimit',
+    values?: undefined,
   ): string;
   encodeFunctionData(
-    functionFragment: "getProposalState",
-    values: [BigNumberish]
+    functionFragment: 'getProposalById',
+    values: [BigNumberish],
   ): string;
   encodeFunctionData(
-    functionFragment: "getProposalVoteConfiguration",
-    values: [BigNumberish]
+    functionFragment: 'getProposalState',
+    values: [BigNumberish],
   ): string;
   encodeFunctionData(
-    functionFragment: "getProposalsVoteConfigurationIds",
-    values: [BigNumberish, BigNumberish]
+    functionFragment: 'getProposalVoteConfiguration',
+    values: [BigNumberish],
   ): string;
   encodeFunctionData(
-    functionFragment: "getUserProposalVote",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "receiveCrossChainMessage",
-    values: [string, BigNumberish, BytesLike]
+    functionFragment: 'getProposalsVoteConfigurationIds',
+    values: [BigNumberish, BigNumberish],
   ): string;
   encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
+    functionFragment: 'getUserProposalVote',
+    values: [string, BigNumberish],
+  ): string;
+  encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'receiveCrossChainMessage',
+    values: [string, BigNumberish, BytesLike],
   ): string;
   encodeFunctionData(
-    functionFragment: "startProposalVote",
-    values: [BigNumberish]
+    functionFragment: 'renounceOwnership',
+    values?: undefined,
   ): string;
   encodeFunctionData(
-    functionFragment: "submitVote",
+    functionFragment: 'startProposalVote',
+    values: [BigNumberish],
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'submitVote',
     values: [
       BigNumberish,
       boolean,
-      IVotingMachineWithProofs.VotingBalanceProofStruct[]
-    ]
+      IVotingMachineWithProofs.VotingBalanceProofStruct[],
+    ],
   ): string;
   encodeFunctionData(
-    functionFragment: "submitVoteAsRepresentative",
+    functionFragment: 'submitVoteAsRepresentative',
     values: [
       BigNumberish,
       boolean,
       string,
       BytesLike,
-      IVotingMachineWithProofs.VotingBalanceProofStruct[]
-    ]
+      IVotingMachineWithProofs.VotingBalanceProofStruct[],
+    ],
   ): string;
   encodeFunctionData(
-    functionFragment: "submitVoteAsRepresentativeBySignature",
+    functionFragment: 'submitVoteAsRepresentativeBySignature',
     values: [
       BigNumberish,
       string,
@@ -321,11 +321,11 @@ export interface VotingMachineInterface extends utils.Interface {
       boolean,
       BytesLike,
       IVotingMachineWithProofs.VotingBalanceProofStruct[],
-      IVotingMachineWithProofs.SignatureParamsStruct
-    ]
+      IVotingMachineWithProofs.SignatureParamsStruct,
+    ],
   ): string;
   encodeFunctionData(
-    functionFragment: "submitVoteBySignature",
+    functionFragment: 'submitVoteBySignature',
     values: [
       BigNumberish,
       string,
@@ -333,168 +333,168 @@ export interface VotingMachineInterface extends utils.Interface {
       IVotingMachineWithProofs.VotingBalanceProofStruct[],
       BigNumberish,
       BytesLike,
-      BytesLike
-    ]
+      BytesLike,
+    ],
   ): string;
   encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [string]
+    functionFragment: 'transferOwnership',
+    values: [string],
   ): string;
   encodeFunctionData(
-    functionFragment: "updateGasLimit",
-    values: [BigNumberish]
+    functionFragment: 'updateGasLimit',
+    values: [BigNumberish],
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "CROSS_CHAIN_CONTROLLER",
-    data: BytesLike
+    functionFragment: 'CROSS_CHAIN_CONTROLLER',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "DATA_WAREHOUSE",
-    data: BytesLike
+    functionFragment: 'DATA_WAREHOUSE',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "DOMAIN_SEPARATOR",
-    data: BytesLike
+    functionFragment: 'DOMAIN_SEPARATOR',
+    data: BytesLike,
   ): Result;
-  decodeFunctionResult(functionFragment: "GOVERNANCE", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'GOVERNANCE', data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "L1_VOTING_PORTAL",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "L1_VOTING_PORTAL_CHAIN_ID",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "NAME", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "REPRESENTATIVES_SLOT",
-    data: BytesLike
+    functionFragment: 'L1_VOTING_PORTAL',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "VOTE_SUBMITTED_BY_REPRESENTATIVE_TYPEHASH",
-    data: BytesLike
+    functionFragment: 'L1_VOTING_PORTAL_CHAIN_ID',
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(functionFragment: 'NAME', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'REPRESENTATIVES_SLOT',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "VOTE_SUBMITTED_TYPEHASH",
-    data: BytesLike
+    functionFragment: 'VOTE_SUBMITTED_BY_REPRESENTATIVE_TYPEHASH',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "VOTING_ASSET_WITH_SLOT_RAW",
-    data: BytesLike
+    functionFragment: 'VOTE_SUBMITTED_TYPEHASH',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "VOTING_ASSET_WITH_SLOT_TYPEHASH",
-    data: BytesLike
+    functionFragment: 'VOTING_ASSET_WITH_SLOT_RAW',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "VOTING_STRATEGY",
-    data: BytesLike
+    functionFragment: 'VOTING_ASSET_WITH_SLOT_TYPEHASH',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "closeAndSendVote",
-    data: BytesLike
+    functionFragment: 'VOTING_STRATEGY',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "decodeMessage",
-    data: BytesLike
+    functionFragment: 'closeAndSendVote',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "decodeProposalMessage",
-    data: BytesLike
+    functionFragment: 'decodeMessage',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "decodeVoteMessage",
-    data: BytesLike
+    functionFragment: 'decodeProposalMessage',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "eip712Domain",
-    data: BytesLike
+    functionFragment: 'decodeVoteMessage',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getGasLimit",
-    data: BytesLike
+    functionFragment: 'eip712Domain',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getProposalById",
-    data: BytesLike
+    functionFragment: 'getGasLimit',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getProposalState",
-    data: BytesLike
+    functionFragment: 'getProposalById',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getProposalVoteConfiguration",
-    data: BytesLike
+    functionFragment: 'getProposalState',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getProposalsVoteConfigurationIds",
-    data: BytesLike
+    functionFragment: 'getProposalVoteConfiguration',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getUserProposalVote",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "receiveCrossChainMessage",
-    data: BytesLike
+    functionFragment: 'getProposalsVoteConfigurationIds',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "renounceOwnership",
-    data: BytesLike
+    functionFragment: 'getUserProposalVote',
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'receiveCrossChainMessage',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "startProposalVote",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "submitVote", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "submitVoteAsRepresentative",
-    data: BytesLike
+    functionFragment: 'renounceOwnership',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "submitVoteAsRepresentativeBySignature",
-    data: BytesLike
+    functionFragment: 'startProposalVote',
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(functionFragment: 'submitVote', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'submitVoteAsRepresentative',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "submitVoteBySignature",
-    data: BytesLike
+    functionFragment: 'submitVoteAsRepresentativeBySignature',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "transferOwnership",
-    data: BytesLike
+    functionFragment: 'submitVoteBySignature',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "updateGasLimit",
-    data: BytesLike
+    functionFragment: 'transferOwnership',
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'updateGasLimit',
+    data: BytesLike,
   ): Result;
 
   events: {
-    "EIP712DomainChanged()": EventFragment;
-    "GasLimitUpdated(uint256)": EventFragment;
-    "IncorrectTypeMessageReceived(address,uint256,bytes,bytes)": EventFragment;
-    "MessageReceived(address,uint256,bool,uint8,bytes,bytes)": EventFragment;
-    "OwnershipTransferred(address,address)": EventFragment;
-    "ProposalResultsSent(uint256,uint256,uint256)": EventFragment;
-    "ProposalVoteConfigurationBridged(uint256,bytes32,uint24,bool)": EventFragment;
-    "ProposalVoteStarted(uint256,bytes32,uint256,uint256)": EventFragment;
-    "VoteEmitted(uint256,address,bool,uint256)": EventFragment;
+    'EIP712DomainChanged()': EventFragment;
+    'GasLimitUpdated(uint256)': EventFragment;
+    'IncorrectTypeMessageReceived(address,uint256,bytes,bytes)': EventFragment;
+    'MessageReceived(address,uint256,bool,uint8,bytes,bytes)': EventFragment;
+    'OwnershipTransferred(address,address)': EventFragment;
+    'ProposalResultsSent(uint256,uint256,uint256)': EventFragment;
+    'ProposalVoteConfigurationBridged(uint256,bytes32,uint24,bool)': EventFragment;
+    'ProposalVoteStarted(uint256,bytes32,uint256,uint256)': EventFragment;
+    'VoteEmitted(uint256,address,bool,uint256)': EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "EIP712DomainChanged"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "GasLimitUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'EIP712DomainChanged'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'GasLimitUpdated'): EventFragment;
   getEvent(
-    nameOrSignatureOrTopic: "IncorrectTypeMessageReceived"
+    nameOrSignatureOrTopic: 'IncorrectTypeMessageReceived',
   ): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "MessageReceived"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "ProposalResultsSent"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'MessageReceived'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'ProposalResultsSent'): EventFragment;
   getEvent(
-    nameOrSignatureOrTopic: "ProposalVoteConfigurationBridged"
+    nameOrSignatureOrTopic: 'ProposalVoteConfigurationBridged',
   ): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "ProposalVoteStarted"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "VoteEmitted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'ProposalVoteStarted'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'VoteEmitted'): EventFragment;
 }
 
 export interface EIP712DomainChangedEventObject {}
@@ -621,15 +621,15 @@ export interface VotingMachine extends BaseContract {
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
-    toBlock?: string | number | undefined
+    toBlock?: string | number | undefined,
   ): Promise<Array<TEvent>>;
 
   listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
+    eventFilter?: TypedEventFilter<TEvent>,
   ): Array<TypedListener<TEvent>>;
   listeners(eventName?: string): Array<Listener>;
   removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
+    eventFilter: TypedEventFilter<TEvent>,
   ): this;
   removeAllListeners(eventName?: string): this;
   off: OnEvent<this>;
@@ -655,7 +655,7 @@ export interface VotingMachine extends BaseContract {
     REPRESENTATIVES_SLOT(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     VOTE_SUBMITTED_BY_REPRESENTATIVE_TYPEHASH(
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<[string]>;
 
     VOTE_SUBMITTED_TYPEHASH(overrides?: CallOverrides): Promise<[string]>;
@@ -663,41 +663,39 @@ export interface VotingMachine extends BaseContract {
     VOTING_ASSET_WITH_SLOT_RAW(overrides?: CallOverrides): Promise<[string]>;
 
     VOTING_ASSET_WITH_SLOT_TYPEHASH(
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<[string]>;
 
     VOTING_STRATEGY(overrides?: CallOverrides): Promise<[string]>;
 
     closeAndSendVote(
       proposalId: BigNumberish,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
     decodeMessage(
       message: BytesLike,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<[number, string]>;
 
     decodeProposalMessage(
       message: BytesLike,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<[BigNumber, string, number]>;
 
     decodeVoteMessage(
       message: BytesLike,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<
       [
         BigNumber,
         string,
         boolean,
-        IVotingMachineWithProofs.VotingAssetWithSlotStructOutput[]
+        IVotingMachineWithProofs.VotingAssetWithSlotStructOutput[],
       ]
     >;
 
-    eip712Domain(
-      overrides?: CallOverrides
-    ): Promise<
+    eip712Domain(overrides?: CallOverrides): Promise<
       [string, string, string, BigNumber, string, string, BigNumber[]] & {
         fields: string;
         name: string;
@@ -713,17 +711,17 @@ export interface VotingMachine extends BaseContract {
 
     getProposalById(
       proposalId: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<[IVotingMachineWithProofs.ProposalWithoutVotesStructOutput]>;
 
     getProposalState(
       proposalId: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<[number]>;
 
     getProposalVoteConfiguration(
       proposalId: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<
       [IVotingMachineWithProofs.ProposalVoteConfigurationStructOutput]
     >;
@@ -731,13 +729,13 @@ export interface VotingMachine extends BaseContract {
     getProposalsVoteConfigurationIds(
       skip: BigNumberish,
       size: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<[BigNumber[]]>;
 
     getUserProposalVote(
       user: string,
       proposalId: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<[IVotingMachineWithProofs.VoteStructOutput]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
@@ -746,23 +744,23 @@ export interface VotingMachine extends BaseContract {
       originSender: string,
       originChainId: BigNumberish,
       messageWithType: BytesLike,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
     renounceOwnership(
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
     startProposalVote(
       proposalId: BigNumberish,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
     submitVote(
       proposalId: BigNumberish,
       support: boolean,
       votingBalanceProofs: IVotingMachineWithProofs.VotingBalanceProofStruct[],
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
     submitVoteAsRepresentative(
@@ -771,7 +769,7 @@ export interface VotingMachine extends BaseContract {
       voter: string,
       proofOfRepresentation: BytesLike,
       votingBalanceProofs: IVotingMachineWithProofs.VotingBalanceProofStruct[],
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
     submitVoteAsRepresentativeBySignature(
@@ -782,7 +780,7 @@ export interface VotingMachine extends BaseContract {
       proofOfRepresentation: BytesLike,
       votingBalanceProofs: IVotingMachineWithProofs.VotingBalanceProofStruct[],
       signatureParams: IVotingMachineWithProofs.SignatureParamsStruct,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
     submitVoteBySignature(
@@ -793,17 +791,17 @@ export interface VotingMachine extends BaseContract {
       v: BigNumberish,
       r: BytesLike,
       s: BytesLike,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
     transferOwnership(
       newOwner: string,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
     updateGasLimit(
       gasLimit: BigNumberish,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
   };
 
@@ -824,7 +822,7 @@ export interface VotingMachine extends BaseContract {
   REPRESENTATIVES_SLOT(overrides?: CallOverrides): Promise<BigNumber>;
 
   VOTE_SUBMITTED_BY_REPRESENTATIVE_TYPEHASH(
-    overrides?: CallOverrides
+    overrides?: CallOverrides,
   ): Promise<string>;
 
   VOTE_SUBMITTED_TYPEHASH(overrides?: CallOverrides): Promise<string>;
@@ -837,34 +835,32 @@ export interface VotingMachine extends BaseContract {
 
   closeAndSendVote(
     proposalId: BigNumberish,
-    overrides?: Overrides & { from?: string }
+    overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
   decodeMessage(
     message: BytesLike,
-    overrides?: CallOverrides
+    overrides?: CallOverrides,
   ): Promise<[number, string]>;
 
   decodeProposalMessage(
     message: BytesLike,
-    overrides?: CallOverrides
+    overrides?: CallOverrides,
   ): Promise<[BigNumber, string, number]>;
 
   decodeVoteMessage(
     message: BytesLike,
-    overrides?: CallOverrides
+    overrides?: CallOverrides,
   ): Promise<
     [
       BigNumber,
       string,
       boolean,
-      IVotingMachineWithProofs.VotingAssetWithSlotStructOutput[]
+      IVotingMachineWithProofs.VotingAssetWithSlotStructOutput[],
     ]
   >;
 
-  eip712Domain(
-    overrides?: CallOverrides
-  ): Promise<
+  eip712Domain(overrides?: CallOverrides): Promise<
     [string, string, string, BigNumber, string, string, BigNumber[]] & {
       fields: string;
       name: string;
@@ -880,29 +876,29 @@ export interface VotingMachine extends BaseContract {
 
   getProposalById(
     proposalId: BigNumberish,
-    overrides?: CallOverrides
+    overrides?: CallOverrides,
   ): Promise<IVotingMachineWithProofs.ProposalWithoutVotesStructOutput>;
 
   getProposalState(
     proposalId: BigNumberish,
-    overrides?: CallOverrides
+    overrides?: CallOverrides,
   ): Promise<number>;
 
   getProposalVoteConfiguration(
     proposalId: BigNumberish,
-    overrides?: CallOverrides
+    overrides?: CallOverrides,
   ): Promise<IVotingMachineWithProofs.ProposalVoteConfigurationStructOutput>;
 
   getProposalsVoteConfigurationIds(
     skip: BigNumberish,
     size: BigNumberish,
-    overrides?: CallOverrides
+    overrides?: CallOverrides,
   ): Promise<BigNumber[]>;
 
   getUserProposalVote(
     user: string,
     proposalId: BigNumberish,
-    overrides?: CallOverrides
+    overrides?: CallOverrides,
   ): Promise<IVotingMachineWithProofs.VoteStructOutput>;
 
   owner(overrides?: CallOverrides): Promise<string>;
@@ -911,23 +907,23 @@ export interface VotingMachine extends BaseContract {
     originSender: string,
     originChainId: BigNumberish,
     messageWithType: BytesLike,
-    overrides?: Overrides & { from?: string }
+    overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
   renounceOwnership(
-    overrides?: Overrides & { from?: string }
+    overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
   startProposalVote(
     proposalId: BigNumberish,
-    overrides?: Overrides & { from?: string }
+    overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
   submitVote(
     proposalId: BigNumberish,
     support: boolean,
     votingBalanceProofs: IVotingMachineWithProofs.VotingBalanceProofStruct[],
-    overrides?: Overrides & { from?: string }
+    overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
   submitVoteAsRepresentative(
@@ -936,7 +932,7 @@ export interface VotingMachine extends BaseContract {
     voter: string,
     proofOfRepresentation: BytesLike,
     votingBalanceProofs: IVotingMachineWithProofs.VotingBalanceProofStruct[],
-    overrides?: Overrides & { from?: string }
+    overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
   submitVoteAsRepresentativeBySignature(
@@ -947,7 +943,7 @@ export interface VotingMachine extends BaseContract {
     proofOfRepresentation: BytesLike,
     votingBalanceProofs: IVotingMachineWithProofs.VotingBalanceProofStruct[],
     signatureParams: IVotingMachineWithProofs.SignatureParamsStruct,
-    overrides?: Overrides & { from?: string }
+    overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
   submitVoteBySignature(
@@ -958,17 +954,17 @@ export interface VotingMachine extends BaseContract {
     v: BigNumberish,
     r: BytesLike,
     s: BytesLike,
-    overrides?: Overrides & { from?: string }
+    overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
   transferOwnership(
     newOwner: string,
-    overrides?: Overrides & { from?: string }
+    overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
   updateGasLimit(
     gasLimit: BigNumberish,
-    overrides?: Overrides & { from?: string }
+    overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
   callStatic: {
@@ -989,7 +985,7 @@ export interface VotingMachine extends BaseContract {
     REPRESENTATIVES_SLOT(overrides?: CallOverrides): Promise<BigNumber>;
 
     VOTE_SUBMITTED_BY_REPRESENTATIVE_TYPEHASH(
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<string>;
 
     VOTE_SUBMITTED_TYPEHASH(overrides?: CallOverrides): Promise<string>;
@@ -1002,34 +998,32 @@ export interface VotingMachine extends BaseContract {
 
     closeAndSendVote(
       proposalId: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<void>;
 
     decodeMessage(
       message: BytesLike,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<[number, string]>;
 
     decodeProposalMessage(
       message: BytesLike,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<[BigNumber, string, number]>;
 
     decodeVoteMessage(
       message: BytesLike,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<
       [
         BigNumber,
         string,
         boolean,
-        IVotingMachineWithProofs.VotingAssetWithSlotStructOutput[]
+        IVotingMachineWithProofs.VotingAssetWithSlotStructOutput[],
       ]
     >;
 
-    eip712Domain(
-      overrides?: CallOverrides
-    ): Promise<
+    eip712Domain(overrides?: CallOverrides): Promise<
       [string, string, string, BigNumber, string, string, BigNumber[]] & {
         fields: string;
         name: string;
@@ -1045,29 +1039,29 @@ export interface VotingMachine extends BaseContract {
 
     getProposalById(
       proposalId: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<IVotingMachineWithProofs.ProposalWithoutVotesStructOutput>;
 
     getProposalState(
       proposalId: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<number>;
 
     getProposalVoteConfiguration(
       proposalId: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<IVotingMachineWithProofs.ProposalVoteConfigurationStructOutput>;
 
     getProposalsVoteConfigurationIds(
       skip: BigNumberish,
       size: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber[]>;
 
     getUserProposalVote(
       user: string,
       proposalId: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<IVotingMachineWithProofs.VoteStructOutput>;
 
     owner(overrides?: CallOverrides): Promise<string>;
@@ -1076,21 +1070,21 @@ export interface VotingMachine extends BaseContract {
       originSender: string,
       originChainId: BigNumberish,
       messageWithType: BytesLike,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<void>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     startProposalVote(
       proposalId: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
     submitVote(
       proposalId: BigNumberish,
       support: boolean,
       votingBalanceProofs: IVotingMachineWithProofs.VotingBalanceProofStruct[],
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<void>;
 
     submitVoteAsRepresentative(
@@ -1099,7 +1093,7 @@ export interface VotingMachine extends BaseContract {
       voter: string,
       proofOfRepresentation: BytesLike,
       votingBalanceProofs: IVotingMachineWithProofs.VotingBalanceProofStruct[],
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<void>;
 
     submitVoteAsRepresentativeBySignature(
@@ -1110,7 +1104,7 @@ export interface VotingMachine extends BaseContract {
       proofOfRepresentation: BytesLike,
       votingBalanceProofs: IVotingMachineWithProofs.VotingBalanceProofStruct[],
       signatureParams: IVotingMachineWithProofs.SignatureParamsStruct,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<void>;
 
     submitVoteBySignature(
@@ -1121,49 +1115,49 @@ export interface VotingMachine extends BaseContract {
       v: BigNumberish,
       r: BytesLike,
       s: BytesLike,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<void>;
 
     transferOwnership(
       newOwner: string,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<void>;
 
     updateGasLimit(
       gasLimit: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<void>;
   };
 
   filters: {
-    "EIP712DomainChanged()"(): EIP712DomainChangedEventFilter;
+    'EIP712DomainChanged()'(): EIP712DomainChangedEventFilter;
     EIP712DomainChanged(): EIP712DomainChangedEventFilter;
 
-    "GasLimitUpdated(uint256)"(
-      gasLimit?: BigNumberish | null
+    'GasLimitUpdated(uint256)'(
+      gasLimit?: BigNumberish | null,
     ): GasLimitUpdatedEventFilter;
     GasLimitUpdated(gasLimit?: BigNumberish | null): GasLimitUpdatedEventFilter;
 
-    "IncorrectTypeMessageReceived(address,uint256,bytes,bytes)"(
+    'IncorrectTypeMessageReceived(address,uint256,bytes,bytes)'(
       originSender?: string | null,
       originChainId?: BigNumberish | null,
       message?: null,
-      reason?: null
+      reason?: null,
     ): IncorrectTypeMessageReceivedEventFilter;
     IncorrectTypeMessageReceived(
       originSender?: string | null,
       originChainId?: BigNumberish | null,
       message?: null,
-      reason?: null
+      reason?: null,
     ): IncorrectTypeMessageReceivedEventFilter;
 
-    "MessageReceived(address,uint256,bool,uint8,bytes,bytes)"(
+    'MessageReceived(address,uint256,bool,uint8,bytes,bytes)'(
       originSender?: string | null,
       originChainId?: BigNumberish | null,
       delivered?: boolean | null,
       messageType?: null,
       message?: null,
-      reason?: null
+      reason?: null,
     ): MessageReceivedEventFilter;
     MessageReceived(
       originSender?: string | null,
@@ -1171,66 +1165,66 @@ export interface VotingMachine extends BaseContract {
       delivered?: boolean | null,
       messageType?: null,
       message?: null,
-      reason?: null
+      reason?: null,
     ): MessageReceivedEventFilter;
 
-    "OwnershipTransferred(address,address)"(
+    'OwnershipTransferred(address,address)'(
       previousOwner?: string | null,
-      newOwner?: string | null
+      newOwner?: string | null,
     ): OwnershipTransferredEventFilter;
     OwnershipTransferred(
       previousOwner?: string | null,
-      newOwner?: string | null
+      newOwner?: string | null,
     ): OwnershipTransferredEventFilter;
 
-    "ProposalResultsSent(uint256,uint256,uint256)"(
+    'ProposalResultsSent(uint256,uint256,uint256)'(
       proposalId?: BigNumberish | null,
       forVotes?: null,
-      againstVotes?: null
+      againstVotes?: null,
     ): ProposalResultsSentEventFilter;
     ProposalResultsSent(
       proposalId?: BigNumberish | null,
       forVotes?: null,
-      againstVotes?: null
+      againstVotes?: null,
     ): ProposalResultsSentEventFilter;
 
-    "ProposalVoteConfigurationBridged(uint256,bytes32,uint24,bool)"(
+    'ProposalVoteConfigurationBridged(uint256,bytes32,uint24,bool)'(
       proposalId?: BigNumberish | null,
       blockHash?: BytesLike | null,
       votingDuration?: null,
-      voteCreated?: boolean | null
+      voteCreated?: boolean | null,
     ): ProposalVoteConfigurationBridgedEventFilter;
     ProposalVoteConfigurationBridged(
       proposalId?: BigNumberish | null,
       blockHash?: BytesLike | null,
       votingDuration?: null,
-      voteCreated?: boolean | null
+      voteCreated?: boolean | null,
     ): ProposalVoteConfigurationBridgedEventFilter;
 
-    "ProposalVoteStarted(uint256,bytes32,uint256,uint256)"(
+    'ProposalVoteStarted(uint256,bytes32,uint256,uint256)'(
       proposalId?: BigNumberish | null,
       l1BlockHash?: BytesLike | null,
       startTime?: null,
-      endTime?: null
+      endTime?: null,
     ): ProposalVoteStartedEventFilter;
     ProposalVoteStarted(
       proposalId?: BigNumberish | null,
       l1BlockHash?: BytesLike | null,
       startTime?: null,
-      endTime?: null
+      endTime?: null,
     ): ProposalVoteStartedEventFilter;
 
-    "VoteEmitted(uint256,address,bool,uint256)"(
+    'VoteEmitted(uint256,address,bool,uint256)'(
       proposalId?: BigNumberish | null,
       voter?: string | null,
       support?: boolean | null,
-      votingPower?: null
+      votingPower?: null,
     ): VoteEmittedEventFilter;
     VoteEmitted(
       proposalId?: BigNumberish | null,
       voter?: string | null,
       support?: boolean | null,
-      votingPower?: null
+      votingPower?: null,
     ): VoteEmittedEventFilter;
   };
 
@@ -1252,7 +1246,7 @@ export interface VotingMachine extends BaseContract {
     REPRESENTATIVES_SLOT(overrides?: CallOverrides): Promise<BigNumber>;
 
     VOTE_SUBMITTED_BY_REPRESENTATIVE_TYPEHASH(
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
     VOTE_SUBMITTED_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1260,29 +1254,29 @@ export interface VotingMachine extends BaseContract {
     VOTING_ASSET_WITH_SLOT_RAW(overrides?: CallOverrides): Promise<BigNumber>;
 
     VOTING_ASSET_WITH_SLOT_TYPEHASH(
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
     VOTING_STRATEGY(overrides?: CallOverrides): Promise<BigNumber>;
 
     closeAndSendVote(
       proposalId: BigNumberish,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
     decodeMessage(
       message: BytesLike,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
     decodeProposalMessage(
       message: BytesLike,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
     decodeVoteMessage(
       message: BytesLike,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
     eip712Domain(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1291,29 +1285,29 @@ export interface VotingMachine extends BaseContract {
 
     getProposalById(
       proposalId: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
     getProposalState(
       proposalId: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
     getProposalVoteConfiguration(
       proposalId: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
     getProposalsVoteConfigurationIds(
       skip: BigNumberish,
       size: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
     getUserProposalVote(
       user: string,
       proposalId: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1322,23 +1316,23 @@ export interface VotingMachine extends BaseContract {
       originSender: string,
       originChainId: BigNumberish,
       messageWithType: BytesLike,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
     renounceOwnership(
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
     startProposalVote(
       proposalId: BigNumberish,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
     submitVote(
       proposalId: BigNumberish,
       support: boolean,
       votingBalanceProofs: IVotingMachineWithProofs.VotingBalanceProofStruct[],
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
     submitVoteAsRepresentative(
@@ -1347,7 +1341,7 @@ export interface VotingMachine extends BaseContract {
       voter: string,
       proofOfRepresentation: BytesLike,
       votingBalanceProofs: IVotingMachineWithProofs.VotingBalanceProofStruct[],
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
     submitVoteAsRepresentativeBySignature(
@@ -1358,7 +1352,7 @@ export interface VotingMachine extends BaseContract {
       proofOfRepresentation: BytesLike,
       votingBalanceProofs: IVotingMachineWithProofs.VotingBalanceProofStruct[],
       signatureParams: IVotingMachineWithProofs.SignatureParamsStruct,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
     submitVoteBySignature(
@@ -1369,23 +1363,23 @@ export interface VotingMachine extends BaseContract {
       v: BigNumberish,
       r: BytesLike,
       s: BytesLike,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: string,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
     updateGasLimit(
       gasLimit: BigNumberish,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     CROSS_CHAIN_CONTROLLER(
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     DATA_WAREHOUSE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1397,51 +1391,51 @@ export interface VotingMachine extends BaseContract {
     L1_VOTING_PORTAL(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     L1_VOTING_PORTAL_CHAIN_ID(
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     NAME(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     REPRESENTATIVES_SLOT(
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     VOTE_SUBMITTED_BY_REPRESENTATIVE_TYPEHASH(
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     VOTE_SUBMITTED_TYPEHASH(
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     VOTING_ASSET_WITH_SLOT_RAW(
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     VOTING_ASSET_WITH_SLOT_TYPEHASH(
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     VOTING_STRATEGY(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     closeAndSendVote(
       proposalId: BigNumberish,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
     decodeMessage(
       message: BytesLike,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     decodeProposalMessage(
       message: BytesLike,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     decodeVoteMessage(
       message: BytesLike,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     eip712Domain(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1450,29 +1444,29 @@ export interface VotingMachine extends BaseContract {
 
     getProposalById(
       proposalId: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     getProposalState(
       proposalId: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     getProposalVoteConfiguration(
       proposalId: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     getProposalsVoteConfigurationIds(
       skip: BigNumberish,
       size: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     getUserProposalVote(
       user: string,
       proposalId: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1481,23 +1475,23 @@ export interface VotingMachine extends BaseContract {
       originSender: string,
       originChainId: BigNumberish,
       messageWithType: BytesLike,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
     renounceOwnership(
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
     startProposalVote(
       proposalId: BigNumberish,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
     submitVote(
       proposalId: BigNumberish,
       support: boolean,
       votingBalanceProofs: IVotingMachineWithProofs.VotingBalanceProofStruct[],
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
     submitVoteAsRepresentative(
@@ -1506,7 +1500,7 @@ export interface VotingMachine extends BaseContract {
       voter: string,
       proofOfRepresentation: BytesLike,
       votingBalanceProofs: IVotingMachineWithProofs.VotingBalanceProofStruct[],
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
     submitVoteAsRepresentativeBySignature(
@@ -1517,7 +1511,7 @@ export interface VotingMachine extends BaseContract {
       proofOfRepresentation: BytesLike,
       votingBalanceProofs: IVotingMachineWithProofs.VotingBalanceProofStruct[],
       signatureParams: IVotingMachineWithProofs.SignatureParamsStruct,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
     submitVoteBySignature(
@@ -1528,17 +1522,17 @@ export interface VotingMachine extends BaseContract {
       v: BigNumberish,
       r: BytesLike,
       s: BytesLike,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: string,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
     updateGasLimit(
       gasLimit: BigNumberish,
-      overrides?: Overrides & { from?: string }
+      overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
   };
 }

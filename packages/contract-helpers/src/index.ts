@@ -32,6 +32,7 @@ export * from './v3-migration-contract';
 export * from './erc20-2612';
 export * from './paraswap-debtSwitch-contract';
 export * from './paraswap-withdrawAndSwitchAdapter-contract';
+export * from './token-wrapper';
 export * from './governance-v3/governance-data-helper';
 export * from './governance-v3/voting-machine-data-helper';
 export * from './governance-v3/governance-core';

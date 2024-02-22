@@ -1,56 +1,37 @@
 # Change Log
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 # 1.24.0 (2024-02-05)
 
-
 ### Features
 
-* abpt v2 migration ([#573](https://github.com/aave/aave-utilities/issues/573)) ([75bb4c0](https://github.com/aave/aave-utilities/commit/75bb4c038ea10b8faf42630a7fb580e7317623b8))
-
-
-
-
+- abpt v2 migration ([#573](https://github.com/aave/aave-utilities/issues/573))
+  ([75bb4c0](https://github.com/aave/aave-utilities/commit/75bb4c038ea10b8faf42630a7fb580e7317623b8))
 
 ## 1.23.1 (2024-01-24)
 
 **Note:** Version bump only for package @aave/contract-helpers
 
-
-
-
-
 # 1.23.0 (2024-01-19)
-
 
 ### Features
 
-* add bnb ([#571](https://github.com/aave/aave-utilities/issues/571)) ([5b92d16](https://github.com/aave/aave-utilities/commit/5b92d16a39dfb47e0cae95fd3480863b8f9afc75))
-
-
-
-
+- add bnb ([#571](https://github.com/aave/aave-utilities/issues/571))
+  ([5b92d16](https://github.com/aave/aave-utilities/commit/5b92d16a39dfb47e0cae95fd3480863b8f9afc75))
 
 # 1.22.0 (2024-01-18)
 
-
 ### Features
 
-* gov v3 ([#564](https://github.com/aave/aave-utilities/issues/564)) ([335588e](https://github.com/aave/aave-utilities/commit/335588e2e04056b631a47b1ede50594baebd158e)), closes [#567](https://github.com/aave/aave-utilities/issues/567)
-
-
-
-
+- gov v3 ([#564](https://github.com/aave/aave-utilities/issues/564))
+  ([335588e](https://github.com/aave/aave-utilities/commit/335588e2e04056b631a47b1ede50594baebd158e)),
+  closes [#567](https://github.com/aave/aave-utilities/issues/567)
 
 ## 1.21.1 (2023-11-21)
 
 **Note:** Version bump only for package @aave/contract-helpers
-
-
-
-
 
 # Change Log
 
@@ -59,14 +40,11 @@ All notable changes to this project will be documented in this file. See
 
 # 1.21.0 (2023-10-04)
 
-
 ### Features
 
-* updated debt switch interface ([#559](https://github.com/aave/aave-utilities/issues/559)) ([b108c62](https://github.com/aave/aave-utilities/commit/b108c620cf0e3e446840c166b660695ebd66563b))
-
-
-
-
+- updated debt switch interface
+  ([#559](https://github.com/aave/aave-utilities/issues/559))
+  ([b108c62](https://github.com/aave/aave-utilities/commit/b108c620cf0e3e446840c166b660695ebd66563b))
 
 # 1.20.0 (2023-08-22)
 

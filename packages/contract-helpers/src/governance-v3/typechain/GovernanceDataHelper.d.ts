@@ -9,15 +9,15 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from "ethers";
-import type { FunctionFragment, Result } from "@ethersproject/abi";
-import type { Listener, Provider } from "@ethersproject/providers";
+} from 'ethers';
+import type { FunctionFragment, Result } from '@ethersproject/abi';
+import type { Listener, Provider } from '@ethersproject/providers';
 import type {
   TypedEventFilter,
   TypedEvent,
   TypedListener,
   OnEvent,
-} from "./common";
+} from './common';
 
 export declare namespace IGovernanceCore {
   export type VotingConfigStruct = {
@@ -33,7 +33,7 @@ export declare namespace IGovernanceCore {
     number,
     BigNumber,
     BigNumber,
-    BigNumber
+    BigNumber,
   ] & {
     coolDownBeforeVotingStart: number;
     votingDuration: number;
@@ -75,7 +75,7 @@ export declare namespace IGovernanceCore {
     BigNumber,
     BigNumber,
     BigNumber,
-    PayloadsControllerUtils.PayloadStructOutput[]
+    PayloadsControllerUtils.PayloadStructOutput[],
   ] & {
     state: number;
     accessLevel: number;
@@ -103,7 +103,7 @@ export declare namespace IGovernanceDataHelper {
 
   export type VotingConfigStructOutput = [
     number,
-    IGovernanceCore.VotingConfigStructOutput
+    IGovernanceCore.VotingConfigStructOutput,
   ] & { accessLevel: number; config: IGovernanceCore.VotingConfigStructOutput };
 
   export type ConstantsStruct = {
@@ -119,7 +119,7 @@ export declare namespace IGovernanceDataHelper {
     BigNumber,
     BigNumber,
     BigNumber,
-    BigNumber
+    BigNumber,
   ] & {
     votingConfigs: IGovernanceDataHelper.VotingConfigStructOutput[];
     precisionDivider: BigNumber;
@@ -137,7 +137,7 @@ export declare namespace IGovernanceDataHelper {
   export type ProposalStructOutput = [
     BigNumber,
     BigNumber,
-    IGovernanceCore.ProposalStructOutput
+    IGovernanceCore.ProposalStructOutput,
   ] & {
     id: BigNumber;
     votingChainId: BigNumber;
@@ -183,42 +183,42 @@ export declare namespace PayloadsControllerUtils {
 
 export interface GovernanceDataHelperInterface extends utils.Interface {
   functions: {
-    "getConstants(address,uint8[])": FunctionFragment;
-    "getProposalsData(address,uint256,uint256,uint256)": FunctionFragment;
-    "getRepresentationData(address,address,uint256[])": FunctionFragment;
+    'getConstants(address,uint8[])': FunctionFragment;
+    'getProposalsData(address,uint256,uint256,uint256)': FunctionFragment;
+    'getRepresentationData(address,address,uint256[])': FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "getConstants"
-      | "getProposalsData"
-      | "getRepresentationData"
+      | 'getConstants'
+      | 'getProposalsData'
+      | 'getRepresentationData',
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "getConstants",
-    values: [string, BigNumberish[]]
+    functionFragment: 'getConstants',
+    values: [string, BigNumberish[]],
   ): string;
   encodeFunctionData(
-    functionFragment: "getProposalsData",
-    values: [string, BigNumberish, BigNumberish, BigNumberish]
+    functionFragment: 'getProposalsData',
+    values: [string, BigNumberish, BigNumberish, BigNumberish],
   ): string;
   encodeFunctionData(
-    functionFragment: "getRepresentationData",
-    values: [string, string, BigNumberish[]]
+    functionFragment: 'getRepresentationData',
+    values: [string, string, BigNumberish[]],
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "getConstants",
-    data: BytesLike
+    functionFragment: 'getConstants',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getProposalsData",
-    data: BytesLike
+    functionFragment: 'getProposalsData',
+    data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getRepresentationData",
-    data: BytesLike
+    functionFragment: 'getRepresentationData',
+    data: BytesLike,
   ): Result;
 
   events: {};
@@ -234,15 +234,15 @@ export interface GovernanceDataHelper extends BaseContract {
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
     fromBlockOrBlockhash?: string | number | undefined,
-    toBlock?: string | number | undefined
+    toBlock?: string | number | undefined,
   ): Promise<Array<TEvent>>;
 
   listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
+    eventFilter?: TypedEventFilter<TEvent>,
   ): Array<TypedListener<TEvent>>;
   listeners(eventName?: string): Array<Listener>;
   removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
+    eventFilter: TypedEventFilter<TEvent>,
   ): this;
   removeAllListeners(eventName?: string): this;
   off: OnEvent<this>;
@@ -254,7 +254,7 @@ export interface GovernanceDataHelper extends BaseContract {
     getConstants(
       govCore: string,
       accessLevels: BigNumberish[],
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<[IGovernanceDataHelper.ConstantsStructOutput]>;
 
     getProposalsData(
@@ -262,18 +262,18 @@ export interface GovernanceDataHelper extends BaseContract {
       from: BigNumberish,
       to: BigNumberish,
       pageSize: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<[IGovernanceDataHelper.ProposalStructOutput[]]>;
 
     getRepresentationData(
       govCore: string,
       wallet: string,
       chainIds: BigNumberish[],
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<
       [
         IGovernanceDataHelper.RepresentativesStructOutput[],
-        IGovernanceDataHelper.RepresentedStructOutput[]
+        IGovernanceDataHelper.RepresentedStructOutput[],
       ]
     >;
   };
@@ -281,7 +281,7 @@ export interface GovernanceDataHelper extends BaseContract {
   getConstants(
     govCore: string,
     accessLevels: BigNumberish[],
-    overrides?: CallOverrides
+    overrides?: CallOverrides,
   ): Promise<IGovernanceDataHelper.ConstantsStructOutput>;
 
   getProposalsData(
@@ -289,18 +289,18 @@ export interface GovernanceDataHelper extends BaseContract {
     from: BigNumberish,
     to: BigNumberish,
     pageSize: BigNumberish,
-    overrides?: CallOverrides
+    overrides?: CallOverrides,
   ): Promise<IGovernanceDataHelper.ProposalStructOutput[]>;
 
   getRepresentationData(
     govCore: string,
     wallet: string,
     chainIds: BigNumberish[],
-    overrides?: CallOverrides
+    overrides?: CallOverrides,
   ): Promise<
     [
       IGovernanceDataHelper.RepresentativesStructOutput[],
-      IGovernanceDataHelper.RepresentedStructOutput[]
+      IGovernanceDataHelper.RepresentedStructOutput[],
     ]
   >;
 
@@ -308,7 +308,7 @@ export interface GovernanceDataHelper extends BaseContract {
     getConstants(
       govCore: string,
       accessLevels: BigNumberish[],
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<IGovernanceDataHelper.ConstantsStructOutput>;
 
     getProposalsData(
@@ -316,18 +316,18 @@ export interface GovernanceDataHelper extends BaseContract {
       from: BigNumberish,
       to: BigNumberish,
       pageSize: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<IGovernanceDataHelper.ProposalStructOutput[]>;
 
     getRepresentationData(
       govCore: string,
       wallet: string,
       chainIds: BigNumberish[],
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<
       [
         IGovernanceDataHelper.RepresentativesStructOutput[],
-        IGovernanceDataHelper.RepresentedStructOutput[]
+        IGovernanceDataHelper.RepresentedStructOutput[],
       ]
     >;
   };
@@ -338,7 +338,7 @@ export interface GovernanceDataHelper extends BaseContract {
     getConstants(
       govCore: string,
       accessLevels: BigNumberish[],
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
     getProposalsData(
@@ -346,14 +346,14 @@ export interface GovernanceDataHelper extends BaseContract {
       from: BigNumberish,
       to: BigNumberish,
       pageSize: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber>;
 
     getRepresentationData(
       govCore: string,
       wallet: string,
       chainIds: BigNumberish[],
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<BigNumber>;
   };
 
@@ -361,7 +361,7 @@ export interface GovernanceDataHelper extends BaseContract {
     getConstants(
       govCore: string,
       accessLevels: BigNumberish[],
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     getProposalsData(
@@ -369,14 +369,14 @@ export interface GovernanceDataHelper extends BaseContract {
       from: BigNumberish,
       to: BigNumberish,
       pageSize: BigNumberish,
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
 
     getRepresentationData(
       govCore: string,
       wallet: string,
       chainIds: BigNumberish[],
-      overrides?: CallOverrides
+      overrides?: CallOverrides,
     ): Promise<PopulatedTransaction>;
   };
 }
