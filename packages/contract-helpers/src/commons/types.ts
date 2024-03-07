@@ -28,13 +28,11 @@ export const ChainIdToNetwork: Record<number, string> = {
   43114: 'avalanche',
   43113: 'fuji',
   42161: 'arbitrum_one',
-  421611: 'arbitrum_rinkeby',
-  421613: 'arbitrum_goerli',
+  421614: 'arbitrum_sepolia',
   250: 'fantom_opera',
   4002: 'fantom_testnet',
   10: 'optimism',
-  69: 'optimism_kovan',
-  420: 'optimism_goerli',
+  11155420: 'optimism_sepolia',
   1666600000: 'harmony',
   1666700000: 'harmony_testnet',
   11155111: 'sepolia',
@@ -43,6 +41,7 @@ export const ChainIdToNetwork: Record<number, string> = {
   534352: 'scroll',
   1088: 'metis_andromeda',
   8453: 'base',
+  84532: 'base_sepolia',
   56: 'bnb',
 };
 
@@ -58,13 +57,11 @@ export enum ChainId {
   avalanche = 43114,
   fuji = 43113, // avalanche test network
   arbitrum_one = 42161,
-  arbitrum_rinkeby = 421611,
-  arbitrum_goerli = 421613,
+  arbitrum_sepolia = 421614,
   fantom = 250,
   fantom_testnet = 4002,
   optimism = 10,
-  optimism_kovan = 69,
-  optimism_goerli = 420,
+  optimism_sepolia = 11155420,
   harmony = 1666600000,
   harmony_testnet = 1666700000,
   zkevm_testnet = 1402,
@@ -74,6 +71,7 @@ export enum ChainId {
   scroll = 534352,
   metis_andromeda = 1088,
   base = 8453,
+  base_sepolia = 84532,
   bnb = 56,
 }
 export type ConstantAddressesByNetwork = Record<
