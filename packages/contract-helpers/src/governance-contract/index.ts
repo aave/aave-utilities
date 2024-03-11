@@ -1,4 +1,4 @@
-import { providers } from 'ethers';
+import { CallOverrides, providers } from 'ethers';
 import { formatEther } from 'ethers/lib/utils';
 import BaseService from '../commons/BaseService';
 import {
@@ -149,7 +149,10 @@ export class AaveGovernanceService
   @GovHelperValidator
   public async getProposal(
     @is0OrPositiveAmount('proposalId')
-    { proposalId }: GovGetProposalType,
+    {
+      proposalId,
+      overrides,
+    }: GovGetProposalType & { overrides?: CallOverrides },
   ) {
     const helper: IGovernanceV2Helper = IGovernanceV2Helper__factory.connect(
       this.aaveGovernanceV2HelperAddress,
@@ -158,6 +161,7 @@ export class AaveGovernanceService
     const result = await helper.getProposal(
       proposalId,
       this.aaveGovernanceV2Address,
+      overrides,
     );
 
     return humanizeProposal(result);
