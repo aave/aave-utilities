@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.27.0 (2024-03-11)
+
+
+### Features
+
+* testnet updates ([#576](https://github.com/aave/aave-utilities/issues/576)) ([7334f68](https://github.com/aave/aave-utilities/commit/7334f68e3702fd5d47808b1f374423c1a0d2153b))
+
+
+
+
+
 # 1.26.0 (2024-03-11)
 
 
