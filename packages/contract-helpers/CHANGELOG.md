@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.26.0 (2024-03-11)
+
+
+### Features
+
+* add arbitrum sepolia chainId ([#574](https://github.com/aave/aave-utilities/issues/574)) ([433974f](https://github.com/aave/aave-utilities/commit/433974fc1f0e40bdfad21fbab625280c757f1f73))
+
+
+
+
+
 # 1.25.0 (2024-02-22)
 
 
