@@ -147,6 +147,7 @@ export enum ProtocolAction {
   withdrawAndSwitch = 'withdrawAndSwitch',
   batchMetaDelegate = 'batchMetaDelegate',
   updateRepresentatives = 'updateRepresentatives',
+  migrateABPT = 'migrateABPT',
 }
 
 export enum GovernanceVote {

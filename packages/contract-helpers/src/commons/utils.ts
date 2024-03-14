@@ -146,6 +146,10 @@ export const gasLimitRecommendations: GasRecommendationType = {
     limit: '60000',
     recommended: '60000',
   },
+  [ProtocolAction.migrateABPT]: {
+    limit: '750000',
+    recommended: '750000',
+  },
 };
 
 export const mintAmountsPerToken: Record<string, string> = {
