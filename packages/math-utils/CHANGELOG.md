@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.28.0 (2024-03-19)
+
+
+### Features
+
+* add gas limit for staking migrate ([#577](https://github.com/aave/aave-utilities/issues/577)) ([004602a](https://github.com/aave/aave-utilities/commit/004602a79642b101162de98e2b91c9cd964554fe))
+
+
+
+
+
 # 1.27.0 (2024-03-11)
 
 
