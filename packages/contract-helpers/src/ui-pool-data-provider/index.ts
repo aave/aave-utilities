@@ -1,4 +1,4 @@
-import { providers } from 'ethers';
+import { CallOverrides, providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import { UiPoolDataProvider as UiPoolDataProviderContract } from './typechain/UiPoolDataProvider';
 import { UiPoolDataProviderFactory } from './typechain/UiPoolDataProviderFactory';
@@ -39,20 +39,27 @@ export interface UiPoolDataProviderContext {
 }
 
 export interface UiPoolDataProviderInterface {
-  getReservesList: (lendingPoolAddressProvider: string) => Promise<string[]>;
+  getReservesList: (
+    lendingPoolAddressProvider: string,
+    overrides: CallOverrides,
+  ) => Promise<string[]>;
   getReservesData: (
     lendingPoolAddressProvider: string,
+    overrides: CallOverrides,
   ) => Promise<ReservesData>;
   getUserReservesData: (
     lendingPoolAddressProvider: string,
     user: string,
+    overrides: CallOverrides,
   ) => Promise<UserReserveData[]>;
   getReservesHumanized: (
     lendingPoolAddressProvider: string,
+    overrides: CallOverrides,
   ) => Promise<ReservesDataHumanized>;
   getUserReservesHumanized: (
     lendingPoolAddressProvider: string,
     user: string,
+    overrides: CallOverrides,
   ) => Promise<UserReserveDataHumanized[]>;
 }
 
@@ -81,12 +88,16 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
    */
   public async getReservesList(
     lendingPoolAddressProvider: string,
+    overrides: CallOverrides = {},
   ): Promise<string[]> {
     if (!isAddress(lendingPoolAddressProvider)) {
       throw new Error('Lending pool address is not valid');
     }
 
-    return this._contract.getReservesList(lendingPoolAddressProvider);
+    return this._contract.getReservesList(
+      lendingPoolAddressProvider,
+      overrides,
+    );
   }
 
   /**
@@ -94,12 +105,16 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
    */
   public async getReservesData(
     lendingPoolAddressProvider: string,
+    overrides: CallOverrides = {},
   ): Promise<ReservesData> {
     if (!isAddress(lendingPoolAddressProvider)) {
       throw new Error('Lending pool address is not valid');
     }
 
-    return this._contract.getReservesData(lendingPoolAddressProvider);
+    return this._contract.getReservesData(
+      lendingPoolAddressProvider,
+      overrides,
+    );
   }
 
   /**
@@ -108,6 +123,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
   public async getUserReservesData(
     lendingPoolAddressProvider: string,
     user: string,
+    overrides: CallOverrides = {},
   ): Promise<UserReserveData[]> {
     if (!isAddress(lendingPoolAddressProvider)) {
       throw new Error('Lending pool address is not valid');
@@ -117,14 +133,19 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
       throw new Error('User address is not a valid ethereum address');
     }
 
-    return this._contract.getUserReservesData(lendingPoolAddressProvider, user);
+    return this._contract.getUserReservesData(
+      lendingPoolAddressProvider,
+      user,
+      overrides,
+    );
   }
 
   public async getReservesHumanized(
     lendingPoolAddressProvider: string,
+    overrides?: CallOverrides,
   ): Promise<ReservesDataHumanized> {
     const { 0: reservesRaw, 1: poolBaseCurrencyRaw }: ReservesData =
-      await this.getReservesData(lendingPoolAddressProvider);
+      await this.getReservesData(lendingPoolAddressProvider, overrides);
 
     const reservesData: ReserveDataHumanized[] = reservesRaw.map(
       reserveRaw => ({
@@ -194,10 +215,12 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
   public async getUserReservesHumanized(
     lendingPoolAddressProvider: string,
     user: string,
+    overrides: CallOverrides = {},
   ): Promise<UserReserveDataHumanized[]> {
     const userReservesRaw: UserReserveData[] = await this.getUserReservesData(
       lendingPoolAddressProvider,
       user,
+      overrides,
     );
 
     return userReservesRaw.map((userReserveRaw: UserReserveData) => ({
