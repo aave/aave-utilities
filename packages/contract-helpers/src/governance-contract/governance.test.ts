@@ -413,12 +413,16 @@ describe('GovernanceService', () => {
           getTokensPower: async () => Promise.resolve([userPowerMock]),
         } as unknown as IGovernanceV2Helper);
 
-      const power = await instance.getTokensPower({
-        user,
-        tokens,
-        blockHash:
-          '0xbd04f4b86a8ca7592077f62f1b12e56e5684a69e70fb21b4c7fd47e516db71b2',
-      });
+      const power = await instance.getTokensPower(
+        {
+          user,
+          tokens,
+        },
+        {
+          blockTag:
+            '0xbd04f4b86a8ca7592077f62f1b12e56e5684a69e70fb21b4c7fd47e516db71b2',
+        },
+      );
 
       expect(spy).toHaveBeenCalled();
       expect(power[0]).toEqual(userPowerMock);
