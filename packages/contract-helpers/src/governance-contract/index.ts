@@ -181,14 +181,16 @@ export class AaveGovernanceService
   public async getTokensPower(
     @isEthAddress('user')
     @isEthAddressArray('tokens')
-    { user, tokens }: GovGetPower,
+    { user, tokens, blockHash }: GovGetPower,
   ): Promise<Power[]> {
     const helper: IGovernanceV2Helper = IGovernanceV2Helper__factory.connect(
       this.aaveGovernanceV2HelperAddress,
       this.provider,
     );
 
-    return helper.getTokensPower(user, tokens);
+    const blockTag = blockHash ? blockHash : 'latest';
+
+    return helper.getTokensPower(user, tokens, { blockTag });
   }
 
   @GovValidator

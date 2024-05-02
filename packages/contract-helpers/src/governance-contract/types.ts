@@ -72,6 +72,7 @@ export type GovGetVotingAtBlockType = {
 export type GovGetTokensVotingPower = {
   user: tEthereumAddress;
   tokens: tEthereumAddress[];
+  blockHash?: string;
 };
 
 export type GovGetVoteOnProposal = {

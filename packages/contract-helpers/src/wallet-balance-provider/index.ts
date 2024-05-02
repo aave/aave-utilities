@@ -56,6 +56,7 @@ export class WalletBalanceProvider {
   public async batchBalanceOf(
     users: string[],
     tokens: string[],
+    blockHash?: string,
   ): Promise<BatchBalanceOfResponse> {
     if (!users.every(u => isAddress(u))) {
       throw new Error(
@@ -69,7 +70,9 @@ export class WalletBalanceProvider {
       );
     }
 
-    return this._contract.batchBalanceOf(users, tokens);
+    const blockTag = blockHash ? blockHash : 'latest';
+
+    return this._contract.batchBalanceOf(users, tokens, { blockTag });
   }
 
   /**
