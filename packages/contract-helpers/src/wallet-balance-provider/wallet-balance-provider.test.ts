@@ -84,6 +84,17 @@ describe('WalletBalanceProvider', () => {
         ),
       ).resolves.not.toThrow();
     });
+
+    it('should not throw if users and tokens and blockHash are a all valid', async () => {
+      const instance = createValidInstance();
+      await expect(
+        instance.batchBalanceOf(
+          [mockValidEthereumAddress],
+          [mockValidEthereumAddress],
+          '0xbd04f4b86a8ca7592077f62f1b12e56e5684a69e70fb21b4c7fd47e516db71b2',
+        ),
+      ).resolves.not.toThrow();
+    });
   });
 
   describe('getUserWalletBalancesForLendingPoolProvider', () => {
