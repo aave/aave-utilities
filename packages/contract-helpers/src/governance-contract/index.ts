@@ -38,6 +38,10 @@ import {
   GovDelegateTokensBySig,
 } from './types';
 
+export type Options = {
+  blockTag?: string;
+};
+
 export const humanizeProposal = (rawProposal: ProposalRPC): Proposal => {
   return {
     id: Number(rawProposal.id.toString()),
@@ -182,13 +186,15 @@ export class AaveGovernanceService
     @isEthAddress('user')
     @isEthAddressArray('tokens')
     { user, tokens }: GovGetPower,
+    opts: Options = {},
   ): Promise<Power[]> {
     const helper: IGovernanceV2Helper = IGovernanceV2Helper__factory.connect(
       this.aaveGovernanceV2HelperAddress,
       this.provider,
     );
+    const blockTag = opts.blockTag ? opts.blockTag : 'latest';
 
-    return helper.getTokensPower(user, tokens);
+    return helper.getTokensPower(user, tokens, { blockTag });
   }
 
   @GovValidator

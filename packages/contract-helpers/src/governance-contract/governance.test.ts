@@ -400,6 +400,34 @@ describe('GovernanceService', () => {
       expect(spy).toHaveBeenCalled();
       expect(power[0]).toEqual(userPowerMock);
     });
+
+    it('Expects token power obj for each token asked with blocknumber', async () => {
+      const instance = new AaveGovernanceService(provider, {
+        GOVERNANCE_ADDRESS,
+        GOVERNANCE_HELPER_ADDRESS,
+      });
+
+      const spy = jest
+        .spyOn(IGovernanceV2Helper__factory, 'connect')
+        .mockReturnValue({
+          getTokensPower: async () => Promise.resolve([userPowerMock]),
+        } as unknown as IGovernanceV2Helper);
+
+      const power = await instance.getTokensPower(
+        {
+          user,
+          tokens,
+        },
+        {
+          blockTag:
+            '0xbd04f4b86a8ca7592077f62f1b12e56e5684a69e70fb21b4c7fd47e516db71b2',
+        },
+      );
+
+      expect(spy).toHaveBeenCalled();
+      expect(power[0]).toEqual(userPowerMock);
+    });
+
     it('Expects to fail if gov address not eth address', async () => {
       const instance = new AaveGovernanceService(provider, {
         GOVERNANCE_ADDRESS: 'asdf',

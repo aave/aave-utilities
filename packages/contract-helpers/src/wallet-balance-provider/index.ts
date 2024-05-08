@@ -1,7 +1,10 @@
 import { providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
+import { Options } from '../governance-contract';
+
 import { WalletBalanceProvider as WalletBalanceProviderContract } from './typechain/WalletBalanceProvider';
 import { WalletBalanceProviderFactory } from './typechain/WalletBalanceProviderFactory';
+
 import {
   BalanceOfResponse,
   BatchBalanceOfResponse,
@@ -56,6 +59,7 @@ export class WalletBalanceProvider {
   public async batchBalanceOf(
     users: string[],
     tokens: string[],
+    opts: Options = {},
   ): Promise<BatchBalanceOfResponse> {
     if (!users.every(u => isAddress(u))) {
       throw new Error(
@@ -69,7 +73,9 @@ export class WalletBalanceProvider {
       );
     }
 
-    return this._contract.batchBalanceOf(users, tokens);
+    const blockTag = opts.blockTag ? opts.blockTag : 'latest';
+
+    return this._contract.batchBalanceOf(users, tokens, { blockTag });
   }
 
   /**
