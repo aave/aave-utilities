@@ -1,5 +1,11 @@
 import BigNumber from 'bignumber.js';
-import { constants, providers, utils } from 'ethers';
+import {
+  PopulatedTransaction,
+  constants,
+  providers,
+  utils,
+  BigNumber as BigNumberEthers,
+} from 'ethers';
 import {
   BaseDebtToken,
   BaseDebtTokenInterface,
@@ -13,11 +19,15 @@ import {
   tEthereumAddress,
   transactionType,
 } from '../commons/types';
+import { gasLimitRecommendations } from '../commons/utils';
 import { V3MigratorValidator } from '../commons/validators/methodValidators';
 import { isEthAddress } from '../commons/validators/paramValidators';
-import { ERC20Service } from '../erc20-contract';
+import { ERC20Service, TokenOwner } from '../erc20-contract';
 import { Pool } from '../v3-pool-contract';
-import { IMigrationHelper } from './typechain/IMigrationHelper';
+import {
+  IMigrationHelper,
+  IMigrationHelperInterface,
+} from './typechain/IMigrationHelper';
 import { IMigrationHelper__factory } from './typechain/IMigrationHelper__factory';
 import {
   MigrationDelegationApproval,
@@ -34,6 +44,23 @@ export interface V3MigrationHelperInterface {
   ) => Promise<EthereumTransactionTypeExtended[]>;
 }
 
+interface MigrationNeededApprovals {
+  supplyApprovalTxs: PopulatedTransaction[];
+  borrowCreditDelegationApprovalTxs: PopulatedTransaction[];
+}
+
+export type MigrationTxBuilder = {
+  generateApprovalsTxs: (
+    params: Pick<
+      V3MigrationType,
+      'supplyAssets' | 'user' | 'creditDelegationApprovals'
+    >,
+  ) => Promise<MigrationNeededApprovals>;
+  generateTxData: (
+    params: Omit<V3MigrationType, 'creditDelegationApprovals'>,
+  ) => PopulatedTransaction;
+};
+
 export class V3MigrationHelperService
   extends BaseService<IMigrationHelper>
   implements V3MigrationHelperInterface
@@ -43,6 +70,8 @@ export class V3MigrationHelperService
   readonly MIGRATOR_ADDRESS: tEthereumAddress;
   readonly erc20Service: ERC20Service;
   readonly pool: Pool;
+  readonly contractInterface: IMigrationHelperInterface;
+  readonly migrationTxBuilder: MigrationTxBuilder;
   constructor(
     provider: providers.Provider,
     MIGRATOR_ADDRESS: tEthereumAddress,
@@ -53,6 +82,110 @@ export class V3MigrationHelperService
     this.erc20Service = new ERC20Service(provider);
     this.baseDebtTokenService = new BaseDebtToken(provider, this.erc20Service);
     this.pool = pool;
+    this.contractInterface = IMigrationHelper__factory.createInterface();
+
+    this.migrationTxBuilder = {
+      generateApprovalsTxs: async ({
+        supplyAssets,
+        user,
+        creditDelegationApprovals,
+      }) => {
+        const supplyAssetsApproved = await Promise.all(
+          supplyAssets.map(async ({ amount, aToken }) => {
+            return this.erc20Service.isApproved({
+              amount,
+              spender: this.MIGRATOR_ADDRESS,
+              token: aToken,
+              user,
+              nativeDecimals: true,
+            });
+          }),
+        );
+        const supplyApprovalTxs = supplyAssetsApproved
+          .filter(approved => !approved)
+          .map((_, index) => {
+            const asset = supplyAssets[index];
+            return this.erc20Service.approveTxData({
+              user,
+              token: asset.aToken,
+              spender: this.MIGRATOR_ADDRESS,
+              amount: asset.amount,
+            });
+          });
+        const borrowCreditDelegationApproved = await Promise.all(
+          creditDelegationApprovals.map(
+            async ({ amount, debtTokenAddress }) => {
+              return this.baseDebtTokenService.isDelegationApproved({
+                debtTokenAddress,
+                allowanceGiver: user,
+                allowanceReceiver: this.MIGRATOR_ADDRESS,
+                amount,
+                nativeDecimals: true,
+              });
+            },
+          ),
+        );
+        const borrowCreditDelegationApprovalTxs = borrowCreditDelegationApproved
+          .filter(approved => !approved)
+          .map((_, index) => {
+            const asset = creditDelegationApprovals[index];
+            return this.baseDebtTokenService.generateApproveDelegationTxData({
+              user,
+              delegatee: this.MIGRATOR_ADDRESS,
+              debtTokenAddress: asset.debtTokenAddress,
+              amount: asset.amount,
+            });
+          });
+        return { supplyApprovalTxs, borrowCreditDelegationApprovalTxs };
+      },
+      generateTxData: ({
+        supplyAssets,
+        user,
+        repayAssets,
+        signedSupplyPermits,
+        signedCreditDelegationPermits,
+      }) => {
+        const actionTx: PopulatedTransaction = {};
+        let permits: IMigrationHelper.PermitInputStruct[] = [];
+        let creditDelegationPermits: IMigrationHelper.CreditDelegationInputStruct[] =
+          [];
+        if (signedSupplyPermits && signedSupplyPermits.length > 0) {
+          permits = this.splitSignedPermits(signedSupplyPermits);
+        }
+
+        if (
+          signedCreditDelegationPermits &&
+          signedCreditDelegationPermits.length > 0
+        ) {
+          creditDelegationPermits = this.splitSignedCreditDelegationPermits(
+            signedCreditDelegationPermits,
+          );
+        }
+
+        const assetsToMigrate = supplyAssets.map(
+          supplyAsset => supplyAsset.underlyingAsset,
+        );
+        const assetsToRepay = repayAssets.map(repayAsset => {
+          return {
+            asset: repayAsset.underlyingAsset,
+            rateMode: repayAsset.rateMode === InterestRate.Stable ? 1 : 2,
+          };
+        });
+        const txData = this.contractInterface.encodeFunctionData('migrate', [
+          assetsToMigrate,
+          assetsToRepay,
+          permits,
+          creditDelegationPermits,
+        ]);
+        actionTx.to = this.MIGRATOR_ADDRESS;
+        actionTx.from = user;
+        actionTx.data = txData;
+        actionTx.gasLimit = BigNumberEthers.from(
+          gasLimitRecommendations[ProtocolAction.migrateV3].recommended,
+        );
+        return actionTx;
+      },
+    };
   }
 
   @V3MigratorValidator
