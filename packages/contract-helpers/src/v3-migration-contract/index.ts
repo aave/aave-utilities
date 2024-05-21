@@ -22,7 +22,7 @@ import {
 import { gasLimitRecommendations } from '../commons/utils';
 import { V3MigratorValidator } from '../commons/validators/methodValidators';
 import { isEthAddress } from '../commons/validators/paramValidators';
-import { ERC20Service, TokenOwner } from '../erc20-contract';
+import { ERC20Service } from '../erc20-contract';
 import { Pool } from '../v3-pool-contract';
 import {
   IMigrationHelper,
