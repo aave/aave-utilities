@@ -75,6 +75,7 @@ export interface FormatUserSummaryResponse<
   currentLoanToValue: string;
   currentLiquidationThreshold: string;
   healthFactor: string;
+  userEmodeCategoryId: number;
   isInIsolationMode: boolean;
   isolatedReserve?: FormatReserveUSDResponse;
 }
@@ -179,6 +180,7 @@ export function formatUserSummary<
       LTV_PRECISION,
     ),
     healthFactor: userData.healthFactor.toFixed(),
+    userEmodeCategoryId,
     isInIsolationMode: userData.isInIsolationMode,
     isolatedReserve: userData.isolatedReserve,
   };
