@@ -252,8 +252,8 @@ describe('V3MigrationService', () => {
         expect(approveTxs.supplyApprovalTxs.length).toEqual(1);
         expect(approveTxs.borrowCreditDelegationApprovalTxs.length).toEqual(0);
         const assetApproval = approveTxs.supplyApprovalTxs[0];
-        expect(assetApproval.to).toEqual(supplyAssets[0].aToken);
-        expect(assetApproval.from).toEqual(user);
+        expect(assetApproval.token).toEqual(supplyAssets[0].aToken);
+        expect(assetApproval.user).toEqual(user);
       });
       it('Expects to work with supply assets that dont need approvals', async () => {
         const instance = new V3MigrationHelperService(
@@ -301,10 +301,10 @@ describe('V3MigrationService', () => {
         expect(approveTxs.supplyApprovalTxs.length).toEqual(0);
         expect(approveTxs.borrowCreditDelegationApprovalTxs.length).toEqual(1);
         const assetApproval = approveTxs.borrowCreditDelegationApprovalTxs[0];
-        expect(assetApproval.to).toEqual(
+        expect(assetApproval.debtTokenAddress).toEqual(
           creditDelegationApprovals[0].debtTokenAddress,
         );
-        expect(assetApproval.from).toEqual(user);
+        expect(assetApproval.user).toEqual(user);
       });
       it('Expect to work with credit delegation that dont need approval', async () => {
         const instance = new V3MigrationHelperService(

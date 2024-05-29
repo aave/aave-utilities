@@ -7,6 +7,7 @@ import {
   BigNumber as BigNumberEthers,
 } from 'ethers';
 import {
+  ApproveDelegationType,
   BaseDebtToken,
   BaseDebtTokenInterface,
 } from '../baseDebtToken-contract';
@@ -22,7 +23,7 @@ import {
 import { gasLimitRecommendations } from '../commons/utils';
 import { V3MigratorValidator } from '../commons/validators/methodValidators';
 import { isEthAddress } from '../commons/validators/paramValidators';
-import { ERC20Service } from '../erc20-contract';
+import { ApproveType, ERC20Service } from '../erc20-contract';
 import { Pool } from '../v3-pool-contract';
 import {
   IMigrationHelper,
@@ -44,9 +45,17 @@ export interface V3MigrationHelperInterface {
   ) => Promise<EthereumTransactionTypeExtended[]>;
 }
 
+interface ApproveWithTx extends ApproveType {
+  tx: PopulatedTransaction;
+}
+
+interface ApproveDelegationWithTx extends ApproveDelegationType {
+  tx: PopulatedTransaction;
+}
+
 interface MigrationNeededApprovals {
-  supplyApprovalTxs: PopulatedTransaction[];
-  borrowCreditDelegationApprovalTxs: PopulatedTransaction[];
+  supplyApprovalTxs: ApproveWithTx[];
+  borrowCreditDelegationApprovalTxs: ApproveDelegationWithTx[];
 }
 
 export type MigrationTxBuilder = {
@@ -90,28 +99,38 @@ export class V3MigrationHelperService
         user,
         creditDelegationApprovals,
       }) => {
-        const supplyApprovalTxs = await Promise.all(
-          supplyAssets.map(async ({ amount, aToken }) => {
-            const isApproved = await this.erc20Service.isApproved({
-              amount,
-              spender: this.MIGRATOR_ADDRESS,
-              token: aToken,
-              user,
-              nativeDecimals: true,
-            });
-            if (isApproved) {
-              return undefined;
-            }
+        const supplyApprovalTxs: Array<ApproveWithTx | undefined> =
+          await Promise.all(
+            supplyAssets.map(async ({ amount, aToken }) => {
+              const isApproved = await this.erc20Service.isApproved({
+                amount,
+                spender: this.MIGRATOR_ADDRESS,
+                token: aToken,
+                user,
+                nativeDecimals: true,
+              });
+              if (isApproved) {
+                return undefined;
+              }
 
-            return this.erc20Service.approveTxData({
-              user,
-              token: aToken,
-              spender: this.MIGRATOR_ADDRESS,
-              amount,
-            });
-          }),
-        );
-        const borrowCreditDelegationApprovalTxs = await Promise.all(
+              const tx = this.erc20Service.approveTxData({
+                user,
+                token: aToken,
+                spender: this.MIGRATOR_ADDRESS,
+                amount,
+              });
+              return {
+                amount,
+                spender: this.MIGRATOR_ADDRESS,
+                token: aToken,
+                user,
+                tx,
+              };
+            }),
+          );
+        const borrowCreditDelegationApprovalTxs: Array<
+          ApproveDelegationWithTx | undefined
+        > = await Promise.all(
           creditDelegationApprovals.map(
             async ({ amount, debtTokenAddress }) => {
               const isApproved =
@@ -126,22 +145,30 @@ export class V3MigrationHelperService
                 return undefined;
               }
 
-              return this.baseDebtTokenService.generateApproveDelegationTxData({
-                user,
+              const tx =
+                this.baseDebtTokenService.generateApproveDelegationTxData({
+                  user,
+                  delegatee: this.MIGRATOR_ADDRESS,
+                  debtTokenAddress,
+                  amount,
+                });
+              return {
+                tx,
+                amount,
                 delegatee: this.MIGRATOR_ADDRESS,
                 debtTokenAddress,
-                amount,
-              });
+                user,
+              };
             },
           ),
         );
         return {
           supplyApprovalTxs: supplyApprovalTxs.filter(
-            (elem): elem is PopulatedTransaction => Boolean(elem),
+            (elem): elem is ApproveWithTx => Boolean(elem),
           ),
           borrowCreditDelegationApprovalTxs:
             borrowCreditDelegationApprovalTxs.filter(
-              (elem): elem is PopulatedTransaction => Boolean(elem),
+              (elem): elem is ApproveDelegationWithTx => Boolean(elem),
             ),
         };
       },
