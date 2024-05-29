@@ -90,53 +90,60 @@ export class V3MigrationHelperService
         user,
         creditDelegationApprovals,
       }) => {
-        const supplyAssetsApproved = await Promise.all(
+        const supplyApprovalTxs = await Promise.all(
           supplyAssets.map(async ({ amount, aToken }) => {
-            return this.erc20Service.isApproved({
+            const isApproved = await this.erc20Service.isApproved({
               amount,
               spender: this.MIGRATOR_ADDRESS,
               token: aToken,
               user,
               nativeDecimals: true,
             });
-          }),
-        );
-        const supplyApprovalTxs = supplyAssetsApproved
-          .filter(approved => !approved)
-          .map((_, index) => {
-            const asset = supplyAssets[index];
+            if (isApproved) {
+              return undefined;
+            }
+
             return this.erc20Service.approveTxData({
               user,
-              token: asset.aToken,
+              token: aToken,
               spender: this.MIGRATOR_ADDRESS,
-              amount: asset.amount,
+              amount,
             });
-          });
-        const borrowCreditDelegationApproved = await Promise.all(
+          }),
+        );
+        const borrowCreditDelegationApprovalTxs = await Promise.all(
           creditDelegationApprovals.map(
             async ({ amount, debtTokenAddress }) => {
-              return this.baseDebtTokenService.isDelegationApproved({
+              const isApproved =
+                await this.baseDebtTokenService.isDelegationApproved({
+                  debtTokenAddress,
+                  allowanceGiver: user,
+                  allowanceReceiver: this.MIGRATOR_ADDRESS,
+                  amount,
+                  nativeDecimals: true,
+                });
+              if (isApproved) {
+                return undefined;
+              }
+
+              return this.baseDebtTokenService.generateApproveDelegationTxData({
+                user,
+                delegatee: this.MIGRATOR_ADDRESS,
                 debtTokenAddress,
-                allowanceGiver: user,
-                allowanceReceiver: this.MIGRATOR_ADDRESS,
                 amount,
-                nativeDecimals: true,
               });
             },
           ),
         );
-        const borrowCreditDelegationApprovalTxs = borrowCreditDelegationApproved
-          .filter(approved => !approved)
-          .map((_, index) => {
-            const asset = creditDelegationApprovals[index];
-            return this.baseDebtTokenService.generateApproveDelegationTxData({
-              user,
-              delegatee: this.MIGRATOR_ADDRESS,
-              debtTokenAddress: asset.debtTokenAddress,
-              amount: asset.amount,
-            });
-          });
-        return { supplyApprovalTxs, borrowCreditDelegationApprovalTxs };
+        return {
+          supplyApprovalTxs: supplyApprovalTxs.filter(
+            (elem): elem is PopulatedTransaction => Boolean(elem),
+          ),
+          borrowCreditDelegationApprovalTxs:
+            borrowCreditDelegationApprovalTxs.filter(
+              (elem): elem is PopulatedTransaction => Boolean(elem),
+            ),
+        };
       },
       generateTxData: ({
         supplyAssets,
