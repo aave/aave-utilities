@@ -3,9 +3,13 @@ import {
   eEthereumTxType,
   GasType,
   InterestRate,
+  ProtocolAction,
   transactionType,
 } from '../commons/types';
-import { DEFAULT_NULL_VALUE_ON_TX } from '../commons/utils';
+import {
+  DEFAULT_NULL_VALUE_ON_TX,
+  gasLimitRecommendations,
+} from '../commons/utils';
 import { Pool } from '../v3-pool-contract';
 import { IMigrationHelper } from './typechain/IMigrationHelper';
 import { IMigrationHelper__factory } from './typechain/IMigrationHelper__factory';
@@ -68,6 +72,263 @@ describe('V3MigrationService', () => {
         pool,
       );
       expect(instance instanceof V3MigrationHelperService).toEqual(true);
+    });
+  });
+  describe('migrationTxBuilder', () => {
+    const supplyAssets = [
+      {
+        aToken: '0x0000000000000000000000000000000000000003',
+        underlyingAsset: '0x0000000000000000000000000000000000000004',
+        deadline: 123,
+        amount: '123400000000',
+      },
+    ];
+    const repayAssetsStable = [
+      {
+        debtToken: '0x0000000000000000000000000000000000000003',
+        rateMode: InterestRate.Stable,
+        underlyingAsset: '0x0000000000000000000000000000000000000004',
+        deadline: 123,
+        amount: '123400000000',
+      },
+    ];
+    const repayAssetsVariable = [
+      {
+        debtToken: '0x0000000000000000000000000000000000000003',
+        rateMode: InterestRate.Variable,
+        underlyingAsset: '0x0000000000000000000000000000000000000004',
+        deadline: 123,
+        amount: '123400000000',
+      },
+    ];
+    const signedSupplyPermits = [
+      {
+        deadline: 1234,
+        aToken: '0x0000000000000000000000000000000000000003',
+        value: '112300000',
+        signedPermit:
+          '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c',
+      },
+    ];
+    const signedCreditDelegationPermits = [
+      {
+        deadline: 1234,
+        debtToken: '0x0000000000000000000000000000000000000003',
+        value: '112300000',
+        signedPermit:
+          '0x532f8df4e2502bd869fb35e9301156f9b307380afdcc25cfbc87b2e939f16f7e47c326dc26eb918d327358797ee67ad7415d871ef7eaf0d4f6352d3ad021fbb41c',
+      },
+    ];
+    const creditDelegationApprovals = [
+      {
+        debtTokenAddress: '0x0000000000000000000000000000000000000003',
+        amount: '13451',
+      },
+    ];
+    describe('generateTxData', () => {
+      it('Exepects to work with params no sig no approvals and variable', async () => {
+        const instance = new V3MigrationHelperService(
+          provider,
+          MIGRATOR_ADDRESS,
+          pool,
+        );
+
+        const migrateTx = instance.migrationTxBuilder.generateTxData({
+          user,
+          supplyAssets,
+          repayAssets: repayAssetsVariable,
+          signedSupplyPermits: [],
+          signedCreditDelegationPermits: [],
+        });
+        expect(migrateTx.to).toEqual(MIGRATOR_ADDRESS);
+        expect(migrateTx.from).toEqual(user);
+        expect(migrateTx.gasLimit?.toString()).toEqual(
+          gasLimitRecommendations[
+            ProtocolAction.migrateV3
+          ].recommended.toString(),
+        );
+        const decoded = utils.defaultAbiCoder.decode(
+          [
+            'address[]',
+            '(address,uint256)[]',
+            '(address,uint256,uint256,uint256,bytes32,bytes32)[]',
+            '(address,uint256,uint256,uint256,bytes32,bytes32)[]',
+          ],
+          utils.hexDataSlice(migrateTx.data ?? '', 4),
+        );
+
+        expect(decoded.length).toEqual(4);
+      });
+      it('Exepects to work with params no sig no approvals and stable', async () => {
+        const instance = new V3MigrationHelperService(
+          provider,
+          MIGRATOR_ADDRESS,
+          pool,
+        );
+        const migrateTx = instance.migrationTxBuilder.generateTxData({
+          user,
+          supplyAssets,
+          repayAssets: repayAssetsStable,
+          signedSupplyPermits: [],
+          signedCreditDelegationPermits: [],
+        });
+
+        expect(migrateTx.to).toEqual(MIGRATOR_ADDRESS);
+        expect(migrateTx.from).toEqual(user);
+        expect(migrateTx.gasLimit?.toString()).toEqual(
+          gasLimitRecommendations[
+            ProtocolAction.migrateV3
+          ].recommended.toString(),
+        );
+
+        const decoded = utils.defaultAbiCoder.decode(
+          [
+            'address[]',
+            '(address,uint256)[]',
+            '(address,uint256,uint256,uint256,bytes32,bytes32)[]',
+            '(address,uint256,uint256,uint256,bytes32,bytes32)[]',
+          ],
+          utils.hexDataSlice(migrateTx.data ?? '', 4),
+        );
+
+        expect(decoded.length).toEqual(4);
+      });
+      it('Expects to work with params and sig', async () => {
+        const instance = new V3MigrationHelperService(
+          provider,
+          MIGRATOR_ADDRESS,
+          pool,
+        );
+        const migrateTx = instance.migrationTxBuilder.generateTxData({
+          user,
+          supplyAssets,
+          repayAssets: repayAssetsStable,
+          signedSupplyPermits,
+          signedCreditDelegationPermits,
+        });
+
+        expect(migrateTx.to).toEqual(MIGRATOR_ADDRESS);
+        expect(migrateTx.from).toEqual(user);
+        expect(migrateTx.gasLimit?.toString()).toEqual(
+          gasLimitRecommendations[
+            ProtocolAction.migrateV3
+          ].recommended.toString(),
+        );
+
+        const decoded = utils.defaultAbiCoder.decode(
+          [
+            'address[]',
+            '(address,uint256)[]',
+            '(address,uint256,uint256,uint256,bytes32,bytes32)[]',
+            '(address,uint256,uint256,uint256,bytes32,bytes32)[]',
+          ],
+          utils.hexDataSlice(migrateTx.data ?? '', 4),
+        );
+
+        expect(decoded.length).toEqual(4);
+      });
+    });
+    describe('generateApprovalsTxs', () => {
+      it('Expects to work with supply assets that need approvals', async () => {
+        const instance = new V3MigrationHelperService(
+          provider,
+          MIGRATOR_ADDRESS,
+          pool,
+        );
+        const isApprovedSpy = jest
+          .spyOn(instance.erc20Service, 'isApproved')
+          .mockImplementationOnce(async () => Promise.resolve(false));
+        const isApprovedDelegationSpy = jest
+          .spyOn(instance.baseDebtTokenService, 'isDelegationApproved')
+          .mockImplementationOnce(async () => Promise.resolve(true));
+        const approveTxs =
+          await instance.migrationTxBuilder.generateApprovalsTxs({
+            user,
+            supplyAssets,
+            creditDelegationApprovals: [],
+          });
+        expect(isApprovedSpy).toHaveBeenCalled();
+        expect(isApprovedDelegationSpy).not.toHaveBeenCalled();
+        expect(approveTxs.supplyApprovalTxs.length).toEqual(1);
+        expect(approveTxs.borrowCreditDelegationApprovalTxs.length).toEqual(0);
+        const assetApproval = approveTxs.supplyApprovalTxs[0];
+        expect(assetApproval.token).toEqual(supplyAssets[0].aToken);
+        expect(assetApproval.user).toEqual(user);
+      });
+      it('Expects to work with supply assets that dont need approvals', async () => {
+        const instance = new V3MigrationHelperService(
+          provider,
+          MIGRATOR_ADDRESS,
+          pool,
+        );
+        const isApprovedSpy = jest
+          .spyOn(instance.erc20Service, 'isApproved')
+          .mockImplementationOnce(async () => Promise.resolve(true));
+        const isApprovedDelegationSpy = jest
+          .spyOn(instance.baseDebtTokenService, 'isDelegationApproved')
+          .mockImplementationOnce(async () => Promise.resolve(true));
+        const approveTxs =
+          await instance.migrationTxBuilder.generateApprovalsTxs({
+            user,
+            supplyAssets,
+            creditDelegationApprovals: [],
+          });
+        expect(isApprovedSpy).toHaveBeenCalled();
+        expect(isApprovedDelegationSpy).not.toHaveBeenCalled();
+        expect(approveTxs.supplyApprovalTxs.length).toEqual(0);
+        expect(approveTxs.borrowCreditDelegationApprovalTxs.length).toEqual(0);
+      });
+      it('Expect to work with credit delegation that need approval', async () => {
+        const instance = new V3MigrationHelperService(
+          provider,
+          MIGRATOR_ADDRESS,
+          pool,
+        );
+        const isApprovedSpy = jest
+          .spyOn(instance.erc20Service, 'isApproved')
+          .mockImplementationOnce(async () => Promise.resolve(true));
+        const isApprovedDelegationSpy = jest
+          .spyOn(instance.baseDebtTokenService, 'isDelegationApproved')
+          .mockImplementationOnce(async () => Promise.resolve(false));
+        const approveTxs =
+          await instance.migrationTxBuilder.generateApprovalsTxs({
+            user,
+            supplyAssets: [],
+            creditDelegationApprovals,
+          });
+        expect(isApprovedSpy).not.toHaveBeenCalled();
+        expect(isApprovedDelegationSpy).toHaveBeenCalled();
+        expect(approveTxs.supplyApprovalTxs.length).toEqual(0);
+        expect(approveTxs.borrowCreditDelegationApprovalTxs.length).toEqual(1);
+        const assetApproval = approveTxs.borrowCreditDelegationApprovalTxs[0];
+        expect(assetApproval.debtTokenAddress).toEqual(
+          creditDelegationApprovals[0].debtTokenAddress,
+        );
+        expect(assetApproval.user).toEqual(user);
+      });
+      it('Expect to work with credit delegation that dont need approval', async () => {
+        const instance = new V3MigrationHelperService(
+          provider,
+          MIGRATOR_ADDRESS,
+          pool,
+        );
+        const isApprovedSpy = jest
+          .spyOn(instance.erc20Service, 'isApproved')
+          .mockImplementationOnce(async () => Promise.resolve(true));
+        const isApprovedDelegationSpy = jest
+          .spyOn(instance.baseDebtTokenService, 'isDelegationApproved')
+          .mockImplementationOnce(async () => Promise.resolve(true));
+        const approveTxs =
+          await instance.migrationTxBuilder.generateApprovalsTxs({
+            user,
+            supplyAssets: [],
+            creditDelegationApprovals,
+          });
+        expect(isApprovedSpy).not.toHaveBeenCalled();
+        expect(isApprovedDelegationSpy).toHaveBeenCalled();
+        expect(approveTxs.supplyApprovalTxs.length).toEqual(0);
+        expect(approveTxs.borrowCreditDelegationApprovalTxs.length).toEqual(0);
+      });
     });
   });
   describe('migrate', () => {
