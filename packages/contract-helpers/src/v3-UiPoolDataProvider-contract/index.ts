@@ -190,9 +190,9 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
         debtCeilingDecimals: reserveRaw.debtCeilingDecimals.toNumber(),
         isSiloedBorrowing: reserveRaw.isSiloedBorrowing,
         flashLoanEnabled: reserveRaw.flashLoanEnabled,
-        virtualAccActive: reserveRaw.virtualAccActive || false,
+        virtualAccActive: reserveRaw.virtualAccActive ?? false,
         virtualUnderlyingBalance:
-          reserveRaw.virtualUnderlyingBalance?.toString() || '0',
+          reserveRaw.virtualUnderlyingBalance?.toString() ?? '0',
       }),
     );
 
