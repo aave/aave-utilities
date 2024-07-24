@@ -196,6 +196,8 @@ describe('UiPoolDataProvider', () => {
             debtCeilingDecimals: 0,
             borrowableInIsolation: false,
             flashLoanEnabled: false,
+            virtualAccActive: false,
+            virtualUnderlyingBalance: '0',
           },
           {
             id: '137-0xa478c2975ab1ea89e8196811f51a7b7ade33eb11-0x88757f2f99175387ab4c6a4b3067c77a695b0349',
@@ -257,6 +259,8 @@ describe('UiPoolDataProvider', () => {
             debtCeilingDecimals: 0,
             borrowableInIsolation: false,
             flashLoanEnabled: false,
+            virtualAccActive: false,
+            virtualUnderlyingBalance: '0',
           },
         ],
         baseCurrencyData: {
