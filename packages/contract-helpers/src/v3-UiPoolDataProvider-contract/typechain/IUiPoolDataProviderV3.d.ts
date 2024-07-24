@@ -214,8 +214,8 @@ export class IUiPoolDataProviderV3 extends BaseContract {
           eModePriceSource: string;
           eModeLabel: string;
           borrowableInIsolation: boolean;
-          virtualAccActive: boolean | undefined;
-          virtualUnderlyingBalance: BigNumber | undefined;
+          virtualAccActive: boolean;
+          virtualUnderlyingBalance: BigNumber;
         })[],
         [BigNumber, BigNumber, BigNumber, number] & {
           marketReferenceCurrencyUnit: BigNumber;
@@ -376,8 +376,8 @@ export class IUiPoolDataProviderV3 extends BaseContract {
         eModePriceSource: string;
         eModeLabel: string;
         borrowableInIsolation: boolean;
-        virtualAccActive?: boolean;
-        virtualUnderlyingBalance?: BigNumber;
+        virtualAccActive: boolean;
+        virtualUnderlyingBalance: BigNumber;
       })[],
       [BigNumber, BigNumber, BigNumber, number] & {
         marketReferenceCurrencyUnit: BigNumber;
@@ -538,8 +538,8 @@ export class IUiPoolDataProviderV3 extends BaseContract {
           eModePriceSource: string;
           eModeLabel: string;
           borrowableInIsolation: boolean;
-          virtualAccActive: boolean | undefined;
-          virtualUnderlyingBalance: BigNumber | undefined;
+          virtualAccActive: boolean;
+          virtualUnderlyingBalance: BigNumber;
         })[],
         [BigNumber, BigNumber, BigNumber, number] & {
           marketReferenceCurrencyUnit: BigNumber;
