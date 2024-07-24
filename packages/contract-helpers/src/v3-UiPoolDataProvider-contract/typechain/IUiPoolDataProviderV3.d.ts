@@ -319,8 +319,8 @@ export class IUiPoolDataProviderV3 extends BaseContract {
         string,
         string,
         boolean,
-        boolean | undefined,
-        BigNumber | undefined,
+        boolean?,
+        BigNumber?,
       ] & {
         underlyingAsset: string;
         name: string;
@@ -376,8 +376,8 @@ export class IUiPoolDataProviderV3 extends BaseContract {
         eModePriceSource: string;
         eModeLabel: string;
         borrowableInIsolation: boolean;
-        virtualAccActive: boolean | undefined;
-        virtualUnderlyingBalance: BigNumber | undefined;
+        virtualAccActive?: boolean;
+        virtualUnderlyingBalance?: BigNumber;
       })[],
       [BigNumber, BigNumber, BigNumber, number] & {
         marketReferenceCurrencyUnit: BigNumber;
