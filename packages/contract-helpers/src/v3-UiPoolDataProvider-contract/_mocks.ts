@@ -149,6 +149,11 @@ export const reservesMock: ReservesData = {
         _hex: '0x0',
         _isBigNumber: true,
       }),
+      virtualAccActive: false,
+      virtualUnderlyingBalance: BigNumber.from({
+        _hex: '0x0',
+        _isBigNumber: true,
+      }),
     },
     {
       underlyingAsset: '0xA478c2975Ab1Ea89e8196811F51A7B7Ade33eB11',
@@ -293,6 +298,11 @@ export const reservesMock: ReservesData = {
         _isBigNumber: true,
       }),
       debtCeilingDecimals: BigNumber.from({
+        _hex: '0x0',
+        _isBigNumber: true,
+      }),
+      virtualAccActive: false,
+      virtualUnderlyingBalance: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
       }),
