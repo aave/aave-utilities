@@ -157,8 +157,8 @@ export class IUiPoolDataProviderV3 extends BaseContract {
           string,
           string,
           boolean,
-          boolean | undefined,
-          BigNumber | undefined,
+          boolean,
+          BigNumber,
         ] & {
           underlyingAsset: string;
           name: string;
@@ -319,8 +319,8 @@ export class IUiPoolDataProviderV3 extends BaseContract {
         string,
         string,
         boolean,
-        boolean?,
-        BigNumber?,
+        boolean,
+        BigNumber,
       ] & {
         underlyingAsset: string;
         name: string;
@@ -481,8 +481,8 @@ export class IUiPoolDataProviderV3 extends BaseContract {
           string,
           string,
           boolean,
-          boolean | undefined,
-          BigNumber | undefined,
+          boolean,
+          BigNumber,
         ] & {
           underlyingAsset: string;
           name: string;
