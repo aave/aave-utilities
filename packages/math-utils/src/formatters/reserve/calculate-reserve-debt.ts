@@ -11,6 +11,7 @@ export interface CalculateReserveDebtRequest {
   lastUpdateTimestamp: number;
   averageStableRate: string;
   stableDebtLastUpdateTimestamp: number;
+  virtualUnderlyingBalance: string;
 }
 
 export interface CalculateReserveDebtResponse {
@@ -27,7 +28,9 @@ export function calculateReserveDebt(
   const totalVariableDebt = getTotalVariableDebt(reserveDebt, currentTimestamp);
   const totalStableDebt = getTotalStableDebt(reserveDebt, currentTimestamp);
   const totalDebt = totalVariableDebt.plus(totalStableDebt);
-  const totalLiquidity = totalDebt.plus(reserveDebt.availableLiquidity);
+  const totalLiquidity = totalDebt
+    .plus(reserveDebt.availableLiquidity)
+    .plus(reserveDebt.virtualUnderlyingBalance);
   return {
     totalVariableDebt,
     totalStableDebt,

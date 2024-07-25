@@ -82,6 +82,8 @@ export interface ReserveData {
   eModeLiquidationThreshold: number;
   eModeLiquidationBonus: number;
   unbacked: string;
+  virtualAccActive: boolean;
+  virtualUnderlyingBalance: string;
 }
 
 interface GetComputedReserveFieldsResponse {
