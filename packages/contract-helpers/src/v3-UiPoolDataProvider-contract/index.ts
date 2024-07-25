@@ -3,7 +3,6 @@ import { isAddress } from 'ethers/lib/utils';
 import { ReservesHelperInput, UserReservesHelperInput } from '../index';
 import { IUiPoolDataProviderV3 as UiPoolDataProviderContract } from './typechain/IUiPoolDataProviderV3';
 import { IUiPoolDataProviderV3__factory } from './typechain/IUiPoolDataProviderV3__factory';
-import { IUiPoolDataProviderV3_legacy__factory } from './typechain/IUiPoolDataProviderV3_legacy_factory';
 import {
   ReservesData,
   UserReserveData,
@@ -43,7 +42,6 @@ export interface UiPoolDataProviderContext {
 export interface UiPoolDataProviderInterface {
   getReservesList: (args: ReservesHelperInput) => Promise<string[]>;
   getReservesData: (args: ReservesHelperInput) => Promise<ReservesData>;
-  getReservesDataLegacy: (args: ReservesHelperInput) => Promise<ReservesData>; // for v2 and v3 markets that did not get the 3.1 upgrade
   getUserReservesData: (
     args: UserReservesHelperInput,
   ) => Promise<UserReserveData>;
@@ -105,24 +103,6 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
     }
 
     return this._contract.getReservesData(lendingPoolAddressProvider);
-  }
-
-  /**
-   * Get data for each lending pool reserve
-   */
-  public async getReservesDataLegacy({
-    lendingPoolAddressProvider,
-  }: ReservesHelperInput): Promise<ReservesData> {
-    if (!isAddress(lendingPoolAddressProvider)) {
-      throw new Error('Lending pool address is not valid');
-    }
-
-    const contract = IUiPoolDataProviderV3_legacy__factory.connect(
-      this.uiPoolDataProviderAddress,
-      this.provider,
-    );
-
-    return contract.getReservesData(lendingPoolAddressProvider);
   }
 
   /**
