@@ -58,8 +58,6 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
   private readonly _contract: UiPoolDataProviderContract;
 
   private readonly chainId: number;
-  private readonly uiPoolDataProviderAddress: string;
-  private readonly provider: providers.Provider;
 
   /**
    * Constructor
@@ -75,8 +73,6 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
       context.provider,
     );
     this.chainId = context.chainId;
-    this.uiPoolDataProviderAddress = context.uiPoolDataProviderAddress;
-    this.provider = context.provider;
   }
 
   /**
