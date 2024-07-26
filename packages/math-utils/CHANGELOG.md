@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.29.0 (2024-07-26)
+
+
+### Features
+
+* v3.1 upgrade ([#585](https://github.com/aave/aave-utilities/issues/585)) ([c65037e](https://github.com/aave/aave-utilities/commit/c65037e5ba24c6ed910a07012f28d8a9b914eb81))
+
+
+
+
+
 ## 1.28.2 (2024-05-31)
 
 **Note:** Version bump only for package @aave/math-utils
