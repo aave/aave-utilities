@@ -48,6 +48,10 @@ export interface LegacyUiPoolDataProviderInterface {
   }>;
 }
 
+/**
+ * This class is only intended to be used with v2 markets
+ * or v3 markets that do not have the v3.1 upgrade applied
+ */
 export class LegacyUiPoolDataProvider
   implements LegacyUiPoolDataProviderInterface
 {

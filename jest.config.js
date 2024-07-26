@@ -26,7 +26,6 @@ module.exports = {
     'packages/contract-helpers/src/paraswap-liquiditySwapAdapter-contract/typechain',
     'packages/contract-helpers/src/staking-contract/typechain',
     'packages/contract-helpers/src/v3-UiPoolDataProvider-contract/typechain',
-    'packages/contract-helpers/src/v3-UiPoolDataProvider-contract/index.ts', // TODO: remove this
     'packages/contract-helpers/src/v3-UiIncentiveDataProvider-contract/typechain',
     'packages/contract-helpers/src/governance-contract/typechain',
     'packages/contract-helpers/src/governance-power-delegation-contract/typechain',
