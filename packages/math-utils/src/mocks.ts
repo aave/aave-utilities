@@ -47,6 +47,8 @@ export class ReserveMock {
       eModeLiquidationThreshold: 7000, // 70%
       eModeLiquidationBonus: 0,
       unbacked: '0',
+      virtualAccActive: false,
+      virtualUnderlyingBalance: '0',
     };
   }
 

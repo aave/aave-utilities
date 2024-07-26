@@ -1,13 +1,13 @@
 import { providers } from 'ethers';
 import { reservesMock, userReservesMock } from './_mocks';
-import { UiPoolDataProvider } from './index';
+import { LegacyUiPoolDataProvider } from './index';
 
 describe('UiPoolDataProvider', () => {
   const mockValidEthereumAddress = '0x88757f2f99175387ab4c6a4b3067c77a695b0349';
   const mockInvalidEthereumAddress = '0x0';
 
   const createValidInstance = () => {
-    const instance = new UiPoolDataProvider({
+    const instance = new LegacyUiPoolDataProvider({
       uiPoolDataProviderAddress: mockValidEthereumAddress,
       provider: new providers.JsonRpcProvider(),
       chainId: 137,
@@ -33,7 +33,7 @@ describe('UiPoolDataProvider', () => {
     it('should throw an error if the contractAddress is not valid', () => {
       expect(
         () =>
-          new UiPoolDataProvider({
+          new LegacyUiPoolDataProvider({
             uiPoolDataProviderAddress: mockInvalidEthereumAddress,
             provider: new providers.JsonRpcProvider(),
             chainId: 137,
@@ -41,13 +41,13 @@ describe('UiPoolDataProvider', () => {
       ).toThrowError('contract address is not valid');
     });
     it('should work if all info is correct', () => {
-      const instance = new UiPoolDataProvider({
+      const instance = new LegacyUiPoolDataProvider({
         uiPoolDataProviderAddress: mockValidEthereumAddress,
         provider: new providers.JsonRpcProvider(),
         chainId: 137,
       });
 
-      expect(instance instanceof UiPoolDataProvider).toEqual(true);
+      expect(instance instanceof LegacyUiPoolDataProvider).toEqual(true);
     });
   });
 

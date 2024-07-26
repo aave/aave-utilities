@@ -1,0 +1,66 @@
+import { BigNumber } from 'ethers';
+
+export interface LegacyReservesData {
+  0: Array<{
+    underlyingAsset: string;
+    name: string;
+    symbol: string;
+    decimals: BigNumber;
+    baseLTVasCollateral: BigNumber;
+    reserveLiquidationThreshold: BigNumber;
+    reserveLiquidationBonus: BigNumber;
+    reserveFactor: BigNumber;
+    usageAsCollateralEnabled: boolean;
+    borrowingEnabled: boolean;
+    stableBorrowRateEnabled: boolean;
+    isActive: boolean;
+    isFrozen: boolean;
+    liquidityIndex: BigNumber;
+    variableBorrowIndex: BigNumber;
+    liquidityRate: BigNumber;
+    variableBorrowRate: BigNumber;
+    stableBorrowRate: BigNumber;
+    lastUpdateTimestamp: number;
+    aTokenAddress: string;
+    stableDebtTokenAddress: string;
+    variableDebtTokenAddress: string;
+    interestRateStrategyAddress: string;
+    availableLiquidity: BigNumber;
+    totalPrincipalStableDebt: BigNumber;
+    averageStableRate: BigNumber;
+    stableDebtLastUpdateTimestamp: BigNumber;
+    totalScaledVariableDebt: BigNumber;
+    priceInMarketReferenceCurrency: BigNumber;
+    priceOracle: string;
+    variableRateSlope1: BigNumber;
+    variableRateSlope2: BigNumber;
+    stableRateSlope1: BigNumber;
+    stableRateSlope2: BigNumber;
+    baseStableBorrowRate: BigNumber;
+    baseVariableBorrowRate: BigNumber;
+    optimalUsageRatio: BigNumber;
+    isPaused: boolean;
+    isSiloedBorrowing: boolean;
+    accruedToTreasury: BigNumber;
+    unbacked: BigNumber;
+    isolationModeTotalDebt: BigNumber;
+    debtCeiling: BigNumber;
+    debtCeilingDecimals: BigNumber;
+    eModeCategoryId: number;
+    borrowCap: BigNumber;
+    supplyCap: BigNumber;
+    eModeLtv: number;
+    eModeLiquidationThreshold: number;
+    eModeLiquidationBonus: number;
+    eModePriceSource: string;
+    eModeLabel: string;
+    borrowableInIsolation: boolean;
+    flashLoanEnabled: boolean;
+  }>;
+  1: {
+    marketReferenceCurrencyUnit: BigNumber;
+    marketReferenceCurrencyPriceInUsd: BigNumber;
+    networkBaseTokenPriceInUsd: BigNumber;
+    networkBaseTokenPriceDecimals: number;
+  };
+}

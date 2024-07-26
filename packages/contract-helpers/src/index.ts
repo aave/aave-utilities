@@ -5,6 +5,7 @@ export {
 } from './permissions-manager/types/PermissionManagerTypes';
 export * from './v3-UiIncentiveDataProvider-contract';
 export * from './v3-UiPoolDataProvider-contract';
+export * from './v3-UiPoolDataProvider-legacy-contract';
 export * from './wallet-balance-provider';
 export * from './cl-feed-registry';
 // export * from './uiStakeDataProvider-contract';

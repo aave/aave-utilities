@@ -1,16 +1,16 @@
-import { providers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import { ReservesHelperInput, UserReservesHelperInput } from '../index';
-import { IUiPoolDataProviderV3 as UiPoolDataProviderContract } from './typechain/IUiPoolDataProviderV3';
-import { IUiPoolDataProviderV3__factory } from './typechain/IUiPoolDataProviderV3__factory';
 import {
-  ReservesData,
-  UserReserveData,
   PoolBaseCurrencyHumanized,
   ReserveDataHumanized,
   ReservesDataHumanized,
+  UiPoolDataProviderContext,
+  UserReserveData,
   UserReserveDataHumanized,
-} from './types';
+} from '../v3-UiPoolDataProvider-contract';
+import { IUiPoolDataProviderV3 as UiPoolDataProviderContract } from './typechain/IUiPoolDataProviderV3';
+import { IUiPoolDataProviderV3__factory } from './typechain/IUiPoolDataProviderV3__factory';
+import { LegacyReservesData } from './types';
 
 export * from './types';
 
@@ -33,15 +33,9 @@ const ammSymbolMap: Record<string, string> = {
   '0x59a19d8c652fa0284f44113d0ff9aba70bd46fb4': 'BPTBALWETH',
 };
 
-export interface UiPoolDataProviderContext {
-  uiPoolDataProviderAddress: string;
-  provider: providers.Provider;
-  chainId: number;
-}
-
-export interface UiPoolDataProviderInterface {
+export interface LegacyUiPoolDataProviderInterface {
   getReservesList: (args: ReservesHelperInput) => Promise<string[]>;
-  getReservesData: (args: ReservesHelperInput) => Promise<ReservesData>;
+  getReservesData: (args: ReservesHelperInput) => Promise<LegacyReservesData>;
   getUserReservesData: (
     args: UserReservesHelperInput,
   ) => Promise<UserReserveData>;
@@ -54,11 +48,16 @@ export interface UiPoolDataProviderInterface {
   }>;
 }
 
-export class UiPoolDataProvider implements UiPoolDataProviderInterface {
+/**
+ * This class is only intended to be used with v2 markets
+ * or v3 markets that do not have the v3.1 upgrade applied
+ */
+export class LegacyUiPoolDataProvider
+  implements LegacyUiPoolDataProviderInterface
+{
   private readonly _contract: UiPoolDataProviderContract;
 
   private readonly chainId: number;
-
   /**
    * Constructor
    * @param context The ui pool data provider context
@@ -93,7 +92,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
    */
   public async getReservesData({
     lendingPoolAddressProvider,
-  }: ReservesHelperInput): Promise<ReservesData> {
+  }: ReservesHelperInput): Promise<LegacyReservesData> {
     if (!isAddress(lendingPoolAddressProvider)) {
       throw new Error('Lending pool address is not valid');
     }
@@ -122,7 +121,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
   public async getReservesHumanized({
     lendingPoolAddressProvider,
   }: ReservesHelperInput): Promise<ReservesDataHumanized> {
-    const { 0: reservesRaw, 1: poolBaseCurrencyRaw }: ReservesData =
+    const { 0: reservesRaw, 1: poolBaseCurrencyRaw }: LegacyReservesData =
       await this.getReservesData({ lendingPoolAddressProvider });
 
     const reservesData: ReserveDataHumanized[] = reservesRaw.map(
@@ -191,9 +190,8 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
         debtCeilingDecimals: reserveRaw.debtCeilingDecimals.toNumber(),
         isSiloedBorrowing: reserveRaw.isSiloedBorrowing,
         flashLoanEnabled: reserveRaw.flashLoanEnabled,
-        virtualAccActive: reserveRaw.virtualAccActive,
-        virtualUnderlyingBalance:
-          reserveRaw.virtualUnderlyingBalance.toString(),
+        virtualAccActive: false,
+        virtualUnderlyingBalance: '0',
       }),
     );
 

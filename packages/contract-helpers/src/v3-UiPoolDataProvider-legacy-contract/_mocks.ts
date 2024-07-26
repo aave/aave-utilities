@@ -1,7 +1,8 @@
 import { BigNumber } from 'ethers';
-import { ReservesData, UserReserveData } from './types';
+import { UserReserveData } from '../v3-UiPoolDataProvider-contract';
+import { LegacyReservesData } from './types';
 
-export const reservesMock: ReservesData = {
+export const reservesMock: LegacyReservesData = {
   0: [
     {
       underlyingAsset: '0x3E0437898a5667a4769B1Ca5A34aAB1ae7E81377',
@@ -149,11 +150,6 @@ export const reservesMock: ReservesData = {
         _hex: '0x0',
         _isBigNumber: true,
       }),
-      virtualAccActive: false,
-      virtualUnderlyingBalance: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
     },
     {
       underlyingAsset: '0xA478c2975Ab1Ea89e8196811F51A7B7Ade33eB11',
@@ -298,11 +294,6 @@ export const reservesMock: ReservesData = {
         _isBigNumber: true,
       }),
       debtCeilingDecimals: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
-      virtualAccActive: false,
-      virtualUnderlyingBalance: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
       }),

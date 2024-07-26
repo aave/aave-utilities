@@ -291,16 +291,6 @@ const _abi = [
             name: 'borrowableInIsolation',
             type: 'bool',
           },
-          {
-            internalType: 'bool',
-            name: 'virtualAccActive',
-            type: 'bool',
-          },
-          {
-            internalType: 'uint128',
-            name: 'virtualUnderlyingBalance',
-            type: 'uint128',
-          },
         ],
         internalType: 'struct IUiPoolDataProviderV3.AggregatedReserveData[]',
         name: '',
@@ -422,33 +412,7 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-  {
-    inputs: [],
-    name: 'marketReferenceCurrencyPriceInUsdProxyAggregator',
-    outputs: [
-      {
-        internalType: 'contract IEACAggregatorProxy',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'networkBaseTokenPriceInUsdProxyAggregator',
-    outputs: [
-      {
-        internalType: 'contract IEACAggregatorProxy',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-] as const;
+];
 
 export class IUiPoolDataProviderV3__factory {
   static readonly abi = _abi;
