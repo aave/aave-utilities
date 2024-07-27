@@ -125,8 +125,11 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
     const { 0: reservesRaw, 1: poolBaseCurrencyRaw }: ReservesData =
       await this.getReservesData({ lendingPoolAddressProvider });
 
-    const reservesData: ReserveDataHumanized[] = reservesRaw.map(
-      reserveRaw => ({
+    const reservesData: ReserveDataHumanized[] = reservesRaw.map(reserveRaw => {
+      const virtualUnderlyingBalance =
+        reserveRaw.virtualUnderlyingBalance.toString();
+      const { virtualAccActive } = reserveRaw;
+      return {
         id: `${this.chainId}-${reserveRaw.underlyingAsset}-${lendingPoolAddressProvider}`.toLowerCase(),
         underlyingAsset: reserveRaw.underlyingAsset.toLowerCase(),
         name: reserveRaw.name,
@@ -191,11 +194,10 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
         debtCeilingDecimals: reserveRaw.debtCeilingDecimals.toNumber(),
         isSiloedBorrowing: reserveRaw.isSiloedBorrowing,
         flashLoanEnabled: reserveRaw.flashLoanEnabled,
-        virtualAccActive: reserveRaw.virtualAccActive,
-        virtualUnderlyingBalance:
-          reserveRaw.virtualUnderlyingBalance.toString(),
-      }),
-    );
+        virtualAccActive,
+        virtualUnderlyingBalance,
+      };
+    });
 
     const baseCurrencyData: PoolBaseCurrencyHumanized = {
       // this is to get the decimals from the unit so 1e18 = string length of 19 - 1 to get the number of 0

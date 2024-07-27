@@ -28,9 +28,7 @@ export function calculateReserveDebt(
   const totalVariableDebt = getTotalVariableDebt(reserveDebt, currentTimestamp);
   const totalStableDebt = getTotalStableDebt(reserveDebt, currentTimestamp);
   const totalDebt = totalVariableDebt.plus(totalStableDebt);
-  const totalLiquidity = totalDebt
-    .plus(reserveDebt.availableLiquidity)
-    .plus(reserveDebt.virtualUnderlyingBalance);
+  const totalLiquidity = totalDebt.plus(reserveDebt.availableLiquidity);
   return {
     totalVariableDebt,
     totalStableDebt,
