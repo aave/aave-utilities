@@ -159,9 +159,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
           reserveRaw.variableDebtTokenAddress.toString(),
         interestRateStrategyAddress:
           reserveRaw.interestRateStrategyAddress.toString(),
-        availableLiquidity: virtualAccActive
-          ? virtualUnderlyingBalance
-          : reserveRaw.availableLiquidity.toString(),
+        availableLiquidity: reserveRaw.availableLiquidity.toString(),
         totalPrincipalStableDebt:
           reserveRaw.totalPrincipalStableDebt.toString(),
         averageStableRate: reserveRaw.averageStableRate.toString(),
