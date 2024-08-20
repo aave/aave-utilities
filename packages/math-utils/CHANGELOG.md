@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.30.0 (2024-08-20)
+
+
+### Features
+
+* add zksync ([#587](https://github.com/aave/aave-utilities/issues/587)) ([f256271](https://github.com/aave/aave-utilities/commit/f25627193eede933a63c09ae1c3dbbb5705d22fa))
+
+
+
+
+
 ## 1.29.1 (2024-07-27)
 
 **Note:** Version bump only for package @aave/math-utils
