@@ -16,11 +16,12 @@ export function calculateIncentiveAPR({
   rewardTokenPriceInMarketReferenceCurrency,
   priceInMarketReferenceCurrency,
   totalTokenSupply,
+  rewardTokenDecimals,
   decimals,
 }: CalculateIncentiveAPRRequest): string {
   const emissionPerSecondNormalized = normalizeBN(
     emissionPerSecond,
-    decimals,
+    rewardTokenDecimals,
   ).multipliedBy(rewardTokenPriceInMarketReferenceCurrency);
 
   if (emissionPerSecondNormalized.eq(0)) {
