@@ -1,5 +1,5 @@
 import { normalize, normalizeBN, valueToBigNumber } from '../../bignumber';
-import { SECONDS_PER_YEAR, WEI_DECIMALS } from '../../constants';
+import { SECONDS_PER_YEAR } from '../../constants';
 
 export interface CalculateIncentiveAPRRequest {
   emissionPerSecond: string;
