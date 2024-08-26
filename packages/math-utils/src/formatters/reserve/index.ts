@@ -454,6 +454,7 @@ export function formatReservesAndIncentives<T extends ReserveDataWithPrice>({
     marketReferenceCurrencyDecimals,
     marketReferencePriceInUsd,
   });
+
   return formattedReserves.map(reserve => {
     const reserveIncentive = reserveIncentives.find(
       reserveIncentive =>

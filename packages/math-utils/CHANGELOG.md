@@ -1,105 +1,67 @@
 # Change Log
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 ## 1.30.1 (2024-08-26)
 
 **Note:** Version bump only for package @aave/math-utils
 
-
-
-
-
 # 1.30.0 (2024-08-20)
-
 
 ### Features
 
-* add zksync ([#587](https://github.com/aave/aave-utilities/issues/587)) ([f256271](https://github.com/aave/aave-utilities/commit/f25627193eede933a63c09ae1c3dbbb5705d22fa))
-
-
-
-
+- add zksync ([#587](https://github.com/aave/aave-utilities/issues/587))
+  ([f256271](https://github.com/aave/aave-utilities/commit/f25627193eede933a63c09ae1c3dbbb5705d22fa))
 
 ## 1.29.1 (2024-07-27)
 
 **Note:** Version bump only for package @aave/math-utils
 
-
-
-
-
 # 1.29.0 (2024-07-26)
-
 
 ### Features
 
-* v3.1 upgrade ([#585](https://github.com/aave/aave-utilities/issues/585)) ([c65037e](https://github.com/aave/aave-utilities/commit/c65037e5ba24c6ed910a07012f28d8a9b914eb81))
-
-
-
-
+- v3.1 upgrade ([#585](https://github.com/aave/aave-utilities/issues/585))
+  ([c65037e](https://github.com/aave/aave-utilities/commit/c65037e5ba24c6ed910a07012f28d8a9b914eb81))
 
 ## 1.28.2 (2024-05-31)
 
 **Note:** Version bump only for package @aave/math-utils
 
-
-
-
-
 ## 1.28.1 (2024-05-08)
 
 **Note:** Version bump only for package @aave/math-utils
 
-
-
-
-
 # 1.28.0 (2024-03-19)
-
 
 ### Features
 
-* add gas limit for staking migrate ([#577](https://github.com/aave/aave-utilities/issues/577)) ([004602a](https://github.com/aave/aave-utilities/commit/004602a79642b101162de98e2b91c9cd964554fe))
-
-
-
-
+- add gas limit for staking migrate
+  ([#577](https://github.com/aave/aave-utilities/issues/577))
+  ([004602a](https://github.com/aave/aave-utilities/commit/004602a79642b101162de98e2b91c9cd964554fe))
 
 # 1.27.0 (2024-03-11)
 
-
 ### Features
 
-* testnet updates ([#576](https://github.com/aave/aave-utilities/issues/576)) ([7334f68](https://github.com/aave/aave-utilities/commit/7334f68e3702fd5d47808b1f374423c1a0d2153b))
-
-
-
-
+- testnet updates ([#576](https://github.com/aave/aave-utilities/issues/576))
+  ([7334f68](https://github.com/aave/aave-utilities/commit/7334f68e3702fd5d47808b1f374423c1a0d2153b))
 
 # 1.26.0 (2024-03-11)
 
-
 ### Features
 
-* add arbitrum sepolia chainId ([#574](https://github.com/aave/aave-utilities/issues/574)) ([433974f](https://github.com/aave/aave-utilities/commit/433974fc1f0e40bdfad21fbab625280c757f1f73))
-
-
-
-
+- add arbitrum sepolia chainId
+  ([#574](https://github.com/aave/aave-utilities/issues/574))
+  ([433974f](https://github.com/aave/aave-utilities/commit/433974fc1f0e40bdfad21fbab625280c757f1f73))
 
 # 1.25.0 (2024-02-22)
 
-
 ### Features
 
-* sdai token wrapper ([#561](https://github.com/aave/aave-utilities/issues/561)) ([c772112](https://github.com/aave/aave-utilities/commit/c77211216fbcf86d71718c5450bc9aab5ec5a002))
-
-
-
-
+- sdai token wrapper ([#561](https://github.com/aave/aave-utilities/issues/561))
+  ([c772112](https://github.com/aave/aave-utilities/commit/c77211216fbcf86d71718c5450bc9aab5ec5a002))
 
 # Change Log
 
