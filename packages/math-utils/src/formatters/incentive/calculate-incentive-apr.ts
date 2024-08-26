@@ -20,7 +20,7 @@ export function calculateIncentiveAPR({
 }: CalculateIncentiveAPRRequest): string {
   const emissionPerSecondNormalized = normalizeBN(
     emissionPerSecond,
-    WEI_DECIMALS,
+    decimals,
   ).multipliedBy(rewardTokenPriceInMarketReferenceCurrency);
 
   if (emissionPerSecondNormalized.eq(0)) {
