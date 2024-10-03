@@ -6,7 +6,7 @@ import type { Provider } from '@ethersproject/providers';
 import type {
   UiIncentiveDataProviderV3,
   UiIncentiveDataProviderV3Interface,
-} from '../UiIncentiveDataProviderV3';
+} from './UiIncentiveDataProviderV3';
 
 const _abi = [
   {
