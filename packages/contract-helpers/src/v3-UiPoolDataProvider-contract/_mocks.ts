@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { ReservesData, UserReserveData } from './types';
+import { EModeData, ReservesData, UserReserveData } from './types';
 
 export const reservesMock: ReservesData = {
   0: [
@@ -29,7 +29,6 @@ export const reservesMock: ReservesData = {
       }),
       usageAsCollateralEnabled: false,
       borrowingEnabled: true,
-      stableBorrowRateEnabled: false,
       isActive: true,
       isFrozen: false,
       isPaused: false,
@@ -50,28 +49,11 @@ export const reservesMock: ReservesData = {
         _hex: '0x0',
         _isBigNumber: true,
       }),
-      stableBorrowRate: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
       lastUpdateTimestamp: 1631772892,
       aTokenAddress: '0xb8a16bbab34FA7A5C09Ec7679EAfb8fEC06897bc',
-      stableDebtTokenAddress: '0x9157d57DC97A7AFFC7b0a78E78fe25e1401B1dCc',
       variableDebtTokenAddress: '0xb7b7AF565495670713C92B8848fC8A650a968F81',
       interestRateStrategyAddress: '0x796ec26fc7df8D81BCB5BABF74ccdE0E2B122164',
       availableLiquidity: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
-      totalPrincipalStableDebt: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
-      averageStableRate: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
-      stableDebtLastUpdateTimestamp: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
       }),
@@ -92,18 +74,6 @@ export const reservesMock: ReservesData = {
         _hex: '0x0',
         _isBigNumber: true,
       }),
-      stableRateSlope1: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
-      stableRateSlope2: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
-      baseStableBorrowRate: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
       baseVariableBorrowRate: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
@@ -117,7 +87,6 @@ export const reservesMock: ReservesData = {
         _hex: '0x0',
         _isBigNumber: true,
       }),
-      eModeCategoryId: 1,
       borrowCap: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
@@ -126,11 +95,6 @@ export const reservesMock: ReservesData = {
         _hex: '0x0',
         _isBigNumber: true,
       }),
-      eModeLtv: 1,
-      eModeLiquidationThreshold: 1,
-      eModeLiquidationBonus: 1,
-      eModePriceSource: '0x3E0437898a5667a4769B1Ca5A34aAB1ae7E81377',
-      eModeLabel: 'test label',
       borrowableInIsolation: false,
       flashLoanEnabled: false,
       accruedToTreasury: BigNumber.from({
@@ -181,7 +145,6 @@ export const reservesMock: ReservesData = {
       }),
       usageAsCollateralEnabled: false,
       borrowingEnabled: true,
-      stableBorrowRateEnabled: false,
       isActive: true,
       isFrozen: false,
       isPaused: false,
@@ -202,28 +165,11 @@ export const reservesMock: ReservesData = {
         _hex: '0x0',
         _isBigNumber: true,
       }),
-      stableBorrowRate: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
       lastUpdateTimestamp: 1631772892,
       aTokenAddress: '0xb8a16bbab34FA7A5C09Ec7679EAfb8fEC06897bc',
-      stableDebtTokenAddress: '0x9157d57DC97A7AFFC7b0a78E78fe25e1401B1dCc',
       variableDebtTokenAddress: '0xb7b7AF565495670713C92B8848fC8A650a968F81',
       interestRateStrategyAddress: '0x796ec26fc7df8D81BCB5BABF74ccdE0E2B122164',
       availableLiquidity: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
-      totalPrincipalStableDebt: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
-      averageStableRate: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
-      stableDebtLastUpdateTimestamp: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
       }),
@@ -244,18 +190,6 @@ export const reservesMock: ReservesData = {
         _hex: '0x0',
         _isBigNumber: true,
       }),
-      stableRateSlope1: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
-      stableRateSlope2: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
-      baseStableBorrowRate: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
       baseVariableBorrowRate: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
@@ -269,7 +203,6 @@ export const reservesMock: ReservesData = {
         _hex: '0x0',
         _isBigNumber: true,
       }),
-      eModeCategoryId: 1,
       borrowCap: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
@@ -278,11 +211,6 @@ export const reservesMock: ReservesData = {
         _hex: '0x0',
         _isBigNumber: true,
       }),
-      eModeLtv: 1,
-      eModeLiquidationThreshold: 1,
-      eModeLiquidationBonus: 1,
-      eModePriceSource: '0x3E0437898a5667a4769B1Ca5A34aAB1ae7E81377',
-      eModeLabel: 'test label',
       borrowableInIsolation: false,
       flashLoanEnabled: false,
       accruedToTreasury: BigNumber.from({
@@ -335,23 +263,29 @@ export const userReservesMock: UserReserveData = {
         _isBigNumber: true,
       }),
       usageAsCollateralEnabledOnUser: false,
-      stableBorrowRate: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
       scaledVariableDebt: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
-      principalStableDebt: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
-      stableBorrowLastUpdateTimestamp: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
       }),
     },
   ],
   1: 1,
+};
+
+export const eModesMock: EModeData = {
+  id: 1,
+  eMode: {
+    ltv: 1,
+    liquidationThreshold: 1,
+    liquidationBonus: 1,
+    label: 'test label',
+    collateralBitmap: BigNumber.from({
+      _hex: '0x0',
+      _isBigNumber: true,
+    }),
+    borrowableBitmap: BigNumber.from({
+      _hex: '0x0',
+      _isBigNumber: true,
+    }),
+  },
 };

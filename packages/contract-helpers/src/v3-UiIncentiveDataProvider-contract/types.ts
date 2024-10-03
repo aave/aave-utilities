@@ -26,7 +26,6 @@ export interface ReservesIncentiveData {
   underlyingAsset: string;
   aIncentiveData: IncentiveData;
   vIncentiveData: IncentiveData;
-  sIncentiveData: IncentiveData;
 }
 
 export interface UserRewardInfo {
@@ -48,7 +47,6 @@ export interface UserReservesIncentivesData {
   underlyingAsset: string;
   aTokenIncentivesUserData: UserIncentiveData;
   vTokenIncentivesUserData: UserIncentiveData;
-  sTokenIncentivesUserData: UserIncentiveData;
 }
 
 export interface FullReservesIncentiveDataResponse {
@@ -83,7 +81,6 @@ export interface ReservesIncentiveDataHumanized {
   underlyingAsset: string;
   aIncentiveData: IncentiveDataHumanized;
   vIncentiveData: IncentiveDataHumanized;
-  sIncentiveData: IncentiveDataHumanized;
 }
 
 export interface UserRewardInfoHumanized {
@@ -108,5 +105,4 @@ export interface UserReservesIncentivesDataHumanized {
   underlyingAsset: string;
   aTokenIncentivesUserData: UserIncentiveDataHumanized;
   vTokenIncentivesUserData: UserIncentiveDataHumanized;
-  sTokenIncentivesUserData: UserIncentiveDataHumanized;
 }

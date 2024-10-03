@@ -230,11 +230,7 @@ export class LegacyUiPoolDataProvider
         scaledATokenBalance: userReserveRaw.scaledATokenBalance.toString(),
         usageAsCollateralEnabledOnUser:
           userReserveRaw.usageAsCollateralEnabledOnUser,
-        stableBorrowRate: userReserveRaw.stableBorrowRate.toString(),
         scaledVariableDebt: userReserveRaw.scaledVariableDebt.toString(),
-        principalStableDebt: userReserveRaw.principalStableDebt.toString(),
-        stableBorrowLastUpdateTimestamp:
-          userReserveRaw.stableBorrowLastUpdateTimestamp.toNumber(),
       })),
       userEmodeCategoryId,
     };
