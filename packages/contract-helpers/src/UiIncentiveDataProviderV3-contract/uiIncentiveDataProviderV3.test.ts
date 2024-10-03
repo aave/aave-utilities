@@ -315,43 +315,6 @@ describe('UiIncentiveDataProvider', () => {
               },
             ],
           },
-          sIncentiveData: {
-            tokenAddress: '0xb2007801F8c9dB4241E12C81E9d83741d14d7227',
-            incentiveControllerAddress:
-              '0x5465485D7b15CaBc9196E73A0b1cc457262079e3',
-            rewardsTokenInformation: [
-              {
-                rewardTokenSymbol: 'REW',
-                rewardTokenAddress:
-                  '0x1f689325CBdF44B24DBE2ecC2b1fFD4130861b4E',
-                rewardOracleAddress:
-                  '0xca8e9B5F9e36EbF74096223fc48810861b4FA642',
-                emissionPerSecond: BigNumber.from({
-                  _hex: '0x04464ecbc45ffe',
-                  _isBigNumber: true,
-                }).toString(),
-                incentivesLastUpdateTimestamp: BigNumber.from({
-                  _hex: '0x61a5167a',
-                  _isBigNumber: true,
-                }).toNumber(),
-                tokenIncentivesIndex: BigNumber.from({
-                  _hex: '0x00',
-                  _isBigNumber: true,
-                }).toString(),
-                emissionEndTimestamp: BigNumber.from({
-                  _hex: '0x638649fa',
-                  _isBigNumber: true,
-                }).toNumber(),
-                rewardPriceFeed: BigNumber.from({
-                  _hex: '0x05f5e100',
-                  _isBigNumber: true,
-                }).toString(),
-                rewardTokenDecimals: 18,
-                precision: 18,
-                priceFeedDecimals: 0,
-              },
-            ],
-          },
         },
       ]);
     });
