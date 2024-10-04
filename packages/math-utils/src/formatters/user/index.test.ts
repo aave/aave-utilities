@@ -16,8 +16,7 @@ import {
 describe('formatUserSummaryETHMarket', () => {
   const usdcUserMock = new UserReserveMock({ decimals: 6 })
     .supply(200)
-    .variableBorrow(50)
-    .stableBorrow(50);
+    .variableBorrow(100);
   const marketReferencePriceInUsd = 10 ** 9; // 10
   const marketReferenceCurrencyDecimals = 18;
   const request: FormatUserSummaryRequest = {
@@ -118,8 +117,8 @@ describe('formatUserSummaryETHMarket', () => {
 });
 
 describe('formatUserSummaryAndIncentives', () => {
-  const ethUserMock = new UserReserveMock({ decimals: 18 }).stableBorrow(50);
-  const usdcUserMock = new UserReserveMock({ decimals: 6 }).stableBorrow(100);
+  const ethUserMock = new UserReserveMock({ decimals: 18 }).variableBorrow(50);
+  const usdcUserMock = new UserReserveMock({ decimals: 6 }).variableBorrow(100);
   const reserveIncentiveMock = new ReserveIncentiveMock();
   const userIncentiveMock = new UserIncentiveMock();
   const marketReferencePriceInUsd = '10';

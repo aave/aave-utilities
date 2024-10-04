@@ -14,8 +14,7 @@ describe('formatUserReserve', () => {
   const currentTimestamp = 1;
   const usdcUserMock = new UserReserveMock({ decimals: 6 })
     .supply(500)
-    .variableBorrow(100)
-    .stableBorrow(100);
+    .variableBorrow(100);
   const rawUSDCSummary: UserReserveSummaryResponse = generateUserReserveSummary(
     {
       userReserve: {
@@ -39,11 +38,11 @@ describe('formatUserReserve', () => {
       '5000',
     );
     expect(formattedReserve.underlyingBalanceUSD).toEqual('50000');
-    expect(formattedReserve.totalBorrows).toEqual('200');
+    expect(formattedReserve.totalBorrows).toEqual('100');
     expect(formattedReserve.totalBorrowsMarketReferenceCurrency).toEqual(
-      '2000',
+      '1000',
     );
-    expect(formattedReserve.totalBorrowsUSD).toEqual('20000');
+    expect(formattedReserve.totalBorrowsUSD).toEqual('10000');
     expect(formattedReserve.usageAsCollateralEnabledOnUser).toEqual(true);
     expect(formattedReserve.variableBorrows).toEqual('100');
     expect(formattedReserve.variableBorrowsMarketReferenceCurrency).toEqual(
