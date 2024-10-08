@@ -681,7 +681,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         user,
         amount,
         debtTokenAddress,
-        interestRateMode,
         referralCode,
       });
     }
@@ -750,7 +749,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         lendingPool: this.poolAddress,
         user,
         amount,
-        interestRateMode,
         onBehalfOf,
       });
     }

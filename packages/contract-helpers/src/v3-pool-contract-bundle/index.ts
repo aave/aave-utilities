@@ -316,7 +316,6 @@ export class PoolBundle
             user,
             amount,
             debtTokenAddress,
-            interestRateMode,
             referralCode: referralCodeParam,
           });
         } else {
@@ -375,7 +374,6 @@ export class PoolBundle
             lendingPool: this.poolAddress,
             user,
             amount,
-            interestRateMode,
             onBehalfOf: onBehalfOfParam,
           });
         }
