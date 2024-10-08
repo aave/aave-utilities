@@ -1,10 +1,5 @@
 import { BigNumber, constants, providers, utils } from 'ethers';
-import {
-  eEthereumTxType,
-  GasType,
-  InterestRate,
-  transactionType,
-} from '../commons/types';
+import { eEthereumTxType, GasType, transactionType } from '../commons/types';
 import { valueToWei } from '../commons/utils';
 import { ERC20Service } from '../erc20-contract';
 import { WETHGatewayService } from './index';
@@ -90,26 +85,24 @@ describe('WethGatewayService', () => {
         lendingPool,
         user,
         amount: '1',
-        interestRateMode: InterestRate.Variable,
         referralCode: '0',
       });
 
       expect(txData.to).toEqual(wethGatewayAddress);
       expect(txData.from).toEqual(user);
       expect(txData.data).toEqual(
-        '0x66514c970000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000',
+        '0xe74f7b85000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000',
       );
 
       const txDataStable = weth.generateBorrowEthTxData({
         lendingPool,
         user,
         amount: '1',
-        interestRateMode: InterestRate.Stable,
         debtTokenAddress: '',
       });
 
       expect(txDataStable.data).toEqual(
-        '0x66514c970000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000',
+        '0xe74f7b85000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000',
       );
     });
   });
@@ -127,13 +120,12 @@ describe('WethGatewayService', () => {
         lendingPool,
         user,
         amount: '1',
-        interestRateMode: InterestRate.Variable,
       });
 
       expect(txData.to).toEqual(wethGatewayAddress);
       expect(txData.from).toEqual(user);
       expect(txData.data).toEqual(
-        '0x02c5fcf80000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003',
+        '0xbcc3c255000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000003',
       );
 
       const onBehalfOf = '0x0000000000000000000000000000000000000004';
@@ -143,36 +135,12 @@ describe('WethGatewayService', () => {
         user,
         amount: '1',
         onBehalfOf,
-        interestRateMode: InterestRate.Variable,
       });
 
       expect(txDataUpdatedParams.to).toEqual(wethGatewayAddress);
       expect(txDataUpdatedParams.from).toEqual(user);
       expect(txDataUpdatedParams.data).toEqual(
-        '0x02c5fcf80000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000004',
-      );
-    });
-
-    it('generates repayETH tx data with stable debt', () => {
-      const provider: providers.Provider = new providers.JsonRpcProvider();
-      const erc20Service = new ERC20Service(provider);
-      const weth = new WETHGatewayService(
-        provider,
-        erc20Service,
-        wethGatewayAddress,
-      );
-      const user = '0x0000000000000000000000000000000000000003';
-      const txData = weth.generateRepayEthTxData({
-        lendingPool,
-        user,
-        amount: '1',
-        interestRateMode: InterestRate.Stable,
-      });
-
-      expect(txData.to).toEqual(wethGatewayAddress);
-      expect(txData.from).toEqual(user);
-      expect(txData.data).toEqual(
-        '0x02c5fcf80000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000003',
+        '0xbcc3c255000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000004',
       );
     });
   });
@@ -414,7 +382,6 @@ describe('WethGatewayService', () => {
   describe('withdrawETH', () => {
     const user = '0x0000000000000000000000000000000000000003';
     const debtTokenAddress = '0x0000000000000000000000000000000000000005';
-    const interestRateMode = InterestRate.Stable;
     const amount = '123.456';
     const referralCode = '0';
     const provider: providers.Provider = new providers.JsonRpcProvider();
@@ -426,7 +393,7 @@ describe('WethGatewayService', () => {
     afterEach(() => {
       jest.clearAllMocks();
     });
-    it('Expects the borrow tx object to be correct with all params and variable stable rate without approval', async () => {
+    it('Expects the borrow tx object to be correct with all params and variable rate without approval', async () => {
       const weth = new WETHGatewayService(
         provider,
         erc20Service,
@@ -447,13 +414,11 @@ describe('WethGatewayService', () => {
             gasPrice: '1',
           }),
         }));
-      const interestRateMode = InterestRate.Variable;
       const txObj = await weth.borrowETH({
         lendingPool,
         user,
         amount,
         debtTokenAddress,
-        interestRateMode,
         referralCode,
       });
 
@@ -462,11 +427,10 @@ describe('WethGatewayService', () => {
           lendingPool,
           user,
           amount,
-          interestRateMode,
           referralCode,
         }),
       ).rejects.toThrowError(
-        `To borrow ETH you need to pass the stable or variable WETH debt Token Address corresponding the interestRateMode`,
+        `To borrow ETH you need to pass the variable WETH debt Token Address`,
       );
 
       expect(isApprovedSpy).toHaveBeenCalled();
@@ -480,14 +444,13 @@ describe('WethGatewayService', () => {
       expect(tx.gasLimit).toEqual(BigNumber.from(1));
 
       const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'uint256', 'uint256', 'uint16'],
+        ['address', 'uint256', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
       expect(decoded[0]).toEqual(lendingPool);
       expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
-      expect(decoded[2]).toEqual(BigNumber.from(2));
-      expect(decoded[3]).toEqual(Number(referralCode));
+      expect(decoded[2]).toEqual(Number(referralCode));
 
       // gas price
       const gasPrice: GasType | null = await txObj[1].gas();
@@ -495,7 +458,7 @@ describe('WethGatewayService', () => {
       expect(gasPrice?.gasLimit).toEqual('450000');
       expect(gasPrice?.gasPrice).toEqual('1');
     });
-    it('Expects the borrow tx object to be correct with all params and stable stable rate already approved', async () => {
+    it('Expects the borrow tx object to be correct with all params and variable rate already approved', async () => {
       const weth = new WETHGatewayService(
         provider,
         erc20Service,
@@ -511,7 +474,6 @@ describe('WethGatewayService', () => {
         user,
         amount,
         debtTokenAddress,
-        interestRateMode,
         referralCode,
       });
 
@@ -525,60 +487,13 @@ describe('WethGatewayService', () => {
       expect(tx.gasLimit).toEqual(BigNumber.from(1));
 
       const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'uint256', 'uint256', 'uint16'],
+        ['address', 'uint256', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
       expect(decoded[0]).toEqual(lendingPool);
       expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
-      expect(decoded[2]).toEqual(BigNumber.from(1));
-      expect(decoded[3]).toEqual(Number(referralCode));
-
-      // gas price
-      const gasPrice: GasType | null = await txObj[0].gas();
-      expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
-      expect(gasPrice?.gasPrice).toEqual('1');
-    });
-    it('Expects the borrow tx object to be correct with all params and none stable rate', async () => {
-      const weth = new WETHGatewayService(
-        provider,
-        erc20Service,
-        wethGatewayAddress,
-      );
-
-      const isApprovedSpy = jest
-        .spyOn(weth.baseDebtTokenService, 'isDelegationApproved')
-        .mockImplementation(async () => Promise.resolve(true));
-
-      const interestRateMode = InterestRate.None;
-      const txObj = await weth.borrowETH({
-        lendingPool,
-        user,
-        amount,
-        debtTokenAddress,
-        interestRateMode,
-        referralCode,
-      });
-
-      expect(isApprovedSpy).toHaveBeenCalled();
-      expect(txObj.length).toEqual(1);
-      expect(txObj[0].txType).toEqual(eEthereumTxType.DLP_ACTION);
-
-      const tx: transactionType = await txObj[0].tx();
-      expect(tx.to).toEqual(wethGatewayAddress);
-      expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
-
-      const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'uint256', 'uint256', 'uint16'],
-        utils.hexDataSlice(tx.data ?? '', 4),
-      );
-
-      expect(decoded[0]).toEqual(lendingPool);
-      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
-      expect(decoded[2]).toEqual(BigNumber.from(1));
-      expect(decoded[3]).toEqual(Number(referralCode));
+      expect(decoded[2]).toEqual(Number(referralCode));
 
       // gas price
       const gasPrice: GasType | null = await txObj[0].gas();
@@ -597,13 +512,11 @@ describe('WethGatewayService', () => {
         .spyOn(weth.baseDebtTokenService, 'isDelegationApproved')
         .mockImplementation(async () => Promise.resolve(true));
 
-      const interestRateMode = InterestRate.None;
       const txObj = await weth.borrowETH({
         lendingPool,
         user,
         amount,
         debtTokenAddress,
-        interestRateMode,
       });
 
       expect(isApprovedSpy).toHaveBeenCalled();
@@ -616,14 +529,13 @@ describe('WethGatewayService', () => {
       expect(tx.gasLimit).toEqual(BigNumber.from(1));
 
       const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'uint256', 'uint256', 'uint16'],
+        ['address', 'uint256', 'uint16'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
       expect(decoded[0]).toEqual(lendingPool);
       expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
-      expect(decoded[2]).toEqual(BigNumber.from(1));
-      expect(decoded[3]).toEqual(0);
+      expect(decoded[2]).toEqual(0);
 
       // gas price
       const gasPrice: GasType | null = await txObj[0].gas();
@@ -639,7 +551,6 @@ describe('WethGatewayService', () => {
         user,
         amount,
         debtTokenAddress,
-        interestRateMode,
         referralCode,
       });
 
@@ -658,7 +569,6 @@ describe('WethGatewayService', () => {
           user,
           amount,
           debtTokenAddress,
-          interestRateMode,
           referralCode,
         }),
       ).rejects.toThrowError(
@@ -678,7 +588,6 @@ describe('WethGatewayService', () => {
           user,
           amount,
           debtTokenAddress,
-          interestRateMode,
           referralCode,
         }),
       ).rejects.toThrowError(
@@ -698,7 +607,6 @@ describe('WethGatewayService', () => {
           user,
           amount,
           debtTokenAddress,
-          interestRateMode,
           referralCode,
         }),
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
@@ -716,7 +624,6 @@ describe('WethGatewayService', () => {
           user,
           amount,
           debtTokenAddress,
-          interestRateMode,
           referralCode,
         }),
       ).rejects.toThrowError(`Amount: ${amount} needs to be greater than 0`);
@@ -734,7 +641,6 @@ describe('WethGatewayService', () => {
           user,
           amount,
           debtTokenAddress,
-          interestRateMode,
           referralCode,
         }),
       ).rejects.toThrowError(
@@ -754,7 +660,6 @@ describe('WethGatewayService', () => {
           user,
           amount,
           debtTokenAddress,
-          interestRateMode,
           referralCode,
         }),
       ).rejects.toThrowError(
@@ -1035,7 +940,6 @@ describe('WethGatewayService', () => {
   describe('borrowETH', () => {
     const user = '0x0000000000000000000000000000000000000003';
     const onBehalfOf = '0x0000000000000000000000000000000000000004';
-    const interestRateMode = InterestRate.Stable;
     const amount = '123.456';
     const provider: providers.Provider = new providers.JsonRpcProvider();
     jest
@@ -1046,18 +950,16 @@ describe('WethGatewayService', () => {
     afterEach(() => {
       jest.clearAllMocks();
     });
-    it('Expects the repay tx object to be correct with all params and stable rate mode', async () => {
+    it('Expects the repay tx object to be correct with all params', async () => {
       const weth = new WETHGatewayService(
         provider,
         erc20Service,
         wethGatewayAddress,
       );
-
       const txObj = weth.repayETH({
         lendingPool,
         user,
         amount,
-        interestRateMode,
         onBehalfOf,
       });
 
@@ -1070,92 +972,13 @@ describe('WethGatewayService', () => {
       expect(tx.gasLimit).toEqual(BigNumber.from(1));
 
       const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'uint256', 'uint256', 'address'],
+        ['address', 'uint256', 'address'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
       expect(decoded[0]).toEqual(lendingPool);
       expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
-      expect(decoded[2]).toEqual(BigNumber.from(1));
-      expect(decoded[3]).toEqual(onBehalfOf);
-
-      // gas price
-      const gasPrice: GasType | null = await txObj[0].gas();
-      expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
-      expect(gasPrice?.gasPrice).toEqual('1');
-    });
-    it('Expects the repay tx object to be correct with all params and variable rate mode', async () => {
-      const weth = new WETHGatewayService(
-        provider,
-        erc20Service,
-        wethGatewayAddress,
-      );
-      const interestRateMode = InterestRate.Variable;
-      const txObj = weth.repayETH({
-        lendingPool,
-        user,
-        amount,
-        interestRateMode,
-        onBehalfOf,
-      });
-
-      expect(txObj.length).toEqual(1);
-      expect(txObj[0].txType).toEqual(eEthereumTxType.DLP_ACTION);
-
-      const tx: transactionType = await txObj[0].tx();
-      expect(tx.to).toEqual(wethGatewayAddress);
-      expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
-
-      const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'uint256', 'uint256', 'address'],
-        utils.hexDataSlice(tx.data ?? '', 4),
-      );
-
-      expect(decoded[0]).toEqual(lendingPool);
-      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
-      expect(decoded[2]).toEqual(BigNumber.from(2));
-      expect(decoded[3]).toEqual(onBehalfOf);
-
-      // gas price
-      const gasPrice: GasType | null = await txObj[0].gas();
-      expect(gasPrice).not.toBeNull();
-      expect(gasPrice?.gasLimit).toEqual('1');
-      expect(gasPrice?.gasPrice).toEqual('1');
-    });
-    it('Expects the repay tx object to be correct with all params and none rate mode', async () => {
-      const weth = new WETHGatewayService(
-        provider,
-        erc20Service,
-        wethGatewayAddress,
-      );
-      const interestRateMode = InterestRate.None;
-      const txObj = weth.repayETH({
-        lendingPool,
-        user,
-        amount,
-        interestRateMode,
-        onBehalfOf,
-      });
-
-      expect(txObj.length).toEqual(1);
-      expect(txObj[0].txType).toEqual(eEthereumTxType.DLP_ACTION);
-
-      const tx: transactionType = await txObj[0].tx();
-      expect(tx.to).toEqual(wethGatewayAddress);
-      expect(tx.from).toEqual(user);
-      expect(tx.gasLimit).toEqual(BigNumber.from(1));
-
-      const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'uint256', 'uint256', 'address'],
-        utils.hexDataSlice(tx.data ?? '', 4),
-      );
-
-      expect(decoded[0]).toEqual(lendingPool);
-      expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
-      expect(decoded[2]).toEqual(BigNumber.from(1));
-      expect(decoded[3]).toEqual(onBehalfOf);
+      expect(decoded[2]).toEqual(onBehalfOf);
 
       // gas price
       const gasPrice: GasType | null = await txObj[0].gas();
@@ -1174,7 +997,6 @@ describe('WethGatewayService', () => {
         lendingPool,
         user,
         amount,
-        interestRateMode,
       });
 
       expect(txObj.length).toEqual(1);
@@ -1186,14 +1008,13 @@ describe('WethGatewayService', () => {
       expect(tx.gasLimit).toEqual(BigNumber.from(1));
 
       const decoded = utils.defaultAbiCoder.decode(
-        ['address', 'uint256', 'uint256', 'address'],
+        ['address', 'uint256', 'address'],
         utils.hexDataSlice(tx.data ?? '', 4),
       );
 
       expect(decoded[0]).toEqual(lendingPool);
       expect(decoded[1]).toEqual(BigNumber.from(valueToWei(amount, 18)));
-      expect(decoded[2]).toEqual(BigNumber.from(1));
-      expect(decoded[3]).toEqual(user);
+      expect(decoded[2]).toEqual(user);
 
       // gas price
       const gasPrice: GasType | null = await txObj[0].gas();
@@ -1208,7 +1029,6 @@ describe('WethGatewayService', () => {
         lendingPool,
         user,
         amount,
-        interestRateMode,
       });
 
       expect(txObj.length).toEqual(0);
@@ -1225,7 +1045,6 @@ describe('WethGatewayService', () => {
           lendingPool,
           user,
           amount,
-          interestRateMode,
         }),
       ).toThrowError(`Address: ${user} is not a valid ethereum Address`);
     });
@@ -1241,7 +1060,6 @@ describe('WethGatewayService', () => {
           lendingPool,
           user,
           amount,
-          interestRateMode,
         }),
       ).toThrowError(`Address: ${lendingPool} is not a valid ethereum Address`);
     });
@@ -1257,7 +1075,6 @@ describe('WethGatewayService', () => {
           lendingPool,
           user,
           amount,
-          interestRateMode,
         }),
       ).toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
@@ -1273,7 +1090,6 @@ describe('WethGatewayService', () => {
           lendingPool,
           user,
           amount,
-          interestRateMode,
         }),
       ).toThrowError(`Amount: ${amount} needs to be greater than 0`);
     });
@@ -1289,7 +1105,6 @@ describe('WethGatewayService', () => {
           lendingPool,
           user,
           amount,
-          interestRateMode,
           onBehalfOf,
         }),
       ).toThrowError(`Address: ${onBehalfOf} is not a valid ethereum Address`);

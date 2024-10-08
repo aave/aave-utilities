@@ -7,7 +7,6 @@ import BaseService from '../commons/BaseService';
 import {
   eEthereumTxType,
   EthereumTransactionTypeExtended,
-  InterestRate,
   ProtocolAction,
   tEthereumAddress,
   transactionType,
@@ -21,8 +20,11 @@ import {
   isPositiveOrMinusOneAmount,
 } from '../commons/validators/paramValidators';
 import { IERC20ServiceInterface } from '../erc20-contract';
-import { IWETHGateway, IWETHGatewayInterface } from './typechain/IWETHGateway';
-import { IWETHGateway__factory } from './typechain/IWETHGateway__factory';
+import {
+  WrappedTokenGatewayV3,
+  WrappedTokenGatewayV3Interface,
+} from './typechain/WrappedTokenGatewayV3';
+import { WrappedTokenGatewayV3__factory } from './typechain/WrappedTokenGatewayV3__factory';
 
 export type WETHDepositParamsType = {
   lendingPool: tEthereumAddress;
@@ -44,7 +46,6 @@ export type WETHRepayParamsType = {
   lendingPool: tEthereumAddress;
   user: tEthereumAddress;
   amount: string;
-  interestRateMode: InterestRate;
   onBehalfOf?: tEthereumAddress;
 };
 
@@ -53,7 +54,6 @@ export type WETHBorrowParamsType = {
   user: tEthereumAddress;
   amount: string;
   debtTokenAddress?: tEthereumAddress;
-  interestRateMode: InterestRate;
   referralCode?: string;
 };
 
@@ -76,7 +76,7 @@ export interface WETHGatewayInterface {
 }
 
 export class WETHGatewayService
-  extends BaseService<IWETHGateway>
+  extends BaseService<WrappedTokenGatewayV3>
   implements WETHGatewayInterface
 {
   readonly wethGatewayAddress: string;
@@ -85,7 +85,7 @@ export class WETHGatewayService
 
   readonly erc20Service: IERC20ServiceInterface;
 
-  readonly wethGatewayInstance: IWETHGatewayInterface;
+  readonly wethGatewayInstance: WrappedTokenGatewayV3Interface;
 
   generateDepositEthTxData: (
     args: WETHDepositParamsType,
@@ -100,7 +100,7 @@ export class WETHGatewayService
     erc20Service: IERC20ServiceInterface,
     wethGatewayAddress?: string,
   ) {
-    super(provider, IWETHGateway__factory);
+    super(provider, WrappedTokenGatewayV3__factory);
     this.erc20Service = erc20Service;
 
     this.baseDebtTokenService = new BaseDebtToken(
@@ -114,7 +114,7 @@ export class WETHGatewayService
     this.withdrawETH = this.withdrawETH.bind(this);
     this.repayETH = this.repayETH.bind(this);
     this.borrowETH = this.borrowETH.bind(this);
-    this.wethGatewayInstance = IWETHGateway__factory.createInterface();
+    this.wethGatewayInstance = WrappedTokenGatewayV3__factory.createInterface();
     this.generateDepositEthTxData = (
       args: WETHDepositParamsType,
     ): PopulatedTransaction => {
@@ -138,12 +138,9 @@ export class WETHGatewayService
     this.generateBorrowEthTxData = (
       args: WETHBorrowParamsType,
     ): PopulatedTransaction => {
-      const numericRateMode =
-        args.interestRateMode === InterestRate.Variable ? 2 : 1;
       const txData = this.wethGatewayInstance.encodeFunctionData('borrowETH', [
         args.lendingPool,
         args.amount,
-        numericRateMode,
         args.referralCode ?? '0',
       ]);
       const actionTx: PopulatedTransaction = {
@@ -158,18 +155,14 @@ export class WETHGatewayService
     };
 
     this.generateRepayEthTxData = ({
-      interestRateMode,
       lendingPool,
       amount,
       user,
       onBehalfOf,
     }) => {
-      const numericRateMode =
-        interestRateMode === InterestRate.Variable ? 2 : 1;
       const txData = this.wethGatewayInstance.encodeFunctionData('repayETH', [
         lendingPool,
         amount,
-        numericRateMode,
         onBehalfOf ?? user,
       ]);
       const actionTx: PopulatedTransaction = {
@@ -202,7 +195,7 @@ export class WETHGatewayService
   ): EthereumTransactionTypeExtended[] {
     const convertedAmount: string = valueToWei(amount, 18);
 
-    const wethGatewayContract: IWETHGateway = this.getContractInstance(
+    const wethGatewayContract: WrappedTokenGatewayV3 = this.getContractInstance(
       this.wethGatewayAddress,
     );
     const txCallback: () => Promise<transactionType> = this.generateTxCallback({
@@ -237,16 +230,14 @@ export class WETHGatewayService
       user,
       amount,
       debtTokenAddress,
-      interestRateMode,
       referralCode,
     }: WETHBorrowParamsType,
   ): Promise<EthereumTransactionTypeExtended[]> {
     const txs: EthereumTransactionTypeExtended[] = [];
     const convertedAmount: string = valueToWei(amount, 18);
-    const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
     if (!debtTokenAddress) {
       throw new Error(
-        `To borrow ETH you need to pass the stable or variable WETH debt Token Address corresponding the interestRateMode`,
+        `To borrow ETH you need to pass the variable WETH debt Token Address`,
       );
     }
 
@@ -270,7 +261,7 @@ export class WETHGatewayService
       txs.push(approveDelegationTx);
     }
 
-    const wethGatewayContract: IWETHGateway = this.getContractInstance(
+    const wethGatewayContract: WrappedTokenGatewayV3 = this.getContractInstance(
       this.wethGatewayAddress,
     );
 
@@ -279,7 +270,6 @@ export class WETHGatewayService
         wethGatewayContract.populateTransaction.borrowETH(
           lendingPool,
           convertedAmount,
-          numericRateMode,
           referralCode ?? '0',
         ),
       from: user,
@@ -337,7 +327,7 @@ export class WETHGatewayService
       txs.push(approveTx);
     }
 
-    const wethGatewayContract: IWETHGateway = this.getContractInstance(
+    const wethGatewayContract: WrappedTokenGatewayV3 = this.getContractInstance(
       this.wethGatewayAddress,
     );
 
@@ -370,17 +360,10 @@ export class WETHGatewayService
     @isEthAddress('user')
     @isEthAddress('onBehalfOf')
     @isPositiveAmount('amount')
-    {
-      lendingPool,
-      user,
-      amount,
-      interestRateMode,
-      onBehalfOf,
-    }: WETHRepayParamsType,
+    { lendingPool, user, amount, onBehalfOf }: WETHRepayParamsType,
   ): EthereumTransactionTypeExtended[] {
     const convertedAmount: string = valueToWei(amount, 18);
-    const numericRateMode = interestRateMode === InterestRate.Variable ? 2 : 1;
-    const wethGatewayContract: IWETHGateway = this.getContractInstance(
+    const wethGatewayContract: WrappedTokenGatewayV3 = this.getContractInstance(
       this.wethGatewayAddress,
     );
 
@@ -389,7 +372,6 @@ export class WETHGatewayService
         wethGatewayContract.populateTransaction.repayETH(
           lendingPool,
           convertedAmount,
-          numericRateMode,
           onBehalfOf ?? user,
         ),
       gasSurplus: 30,
