@@ -31,7 +31,7 @@ import { SynthetixInterface, SynthetixService } from '../synthetix-contract';
 import {
   WETHGatewayInterface,
   WETHGatewayService,
-} from '../v3-wethgateway-contract';
+} from '../wethgateway-contract';
 
 export type DepositTxBuilder = {
   generateTxData: ({
@@ -164,7 +164,7 @@ export class LendingPoolBundle
         if (reserve.toLowerCase() === API_ETH_MOCK_ADDRESS.toLowerCase()) {
           if (!debtTokenAddress) {
             throw new Error(
-              `To borrow ETH you need to pass the variable WETH debt Token Address`,
+              `To borrow ETH you need to pass the stable or variable WETH debt Token Address corresponding the interestRateMode`,
             );
           }
 
@@ -173,6 +173,7 @@ export class LendingPoolBundle
             user,
             amount,
             debtTokenAddress,
+            interestRateMode,
             referralCode: referralCodeParam,
           });
         } else {
@@ -208,6 +209,7 @@ export class LendingPoolBundle
             lendingPool: this.lendingPoolAddress,
             user,
             amount,
+            interestRateMode,
             onBehalfOf,
           });
         }

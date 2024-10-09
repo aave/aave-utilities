@@ -46,7 +46,7 @@ import { SynthetixInterface, SynthetixService } from '../synthetix-contract';
 import {
   WETHGatewayInterface,
   WETHGatewayService,
-} from '../v3-wethgateway-contract';
+} from '../wethgateway-contract';
 import {
   LPBorrowParamsType,
   LPDepositParamsType,
@@ -367,6 +367,7 @@ export class LendingPool
         user,
         amount,
         debtTokenAddress,
+        interestRateMode,
         referralCode,
       });
     }
@@ -420,6 +421,7 @@ export class LendingPool
         lendingPool: this.lendingPoolAddress,
         user,
         amount,
+        interestRateMode,
         onBehalfOf,
       });
     }
