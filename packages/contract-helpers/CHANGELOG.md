@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.30.3 (2024-10-09)
+
+**Note:** Version bump only for package @aave/contract-helpers
+
+
+
+
+
 ## 1.30.2 (2024-08-26)
 
 **Note:** Version bump only for package @aave/contract-helpers
