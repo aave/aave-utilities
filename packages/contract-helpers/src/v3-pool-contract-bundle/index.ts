@@ -37,7 +37,7 @@ import { L2Pool, L2PoolInterface } from '../v3-pool-rollups';
 import {
   WETHGatewayInterface,
   WETHGatewayService,
-} from '../wethgateway-contract';
+} from '../v3-wethgateway-contract';
 
 export type SupplyTxBuilder = {
   generateTxData: ({

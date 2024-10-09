@@ -31,7 +31,7 @@ import { SynthetixInterface, SynthetixService } from '../synthetix-contract';
 import {
   WETHGatewayInterface,
   WETHGatewayService,
-} from '../wethgateway-contract';
+} from '../v3-wethgateway-contract';
 
 export type DepositTxBuilder = {
   generateTxData: ({
