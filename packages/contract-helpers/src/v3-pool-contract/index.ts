@@ -53,7 +53,7 @@ import { L2Pool, L2PoolInterface } from '../v3-pool-rollups';
 import {
   WETHGatewayInterface,
   WETHGatewayService,
-} from '../wethgateway-contract';
+} from '../v3-wethgateway-contract';
 import {
   LPBorrowParamsType,
   LPSupplyParamsType,
@@ -681,7 +681,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         user,
         amount,
         debtTokenAddress,
-        interestRateMode,
         referralCode,
       });
     }
@@ -750,7 +749,6 @@ export class Pool extends BaseService<IPool> implements PoolInterface {
         lendingPool: this.poolAddress,
         user,
         amount,
-        interestRateMode,
         onBehalfOf,
       });
     }
