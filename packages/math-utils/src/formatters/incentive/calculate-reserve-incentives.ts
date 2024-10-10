@@ -67,7 +67,7 @@ const rewardEmissionActive = (reward: RewardInfoHumanized) => {
   return false;
 };
 
-// Calculate supply, variableBorrow, and stableBorrow incentives APR for a reserve asset
+// Calculate supply and variableBorrow incentives APR for a reserve asset
 export function calculateReserveIncentives({
   reserves,
   reserveIncentiveData,
