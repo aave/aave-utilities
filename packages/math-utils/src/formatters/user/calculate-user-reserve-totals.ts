@@ -35,9 +35,10 @@ export function calculateUserReserveTotals({
       totalLiquidityMarketReferenceCurrency.plus(
         userReserveSummary.underlyingBalanceMarketReferenceCurrency,
       );
-    totalBorrowsMarketReferenceCurrency = totalBorrowsMarketReferenceCurrency
-      .plus(userReserveSummary.variableBorrowsMarketReferenceCurrency)
-      .plus(userReserveSummary.stableBorrowsMarketReferenceCurrency);
+    totalBorrowsMarketReferenceCurrency =
+      totalBorrowsMarketReferenceCurrency.plus(
+        userReserveSummary.variableBorrowsMarketReferenceCurrency,
+      );
 
     if (
       userReserveSummary.userReserve.reserve.reserveLiquidationThreshold !==

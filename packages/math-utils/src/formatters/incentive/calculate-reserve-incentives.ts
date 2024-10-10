@@ -10,7 +10,6 @@ export interface CalculateReserveIncentivesRequest {
   reserveIncentiveData: ReservesIncentiveDataHumanized;
   totalLiquidity: string;
   totalVariableDebt: string;
-  totalStableDebt: string;
   decimals: number;
   priceInMarketReferenceCurrency: string; // Can be priced in ETH or USD depending on market
   marketReferenceCurrencyDecimals: number;
@@ -21,11 +20,11 @@ export interface ReserveIncentiveResponse {
   rewardTokenAddress: string;
   rewardTokenSymbol: string;
 }
+
 export interface CalculateReserveIncentivesResponse {
   underlyingAsset: string;
   aIncentivesData: ReserveIncentiveResponse[];
   vIncentivesData: ReserveIncentiveResponse[];
-  sIncentivesData: ReserveIncentiveResponse[];
 }
 
 export function calculateRewardTokenPrice(
@@ -74,7 +73,6 @@ export function calculateReserveIncentives({
   reserveIncentiveData,
   totalLiquidity,
   totalVariableDebt,
-  totalStableDebt,
   decimals,
   priceInMarketReferenceCurrency,
 }: CalculateReserveIncentivesRequest): CalculateReserveIncentivesResponse {
@@ -128,36 +126,10 @@ export function calculateReserveIncentives({
       };
       return vIncentiveData;
     });
-  const sIncentivesData: ReserveIncentiveResponse[] =
-    reserveIncentiveData.sIncentiveData.rewardsTokenInformation.map(reward => {
-      const sIncentivesAPR = rewardEmissionActive(reward)
-        ? calculateIncentiveAPR({
-            emissionPerSecond: reward.emissionPerSecond,
-            rewardTokenPriceInMarketReferenceCurrency:
-              calculateRewardTokenPrice(
-                reserves,
-                reward.rewardTokenAddress,
-                reward.rewardPriceFeed,
-                reward.priceFeedDecimals,
-              ),
-            priceInMarketReferenceCurrency,
-            totalTokenSupply: totalStableDebt,
-            decimals,
-            rewardTokenDecimals: reward.rewardTokenDecimals,
-          })
-        : '0';
-      const sIncentiveData: ReserveIncentiveResponse = {
-        incentiveAPR: sIncentivesAPR,
-        rewardTokenAddress: reward.rewardTokenAddress,
-        rewardTokenSymbol: reward.rewardTokenSymbol,
-      };
-      return sIncentiveData;
-    });
 
   return {
     underlyingAsset: reserveIncentiveData.underlyingAsset,
     aIncentivesData,
     vIncentivesData,
-    sIncentivesData,
   };
 }
