@@ -13,7 +13,6 @@ export type ReserveIncentiveDict = Record<string, ReserveIncentives>;
 interface ReserveIncentives {
   aIncentives: ReserveIncentive[];
   vIncentives: ReserveIncentive[];
-  sIncentives: ReserveIncentive[];
 }
 
 interface ReserveIncentive {
@@ -49,7 +48,6 @@ export function calculateAllReserveIncentives({
           reserveIncentiveData: reserveIncentive,
           totalLiquidity: reserve.totalLiquidity,
           totalVariableDebt: reserve.totalVariableDebt,
-          totalStableDebt: reserve.totalStableDebt,
           priceInMarketReferenceCurrency:
             reserve.formattedPriceInMarketReferenceCurrency,
           decimals: reserve.decimals,
@@ -58,7 +56,6 @@ export function calculateAllReserveIncentives({
       reserveDict[calculatedReserveIncentives.underlyingAsset] = {
         aIncentives: calculatedReserveIncentives.aIncentivesData,
         vIncentives: calculatedReserveIncentives.vIncentivesData,
-        sIncentives: calculatedReserveIncentives.sIncentivesData,
       };
     }
   });

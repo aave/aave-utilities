@@ -14,10 +14,7 @@ import {
 describe('calculateAllUserIncentives', () => {
   // Accrued rewards = 200000000000, unclaimedRewards = 000000000000000001
   const reserveMock = new ReserveMock();
-  const userMock = new UserReserveMock()
-    .supply(100)
-    .variableBorrow(200)
-    .stableBorrow(300);
+  const userMock = new UserReserveMock().supply(100).variableBorrow(200);
   const reserveIncentiveMock = new ReserveIncentiveMock();
   const userIncentiveMock = new UserIncentiveMock();
 

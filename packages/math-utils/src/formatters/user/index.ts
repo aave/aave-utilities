@@ -1,6 +1,9 @@
 import { BigNumberValue, normalize } from '../../bignumber';
 import { LTV_PRECISION, USD_DECIMALS } from '../../constants';
-import { calculateAllUserIncentives, UserIncentiveDict } from '../incentive';
+import {
+  calculateAllUserIncentives,
+  UserIncentiveDict,
+} from '../incentive/calculate-all-user-incentives';
 import {
   ReservesIncentiveDataHumanized,
   UserReservesIncentivesDataHumanized,
@@ -17,10 +20,7 @@ export interface UserReserveData {
   underlyingAsset: string;
   scaledATokenBalance: string;
   usageAsCollateralEnabledOnUser: boolean;
-  stableBorrowRate: string;
   scaledVariableDebt: string;
-  principalStableDebt: string;
-  stableBorrowLastUpdateTimestamp: number;
 }
 
 export interface CombinedReserveData<
@@ -38,14 +38,9 @@ export interface ComputedUserReserve<
   variableBorrows: string;
   variableBorrowsMarketReferenceCurrency: string;
   variableBorrowsUSD: string;
-  stableBorrows: string;
-  stableBorrowsMarketReferenceCurrency: string;
-  stableBorrowsUSD: string;
   totalBorrows: string;
   totalBorrowsMarketReferenceCurrency: string;
   totalBorrowsUSD: string;
-  stableBorrowAPY: string;
-  stableBorrowAPR: string;
 }
 
 export interface FormatUserSummaryRequest<
