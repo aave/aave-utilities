@@ -10,7 +10,7 @@ interface EModeCategoryData {
   borrowableBitmap: string;
 }
 
-interface EModeData {
+export interface EModeData {
   id: number;
   eMode: EModeCategoryData;
 }
@@ -45,4 +45,34 @@ export function formatEModes(eModes: EModeData[]) {
     ...eMode,
     eMode: formatEModeCategory(eMode.eMode),
   }));
+}
+
+export interface ReserveEmode {
+  id: number;
+  collateralEnabled: boolean;
+  borrowingEnabled: boolean;
+  eMode: FormattedEModeCategory;
+}
+
+export function getAndFormatReserveEModes(
+  reserveId: string,
+  eModes: EModeData[],
+) {
+  const reserveIdNumber = Number(reserveId);
+  return eModes.reduce<ReserveEmode[]>((acc, eMode) => {
+    const borrowingEnabled =
+      eMode.eMode.borrowableBitmap[reserveIdNumber] === '1';
+    const collateralEnabled =
+      eMode.eMode.collateralBitmap[reserveIdNumber] === '1';
+    if (borrowingEnabled || collateralEnabled) {
+      acc.push({
+        id: eMode.id,
+        collateralEnabled,
+        borrowingEnabled,
+        eMode: formatEModeCategory(eMode.eMode),
+      });
+    }
+
+    return acc;
+  }, []);
 }

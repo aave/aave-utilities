@@ -8,6 +8,7 @@ import {
 import { RAY_DECIMALS, SECONDS_PER_YEAR, USD_DECIMALS } from '../../constants';
 import { LTV_PRECISION } from '../../index';
 import { calculateCompoundedRate } from '../compounded-interest/calculate-compounded-interest';
+import { EModeData, getAndFormatReserveEModes } from '../emode';
 import {
   calculateReserveIncentives,
   CalculateReserveIncentivesResponse,
@@ -376,6 +377,7 @@ export function formatReserveUSD({
 
 export interface FormatReservesUSDRequest<T extends ReserveDataWithPrice> {
   reserves: T[];
+  eModes?: EModeData[];
   currentTimestamp: number;
   marketReferencePriceInUsd: string;
   marketReferenceCurrencyDecimals: number;
@@ -383,6 +385,7 @@ export interface FormatReservesUSDRequest<T extends ReserveDataWithPrice> {
 
 export function formatReserves<T extends ReserveDataWithPrice>({
   reserves,
+  eModes,
   currentTimestamp,
   marketReferencePriceInUsd,
   marketReferenceCurrencyDecimals,
@@ -394,7 +397,10 @@ export function formatReserves<T extends ReserveDataWithPrice>({
       marketReferencePriceInUsd,
       marketReferenceCurrencyDecimals,
     });
-    return { ...reserve, ...formattedReserve };
+    const formattedEModes = eModes
+      ? getAndFormatReserveEModes(reserve.id, eModes)
+      : [];
+    return { ...reserve, ...formattedReserve, eModes: formattedEModes };
   });
 }
 
