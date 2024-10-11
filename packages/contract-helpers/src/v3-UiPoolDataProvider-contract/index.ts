@@ -11,6 +11,7 @@ import {
   ReservesDataHumanized,
   UserReserveDataHumanized,
   EModeData,
+  EmodeDataHumanized,
 } from './types';
 
 export * from './types';
@@ -233,5 +234,27 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
     }
 
     return this._contract.getEModes(lendingPoolAddressProvider);
+  }
+
+  public async getEModesHumanized({
+    lendingPoolAddressProvider,
+  }: ReservesHelperInput): Promise<EmodeDataHumanized[]> {
+    if (!isAddress(lendingPoolAddressProvider)) {
+      throw new Error('Lending pool address is not valid');
+    }
+
+    const eModeData = await this.getEModes({ lendingPoolAddressProvider });
+
+    return eModeData.map(eMode => ({
+      id: eMode.id,
+      eMode: {
+        ltv: eMode.eMode.ltv.toString(),
+        liquidationThreshold: eMode.eMode.liquidationThreshold.toString(),
+        liquidationBonus: eMode.eMode.liquidationBonus.toString(),
+        collateralBitmap: eMode.eMode.collateralBitmap.toBigInt().toString(2),
+        label: eMode.eMode.label,
+        borrowableBitmap: eMode.eMode.borrowableBitmap.toBigInt().toString(2),
+      },
+    }));
   }
 }

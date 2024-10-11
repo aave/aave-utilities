@@ -1,5 +1,14 @@
 import { BigNumber } from 'ethers';
 
+export interface EModeCategoryHumanized {
+  ltv: string;
+  liquidationThreshold: string;
+  liquidationBonus: string;
+  collateralBitmap: string;
+  label: string;
+  borrowableBitmap: string;
+}
+
 export interface EModeCategory {
   ltv: number;
   liquidationThreshold: number;
@@ -7,6 +16,11 @@ export interface EModeCategory {
   collateralBitmap: BigNumber;
   label: string;
   borrowableBitmap: BigNumber;
+}
+
+export interface EmodeDataHumanized {
+  id: number;
+  eMode: EModeCategoryHumanized;
 }
 
 export interface EModeData {
