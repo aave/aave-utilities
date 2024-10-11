@@ -98,6 +98,7 @@ export interface PoolBaseCurrencyHumanized {
 }
 
 export interface ReserveDataHumanized {
+  originalId: number;
   id: string;
   underlyingAsset: string;
   name: string;

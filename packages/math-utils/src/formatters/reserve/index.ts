@@ -48,6 +48,7 @@ export interface FormatReserveRequest {
 }
 
 export interface ReserveData {
+  originalId: number;
   id: string;
   symbol: string;
   name: string;
@@ -398,7 +399,7 @@ export function formatReserves<T extends ReserveDataWithPrice>({
       marketReferenceCurrencyDecimals,
     });
     const formattedEModes = eModes
-      ? getAndFormatReserveEModes(reserve.id, eModes)
+      ? getAndFormatReserveEModes(reserve.originalId, eModes)
       : [];
     return { ...reserve, ...formattedReserve, eModes: formattedEModes };
   });

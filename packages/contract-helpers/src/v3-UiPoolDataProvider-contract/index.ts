@@ -128,62 +128,67 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
     const { 0: reservesRaw, 1: poolBaseCurrencyRaw }: ReservesData =
       await this.getReservesData({ lendingPoolAddressProvider });
 
-    const reservesData: ReserveDataHumanized[] = reservesRaw.map(reserveRaw => {
-      const virtualUnderlyingBalance =
-        reserveRaw.virtualUnderlyingBalance.toString();
-      const { virtualAccActive } = reserveRaw;
-      return {
-        id: `${this.chainId}-${reserveRaw.underlyingAsset}-${lendingPoolAddressProvider}`.toLowerCase(),
-        underlyingAsset: reserveRaw.underlyingAsset.toLowerCase(),
-        name: reserveRaw.name,
-        symbol: ammSymbolMap[reserveRaw.underlyingAsset.toLowerCase()]
-          ? ammSymbolMap[reserveRaw.underlyingAsset.toLowerCase()]
-          : reserveRaw.symbol,
-        decimals: reserveRaw.decimals.toNumber(),
-        baseLTVasCollateral: reserveRaw.baseLTVasCollateral.toString(),
-        reserveLiquidationThreshold:
-          reserveRaw.reserveLiquidationThreshold.toString(),
-        reserveLiquidationBonus: reserveRaw.reserveLiquidationBonus.toString(),
-        reserveFactor: reserveRaw.reserveFactor.toString(),
-        usageAsCollateralEnabled: reserveRaw.usageAsCollateralEnabled,
-        borrowingEnabled: reserveRaw.borrowingEnabled,
-        isActive: reserveRaw.isActive,
-        isFrozen: reserveRaw.isFrozen,
-        liquidityIndex: reserveRaw.liquidityIndex.toString(),
-        variableBorrowIndex: reserveRaw.variableBorrowIndex.toString(),
-        liquidityRate: reserveRaw.liquidityRate.toString(),
-        variableBorrowRate: reserveRaw.variableBorrowRate.toString(),
-        lastUpdateTimestamp: reserveRaw.lastUpdateTimestamp,
-        aTokenAddress: reserveRaw.aTokenAddress.toString(),
-        variableDebtTokenAddress:
-          reserveRaw.variableDebtTokenAddress.toString(),
-        interestRateStrategyAddress:
-          reserveRaw.interestRateStrategyAddress.toString(),
-        availableLiquidity: reserveRaw.availableLiquidity.toString(),
-        totalScaledVariableDebt: reserveRaw.totalScaledVariableDebt.toString(),
-        priceInMarketReferenceCurrency:
-          reserveRaw.priceInMarketReferenceCurrency.toString(),
-        priceOracle: reserveRaw.priceOracle,
-        variableRateSlope1: reserveRaw.variableRateSlope1.toString(),
-        variableRateSlope2: reserveRaw.variableRateSlope2.toString(),
-        baseVariableBorrowRate: reserveRaw.baseVariableBorrowRate.toString(),
-        optimalUsageRatio: reserveRaw.optimalUsageRatio.toString(),
-        // new fields
-        isPaused: reserveRaw.isPaused,
-        debtCeiling: reserveRaw.debtCeiling.toString(),
-        borrowCap: reserveRaw.borrowCap.toString(),
-        supplyCap: reserveRaw.supplyCap.toString(),
-        borrowableInIsolation: reserveRaw.borrowableInIsolation,
-        accruedToTreasury: reserveRaw.accruedToTreasury.toString(),
-        unbacked: reserveRaw.unbacked.toString(),
-        isolationModeTotalDebt: reserveRaw.isolationModeTotalDebt.toString(),
-        debtCeilingDecimals: reserveRaw.debtCeilingDecimals.toNumber(),
-        isSiloedBorrowing: reserveRaw.isSiloedBorrowing,
-        flashLoanEnabled: reserveRaw.flashLoanEnabled,
-        virtualAccActive,
-        virtualUnderlyingBalance,
-      };
-    });
+    const reservesData: ReserveDataHumanized[] = reservesRaw.map(
+      (reserveRaw, index) => {
+        const virtualUnderlyingBalance =
+          reserveRaw.virtualUnderlyingBalance.toString();
+        const { virtualAccActive } = reserveRaw;
+        return {
+          originalId: index,
+          id: `${this.chainId}-${reserveRaw.underlyingAsset}-${lendingPoolAddressProvider}`.toLowerCase(),
+          underlyingAsset: reserveRaw.underlyingAsset.toLowerCase(),
+          name: reserveRaw.name,
+          symbol: ammSymbolMap[reserveRaw.underlyingAsset.toLowerCase()]
+            ? ammSymbolMap[reserveRaw.underlyingAsset.toLowerCase()]
+            : reserveRaw.symbol,
+          decimals: reserveRaw.decimals.toNumber(),
+          baseLTVasCollateral: reserveRaw.baseLTVasCollateral.toString(),
+          reserveLiquidationThreshold:
+            reserveRaw.reserveLiquidationThreshold.toString(),
+          reserveLiquidationBonus:
+            reserveRaw.reserveLiquidationBonus.toString(),
+          reserveFactor: reserveRaw.reserveFactor.toString(),
+          usageAsCollateralEnabled: reserveRaw.usageAsCollateralEnabled,
+          borrowingEnabled: reserveRaw.borrowingEnabled,
+          isActive: reserveRaw.isActive,
+          isFrozen: reserveRaw.isFrozen,
+          liquidityIndex: reserveRaw.liquidityIndex.toString(),
+          variableBorrowIndex: reserveRaw.variableBorrowIndex.toString(),
+          liquidityRate: reserveRaw.liquidityRate.toString(),
+          variableBorrowRate: reserveRaw.variableBorrowRate.toString(),
+          lastUpdateTimestamp: reserveRaw.lastUpdateTimestamp,
+          aTokenAddress: reserveRaw.aTokenAddress.toString(),
+          variableDebtTokenAddress:
+            reserveRaw.variableDebtTokenAddress.toString(),
+          interestRateStrategyAddress:
+            reserveRaw.interestRateStrategyAddress.toString(),
+          availableLiquidity: reserveRaw.availableLiquidity.toString(),
+          totalScaledVariableDebt:
+            reserveRaw.totalScaledVariableDebt.toString(),
+          priceInMarketReferenceCurrency:
+            reserveRaw.priceInMarketReferenceCurrency.toString(),
+          priceOracle: reserveRaw.priceOracle,
+          variableRateSlope1: reserveRaw.variableRateSlope1.toString(),
+          variableRateSlope2: reserveRaw.variableRateSlope2.toString(),
+          baseVariableBorrowRate: reserveRaw.baseVariableBorrowRate.toString(),
+          optimalUsageRatio: reserveRaw.optimalUsageRatio.toString(),
+          // new fields
+          isPaused: reserveRaw.isPaused,
+          debtCeiling: reserveRaw.debtCeiling.toString(),
+          borrowCap: reserveRaw.borrowCap.toString(),
+          supplyCap: reserveRaw.supplyCap.toString(),
+          borrowableInIsolation: reserveRaw.borrowableInIsolation,
+          accruedToTreasury: reserveRaw.accruedToTreasury.toString(),
+          unbacked: reserveRaw.unbacked.toString(),
+          isolationModeTotalDebt: reserveRaw.isolationModeTotalDebt.toString(),
+          debtCeilingDecimals: reserveRaw.debtCeilingDecimals.toNumber(),
+          isSiloedBorrowing: reserveRaw.isSiloedBorrowing,
+          flashLoanEnabled: reserveRaw.flashLoanEnabled,
+          virtualAccActive,
+          virtualUnderlyingBalance,
+        };
+      },
+    );
 
     const baseCurrencyData: PoolBaseCurrencyHumanized = {
       // this is to get the decimals from the unit so 1e18 = string length of 19 - 1 to get the number of 0

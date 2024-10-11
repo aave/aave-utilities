@@ -55,15 +55,12 @@ export interface ReserveEmode {
 }
 
 export function getAndFormatReserveEModes(
-  reserveId: string,
+  reserveId: number,
   eModes: EModeData[],
 ) {
-  const reserveIdNumber = Number(reserveId);
   return eModes.reduce<ReserveEmode[]>((acc, eMode) => {
-    const borrowingEnabled =
-      eMode.eMode.borrowableBitmap[reserveIdNumber] === '1';
-    const collateralEnabled =
-      eMode.eMode.collateralBitmap[reserveIdNumber] === '1';
+    const borrowingEnabled = eMode.eMode.borrowableBitmap[reserveId] === '1';
+    const collateralEnabled = eMode.eMode.collateralBitmap[reserveId] === '1';
     if (borrowingEnabled || collateralEnabled) {
       acc.push({
         id: eMode.id,

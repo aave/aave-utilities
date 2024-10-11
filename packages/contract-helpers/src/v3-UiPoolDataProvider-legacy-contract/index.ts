@@ -125,7 +125,8 @@ export class LegacyUiPoolDataProvider
       await this.getReservesData({ lendingPoolAddressProvider });
 
     const reservesData: ReserveDataHumanized[] = reservesRaw.map(
-      reserveRaw => ({
+      (reserveRaw, index) => ({
+        originalId: index,
         id: `${this.chainId}-${reserveRaw.underlyingAsset}-${lendingPoolAddressProvider}`.toLowerCase(),
         underlyingAsset: reserveRaw.underlyingAsset.toLowerCase(),
         name: reserveRaw.name,
