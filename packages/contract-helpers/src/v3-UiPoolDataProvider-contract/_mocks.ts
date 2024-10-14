@@ -272,20 +272,22 @@ export const userReservesMock: UserReserveData = {
   1: 1,
 };
 
-export const eModesMock: EModeData = {
-  id: 1,
-  eMode: {
-    ltv: 1,
-    liquidationThreshold: 1,
-    liquidationBonus: 1,
-    label: 'test label',
-    collateralBitmap: BigNumber.from({
-      _hex: '0x0',
-      _isBigNumber: true,
-    }),
-    borrowableBitmap: BigNumber.from({
-      _hex: '0x0',
-      _isBigNumber: true,
-    }),
+export const eModesMock: EModeData[] = [
+  {
+    id: 1,
+    eMode: {
+      ltv: 1,
+      liquidationThreshold: 1,
+      liquidationBonus: 1,
+      label: 'test label',
+      collateralBitmap: BigNumber.from({
+        _hex: '0x0',
+        _isBigNumber: true,
+      }),
+      borrowableBitmap: BigNumber.from({
+        _hex: '0x0',
+        _isBigNumber: true,
+      }),
+    },
   },
-};
+];

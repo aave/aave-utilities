@@ -130,6 +130,25 @@ describe('UiPoolDataProvider', () => {
     });
   });
 
+  describe('getEModesHumanized', () => {
+    it('should throw when lendingPoolAddressProvider is not valid address', async () => {
+      const instance = createValidInstance();
+      await expect(
+        instance.getEModesHumanized({
+          lendingPoolAddressProvider: mockInvalidEthereumAddress,
+        }),
+      ).rejects.toThrow('Lending pool address is not valid');
+    });
+    it('should not throw', async () => {
+      const instance = createValidInstance();
+      await expect(
+        instance.getEModesHumanized({
+          lendingPoolAddressProvider: mockValidEthereumAddress,
+        }),
+      ).resolves.not.toThrow();
+    });
+  });
+
   describe('getReservesHumanized', () => {
     it('should throw if lendingPoolAddressProvider is not a valid ethereum address', async () => {
       const instance = createValidInstance();

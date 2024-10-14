@@ -256,9 +256,15 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
         ltv: eMode.eMode.ltv.toString(),
         liquidationThreshold: eMode.eMode.liquidationThreshold.toString(),
         liquidationBonus: eMode.eMode.liquidationBonus.toString(),
-        collateralBitmap: eMode.eMode.collateralBitmap.toBigInt().toString(2),
+        collateralBitmap: eMode.eMode.collateralBitmap
+          .toBigInt()
+          .toString(2)
+          .padEnd(256, '0'),
         label: eMode.eMode.label,
-        borrowableBitmap: eMode.eMode.borrowableBitmap.toBigInt().toString(2),
+        borrowableBitmap: eMode.eMode.borrowableBitmap
+          .toBigInt()
+          .toString(2)
+          .padEnd(256, '0'),
       },
     }));
   }
