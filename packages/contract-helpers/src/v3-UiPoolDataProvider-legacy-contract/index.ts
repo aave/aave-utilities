@@ -125,7 +125,8 @@ export class LegacyUiPoolDataProvider
       await this.getReservesData({ lendingPoolAddressProvider });
 
     const reservesData: ReserveDataHumanized[] = reservesRaw.map(
-      reserveRaw => ({
+      (reserveRaw, index) => ({
+        originalId: index,
         id: `${this.chainId}-${reserveRaw.underlyingAsset}-${lendingPoolAddressProvider}`.toLowerCase(),
         underlyingAsset: reserveRaw.underlyingAsset.toLowerCase(),
         name: reserveRaw.name,
@@ -230,11 +231,7 @@ export class LegacyUiPoolDataProvider
         scaledATokenBalance: userReserveRaw.scaledATokenBalance.toString(),
         usageAsCollateralEnabledOnUser:
           userReserveRaw.usageAsCollateralEnabledOnUser,
-        stableBorrowRate: userReserveRaw.stableBorrowRate.toString(),
         scaledVariableDebt: userReserveRaw.scaledVariableDebt.toString(),
-        principalStableDebt: userReserveRaw.principalStableDebt.toString(),
-        stableBorrowLastUpdateTimestamp:
-          userReserveRaw.stableBorrowLastUpdateTimestamp.toNumber(),
       })),
       userEmodeCategoryId,
     };

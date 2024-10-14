@@ -13,14 +13,8 @@ import {
 } from './calculate-user-reserve-incentives';
 
 describe('calculateUserReserveIncentives', () => {
-  const reserveMock = new ReserveMock()
-    .addLiquidity(100)
-    .addVariableDebt(200)
-    .addStableDebt(300);
-  const userMock = new UserReserveMock()
-    .supply(100)
-    .variableBorrow(200)
-    .stableBorrow(300);
+  const reserveMock = new ReserveMock().addLiquidity(100).addVariableDebt(200);
+  const userMock = new UserReserveMock().supply(100).variableBorrow(200);
   const reserveIncentiveMock = new ReserveIncentiveMock();
   const userIncentiveMock = new UserIncentiveMock();
   const currentTimestamp = 1;
@@ -78,10 +72,6 @@ describe('calculateUserReserveIncentives', () => {
       reward =>
         reward.tokenAddress === '0x0000000000000000000000000000000000000000',
     );
-    const sReward = result.find(
-      reward =>
-        reward.tokenAddress === '0x0000000000000000000000000000000000000000',
-    );
     if (aReward) {
       expect(normalize(aReward.unclaimedRewards, 18)).toBe(
         '0.000000000000000001',
@@ -92,10 +82,6 @@ describe('calculateUserReserveIncentives', () => {
       expect(normalize(vReward.unclaimedRewards, 18)).toBe(
         '0.000000000000000001',
       );
-    }
-
-    if (sReward) {
-      expect(sReward.accruedRewards.toFixed()).toBe('0');
     }
 
     expect(normalize(total, 18)).toBe('0');
@@ -113,11 +99,6 @@ describe('calculateUserReserveIncentives', () => {
             rewardsTokenInformation: [],
           },
           vIncentiveData: {
-            tokenAddress: '0x0',
-            incentiveControllerAddress: '0x0',
-            rewardsTokenInformation: [],
-          },
-          sIncentiveData: {
             tokenAddress: '0x0',
             incentiveControllerAddress: '0x0',
             rewardsTokenInformation: [],

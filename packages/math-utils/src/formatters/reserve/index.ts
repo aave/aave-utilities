@@ -8,6 +8,7 @@ import {
 import { RAY_DECIMALS, SECONDS_PER_YEAR, USD_DECIMALS } from '../../constants';
 import { LTV_PRECISION } from '../../index';
 import { calculateCompoundedRate } from '../compounded-interest/calculate-compounded-interest';
+import { EModeData, getAndFormatReserveEModes } from '../emode';
 import {
   calculateReserveIncentives,
   CalculateReserveIncentivesResponse,
@@ -27,17 +28,14 @@ export interface FormatReserveResponse extends ReserveData {
   formattedAvailableLiquidity: string;
   totalDebt: string;
   totalVariableDebt: string;
-  totalStableDebt: string;
   totalLiquidity: string;
   borrowUsageRatio: string;
   supplyUsageRatio: string;
   supplyAPY: string;
   variableBorrowAPY: string;
-  stableBorrowAPY: string;
   unborrowedLiquidity: string;
   supplyAPR: string;
   variableBorrowAPR: string;
-  stableBorrowAPR: string;
   isIsolated: boolean;
   isolationModeTotalDebtUSD: string;
   availableDebtCeilingUSD: string;
@@ -50,6 +48,7 @@ export interface FormatReserveRequest {
 }
 
 export interface ReserveData {
+  originalId: number;
   id: string;
   symbol: string;
   name: string;
@@ -58,17 +57,13 @@ export interface ReserveData {
   usageAsCollateralEnabled: boolean;
   reserveFactor: string;
   baseLTVasCollateral: string;
-  averageStableRate: string;
-  stableDebtLastUpdateTimestamp: number;
   liquidityIndex: string;
   reserveLiquidationThreshold: string;
   reserveLiquidationBonus: string;
   variableBorrowIndex: string;
   variableBorrowRate: string;
   availableLiquidity: string;
-  stableBorrowRate: string;
   liquidityRate: string;
-  totalPrincipalStableDebt: string;
   totalScaledVariableDebt: string;
   lastUpdateTimestamp: number;
   // v3
@@ -93,14 +88,12 @@ interface GetComputedReserveFieldsResponse {
   formattedEModeLiquidationBonus: string;
   formattedAvailableLiquidity: BigNumber;
   totalDebt: BigNumber;
-  totalStableDebt: BigNumber;
   totalVariableDebt: BigNumber;
   totalLiquidity: BigNumber;
   borrowUsageRatio: string;
   supplyUsageRatio: string;
   supplyAPY: BigNumber;
   variableBorrowAPY: BigNumber;
-  stableBorrowAPY: BigNumber;
   unborrowedLiquidity: string;
 }
 
@@ -111,8 +104,10 @@ function getComputedReserveFields({
   reserve,
   currentTimestamp,
 }: FormatReserveRequest): GetComputedReserveFieldsResponse {
-  const { totalDebt, totalStableDebt, totalVariableDebt, totalLiquidity } =
-    calculateReserveDebt(reserve, currentTimestamp);
+  const { totalDebt, totalVariableDebt, totalLiquidity } = calculateReserveDebt(
+    reserve,
+    currentTimestamp,
+  );
   const borrowUsageRatio = totalLiquidity.eq(0)
     ? '0'
     : valueToBigNumber(totalDebt).dividedBy(totalLiquidity).toFixed();
@@ -158,14 +153,8 @@ function getComputedReserveFields({
     duration: SECONDS_PER_YEAR,
   });
 
-  const stableBorrowAPY = calculateCompoundedRate({
-    rate: reserve.stableBorrowRate,
-    duration: SECONDS_PER_YEAR,
-  });
-
   return {
     totalDebt,
-    totalStableDebt,
     totalVariableDebt,
     totalLiquidity,
     borrowUsageRatio,
@@ -177,7 +166,6 @@ function getComputedReserveFields({
     formattedEModeLtv: reserve.eModeLtv.toString(),
     supplyAPY,
     variableBorrowAPY,
-    stableBorrowAPY,
     formattedAvailableLiquidity: availableLiquidity,
     unborrowedLiquidity: reserve.availableLiquidity,
   };
@@ -208,7 +196,6 @@ function formatEnhancedReserve({
   return {
     ...reserve,
     totalVariableDebt: normalizeWithReserve(reserve.totalVariableDebt),
-    totalStableDebt: normalizeWithReserve(reserve.totalStableDebt),
     totalLiquidity: normalizeWithReserve(reserve.totalLiquidity),
     formattedAvailableLiquidity: normalizeWithReserve(
       reserve.availableLiquidity,
@@ -227,8 +214,6 @@ function formatEnhancedReserve({
     supplyAPR: normalize(reserve.liquidityRate, RAY_DECIMALS),
     variableBorrowAPY: normalize(reserve.variableBorrowAPY, RAY_DECIMALS),
     variableBorrowAPR: normalize(reserve.variableBorrowRate, RAY_DECIMALS),
-    stableBorrowAPY: normalize(reserve.stableBorrowAPY, RAY_DECIMALS),
-    stableBorrowAPR: normalize(reserve.stableBorrowRate, RAY_DECIMALS),
     formattedReserveLiquidationThreshold: normalize(
       reserve.reserveLiquidationThreshold,
       4,
@@ -251,9 +236,6 @@ function formatEnhancedReserve({
     ),
     totalScaledVariableDebt: normalizeWithReserve(
       reserve.totalScaledVariableDebt,
-    ),
-    totalPrincipalStableDebt: normalizeWithReserve(
-      reserve.totalPrincipalStableDebt,
     ),
     debtCeilingUSD: isIsolated
       ? normalize(reserve.debtCeiling, reserve.debtCeilingDecimals)
@@ -296,7 +278,6 @@ export interface FormatReserveUSDResponse extends FormatReserveResponse {
   availableLiquidityUSD: string;
   totalDebtUSD: string;
   totalVariableDebtUSD: string;
-  totalStableDebtUSD: string;
   borrowCapUSD: string;
   supplyCapUSD: string;
   unbackedUSD: string;
@@ -358,20 +339,6 @@ export function formatReserveUSD({
       priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
       normalizedMarketReferencePriceInUsd,
     }),
-    totalStableDebtUSD: nativeToUSD({
-      amount: computedFields.totalStableDebt,
-      currencyDecimals: reserve.decimals,
-      marketReferenceCurrencyDecimals,
-      priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-      normalizedMarketReferencePriceInUsd,
-    }),
-    // isolationModeTotalDebtUSD: nativeToUSD({
-    //   amount: computedFields.totalStableDebt,
-    //   currencyDecimals: reserve.decimals,
-    //   marketReferenceCurrencyDecimals,
-    //   priceInMarketReferenceCurrency: reserve.priceInMarketReferenceCurrency,
-    //   marketReferencePriceInUsd,
-    // }),
     formattedPriceInMarketReferenceCurrency: normalize(
       reserve.priceInMarketReferenceCurrency,
       marketReferenceCurrencyDecimals,
@@ -411,6 +378,7 @@ export function formatReserveUSD({
 
 export interface FormatReservesUSDRequest<T extends ReserveDataWithPrice> {
   reserves: T[];
+  eModes?: EModeData[];
   currentTimestamp: number;
   marketReferencePriceInUsd: string;
   marketReferenceCurrencyDecimals: number;
@@ -418,6 +386,7 @@ export interface FormatReservesUSDRequest<T extends ReserveDataWithPrice> {
 
 export function formatReserves<T extends ReserveDataWithPrice>({
   reserves,
+  eModes,
   currentTimestamp,
   marketReferencePriceInUsd,
   marketReferenceCurrencyDecimals,
@@ -429,7 +398,10 @@ export function formatReserves<T extends ReserveDataWithPrice>({
       marketReferencePriceInUsd,
       marketReferenceCurrencyDecimals,
     });
-    return { ...reserve, ...formattedReserve };
+    const formattedEModes = eModes
+      ? getAndFormatReserveEModes(reserve.originalId, eModes)
+      : [];
+    return { ...reserve, ...formattedReserve, eModes: formattedEModes };
   });
 }
 
@@ -469,7 +441,6 @@ export function formatReservesAndIncentives<T extends ReserveDataWithPrice>({
         reserve.totalVariableDebt,
         -reserve.decimals,
       ),
-      totalStableDebt: normalize(reserve.totalStableDebt, -reserve.decimals),
       priceInMarketReferenceCurrency:
         reserve.formattedPriceInMarketReferenceCurrency,
       decimals: reserve.decimals,
