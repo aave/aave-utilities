@@ -16,6 +16,7 @@ export class ReserveMock {
   constructor(config: { decimals: number } = { decimals: 18 }) {
     this.config = config;
     this.reserve = {
+      originalId: 0,
       id: '0x0',
       symbol: 'TEST',
       name: 'TEST',

@@ -1,5 +1,5 @@
-import { normalize, valueToBigNumber } from 'math-utils/src/bignumber';
-import { LTV_PRECISION } from 'math-utils/src/constants';
+import { normalize, valueToBigNumber } from '../../bignumber';
+import { LTV_PRECISION } from '../../constants';
 
 interface EModeCategoryData {
   ltv: string;

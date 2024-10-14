@@ -137,6 +137,7 @@ describe('UiPoolDataProvider', () => {
       expect(result).toEqual({
         reservesData: [
           {
+            originalId: 0,
             id: '137-0x3e0437898a5667a4769b1ca5a34aab1ae7e81377-0x88757f2f99175387ab4c6a4b3067c77a695b0349',
             underlyingAsset: '0x3e0437898a5667a4769b1ca5a34aab1ae7e81377',
             name: '',
@@ -200,6 +201,7 @@ describe('UiPoolDataProvider', () => {
             virtualUnderlyingBalance: '0',
           },
           {
+            originalId: 1,
             id: '137-0xa478c2975ab1ea89e8196811f51a7b7ade33eb11-0x88757f2f99175387ab4c6a4b3067c77a695b0349',
             underlyingAsset: '0xa478c2975ab1ea89e8196811f51a7b7ade33eb11',
             name: '',
