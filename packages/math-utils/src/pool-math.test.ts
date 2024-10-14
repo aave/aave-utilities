@@ -4,7 +4,6 @@ import {
   getCompoundedBalance,
   calculateLinearInterest,
   getReserveNormalizedIncome,
-  getCompoundedStableBalance,
   calculateHealthFactorFromBalances,
   calculateHealthFactorFromBalancesBigUnits,
   calculateAvailableBorrowsMarketReferenceCurrency,
@@ -104,19 +103,6 @@ describe('pool math', () => {
     expect(reserveNormalizedIncome.toFixed()).toEqual(
       '1048540642417873800000000000',
     );
-  });
-
-  it('should calculate compounded stable balances', () => {
-    const compoundedStableBalanceRequest = {
-      principalBalance: 2000000000000000000,
-      userStableRate: 500000000000000000,
-      currentTimestamp: 1749942229,
-      lastUpdateTimestamp: 1629942229,
-    };
-    const compoundedStableBalance = getCompoundedStableBalance(
-      compoundedStableBalanceRequest,
-    );
-    expect(compoundedStableBalance.toFixed()).toEqual('2000000003805175038');
   });
 
   it('should calculate health factor', () => {
