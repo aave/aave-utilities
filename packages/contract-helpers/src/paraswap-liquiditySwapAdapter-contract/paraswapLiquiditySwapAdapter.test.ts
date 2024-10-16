@@ -136,6 +136,56 @@ describe('LiquiditySwapAdapterService', () => {
 
       expect(offset).toEqual(68);
     });
+
+    it('Expects 100 when Augustus V6 swapExactAmountIn', () => {
+      const callData = '0xe3ead59e0000000000otherCallData000000000';
+      const offset = augustusFromAmountOffsetFromCalldata(callData);
+
+      expect(offset).toEqual(100);
+    });
+
+    it('Expects 4 when Augustus V6 swapExactAmountInOnBalancerV2', () => {
+      const callData = '0xd85ca1730000000000otherCallData000000000';
+      const offset = augustusFromAmountOffsetFromCalldata(callData);
+
+      expect(offset).toEqual(4);
+    });
+
+    it('Expects 132 when Augustus V6 swapExactAmountInOnCurveV1', () => {
+      const callData = '0x1a01c5320000000000otherCallData000000000';
+      const offset = augustusFromAmountOffsetFromCalldata(callData);
+
+      expect(offset).toEqual(132);
+    });
+
+    it('Expects 196 when Augustus V6 swapExactAmountInOnCurveV2', () => {
+      const callData = '0xe37ed2560000000000otherCallData000000000';
+      const offset = augustusFromAmountOffsetFromCalldata(callData);
+
+      expect(offset).toEqual(196);
+    });
+
+    it('Expects 164 when Augustus V6 swapExactAmountInOnUniswapV2', () => {
+      const callData = '0xe8bb3b6c0000000000otherCallData000000000';
+      const offset = augustusFromAmountOffsetFromCalldata(callData);
+
+      expect(offset).toEqual(164);
+    });
+
+    it('Expects 164 when Augustus V6 swapExactAmountInOnUniswapV3', () => {
+      const callData = '0x876a02f60000000000otherCallData000000000';
+      const offset = augustusFromAmountOffsetFromCalldata(callData);
+
+      expect(offset).toEqual(164);
+    });
+
+    it('Expects 68 when Augustus V6 swapExactAmountInOutOnMakerPSM', () => {
+      const callData = '0x987e7d8e0000000000otherCallData000000000';
+      const offset = augustusFromAmountOffsetFromCalldata(callData);
+
+      expect(offset).toEqual(68);
+    });
+
     it('Expects to fail if non recognizable Augustus function selector', () => {
       const callData = 'bad calldata';
       expect(() => augustusFromAmountOffsetFromCalldata(callData)).toThrowError(

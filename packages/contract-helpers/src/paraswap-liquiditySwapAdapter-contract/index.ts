@@ -40,15 +40,29 @@ export function augustusFromAmountOffsetFromCalldata(calldata: string): number {
       return 68; // 4 + 2 * 32
     case '0x46c67b6d': // Augustus V5 megaSwap
       return 68; // 4 + 2 * 32
-    case '0xb22f4db8': // directBalancerV2GivenInSwap
+    case '0xb22f4db8': // Augustus V5 directBalancerV2GivenInSwap
       return 68; // 4 + 2 * 32
-    case '0x19fc5be0': // directBalancerV2GivenOutSwap
+    case '0x19fc5be0': // Augustus V5 directBalancerV2GivenOutSwap
       return 68; // 4 + 2 * 32
-    case '0x3865bde6': // directCurveV1Swap
+    case '0x3865bde6': // Augustus V5 directCurveV1Swap
       return 68; // 4 + 2 * 32
-    case '0x58f15100': // directCurveV2Swap
+    case '0x58f15100': // Augustus V5 directCurveV2Swap
       return 68; // 4 + 2 * 32
-    case '0xa6866da9': // directUniV3Swap
+    case '0xa6866da9': // Augustus V5 directUniV3Swap
+      return 68; // 4 + 2 * 32
+    case '0xe3ead59e': // Augustus V6 swapExactAmountIn
+      return 100; // 4 + 3 * 32
+    case '0xd85ca173': // Augustus V6 swapExactAmountInOnBalancerV2
+      return 4; // 4 + 0 * 32
+    case '0x1a01c532': // Augustus V6 swapExactAmountInOnCurveV1
+      return 132; // 4 + 4 * 32
+    case '0xe37ed256': // Augustus V6 swapExactAmountInOnCurveV2
+      return 196; // 4 + 6 * 32
+    case '0xe8bb3b6c': // Augustus V6 swapExactAmountInOnUniswapV2
+      return 164; // 4 + 4 * 32
+    case '0x876a02f6': // Augustus V6 swapExactAmountInOnUniswapV3
+      return 164; // 4 + 4 * 32
+    case '0x987e7d8e': // Augustus V6 swapExactAmountInOutOnMakerPSM
       return 68; // 4 + 2 * 32
     default:
       throw new Error('Unrecognized function selector for Augustus');

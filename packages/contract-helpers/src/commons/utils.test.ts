@@ -77,6 +77,32 @@ describe('Utils', () => {
       const offset = augustusToAmountOffsetFromCalldata('0x87a63926');
       expect(offset).toEqual(68);
     });
+
+    it('Expects 132 when Augustus V6 swapExactAmountOut', () => {
+      const offset = augustusToAmountOffsetFromCalldata('0x7f457675');
+      expect(offset).toEqual(132);
+    });
+
+    it('Expects 36 when Augustus V6 swapExactAmountOutOnBalancerV2', () => {
+      const offset = augustusToAmountOffsetFromCalldata('0xd6ed22e6');
+      expect(offset).toEqual(36);
+    });
+
+    it('Expects 196 when Augustus V6 swapExactAmountOutOnUniswapV2', () => {
+      const offset = augustusToAmountOffsetFromCalldata('0xa76f4eb6');
+      expect(offset).toEqual(196);
+    });
+
+    it('Expects 196 when Augustus V6 swapExactAmountOutOnUniswapV3', () => {
+      const offset = augustusToAmountOffsetFromCalldata('0x5e94e28d');
+      expect(offset).toEqual(196);
+    });
+
+    it('Expects 100 when Augustus V6 swapExactAmountInOutOnMakerPSM', () => {
+      const offset = augustusToAmountOffsetFromCalldata('0x987e7d8e');
+      expect(offset).toEqual(100);
+    });
+
     it('Expects Error', () => {
       expect(() => augustusToAmountOffsetFromCalldata('asdf')).toThrowError(
         `Unrecognized function selector for Augustus`,
