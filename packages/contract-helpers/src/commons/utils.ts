@@ -207,8 +207,18 @@ export const augustusToAmountOffsetFromCalldata = (
     case '0xb66bcbac': // Augustus V5 buy (old)
     case '0x35326910': // Augustus V5 buy
       return 164; // 4 + 5 * 32
-    case '0x87a63926': // directUniV3Buy
+    case '0x87a63926': // Augustus V5 directUniV3Buy
       return 68; // 4 + 2 * 32
+    case '0x7f457675': // Augustus V6 swapExactAmountOut
+      return 132; // 4 + 4 * 32
+    case '0xd6ed22e6': // Augustus V6 swapExactAmountOutOnBalancerV2
+      return 36; // 4 + 1 * 32
+    case '0xa76f4eb6': // Augustus V6 swapExactAmountOutOnUniswapV2
+      return 196; // 4 + 6 * 32
+    case '0x5e94e28d': // Augustus V6 swapExactAmountOutOnUniswapV3
+      return 196; // 4 + 6 * 32
+    case '0x987e7d8e': // Augustus V6 swapExactAmountInOutOnMakerPSM
+      return 100; // 4 + 3 * 32
     default:
       throw new Error('Unrecognized function selector for Augustus');
   }
