@@ -23,7 +23,6 @@ export class ReserveMock {
       decimals: config.decimals,
       underlyingAsset: '0x0',
       usageAsCollateralEnabled: true,
-      eModeCategoryId: 1,
       reserveFactor: '0',
       baseLTVasCollateral: '5000', // 50%
       liquidityIndex: RAY.toString(),
@@ -40,9 +39,6 @@ export class ReserveMock {
       debtCeiling: '0',
       debtCeilingDecimals: 2,
       isolationModeTotalDebt: '',
-      eModeLtv: 6000, // 60%
-      eModeLiquidationThreshold: 7000, // 70%
-      eModeLiquidationBonus: 0,
       unbacked: '0',
       virtualAccActive: false,
       virtualUnderlyingBalance: '0',
@@ -95,7 +91,6 @@ export class UserReserveMock {
       name: 'TEST',
       decimals: config.decimals,
       usageAsCollateralEnabled: true,
-      eModeCategoryId: 1,
       formattedBaseLTVasCollateral: '0.5',
       liquidityIndex: RAY.toString(),
       formattedReserveLiquidationThreshold: '0.6',
@@ -109,9 +104,6 @@ export class UserReserveMock {
       debtCeiling: '0',
       debtCeilingDecimals: 2,
       isolationModeTotalDebt: '',
-      formattedEModeLtv: '0.6',
-      formattedEModeLiquidationThreshold: '0.7',
-      formattedEModeLiquidationBonus: '0',
       priceInUSD: '10',
       totalLiquidityUSD: '0',
       availableLiquidityUSD: '0',
@@ -136,6 +128,7 @@ export class UserReserveMock {
       availableDebtCeilingUSD: '0',
       isolationModeTotalDebtUSD: '0',
       isIsolated: true,
+      eModes: [],
     };
   }
 

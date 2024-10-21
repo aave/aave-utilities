@@ -10,15 +10,15 @@ interface EModeCategoryData {
   borrowableBitmap: string;
 }
 
-export interface EModeData {
-  id: number;
-  eMode: EModeCategoryData;
-}
-
 interface FormattedEModeCategory extends EModeCategoryData {
   formattedLtv: string;
   formattedLiquidationThreshold: string;
   formattedLiquidationBonus: string;
+}
+
+export interface EModeData {
+  id: number;
+  eMode: EModeCategoryData;
 }
 
 export function formatEModeCategory(
@@ -47,18 +47,16 @@ export function formatEModes(eModes: EModeData[]) {
   }));
 }
 
-export interface ReserveEmode {
-  id: number;
+export interface ReserveEMode extends EModeData {
   collateralEnabled: boolean;
   borrowingEnabled: boolean;
-  eMode: FormattedEModeCategory;
 }
 
-export function getAndFormatReserveEModes(
+export function getReservesEModes(
   reserveId: number,
   eModes: EModeData[],
-) {
-  return eModes.reduce<ReserveEmode[]>((acc, eMode) => {
+): ReserveEMode[] {
+  return eModes.reduce<ReserveEMode[]>((acc, eMode) => {
     const borrowingEnabled = eMode.eMode.borrowableBitmap[reserveId] === '1';
     const collateralEnabled = eMode.eMode.collateralBitmap[reserveId] === '1';
     if (borrowingEnabled || collateralEnabled) {
@@ -66,10 +64,24 @@ export function getAndFormatReserveEModes(
         id: eMode.id,
         collateralEnabled,
         borrowingEnabled,
-        eMode: formatEModeCategory(eMode.eMode),
+        eMode: eMode.eMode,
       });
     }
 
     return acc;
   }, []);
+}
+
+export interface FormattedReserveEMode extends Omit<ReserveEMode, 'eMode'> {
+  eMode: FormattedEModeCategory;
+}
+
+export function getAndFormatReserveEModes(
+  reserveId: number,
+  eModes: EModeData[],
+): FormattedReserveEMode[] {
+  return getReservesEModes(reserveId, eModes).map(eMode => ({
+    ...eMode,
+    eMode: formatEModeCategory(eMode.eMode),
+  }));
 }

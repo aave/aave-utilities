@@ -54,22 +54,20 @@ export function calculateUserReserveTotals({
         totalCollateralMarketReferenceCurrency.plus(
           userReserveSummary.underlyingBalanceMarketReferenceCurrency,
         );
-      if (
-        userEmodeCategoryId &&
-        userEmodeCategoryId ===
-          userReserveSummary.userReserve.reserve.eModeCategoryId
-      ) {
+      const selectedEModeCategory =
+        userReserveSummary.userReserve.reserve.eModes.find(
+          elem => elem.id === userEmodeCategoryId,
+        );
+      if (userEmodeCategoryId && selectedEModeCategory) {
         currentLtv = currentLtv.plus(
           valueToBigNumber(
             userReserveSummary.underlyingBalanceMarketReferenceCurrency,
-          ).multipliedBy(userReserveSummary.userReserve.reserve.eModeLtv),
+          ).multipliedBy(selectedEModeCategory.eMode.ltv),
         );
         currentLiquidationThreshold = currentLiquidationThreshold.plus(
           valueToBigNumber(
             userReserveSummary.underlyingBalanceMarketReferenceCurrency,
-          ).multipliedBy(
-            userReserveSummary.userReserve.reserve.eModeLiquidationThreshold,
-          ),
+          ).multipliedBy(selectedEModeCategory.eMode.liquidationThreshold),
         );
       } else {
         currentLtv = currentLtv.plus(
