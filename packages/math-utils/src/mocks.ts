@@ -16,7 +16,7 @@ export class ReserveMock {
   constructor(config: { decimals: number } = { decimals: 18 }) {
     this.config = config;
     this.reserve = {
-      originalId: 0,
+      originalId: 1,
       id: '0x0',
       symbol: 'TEST',
       name: 'TEST',
@@ -128,7 +128,24 @@ export class UserReserveMock {
       availableDebtCeilingUSD: '0',
       isolationModeTotalDebtUSD: '0',
       isIsolated: true,
-      eModes: [],
+      eModes: [
+        {
+          id: 1,
+          collateralEnabled: true,
+          borrowingEnabled: true,
+          eMode: {
+            ltv: '6000',
+            liquidationThreshold: '7000',
+            liquidationBonus: '0',
+            formattedLtv: '0.6',
+            formattedLiquidationThreshold: '0.7',
+            formattedLiquidationBonus: '0',
+            label: 'test emode',
+            collateralBitmap: '1',
+            borrowableBitmap: '1',
+          },
+        },
+      ],
     };
   }
 
