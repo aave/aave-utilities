@@ -274,11 +274,11 @@ describe('UiPoolDataProvider', () => {
       });
     });
   });
-  describe('getUserReservesData', () => {
-    it('should throw when lendingPoolAddressProvider is not valid address', async () => {
+  describe('getUserReservesHumanized', () => {
+    it('should throw if lendingPoolAddressProvider is not a valid ethereum address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getUserReservesData({
+        instance.getUserReservesHumanized({
           lendingPoolAddressProvider: mockInvalidEthereumAddress,
           user: mockValidEthereumAddress,
         }),
@@ -287,21 +287,31 @@ describe('UiPoolDataProvider', () => {
     it('should throw if user is not a valid ethereum address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getUserReservesData({
+        instance.getUserReservesHumanized({
           lendingPoolAddressProvider: mockValidEthereumAddress,
           user: mockInvalidEthereumAddress,
         }),
       ).rejects.toThrow('User address is not a valid ethereum address');
     });
-
-    it('should not throw if user is a valid ethereum address', async () => {
+    it('should be ok', async () => {
       const instance = createValidInstance();
-      await expect(
-        instance.getUserReservesData({
-          lendingPoolAddressProvider: mockValidEthereumAddress,
-          user: mockValidEthereumAddress,
-        }),
-      ).resolves.not.toThrow();
+      const result = await instance.getUserReservesHumanized({
+        lendingPoolAddressProvider: mockValidEthereumAddress,
+        user: mockValidEthereumAddress,
+      });
+
+      expect(result).toEqual({
+        userReserves: [
+          {
+            id: '137-0x88757f2f99175387ab4c6a4b3067c77a695b0349-0xb597cd8d3217ea6477232f9217fa70837ff667af-0x88757f2f99175387ab4c6a4b3067c77a695b0349',
+            scaledATokenBalance: '0',
+            scaledVariableDebt: '0',
+            underlyingAsset: '0xb597cd8d3217ea6477232f9217fa70837ff667af',
+            usageAsCollateralEnabledOnUser: false,
+          },
+        ],
+        userEmodeCategoryId: 1,
+      });
     });
   });
   describe('getEModes', () => {
