@@ -318,7 +318,7 @@ describe('UiPoolDataProvider', () => {
       const result = await instance.getEModes({
         lendingPoolAddressProvider: mockValidEthereumAddress,
       });
-      expect(result).toBe([]);
+      expect(result.length).toBe(0);
     });
   });
   describe('getEModesHumanized', () => {
@@ -335,7 +335,7 @@ describe('UiPoolDataProvider', () => {
       const result = await instance.getEModesHumanized({
         lendingPoolAddressProvider: mockValidEthereumAddress,
       });
-      expect(result).toBe([]);
+      expect(result.length).toBe(0);
     });
   });
 });
