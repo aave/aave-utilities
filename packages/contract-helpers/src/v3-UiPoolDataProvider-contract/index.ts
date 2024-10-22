@@ -48,6 +48,9 @@ export interface UiPoolDataProviderInterface {
     args: UserReservesHelperInput,
   ) => Promise<UserReserveData>;
   getEModes: (args: ReservesHelperInput) => Promise<EModeData[]>;
+  getEModesHumanized: (
+    args: ReservesHelperInput,
+  ) => Promise<EmodeDataHumanized[]>;
   getReservesHumanized: (
     args: ReservesHelperInput,
   ) => Promise<ReservesDataHumanized>;

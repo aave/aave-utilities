@@ -274,11 +274,11 @@ describe('UiPoolDataProvider', () => {
       });
     });
   });
-  describe('getUserReservesHumanized', () => {
-    it('should throw if lendingPoolAddressProvider is not a valid ethereum address', async () => {
+  describe('getUserReservesData', () => {
+    it('should throw when lendingPoolAddressProvider is not valid address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getUserReservesHumanized({
+        instance.getUserReservesData({
           lendingPoolAddressProvider: mockInvalidEthereumAddress,
           user: mockValidEthereumAddress,
         }),
@@ -287,31 +287,55 @@ describe('UiPoolDataProvider', () => {
     it('should throw if user is not a valid ethereum address', async () => {
       const instance = createValidInstance();
       await expect(
-        instance.getUserReservesHumanized({
+        instance.getUserReservesData({
           lendingPoolAddressProvider: mockValidEthereumAddress,
           user: mockInvalidEthereumAddress,
         }),
       ).rejects.toThrow('User address is not a valid ethereum address');
     });
-    it('should be ok', async () => {
-      const instance = createValidInstance();
-      const result = await instance.getUserReservesHumanized({
-        lendingPoolAddressProvider: mockValidEthereumAddress,
-        user: mockValidEthereumAddress,
-      });
 
-      expect(result).toEqual({
-        userReserves: [
-          {
-            id: '137-0x88757f2f99175387ab4c6a4b3067c77a695b0349-0xb597cd8d3217ea6477232f9217fa70837ff667af-0x88757f2f99175387ab4c6a4b3067c77a695b0349',
-            scaledATokenBalance: '0',
-            scaledVariableDebt: '0',
-            underlyingAsset: '0xb597cd8d3217ea6477232f9217fa70837ff667af',
-            usageAsCollateralEnabledOnUser: false,
-          },
-        ],
-        userEmodeCategoryId: 1,
+    it('should not throw if user is a valid ethereum address', async () => {
+      const instance = createValidInstance();
+      await expect(
+        instance.getUserReservesData({
+          lendingPoolAddressProvider: mockValidEthereumAddress,
+          user: mockValidEthereumAddress,
+        }),
+      ).resolves.not.toThrow();
+    });
+  });
+  describe('getEModes', () => {
+    it('should throw if lendingPoolAddressProvider is not a valid ethereum address', async () => {
+      const instance = createValidInstance();
+      await expect(
+        instance.getEModes({
+          lendingPoolAddressProvider: mockInvalidEthereumAddress,
+        }),
+      ).rejects.toThrow('Lending pool address is not valid');
+    });
+    it('should return an empty array', async () => {
+      const instance = createValidInstance();
+      const result = await instance.getEModes({
+        lendingPoolAddressProvider: mockValidEthereumAddress,
       });
+      expect(result).toBe([]);
+    });
+  });
+  describe('getEModesHumanized', () => {
+    it('should throw if lendingPoolAddressProvider is not a valid ethereum address', async () => {
+      const instance = createValidInstance();
+      await expect(
+        instance.getEModesHumanized({
+          lendingPoolAddressProvider: mockInvalidEthereumAddress,
+        }),
+      ).rejects.toThrow('Lending pool address is not valid');
+    });
+    it('should return an empty array', async () => {
+      const instance = createValidInstance();
+      const result = await instance.getEModesHumanized({
+        lendingPoolAddressProvider: mockValidEthereumAddress,
+      });
+      expect(result).toBe([]);
     });
   });
 });

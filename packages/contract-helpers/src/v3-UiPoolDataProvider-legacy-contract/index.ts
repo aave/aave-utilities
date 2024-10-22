@@ -1,6 +1,8 @@
 import { isAddress } from 'ethers/lib/utils';
 import { ReservesHelperInput, UserReservesHelperInput } from '../index';
 import {
+  EModeData,
+  EmodeDataHumanized,
   PoolBaseCurrencyHumanized,
   ReserveDataHumanized,
   ReservesDataHumanized,
@@ -46,6 +48,10 @@ export interface LegacyUiPoolDataProviderInterface {
     userReserves: UserReserveDataHumanized[];
     userEmodeCategoryId: number;
   }>;
+  getEModes: (args: ReservesHelperInput) => Promise<EModeData[]>;
+  getEModesHumanized: (
+    args: ReservesHelperInput,
+  ) => Promise<EmodeDataHumanized[]>;
 }
 
 /**
@@ -235,5 +241,25 @@ export class LegacyUiPoolDataProvider
       })),
       userEmodeCategoryId,
     };
+  }
+
+  public async getEModes({
+    lendingPoolAddressProvider,
+  }: ReservesHelperInput): Promise<EModeData[]> {
+    if (!isAddress(lendingPoolAddressProvider)) {
+      throw new Error('Lending pool address is not valid');
+    }
+
+    return Promise.resolve([]);
+  }
+
+  public async getEModesHumanized({
+    lendingPoolAddressProvider,
+  }: ReservesHelperInput): Promise<EmodeDataHumanized[]> {
+    if (!isAddress(lendingPoolAddressProvider)) {
+      throw new Error('Lending pool address is not valid');
+    }
+
+    return Promise.resolve([]);
   }
 }
