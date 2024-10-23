@@ -57,8 +57,11 @@ export function getReservesEModes(
   eModes: EModeData[],
 ): ReserveEMode[] {
   return eModes.reduce<ReserveEMode[]>((acc, eMode) => {
-    const borrowingEnabled = eMode.eMode.borrowableBitmap[reserveId] === '1';
-    const collateralEnabled = eMode.eMode.collateralBitmap[reserveId] === '1';
+    const { borrowableBitmap, collateralBitmap } = eMode.eMode;
+    const borrowingEnabled =
+      borrowableBitmap[borrowableBitmap.length - reserveId] === '1';
+    const collateralEnabled =
+      collateralBitmap[collateralBitmap.length - reserveId] === '1';
     if (borrowingEnabled || collateralEnabled) {
       acc.push({
         id: eMode.id,
