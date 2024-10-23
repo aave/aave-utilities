@@ -59,9 +59,9 @@ export function getReservesEModes(
   return eModes.reduce<ReserveEMode[]>((acc, eMode) => {
     const { borrowableBitmap, collateralBitmap } = eMode.eMode;
     const borrowingEnabled =
-      borrowableBitmap[borrowableBitmap.length - reserveId] === '1';
+      borrowableBitmap[borrowableBitmap.length - reserveId - 1] === '1';
     const collateralEnabled =
-      collateralBitmap[collateralBitmap.length - reserveId] === '1';
+      collateralBitmap[collateralBitmap.length - reserveId - 1] === '1';
     if (borrowingEnabled || collateralEnabled) {
       acc.push({
         id: eMode.id,
