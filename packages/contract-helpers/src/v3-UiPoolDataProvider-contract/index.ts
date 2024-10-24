@@ -262,12 +262,12 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
         collateralBitmap: eMode.eMode.collateralBitmap
           .toBigInt()
           .toString(2)
-          .padEnd(256, '0'),
+          .padStart(256, '0'),
         label: eMode.eMode.label,
         borrowableBitmap: eMode.eMode.borrowableBitmap
           .toBigInt()
           .toString(2)
-          .padEnd(256, '0'),
+          .padStart(256, '0'),
       },
     }));
   }
