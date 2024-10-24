@@ -6,7 +6,7 @@ import type { Provider } from '@ethersproject/providers';
 import type {
   UiPoolDataProviderV3,
   UiPoolDataProviderV3Interface,
-} from './IUiPoolDataProviderV3';
+} from '../UiPoolDataProviderV3';
 
 const _abi = [
   {

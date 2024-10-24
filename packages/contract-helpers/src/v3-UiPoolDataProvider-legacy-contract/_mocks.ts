@@ -326,19 +326,7 @@ export const userReservesMock: UserReserveData = {
         _isBigNumber: true,
       }),
       usageAsCollateralEnabledOnUser: false,
-      stableBorrowRate: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
       scaledVariableDebt: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
-      principalStableDebt: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
-      stableBorrowLastUpdateTimestamp: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
       }),

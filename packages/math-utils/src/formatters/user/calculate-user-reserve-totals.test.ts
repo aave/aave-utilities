@@ -27,7 +27,7 @@ describe('calculateUserReserveTotals', () => {
 
   const ethReserveMock = new UserReserveMock({ decimals: 18 })
     .supply(200)
-    .stableBorrow(100);
+    .variableBorrow(100);
   const rawETHSummary: UserReserveSummaryResponse = generateUserReserveSummary({
     userReserve: {
       ...ethReserveMock.userReserve,

@@ -146,60 +146,6 @@ export function calculateUserReserveIncentives({
       }
     },
   );
-  // Compute incentive data for each reward linked to stable borrows of this reserve
-  userIncentives.sTokenIncentivesUserData.userRewardsInformation.forEach(
-    userReserveIncentive => {
-      const reserveIncentive =
-        reserveIncentives.sIncentiveData.rewardsTokenInformation.find(
-          reward =>
-            reward.rewardTokenAddress ===
-            userReserveIncentive.rewardTokenAddress,
-        );
-      if (reserveIncentive) {
-        // Calculating accrued rewards is only required if user has an active stableDebtToken balance
-        const accruedRewards = userReserveData
-          ? calculateAccruedIncentives({
-              principalUserBalance: new BigNumber(
-                userReserveData.principalStableDebt,
-              ),
-              reserveIndex: new BigNumber(
-                reserveIncentive.tokenIncentivesIndex,
-              ),
-              userIndex: new BigNumber(
-                userReserveIncentive.tokenIncentivesUserIndex,
-              ),
-              precision: reserveIncentive.precision,
-              reserveIndexTimestamp:
-                reserveIncentive.incentivesLastUpdateTimestamp,
-              emissionPerSecond: new BigNumber(
-                reserveIncentive.emissionPerSecond,
-              ),
-              totalSupply: new BigNumber(
-                userReserveData.reserve.totalPrincipalStableDebt,
-              ).shiftedBy(userReserveData.reserve.decimals),
-              currentTimestamp,
-              emissionEndTimestamp: reserveIncentive.emissionEndTimestamp,
-            })
-          : new BigNumber('0');
-        calculatedUserIncentives.push({
-          tokenAddress: userIncentives.sTokenIncentivesUserData.tokenAddress,
-          incentiveController:
-            userIncentives.sTokenIncentivesUserData.incentiveControllerAddress,
-          rewardTokenAddress: userReserveIncentive.rewardTokenAddress,
-          rewardTokenDecimals: userReserveIncentive.rewardTokenDecimals,
-          accruedRewards,
-          unclaimedRewards: new BigNumber(
-            userReserveIncentive.userUnclaimedRewards,
-          ),
-          rewardPriceFeed: normalize(
-            userReserveIncentive.rewardPriceFeed,
-            userReserveIncentive.priceFeedDecimals,
-          ),
-          rewardTokenSymbol: userReserveIncentive.rewardTokenSymbol,
-        });
-      }
-    },
-  );
 
   return calculatedUserIncentives;
 }

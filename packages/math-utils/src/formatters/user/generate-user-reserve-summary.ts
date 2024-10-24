@@ -4,10 +4,9 @@ import {
   getLinearBalance,
   getMarketReferenceCurrencyAndUsdBalance,
   getCompoundedBalance,
-  getCompoundedStableBalance,
 } from '../../pool-math';
 import { FormatReserveUSDResponse } from '../reserve';
-import { CombinedReserveData } from './index';
+import { CombinedReserveData } from '.';
 
 export interface UserReserveSummaryRequest<
   T extends FormatReserveUSDResponse = FormatReserveUSDResponse,
@@ -28,9 +27,6 @@ export interface UserReserveSummaryResponse<
   variableBorrows: BigNumber;
   variableBorrowsMarketReferenceCurrency: BigNumber;
   variableBorrowsUSD: BigNumber;
-  stableBorrows: BigNumber;
-  stableBorrowsMarketReferenceCurrency: BigNumber;
-  stableBorrowsUSD: BigNumber;
   totalBorrows: BigNumber;
   totalBorrowsMarketReferenceCurrency: BigNumber;
   totalBorrowsUSD: BigNumber;
@@ -83,24 +79,6 @@ export function generateUserReserveSummary<
     marketReferencePriceInUsdNormalized,
   });
 
-  const stableBorrows = getCompoundedStableBalance({
-    principalBalance: userReserve.principalStableDebt,
-    userStableRate: userReserve.stableBorrowRate,
-    lastUpdateTimestamp: userReserve.stableBorrowLastUpdateTimestamp,
-    currentTimestamp,
-  });
-
-  const {
-    marketReferenceCurrencyBalance: stableBorrowsMarketReferenceCurrency,
-    usdBalance: stableBorrowsUSD,
-  } = getMarketReferenceCurrencyAndUsdBalance({
-    balance: stableBorrows,
-    priceInMarketReferenceCurrency,
-    marketReferenceCurrencyDecimals,
-    decimals,
-    marketReferencePriceInUsdNormalized,
-  });
-
   return {
     userReserve,
     underlyingBalance,
@@ -109,14 +87,8 @@ export function generateUserReserveSummary<
     variableBorrows,
     variableBorrowsMarketReferenceCurrency,
     variableBorrowsUSD,
-    stableBorrows,
-    stableBorrowsMarketReferenceCurrency,
-    stableBorrowsUSD,
-    totalBorrows: variableBorrows.plus(stableBorrows),
-    totalBorrowsMarketReferenceCurrency:
-      variableBorrowsMarketReferenceCurrency.plus(
-        stableBorrowsMarketReferenceCurrency,
-      ),
-    totalBorrowsUSD: variableBorrowsUSD.plus(stableBorrowsUSD),
+    totalBorrows: variableBorrows,
+    totalBorrowsMarketReferenceCurrency: variableBorrowsMarketReferenceCurrency,
+    totalBorrowsUSD: variableBorrowsUSD,
   };
 }
