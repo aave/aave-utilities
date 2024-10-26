@@ -58,7 +58,11 @@ export function calculateUserReserveTotals({
         userReserveSummary.userReserve.reserve.eModes.find(
           elem => elem.id === userEmodeCategoryId,
         );
-      if (userEmodeCategoryId && selectedEModeCategory) {
+      if (
+        userEmodeCategoryId &&
+        selectedEModeCategory &&
+        selectedEModeCategory.collateralEnabled
+      ) {
         currentLtv = currentLtv.plus(
           valueToBigNumber(
             userReserveSummary.underlyingBalanceMarketReferenceCurrency,
