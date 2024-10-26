@@ -35,9 +35,10 @@ export function calculateUserReserveTotals({
       totalLiquidityMarketReferenceCurrency.plus(
         userReserveSummary.underlyingBalanceMarketReferenceCurrency,
       );
-    totalBorrowsMarketReferenceCurrency = totalBorrowsMarketReferenceCurrency
-      .plus(userReserveSummary.variableBorrowsMarketReferenceCurrency)
-      .plus(userReserveSummary.stableBorrowsMarketReferenceCurrency);
+    totalBorrowsMarketReferenceCurrency =
+      totalBorrowsMarketReferenceCurrency.plus(
+        userReserveSummary.variableBorrowsMarketReferenceCurrency,
+      );
 
     if (
       userReserveSummary.userReserve.reserve.reserveLiquidationThreshold !==
@@ -53,22 +54,24 @@ export function calculateUserReserveTotals({
         totalCollateralMarketReferenceCurrency.plus(
           userReserveSummary.underlyingBalanceMarketReferenceCurrency,
         );
+      const selectedEModeCategory =
+        userReserveSummary.userReserve.reserve.eModes.find(
+          elem => elem.id === userEmodeCategoryId,
+        );
       if (
         userEmodeCategoryId &&
-        userEmodeCategoryId ===
-          userReserveSummary.userReserve.reserve.eModeCategoryId
+        selectedEModeCategory &&
+        selectedEModeCategory.collateralEnabled
       ) {
         currentLtv = currentLtv.plus(
           valueToBigNumber(
             userReserveSummary.underlyingBalanceMarketReferenceCurrency,
-          ).multipliedBy(userReserveSummary.userReserve.reserve.eModeLtv),
+          ).multipliedBy(selectedEModeCategory.eMode.ltv),
         );
         currentLiquidationThreshold = currentLiquidationThreshold.plus(
           valueToBigNumber(
             userReserveSummary.underlyingBalanceMarketReferenceCurrency,
-          ).multipliedBy(
-            userReserveSummary.userReserve.reserve.eModeLiquidationThreshold,
-          ),
+          ).multipliedBy(selectedEModeCategory.eMode.liquidationThreshold),
         );
       } else {
         currentLtv = currentLtv.plus(

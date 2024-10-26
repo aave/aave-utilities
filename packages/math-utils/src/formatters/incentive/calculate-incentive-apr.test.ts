@@ -3,10 +3,7 @@ import { calculateReserveDebt } from '../reserve/calculate-reserve-debt';
 import { calculateIncentiveAPR } from './calculate-incentive-apr';
 
 describe('calculateIncentiveAPR', () => {
-  const userReserveMock = new UserReserveMock()
-    .supply(100)
-    .variableBorrow(50)
-    .stableBorrow(50);
+  const userReserveMock = new UserReserveMock().supply(100).variableBorrow(50);
   const reserveIncentiveMock = new ReserveIncentiveMock();
   it('calculates incentives APR', () => {
     const { totalLiquidity } = calculateReserveDebt(userReserveMock.reserve, 1);
@@ -26,6 +23,6 @@ describe('calculateIncentiveAPR', () => {
           .rewardsTokenInformation[0].rewardTokenDecimals,
     });
 
-    expect(result).toEqual('0.000015768');
+    expect(result).toEqual('0.000021024');
   });
 });

@@ -130,36 +130,6 @@ export function getLinearBalance({
   );
 }
 
-interface CompoundedStableBalanceRequest {
-  principalBalance: BigNumberValue;
-  userStableRate: BigNumberValue;
-  lastUpdateTimestamp: number;
-  currentTimestamp: number;
-}
-
-export function getCompoundedStableBalance({
-  principalBalance: _principalBalance,
-  userStableRate,
-  lastUpdateTimestamp,
-  currentTimestamp,
-}: CompoundedStableBalanceRequest): BigNumber {
-  const principalBalance = valueToZDBigNumber(_principalBalance);
-  if (principalBalance.eq('0')) {
-    return principalBalance;
-  }
-
-  const cumulatedInterest = calculateCompoundedInterest({
-    rate: userStableRate,
-    currentTimestamp,
-    lastUpdateTimestamp,
-  });
-  const principalBalanceRay = RayMath.wadToRay(principalBalance);
-
-  return RayMath.rayToWad(
-    RayMath.rayMul(principalBalanceRay, cumulatedInterest),
-  );
-}
-
 interface HealthFactorFromBalanceRequest {
   collateralBalanceMarketReferenceCurrency: BigNumberValue;
   borrowBalanceMarketReferenceCurrency: BigNumberValue;
