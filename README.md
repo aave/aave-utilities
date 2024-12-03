@@ -542,6 +542,7 @@ const supplyBundle: ActionBundle = await poolBundle.supplyBundle({
 });
 
 // Submit bundle components as shown in #bundle-methods section
+````
 
 </details>
 
