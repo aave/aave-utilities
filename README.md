@@ -215,6 +215,7 @@ async function fetchContractData() {
 }
 
 fetchContractData();
+
 ```
 
 </details>
