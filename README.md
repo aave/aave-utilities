@@ -139,6 +139,7 @@ services to query Aave protocol data.
 	<summary>Sample Code</summary>
 
 ```js
+
 import { ethers } from 'ethers';
 import {
   UiPoolDataProvider,
