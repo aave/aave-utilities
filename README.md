@@ -139,6 +139,7 @@ services to query Aave protocol data.
 	<summary>Sample Code</summary>
 
 ```js
+
 import { ethers } from 'ethers';
 import {
   UiPoolDataProvider,
@@ -214,6 +215,7 @@ async function fetchContractData() {
 }
 
 fetchContractData();
+
 ```
 
 </details>
@@ -542,6 +544,7 @@ const supplyBundle: ActionBundle = await poolBundle.supplyBundle({
 });
 
 // Submit bundle components as shown in #bundle-methods section
+````
 
 </details>
 
