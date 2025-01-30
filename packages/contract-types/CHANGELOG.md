@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.1.1 (2025-01-30)
+
+
+### Bug Fixes
+
+* README typo ([#584](https://github.com/aave/aave-utilities/issues/584)) ([be956eb](https://github.com/aave/aave-utilities/commit/be956eb72c6c7a6625c88b24018d58a365a664df))
+
+
+
+
+
 # 1.1.0 (2025-01-27)
 
 
