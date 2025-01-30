@@ -52,7 +52,7 @@ npm install ethers@5
 1.  [Data Methods](#data-methods)
     - a. [Setup](#data-methods-setup)
     - b. [Markets Data](#markets-data)
-    - b. [User Data](#user-data)
+    - c. [User Data](#user-data)
 2.  [Transaction Methods](#transaction-methods)
     - a. [Setup](#transactions-setup)
     - b. [Submitting Transactions](#submitting-transactions)
