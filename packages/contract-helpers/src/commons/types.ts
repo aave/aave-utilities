@@ -259,7 +259,7 @@ export type ContractAddresses = Record<string, tEthereumAddress>;
 
 export type EthereumTransactionTypeExtended = {
   txType: eEthereumTxType;
-  tx: () => Promise<transactionType>;
+  tx: (skipGasEstimation?: boolean) => Promise<transactionType>;
   gas: GasResponse;
 };
 
