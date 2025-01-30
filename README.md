@@ -347,7 +347,7 @@ const userReservesArray = userReserves.userReserves;
 
 const currentTimestamp = dayjs().unix();
 
-const formattedPoolReserves = formatReserves({
+const formattedReserves = formatReserves({
   reserves: reservesArray,
   currentTimestamp,
   marketReferenceCurrencyDecimals:
@@ -398,7 +398,7 @@ const userReservesArray = userReserves.userReserves;
 
 const currentTimestamp = dayjs().unix();
 
-const formattedPoolReserves = formatReserves({
+const formattedReserves = formatReserves({
   reserves: reservesArray,
   currentTimestamp,
   marketReferenceCurrencyDecimals:
