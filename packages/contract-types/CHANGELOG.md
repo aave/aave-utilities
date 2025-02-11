@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.2.0 (2025-02-11)
+
+
+### Features
+
+* sonic ([460cc1f](https://github.com/aave/aave-utilities/commit/460cc1f717369c26aca15bb12259ad6618c01a24))
+
+
+
+
+
 ## 1.1.1 (2025-01-30)
 
 
