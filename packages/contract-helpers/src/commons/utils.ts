@@ -150,6 +150,30 @@ export const gasLimitRecommendations: GasRecommendationType = {
     limit: '750000',
     recommended: '750000',
   },
+  [ProtocolAction.umbrellaStake]: {
+    limit: '400000',
+    recommended: '400000',
+  },
+  [ProtocolAction.umbrellaStakeWithPermit]: {
+    limit: '1',
+    recommended: '1',
+  },
+  [ProtocolAction.umbrellaStakeWithATokens]: {
+    limit: '1',
+    recommended: '1',
+  },
+  [ProtocolAction.umbrellaStakeWithATokensWithPermit]: {
+    limit: '1',
+    recommended: '1',
+  },
+  [ProtocolAction.umbrellaRedeem]: {
+    limit: '1',
+    recommended: '1',
+  },
+  [ProtocolAction.umbrellaRedeemATokens]: {
+    limit: '1',
+    recommended: '1',
+  },
 };
 
 export const mintAmountsPerToken: Record<string, string> = {

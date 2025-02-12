@@ -1,0 +1,1 @@
+export { StakeTokenService } from './StakeToken';

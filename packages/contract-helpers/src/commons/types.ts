@@ -152,6 +152,12 @@ export enum ProtocolAction {
   batchMetaDelegate = 'batchMetaDelegate',
   updateRepresentatives = 'updateRepresentatives',
   migrateABPT = 'migrateABPT',
+  umbrellaStake = 'umbrellaStake',
+  umbrellaStakeWithPermit = 'umbrellaStakeWithPermit',
+  umbrellaStakeWithATokens = 'umbrellaStakeWithATokens',
+  umbrellaStakeWithATokensWithPermit = 'umbrellaStakeWithATokensWithPermit',
+  umbrellaRedeem = 'umbrellaRedeem',
+  umbrellaRedeemATokens = 'umbrellaRedeemATokens',
 }
 
 export enum GovernanceVote {
