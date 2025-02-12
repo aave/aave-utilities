@@ -129,15 +129,15 @@ export function formatGhoUserData({
     lastUpdateTimestamp: Number(ghoReserveData.ghoReserveLastUpdateTimestamp),
     currentTimestamp,
   });
-  const accruedInterest = userBalancePreDiscount.minus(
+  const balanceIncrease = userBalancePreDiscount.minus(
     rayMul(
       ghoUserData.userGhoScaledBorrowBalance,
       ghoUserData.userPreviousGhoBorrowIndex,
     ),
   );
-  const discount = accruedInterest.multipliedBy(
-    1 - Number(normalize(ghoUserData.userGhoDiscountPercent, 4)),
-  );
+  const discount = balanceIncrease
+    .multipliedBy(ghoUserData.userGhoDiscountPercent)
+    .dividedBy(10000);
   const userBorrowBalance = userBalancePreDiscount.minus(discount);
   return {
     userGhoDiscountPercent: Number(
