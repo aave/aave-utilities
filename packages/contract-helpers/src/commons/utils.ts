@@ -1,5 +1,5 @@
 import { BigNumber as BigNumberJs } from 'bignumber.js';
-import { BigNumber, constants, PopulatedTransaction } from 'ethers';
+import { BigNumber, constants, PopulatedTransaction, utils } from 'ethers';
 import {
   GasRecommendationType,
   ProtocolAction,
@@ -174,6 +174,22 @@ export const gasLimitRecommendations: GasRecommendationType = {
     limit: '1',
     recommended: '1',
   },
+  [ProtocolAction.umbrellaStakeTokenCooldown]: {
+    limit: '60000',
+    recommended: '60000',
+  },
+  [ProtocolAction.umbrellaStakeTokenDeposit]: {
+    limit: '200000',
+    recommended: '200000',
+  },
+  [ProtocolAction.umbrellaStakeTokenDepositWithPermit]: {
+    limit: '300000',
+    recommended: '300000',
+  },
+  [ProtocolAction.umbrellaStakeTokenRedeem]: {
+    limit: '200000',
+    recommended: '200000',
+  },
 };
 
 export const mintAmountsPerToken: Record<string, string> = {
@@ -255,4 +271,42 @@ export const convertPopulatedTx = (
     ...tx,
     value: tx.value ? BigNumber.from(tx.value) : BigNumber.from('0'),
   };
+};
+
+export const makePair = (id: string) => {
+  const privateKey = utils.id(id);
+  const address = utils.computeAddress(privateKey);
+  return { privateKey, address };
+};
+
+export const generateEIP712PermitMock = (
+  owner: string,
+  spender: string,
+  amount: string,
+  deadline: string,
+) => {
+  const domain = {
+    name: 'Mocked token',
+    version: '1',
+    chainId: 1,
+    verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+  };
+  const types = {
+    Permit: [
+      { name: 'owner', type: 'address' },
+      { name: 'spender', type: 'address' },
+      { name: 'value', type: 'uint256' },
+      { name: 'nonce', type: 'uint256' },
+      { name: 'deadline', type: 'uint256' },
+    ],
+  };
+  const value = {
+    owner,
+    spender,
+    value: amount,
+    nonce: '0',
+    deadline,
+  };
+
+  return { domain, types, value };
 };

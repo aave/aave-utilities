@@ -1,8 +1,35 @@
 import { SignatureLike, splitSignature } from '@ethersproject/bytes';
 import { BigNumber, PopulatedTransaction } from 'ethers';
 
+import { ProtocolAction } from '../commons/types';
+import { gasLimitRecommendations } from '../commons/utils';
 import { IERC4626StakeTokenInterface } from './typechain/StakeToken';
 import { IERC4626StakeToken__factory } from './typechain/StakeToken__factory';
+
+interface StakeTokenCooldownParams {
+  sender: string;
+}
+
+interface StakeTokenDepositParams {
+  amount: string;
+  receiver: string;
+  sender: string;
+}
+
+interface StakeTokenDepositWithPermitParams {
+  amount: string;
+  receiver: string;
+  deadline: string;
+  permit: SignatureLike;
+  sender: string;
+}
+
+interface StakeTokenRedeemParams {
+  amount: string;
+  receiver: string;
+  owner: string;
+  sender: string;
+}
 
 export class StakeTokenService {
   private readonly interface: IERC4626StakeTokenInterface;
@@ -11,58 +38,75 @@ export class StakeTokenService {
     this.interface = IERC4626StakeToken__factory.createInterface();
   }
 
-  cooldown(user: string) {
+  cooldown({ sender }: StakeTokenCooldownParams) {
     const tx: PopulatedTransaction = {};
     const txData = this.interface.encodeFunctionData('cooldown');
     tx.data = txData;
-    tx.from = user;
+    tx.from = sender;
     tx.to = this.stakeTokenAddress;
-    tx.gasLimit = BigNumber.from('1000000'); // TODO
+    tx.gasLimit = BigNumber.from(
+      gasLimitRecommendations[ProtocolAction.umbrellaStakeTokenCooldown]
+        .recommended,
+    );
     return tx;
   }
 
-  stake(user: string, amount: string) {
+  deposit({ amount, receiver, sender }: StakeTokenDepositParams) {
     const tx: PopulatedTransaction = {};
-    const txData = this.interface.encodeFunctionData('deposit', [amount, user]);
+    const txData = this.interface.encodeFunctionData('deposit', [
+      amount,
+      receiver,
+    ]);
     tx.data = txData;
-    tx.from = user;
+    tx.from = sender;
     tx.to = this.stakeTokenAddress;
-    tx.gasLimit = BigNumber.from('1000000'); // TODO
+    tx.gasLimit = BigNumber.from(
+      gasLimitRecommendations[ProtocolAction.umbrellaStakeTokenDeposit]
+        .recommended,
+    );
     return tx;
   }
 
-  stakeWithPermit(
-    user: string,
-    amount: string,
-    deadline: string,
-    permit: SignatureLike,
-  ) {
+  depositWithPermit({
+    amount,
+    receiver,
+    deadline,
+    permit,
+    sender,
+  }: StakeTokenDepositWithPermitParams) {
     const tx: PopulatedTransaction = {};
     const signature = splitSignature(permit);
     const txData = this.interface.encodeFunctionData('depositWithPermit', [
-      user,
       amount,
+      receiver,
       deadline,
       { v: signature.v, r: signature.r, s: signature.s },
     ]);
     tx.data = txData;
-    tx.from = user;
+    tx.from = sender;
     tx.to = this.stakeTokenAddress;
-    tx.gasLimit = BigNumber.from('1000000'); // TODO
+    tx.gasLimit = BigNumber.from(
+      gasLimitRecommendations[
+        ProtocolAction.umbrellaStakeTokenDepositWithPermit
+      ].recommended,
+    );
     return tx;
   }
 
-  redeem(user: string, amount: string) {
+  redeem({ amount, receiver, owner, sender }: StakeTokenRedeemParams) {
     const tx: PopulatedTransaction = {};
     const txData = this.interface.encodeFunctionData('redeem', [
       amount,
-      user,
-      user,
+      receiver,
+      owner,
     ]);
     tx.data = txData;
-    tx.from = user;
+    tx.from = sender;
     tx.to = this.stakeTokenAddress;
-    tx.gasLimit = BigNumber.from('1000000'); // TODO
+    tx.gasLimit = BigNumber.from(
+      gasLimitRecommendations[ProtocolAction.umbrellaStakeTokenRedeem]
+        .recommended,
+    );
     return tx;
   }
 }
