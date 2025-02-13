@@ -4,8 +4,8 @@ import {
   gasLimitRecommendations,
   makePair,
 } from '../commons/utils';
-import { RewardsDistributorService } from './RewardsDistributor';
 import { IRewardsDistributor__factory } from './typechain/IRewardsDistributor__factory';
+import { RewardsDistributorService } from './';
 
 describe('Umbrella Rewards distributor', () => {
   const { address: STAKE_TOKEN } = makePair('STAKE_TOKEN');
