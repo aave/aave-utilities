@@ -44,7 +44,6 @@ describe('Umbrella Stake Token', () => {
       const amount = '1337';
       const tx = stakeTokenService.deposit({
         amount,
-        receiver: ALICE,
         sender: ALICE,
       });
       expect(tx.from).toEqual(ALICE);
@@ -77,7 +76,6 @@ describe('Umbrella Stake Token', () => {
       const signature = await aliceWallet._signTypedData(domain, types, value);
       const tx = stakeTokenService.depositWithPermit({
         amount,
-        receiver: ALICE,
         deadline,
         permit: signature,
         sender: ALICE,
@@ -117,8 +115,6 @@ describe('Umbrella Stake Token', () => {
       const amount = '1337';
       const tx = stakeTokenService.redeem({
         amount,
-        receiver: ALICE,
-        owner: ALICE,
         sender: ALICE,
       });
       expect(tx.from).toEqual(ALICE);

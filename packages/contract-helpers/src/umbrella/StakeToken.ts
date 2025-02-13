@@ -12,13 +12,11 @@ interface StakeTokenCooldownParams {
 
 interface StakeTokenDepositParams {
   amount: string;
-  receiver: string;
   sender: string;
 }
 
 interface StakeTokenDepositWithPermitParams {
   amount: string;
-  receiver: string;
   deadline: string;
   permit: SignatureLike;
   sender: string;
@@ -26,8 +24,6 @@ interface StakeTokenDepositWithPermitParams {
 
 interface StakeTokenRedeemParams {
   amount: string;
-  receiver: string;
-  owner: string;
   sender: string;
 }
 
@@ -51,8 +47,9 @@ export class StakeTokenService {
     return tx;
   }
 
-  deposit({ amount, receiver, sender }: StakeTokenDepositParams) {
+  deposit({ amount, sender }: StakeTokenDepositParams) {
     const tx: PopulatedTransaction = {};
+    const receiver = sender;
     const txData = this.interface.encodeFunctionData('deposit', [
       amount,
       receiver,
@@ -69,13 +66,13 @@ export class StakeTokenService {
 
   depositWithPermit({
     amount,
-    receiver,
     deadline,
     permit,
     sender,
   }: StakeTokenDepositWithPermitParams) {
     const tx: PopulatedTransaction = {};
     const signature = splitSignature(permit);
+    const receiver = sender;
     const txData = this.interface.encodeFunctionData('depositWithPermit', [
       amount,
       receiver,
@@ -93,8 +90,10 @@ export class StakeTokenService {
     return tx;
   }
 
-  redeem({ amount, receiver, owner, sender }: StakeTokenRedeemParams) {
+  redeem({ amount, sender }: StakeTokenRedeemParams) {
     const tx: PopulatedTransaction = {};
+    const receiver = sender;
+    const owner = sender;
     const txData = this.interface.encodeFunctionData('redeem', [
       amount,
       receiver,
