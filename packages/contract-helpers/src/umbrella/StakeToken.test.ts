@@ -6,9 +6,9 @@ import {
   generateEIP712PermitMock,
   makePair,
 } from '../commons/utils';
-import { StakeTokenService } from './StakeToken';
 import { IERC4626StakeToken } from './typechain/StakeToken';
 import { IERC4626StakeToken__factory } from './typechain/StakeToken__factory';
+import { StakeTokenService } from './';
 
 export function expectToBeDefined<T>(value: T | undefined): asserts value is T {
   expect(value).toBeDefined();
