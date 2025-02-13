@@ -162,6 +162,8 @@ export enum ProtocolAction {
   umbrellaStakeTokenDeposit = 'umbrellaStakeTokenDeposit',
   umbrellaStakeTokenDepositWithPermit = 'umbrellaStakeTokenDepositWithPermit',
   umbrellaStakeTokenRedeem = 'umbrellaStakeTokenRedeem',
+  umbrellaClaimAllRewards = 'umbrellaClaimAllRewards',
+  umbrellaClaimSelectedRewards = 'umbrellaClaimSelectedRewards',
 }
 
 export enum GovernanceVote {

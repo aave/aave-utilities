@@ -2,6 +2,7 @@ import { BigNumber, Wallet } from 'ethers';
 import { splitSignature } from 'ethers/lib/utils';
 import { ProtocolAction } from '../commons/types';
 import {
+  expectToBeDefined,
   gasLimitRecommendations,
   generateEIP712PermitMock,
   makePair,
@@ -9,10 +10,6 @@ import {
 import { IERC4626StakeToken } from './typechain/StakeToken';
 import { IERC4626StakeToken__factory } from './typechain/StakeToken__factory';
 import { StakeTokenService } from './';
-
-export function expectToBeDefined<T>(value: T | undefined): asserts value is T {
-  expect(value).toBeDefined();
-}
 
 describe('Umbrella Stake Token', () => {
   const { address: STAKE_TOKEN } = makePair('STAKE_TOKEN');

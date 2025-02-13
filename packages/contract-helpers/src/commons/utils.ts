@@ -190,6 +190,14 @@ export const gasLimitRecommendations: GasRecommendationType = {
     limit: '200000',
     recommended: '200000',
   },
+  [ProtocolAction.umbrellaClaimAllRewards]: {
+    limit: '1',
+    recommended: '1',
+  },
+  [ProtocolAction.umbrellaClaimSelectedRewards]: {
+    limit: '1',
+    recommended: '1',
+  },
 };
 
 export const mintAmountsPerToken: Record<string, string> = {
@@ -310,3 +318,7 @@ export const generateEIP712PermitMock = (
 
   return { domain, types, value };
 };
+
+export function expectToBeDefined<T>(value: T | undefined): asserts value is T {
+  expect(value).toBeDefined();
+}
