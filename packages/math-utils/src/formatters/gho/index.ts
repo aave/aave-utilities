@@ -122,30 +122,30 @@ export function formatGhoUserData({
     userGhoAvailableToBorrowAtDiscount = 0;
   }
 
-  const userBalancePreDiscount = getCompoundedBalance({
+  const balance = getCompoundedBalance({
     principalBalance: ghoUserData.userGhoScaledBorrowBalance,
     reserveIndex: ghoReserveData.ghoCurrentBorrowIndex,
     reserveRate: ghoReserveData.ghoBaseVariableBorrowRate,
     lastUpdateTimestamp: Number(ghoReserveData.ghoReserveLastUpdateTimestamp),
     currentTimestamp,
   });
-  const balanceIncrease = userBalancePreDiscount.minus(
+  const balanceIncrease = balance.minus(
     rayMul(
       ghoUserData.userGhoScaledBorrowBalance,
       ghoUserData.userPreviousGhoBorrowIndex,
     ),
   );
-  const discount = balanceIncrease
+  const discountedAmount = balanceIncrease
     .multipliedBy(ghoUserData.userGhoDiscountPercent)
-    .dividedBy(10000);
-  const userBorrowBalance = userBalancePreDiscount.minus(discount);
+    .dividedBy(10000); // discount is in basis points
+  const userBorrowBalance = balance.minus(discountedAmount);
   return {
     userGhoDiscountPercent: Number(
       normalize(ghoUserData.userGhoDiscountPercent, 4),
     ),
     userDiscountTokenBalance: formattedUserDiscountTokenBalance,
     userGhoBorrowBalance: Number(normalize(userBorrowBalance, 18)),
-    userDiscountedGhoInterest: Number(normalize(discount, 18)),
+    userDiscountedGhoInterest: Number(normalize(discountedAmount, 18)),
     userGhoAvailableToBorrowAtDiscount,
   };
 }
