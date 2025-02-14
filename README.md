@@ -509,7 +509,7 @@ Transaction methods to perform actions on the V3 Pool contract
 
 ### supplyBundle
 
-A [bundle method](#bundle-methods) for supply, formerly deposit, which supplies
+A bundle method for supply, formerly deposit, which supplies
 the underlying asset into the Pool reserve. For every token that is supplied, a
 corresponding amount of aTokens is minted.
 
@@ -540,8 +540,7 @@ const supplyBundle: ActionBundle = await poolBundle.supplyBundle({
   amount,
   onBehalfOf,
 });
-
-// Submit bundle components as shown in #bundle-methods section
+```
 
 </details>
 
@@ -1135,7 +1134,7 @@ transactions
 
 ### depositBundle
 
-A [bundle method](#bundle-methods) for deposit, which supplies the underlying
+A bundle method for deposit, which supplies the underlying
 asset into the Pool reserve. For every token that is supplied, a corresponding
 amount of aTokens is minted.
 
@@ -1165,8 +1164,7 @@ const depositBundle: ActionBundle = await lendingPoolBundle.depositBundle({
   amount,
   onBehalfOf,
 });
-
-// Submit bundle components as shown in #bundle-methods section
+```
 
 </details>
 
