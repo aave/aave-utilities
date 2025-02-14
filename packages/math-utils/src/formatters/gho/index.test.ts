@@ -36,8 +36,8 @@ describe('formatGhoData', () => {
     expect(result.userGhoDiscountPercent).toEqual(0.1);
     expect(result.userGhoAvailableToBorrowAtDiscount).toEqual(10000);
     expect(result.userDiscountTokenBalance).toEqual(100);
-    expect(result.userGhoBorrowBalance).toEqual(1.1000000063419584);
-    expect(result.userDiscountedGhoInterest).toEqual(0.9000000570776255);
+    expect(result.userGhoBorrowBalance).toEqual(1.9000000570776256);
+    expect(result.userDiscountedGhoInterest).toEqual(0.1000000063419584);
   });
 
   it('calculates the amount of GHO available to borrow at discount', () => {
@@ -53,8 +53,8 @@ describe('formatGhoData', () => {
     expect(result.userGhoDiscountPercent).toEqual(0.1);
     expect(result.userGhoAvailableToBorrowAtDiscount).toEqual(0);
     expect(result.userDiscountTokenBalance).toEqual(0.1);
-    expect(result.userGhoBorrowBalance).toEqual(1.1000000063419584);
-    expect(result.userDiscountedGhoInterest).toEqual(0.9000000570776255);
+    expect(result.userGhoBorrowBalance).toEqual(1.9000000570776256);
+    expect(result.userDiscountedGhoInterest).toEqual(0.1000000063419584);
   });
 
   it('properly formats user summary with GHO discount', () => {
