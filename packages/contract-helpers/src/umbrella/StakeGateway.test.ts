@@ -212,8 +212,9 @@ describe('StakeGateway', () => {
       expect(tx.to).toEqual(STAKE_TOKEN);
       expectToBeDefined(tx.gasLimit);
       expect(tx.gasLimit.toString()).toEqual(
-        gasLimitRecommendations[ProtocolAction.umbrellaStakeGatewayRedeem]
-          .recommended,
+        gasLimitRecommendations[
+          ProtocolAction.umbrellaStakeGatewayRedeemATokens
+        ].recommended,
       );
       expectToBeDefined(tx.data);
       const decoded = stakeTokenInterface.decodeFunctionData(
@@ -237,8 +238,9 @@ describe('StakeGateway', () => {
       expect(tx.to).toEqual(STAKE_TOKEN);
       expectToBeDefined(tx.gasLimit);
       expect(tx.gasLimit.toString()).toEqual(
-        gasLimitRecommendations[ProtocolAction.umbrellaStakeGatewayRedeem]
-          .recommended,
+        gasLimitRecommendations[
+          ProtocolAction.umbrellaStakeGatewayRedeemNativeTokens
+        ].recommended,
       );
       expectToBeDefined(tx.data);
       const decoded = stakeTokenInterface.decodeFunctionData(
