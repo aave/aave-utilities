@@ -164,6 +164,14 @@ export enum ProtocolAction {
   umbrellaStakeTokenRedeem = 'umbrellaStakeTokenRedeem',
   umbrellaClaimAllRewards = 'umbrellaClaimAllRewards',
   umbrellaClaimSelectedRewards = 'umbrellaClaimSelectedRewards',
+  umbrellaStakeGatewayStake = 'umbrellaStakeGatewayStake',
+  umbrellaStakeGatewayStakeWithPermit = 'umbrellaStakeGatewayStakeWithPermit',
+  umbrellaStakeGatewayStakeATokens = 'umbrellaStakeGatewayStakeATokens',
+  umbrellaStakeGatewayStakeATokensWithPermit = 'umbrellaStakeGatewayStakeATokensWithPermit',
+  umbrellaStakeGatewayStakeNativeTokens = 'umbrellaStakeGatewayStakeNativeTokens',
+  umbrellaStakeGatewayRedeem = 'umbrellaStakeGatewayRedeem',
+  umbrellaStakeGatewayRedeemATokens = 'umbrellaStakeGatewayRedeemATokens',
+  umbrellaStakeGatewayRedeemNativeTokens = 'umbrellaStakeGatewayRedeemNativeTokens',
 }
 
 export enum GovernanceVote {

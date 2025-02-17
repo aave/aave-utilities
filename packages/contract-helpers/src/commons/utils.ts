@@ -198,6 +198,38 @@ export const gasLimitRecommendations: GasRecommendationType = {
     limit: '1',
     recommended: '1',
   },
+  [ProtocolAction.umbrellaStakeGatewayStake]: {
+    limit: '1',
+    recommended: '1',
+  },
+  [ProtocolAction.umbrellaStakeGatewayStakeWithPermit]: {
+    limit: '1',
+    recommended: '1',
+  },
+  [ProtocolAction.umbrellaStakeGatewayStakeATokens]: {
+    limit: '1',
+    recommended: '1',
+  },
+  [ProtocolAction.umbrellaStakeGatewayStakeATokensWithPermit]: {
+    limit: '1',
+    recommended: '1',
+  },
+  [ProtocolAction.umbrellaStakeGatewayStakeNativeTokens]: {
+    limit: '1',
+    recommended: '1',
+  },
+  [ProtocolAction.umbrellaStakeGatewayRedeem]: {
+    limit: '1',
+    recommended: '1',
+  },
+  [ProtocolAction.umbrellaStakeGatewayRedeemATokens]: {
+    limit: '1',
+    recommended: '1',
+  },
+  [ProtocolAction.umbrellaStakeGatewayRedeemNativeTokens]: {
+    limit: '1',
+    recommended: '1',
+  },
 };
 
 export const mintAmountsPerToken: Record<string, string> = {
