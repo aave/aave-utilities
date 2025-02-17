@@ -184,7 +184,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
           accruedToTreasury: reserveRaw.accruedToTreasury.toString(),
           unbacked: reserveRaw.unbacked.toString(),
           isolationModeTotalDebt: reserveRaw.isolationModeTotalDebt.toString(),
-          debtCeilingDecimals: reserveRaw.debtCeilingDecimals.toNumber(),
+          debtCeilingDecimals: reserveRaw.debtCeilingDecimals.toString(),
           isSiloedBorrowing: reserveRaw.isSiloedBorrowing,
           flashLoanEnabled: reserveRaw.flashLoanEnabled,
           virtualAccActive,
