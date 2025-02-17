@@ -1,11 +1,11 @@
 import { BigNumber, providers } from 'ethers';
-import { StakeDataProviderService } from './StakeDataProvider';
 import {
   RewardStruct,
   StakeDataStruct,
   StakeUserDataStruct,
   StataTokenDataStruct,
 } from './typechain/StakeDataProvider';
+import { StakeDataProviderService } from './index';
 
 const mockStataTokenData: StataTokenDataStruct = {
   asset: '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
