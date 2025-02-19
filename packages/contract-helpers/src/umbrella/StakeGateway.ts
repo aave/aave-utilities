@@ -1,9 +1,9 @@
 import { SignatureLike, splitSignature } from '@ethersproject/bytes';
-import { BigNumber, PopulatedTransaction } from 'ethers';
+import { BigNumber, PopulatedTransaction, providers } from 'ethers';
 
 import { ProtocolAction } from '../commons/types';
 import { gasLimitRecommendations } from '../commons/utils';
-import { StakeGatewayInterface } from './typechain/StakeGateway';
+import { StakeGatewayInterface, StakeGateway } from './typechain/StakeGateway';
 import { StakeGateway__factory } from './typechain/StakeGateway__factory';
 
 interface StakeGatewayStakeParams {
@@ -54,9 +54,16 @@ interface StakeGatewayRedeemATokensParams {
 
 export class StakeGatewayService {
   private readonly interface: StakeGatewayInterface;
-
-  constructor(private readonly stakeGatewayAddress: string) {
+  private readonly contract: StakeGateway;
+  constructor(
+    provider: providers.Provider,
+    private readonly stakeGatewayAddress: string,
+  ) {
     this.interface = StakeGateway__factory.createInterface();
+    this.contract = StakeGateway__factory.connect(
+      stakeGatewayAddress,
+      provider,
+    );
   }
 
   stake({ sender, stakeToken, amount }: StakeGatewayStakeParams) {
@@ -220,5 +227,21 @@ export class StakeGatewayService {
         ].recommended,
       ),
     };
+  }
+
+  async previewStake({
+    stakeToken,
+    amount,
+  }: Omit<StakeGatewayStakeParams, 'sender'>) {
+    const shares = await this.contract.previewStake(stakeToken, amount);
+    return shares;
+  }
+
+  async previewRedeem({
+    stakeToken,
+    amount,
+  }: Omit<StakeGatewayRedeemParams, 'sender'>) {
+    const shares = await this.contract.previewRedeem(stakeToken, amount);
+    return shares;
   }
 }

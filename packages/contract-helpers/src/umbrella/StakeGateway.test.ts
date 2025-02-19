@@ -1,4 +1,4 @@
-import { BigNumber, Wallet } from 'ethers';
+import { BigNumber, providers, Wallet } from 'ethers';
 import { splitSignature } from 'ethers/lib/utils';
 import { ProtocolAction } from '../commons/types';
 import {
@@ -14,7 +14,16 @@ describe('StakeGateway', () => {
   const { address: STAKE_TOKEN } = makePair('STAKE_TOKEN');
   const { address: ALICE, privateKey: ALICE_PRIVATE_KEY } = makePair('ALICE');
   const aliceWallet = new Wallet(ALICE_PRIVATE_KEY);
-  const stakeGatewayService = new StakeGatewayService(STAKE_TOKEN);
+
+  const stakeGatewayService = new StakeGatewayService(
+    new providers.JsonRpcProvider(),
+    STAKE_TOKEN,
+  );
+  // @ts-expect-error readonly
+  stakeGatewayService.contract = {
+    previewRedeem: jest.fn(),
+    previewStake: jest.fn(),
+  };
   const stakeTokenInterface = StakeGateway__factory.createInterface();
   describe('stake', () => {
     it('should properly create the transaction', () => {
@@ -250,6 +259,24 @@ describe('StakeGateway', () => {
       expect(decoded).toHaveLength(2);
       expect(decoded[0]).toEqual(STAKE_TOKEN);
       expect(decoded[1].toString()).toEqual(amount);
+    });
+  });
+  describe('preview', () => {
+    it('should not throw on previewRedeem', async () => {
+      await expect(
+        stakeGatewayService.previewRedeem({
+          stakeToken: STAKE_TOKEN,
+          amount: '1',
+        }),
+      ).resolves.not.toThrow();
+    });
+    it('should not throw on previewStake', async () => {
+      await expect(
+        stakeGatewayService.previewStake({
+          stakeToken: STAKE_TOKEN,
+          amount: '1',
+        }),
+      ).resolves.not.toThrow();
     });
   });
 });

@@ -32,6 +32,8 @@ export interface StakeGatewayInterface extends utils.Interface {
     'emergencyEtherTransfer(address,uint256)': FunctionFragment;
     'emergencyTokenTransfer(address,address,uint256)': FunctionFragment;
     'owner()': FunctionFragment;
+    'previewRedeem(address,uint256)': FunctionFragment;
+    'previewStake(address,uint256)': FunctionFragment;
     'redeem(address,uint256)': FunctionFragment;
     'redeemATokens(address,uint256)': FunctionFragment;
     'redeemNativeTokens(address,uint256)': FunctionFragment;
@@ -51,6 +53,8 @@ export interface StakeGatewayInterface extends utils.Interface {
       | 'emergencyEtherTransfer'
       | 'emergencyTokenTransfer'
       | 'owner'
+      | 'previewRedeem'
+      | 'previewStake'
       | 'redeem'
       | 'redeemATokens'
       | 'redeemNativeTokens'
@@ -74,6 +78,14 @@ export interface StakeGatewayInterface extends utils.Interface {
     values: [string, string, BigNumberish],
   ): string;
   encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'previewRedeem',
+    values: [string, BigNumberish],
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'previewStake',
+    values: [string, BigNumberish],
+  ): string;
   encodeFunctionData(
     functionFragment: 'redeem',
     values: [string, BigNumberish],
@@ -143,6 +155,14 @@ export interface StakeGatewayInterface extends utils.Interface {
     data: BytesLike,
   ): Result;
   decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'previewRedeem',
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'previewStake',
+    data: BytesLike,
+  ): Result;
   decodeFunctionResult(functionFragment: 'redeem', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'redeemATokens',
@@ -245,6 +265,18 @@ export interface StakeGateway extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
+    previewRedeem(
+      stakeToken: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<[BigNumber] & { shares: BigNumber }>;
+
+    previewStake(
+      stakeToken: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<[BigNumber] & { shares: BigNumber }>;
+
     redeem(
       stakeToken: string,
       amount: BigNumberish,
@@ -329,6 +361,18 @@ export interface StakeGateway extends BaseContract {
 
   owner(overrides?: CallOverrides): Promise<string>;
 
+  previewRedeem(
+    stakeToken: string,
+    amount: BigNumberish,
+    overrides?: CallOverrides,
+  ): Promise<BigNumber>;
+
+  previewStake(
+    stakeToken: string,
+    amount: BigNumberish,
+    overrides?: CallOverrides,
+  ): Promise<BigNumber>;
+
   redeem(
     stakeToken: string,
     amount: BigNumberish,
@@ -412,6 +456,18 @@ export interface StakeGateway extends BaseContract {
     ): Promise<void>;
 
     owner(overrides?: CallOverrides): Promise<string>;
+
+    previewRedeem(
+      stakeToken: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<BigNumber>;
+
+    previewStake(
+      stakeToken: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<BigNumber>;
 
     redeem(
       stakeToken: string,
@@ -507,6 +563,18 @@ export interface StakeGateway extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
+    previewRedeem(
+      stakeToken: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<BigNumber>;
+
+    previewStake(
+      stakeToken: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<BigNumber>;
+
     redeem(
       stakeToken: string,
       amount: BigNumberish,
@@ -591,6 +659,18 @@ export interface StakeGateway extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    previewRedeem(
+      stakeToken: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<PopulatedTransaction>;
+
+    previewStake(
+      stakeToken: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides,
+    ): Promise<PopulatedTransaction>;
 
     redeem(
       stakeToken: string,
