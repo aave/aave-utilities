@@ -155,24 +155,24 @@ export const gasLimitRecommendations: GasRecommendationType = {
     recommended: '400000',
   },
   [ProtocolAction.umbrellaStakeWithPermit]: {
-    limit: '1',
-    recommended: '1',
+    limit: '310000',
+    recommended: '310000',
   },
   [ProtocolAction.umbrellaStakeWithATokens]: {
-    limit: '1',
-    recommended: '1',
+    limit: '310000',
+    recommended: '310000',
   },
   [ProtocolAction.umbrellaStakeWithATokensWithPermit]: {
-    limit: '1',
-    recommended: '1',
+    limit: '310000',
+    recommended: '310000',
   },
   [ProtocolAction.umbrellaRedeem]: {
-    limit: '1',
-    recommended: '1',
+    limit: '310000',
+    recommended: '310000',
   },
   [ProtocolAction.umbrellaRedeemATokens]: {
-    limit: '1',
-    recommended: '1',
+    limit: '310000',
+    recommended: '310000',
   },
   [ProtocolAction.umbrellaStakeTokenCooldown]: {
     limit: '60000',
@@ -191,44 +191,44 @@ export const gasLimitRecommendations: GasRecommendationType = {
     recommended: '200000',
   },
   [ProtocolAction.umbrellaClaimAllRewards]: {
-    limit: '1',
-    recommended: '1',
+    limit: '310000',
+    recommended: '310000',
   },
   [ProtocolAction.umbrellaClaimSelectedRewards]: {
-    limit: '1',
-    recommended: '1',
+    limit: '310000',
+    recommended: '310000',
   },
   [ProtocolAction.umbrellaStakeGatewayStake]: {
-    limit: '1',
-    recommended: '1',
+    limit: '310000',
+    recommended: '310000',
   },
   [ProtocolAction.umbrellaStakeGatewayStakeWithPermit]: {
-    limit: '1',
-    recommended: '1',
+    limit: '310000',
+    recommended: '310000',
   },
   [ProtocolAction.umbrellaStakeGatewayStakeATokens]: {
-    limit: '1',
-    recommended: '1',
+    limit: '310000',
+    recommended: '310000',
   },
   [ProtocolAction.umbrellaStakeGatewayStakeATokensWithPermit]: {
-    limit: '1',
-    recommended: '1',
+    limit: '310000',
+    recommended: '310000',
   },
   [ProtocolAction.umbrellaStakeGatewayStakeNativeTokens]: {
-    limit: '1',
-    recommended: '1',
+    limit: '310000',
+    recommended: '310000',
   },
   [ProtocolAction.umbrellaStakeGatewayRedeem]: {
-    limit: '1',
-    recommended: '1',
+    limit: '310000',
+    recommended: '310000',
   },
   [ProtocolAction.umbrellaStakeGatewayRedeemATokens]: {
-    limit: '1',
-    recommended: '1',
+    limit: '310000',
+    recommended: '310000',
   },
   [ProtocolAction.umbrellaStakeGatewayRedeemNativeTokens]: {
-    limit: '1',
-    recommended: '1',
+    limit: '310000',
+    recommended: '310000',
   },
 };
 
