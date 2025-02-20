@@ -1,5 +1,6 @@
 import { BigNumber, providers } from 'ethers';
 import { estimateGas, estimateGasByNetwork } from './gasStation';
+import { ChainId } from './types';
 
 describe('gasStation', () => {
   const provider: providers.Provider = new providers.JsonRpcProvider();
@@ -40,6 +41,34 @@ describe('gasStation', () => {
     it('Expects to use specified surplus', async () => {
       const gas = await estimateGasByNetwork(tx, provider, 10);
       expect(gas).toEqual(BigNumber.from(110));
+    });
+    it('Expects to return 230000 for zksync when connected with contract address', async () => {
+      jest
+        .spyOn(provider, 'getNetwork')
+        .mockImplementationOnce(async () =>
+          Promise.resolve({ chainId: ChainId.zksync, name: 'zksync' }),
+        );
+
+      jest
+        .spyOn(provider, 'getCode')
+        .mockImplementationOnce(async () => Promise.resolve('0x1234'));
+
+      const gas = await estimateGasByNetwork({ from: '0x123abc' }, provider);
+      expect(gas).toEqual(BigNumber.from(230000));
+    });
+    it('Expects to return default for zksync when connected with EOA', async () => {
+      jest
+        .spyOn(provider, 'getNetwork')
+        .mockImplementationOnce(async () =>
+          Promise.resolve({ chainId: ChainId.zksync, name: 'zksync' }),
+        );
+
+      jest
+        .spyOn(provider, 'getCode')
+        .mockImplementationOnce(async () => Promise.resolve('0x'));
+
+      const gas = await estimateGasByNetwork({ from: '0x123abc' }, provider);
+      expect(gas).toEqual(BigNumber.from(130));
     });
   });
 });
