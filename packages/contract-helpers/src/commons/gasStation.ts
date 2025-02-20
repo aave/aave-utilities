@@ -21,8 +21,22 @@ export const estimateGasByNetwork = async (
   provider: providers.Provider,
   gasSurplus?: number,
 ): Promise<BigNumber> => {
-  const estimatedGas = await provider.estimateGas(tx);
   const providerNework: providers.Network = await provider.getNetwork();
+  if (providerNework.chainId === ChainId.zksync && tx.from) {
+    /**
+     *  Trying to estimate gas on zkSync when connected with a smart contract address
+     *  will fail. In that case, we'll just return a default value for all transactions.
+     *
+     *  See here for more details: https://github.com/zkSync-Community-Hub/zksync-developers/discussions/144
+     */
+    const data = await provider.getCode(tx.from);
+    console.log(data);
+    if (data !== '0x') {
+      return BigNumber.from(230000);
+    }
+  }
+
+  const estimatedGas = await provider.estimateGas(tx);
 
   if (providerNework.chainId === ChainId.polygon) {
     return estimatedGas.add(estimatedGas.mul(POLYGON_SURPLUS).div(100));
