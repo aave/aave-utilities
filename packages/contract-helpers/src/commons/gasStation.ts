@@ -30,7 +30,6 @@ export const estimateGasByNetwork = async (
      *  See here for more details: https://github.com/zkSync-Community-Hub/zksync-developers/discussions/144
      */
     const data = await provider.getCode(tx.from);
-    console.log(data);
     if (data !== '0x') {
       return BigNumber.from(230000);
     }
