@@ -48,6 +48,7 @@ export type RewardStruct = {
   rewardAddress: string;
   rewardName: string;
   rewardSymbol: string;
+  price: BigNumberish;
   decimals: BigNumberish;
   index: BigNumberish;
   maxEmissionPerSecond: BigNumberish;
@@ -60,6 +61,7 @@ export type RewardStructOutput = [
   string,
   string,
   string,
+  BigNumber,
   number,
   BigNumber,
   BigNumber,
@@ -70,6 +72,7 @@ export type RewardStructOutput = [
   rewardAddress: string;
   rewardName: string;
   rewardSymbol: string;
+  price: BigNumber;
   decimals: number;
   index: BigNumber;
   maxEmissionPerSecond: BigNumber;
@@ -188,6 +191,7 @@ export type StakeUserDataStructOutput = [
 
 export interface StakeDataProviderInterface extends utils.Interface {
   functions: {
+    'aaveOracle()': FunctionFragment;
     'getStakeData()': FunctionFragment;
     'getUserStakeData(address)': FunctionFragment;
     'rewardsController()': FunctionFragment;
@@ -197,6 +201,7 @@ export interface StakeDataProviderInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
+      | 'aaveOracle'
       | 'getStakeData'
       | 'getUserStakeData'
       | 'rewardsController'
@@ -204,6 +209,10 @@ export interface StakeDataProviderInterface extends utils.Interface {
       | 'umbrella',
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: 'aaveOracle',
+    values?: undefined,
+  ): string;
   encodeFunctionData(
     functionFragment: 'getStakeData',
     values?: undefined,
@@ -222,6 +231,7 @@ export interface StakeDataProviderInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: 'umbrella', values?: undefined): string;
 
+  decodeFunctionResult(functionFragment: 'aaveOracle', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'getStakeData',
     data: BytesLike,
@@ -270,6 +280,8 @@ export interface StakeDataProvider extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    aaveOracle(overrides?: CallOverrides): Promise<[string]>;
+
     getStakeData(overrides?: CallOverrides): Promise<[StakeDataStructOutput[]]>;
 
     getUserStakeData(
@@ -283,6 +295,8 @@ export interface StakeDataProvider extends BaseContract {
 
     umbrella(overrides?: CallOverrides): Promise<[string]>;
   };
+
+  aaveOracle(overrides?: CallOverrides): Promise<string>;
 
   getStakeData(overrides?: CallOverrides): Promise<StakeDataStructOutput[]>;
 
@@ -298,6 +312,8 @@ export interface StakeDataProvider extends BaseContract {
   umbrella(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
+    aaveOracle(overrides?: CallOverrides): Promise<string>;
+
     getStakeData(overrides?: CallOverrides): Promise<StakeDataStructOutput[]>;
 
     getUserStakeData(
@@ -315,6 +331,8 @@ export interface StakeDataProvider extends BaseContract {
   filters: {};
 
   estimateGas: {
+    aaveOracle(overrides?: CallOverrides): Promise<BigNumber>;
+
     getStakeData(overrides?: CallOverrides): Promise<BigNumber>;
 
     getUserStakeData(
@@ -330,6 +348,8 @@ export interface StakeDataProvider extends BaseContract {
   };
 
   populateTransaction: {
+    aaveOracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getStakeData(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getUserStakeData(

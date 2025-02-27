@@ -32,6 +32,7 @@ export interface Reward {
   rewardAddress: string;
   rewardName: string;
   rewardSymbol: string;
+  price: string;
   decimals: number;
   index: string;
   maxEmissionPerSecond: string;
@@ -114,6 +115,7 @@ export class StakeDataProviderService {
         rewardAddress: reward.rewardAddress,
         rewardName: reward.rewardName,
         rewardSymbol: reward.rewardSymbol,
+        price: reward.price.toString(),
         decimals: reward.decimals,
         index: reward.index.toString(),
         maxEmissionPerSecond: reward.maxEmissionPerSecond.toString(),

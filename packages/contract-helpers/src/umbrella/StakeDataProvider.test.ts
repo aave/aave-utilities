@@ -20,6 +20,7 @@ const mockRewardData: RewardStruct = {
   rewardAddress: '0xfeabcdefabcdefabcdefabcdefabcdefabcdef',
   rewardName: 'Mock Reward Token',
   rewardSymbol: 'MRT',
+  price: BigNumber.from('1000000'),
   decimals: 18,
   index: BigNumber.from('1000000000000000000'),
   maxEmissionPerSecond: BigNumber.from('500000000000000'),
@@ -123,6 +124,7 @@ describe('Umbrella StakeDataProvider', () => {
       rewards: [
         {
           ...mockRewardData,
+          price: '1000000',
           currentEmissionPerSecond: '250000000000000',
           apy: '500000000000000000',
           distributionEnd: '1800000000',
