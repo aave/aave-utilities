@@ -7,7 +7,7 @@ export interface StakeData {
   name: string;
   symbol: string;
   price: string;
-  totalSupply: string;
+  totalAssets: string;
   underlyingTokenAddress: string;
   underlyingTokenName: string;
   underlyingTokenSymbol: string;
@@ -95,7 +95,7 @@ export class StakeDataProviderService {
       name: r.name,
       symbol: r.symbol,
       price: r.price.toString(),
-      totalSupply: r.totalSupply.toString(),
+      totalAssets: r.totalAssets.toString(),
       underlyingTokenAddress: r.underlyingTokenAddress,
       underlyingTokenName: r.underlyingTokenName,
       underlyingTokenSymbol: r.underlyingTokenSymbol,

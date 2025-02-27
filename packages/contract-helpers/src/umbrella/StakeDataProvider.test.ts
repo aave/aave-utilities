@@ -34,7 +34,7 @@ const mockStakeData: StakeDataStruct = {
   name: 'Mock Staking Token',
   symbol: 'MST',
   price: BigNumber.from('1000000000000000000'),
-  totalSupply: BigNumber.from('1000000000000000000000000'),
+  totalAssets: BigNumber.from('1000000000000000000000000'),
   underlyingTokenAddress: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
   underlyingTokenName: 'Mock Underlying Token',
   underlyingTokenSymbol: 'MUT',
@@ -117,7 +117,7 @@ describe('Umbrella StakeDataProvider', () => {
     const result = await service.getStakeDataHumanized();
     expect(result[0]).toEqual({
       ...mockStakeData,
-      totalSupply: '1000000000000000000000000',
+      totalAssets: '1000000000000000000000000',
       price: '1000000000000000000',
       cooldownSeconds: 86400,
       unstakeWindowSeconds: 43200,
