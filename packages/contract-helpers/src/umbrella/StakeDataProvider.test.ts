@@ -20,6 +20,7 @@ const mockRewardData: RewardStruct = {
   rewardAddress: '0xfeabcdefabcdefabcdefabcdefabcdefabcdef',
   rewardName: 'Mock Reward Token',
   rewardSymbol: 'MRT',
+  price: BigNumber.from('1000000'),
   decimals: 18,
   index: BigNumber.from('1000000000000000000'),
   maxEmissionPerSecond: BigNumber.from('500000000000000'),
@@ -33,7 +34,7 @@ const mockStakeData: StakeDataStruct = {
   name: 'Mock Staking Token',
   symbol: 'MST',
   price: BigNumber.from('1000000000000000000'),
-  totalSupply: BigNumber.from('1000000000000000000000000'),
+  totalAssets: BigNumber.from('1000000000000000000000000'),
   underlyingTokenAddress: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
   underlyingTokenName: 'Mock Underlying Token',
   underlyingTokenSymbol: 'MUT',
@@ -116,13 +117,14 @@ describe('Umbrella StakeDataProvider', () => {
     const result = await service.getStakeDataHumanized();
     expect(result[0]).toEqual({
       ...mockStakeData,
-      totalSupply: '1000000000000000000000000',
+      totalAssets: '1000000000000000000000000',
       price: '1000000000000000000',
       cooldownSeconds: 86400,
       unstakeWindowSeconds: 43200,
       rewards: [
         {
           ...mockRewardData,
+          price: '1000000',
           currentEmissionPerSecond: '250000000000000',
           apy: '500000000000000000',
           distributionEnd: '1800000000',
