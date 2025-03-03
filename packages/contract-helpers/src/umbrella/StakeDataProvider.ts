@@ -7,7 +7,7 @@ export interface StakeData {
   name: string;
   symbol: string;
   price: string;
-  totalSupply: string;
+  totalAssets: string;
   underlyingTokenAddress: string;
   underlyingTokenName: string;
   underlyingTokenSymbol: string;
@@ -32,6 +32,7 @@ export interface Reward {
   rewardAddress: string;
   rewardName: string;
   rewardSymbol: string;
+  price: string;
   decimals: number;
   index: string;
   maxEmissionPerSecond: string;
@@ -94,7 +95,7 @@ export class StakeDataProviderService {
       name: r.name,
       symbol: r.symbol,
       price: r.price.toString(),
-      totalSupply: r.totalSupply.toString(),
+      totalAssets: r.totalAssets.toString(),
       underlyingTokenAddress: r.underlyingTokenAddress,
       underlyingTokenName: r.underlyingTokenName,
       underlyingTokenSymbol: r.underlyingTokenSymbol,
@@ -114,6 +115,7 @@ export class StakeDataProviderService {
         rewardAddress: reward.rewardAddress,
         rewardName: reward.rewardName,
         rewardSymbol: reward.rewardSymbol,
+        price: reward.price.toString(),
         decimals: reward.decimals,
         index: reward.index.toString(),
         maxEmissionPerSecond: reward.maxEmissionPerSecond.toString(),
