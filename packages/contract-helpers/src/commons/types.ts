@@ -1,4 +1,5 @@
-import { BigNumber, BytesLike, PopulatedTransaction } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
+import { BytesLike, PopulatedTransaction } from 'ethers';
 import {
   LPBorrowParamsType,
   LPRepayParamsType,
@@ -421,4 +422,11 @@ export type RepayWithATokensTxBuilder = {
     amount,
     rateMode,
   }: Omit<LPRepayWithATokensType, 'user'>) => Promise<string>;
+};
+
+export type DefinedPopulatedTransaction = PopulatedTransaction & {
+  data: string;
+  from: string;
+  to: string;
+  gasLimit: BigNumber;
 };

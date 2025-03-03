@@ -319,6 +319,9 @@ export const makePair = (id: string) => {
   return { privateKey, address };
 };
 
+export const DEFAULT_MOCK_VERIFYING_CONTRACT =
+  '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC';
+
 export const generateEIP712PermitMock = (
   owner: string,
   spender: string,
@@ -329,7 +332,7 @@ export const generateEIP712PermitMock = (
     name: 'Mocked token',
     version: '1',
     chainId: 1,
-    verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+    verifyingContract: DEFAULT_MOCK_VERIFYING_CONTRACT,
   };
   const types = {
     Permit: [
