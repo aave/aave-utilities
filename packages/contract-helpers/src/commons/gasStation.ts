@@ -31,7 +31,7 @@ export const estimateGasByNetwork = async (
      */
     const data = await provider.getCode(tx.from);
     if (data !== '0x') {
-      return BigNumber.from(230000);
+      return BigNumber.from(350000);
     }
   }
 
