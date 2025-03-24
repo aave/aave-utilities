@@ -42,7 +42,7 @@ describe('gasStation', () => {
       const gas = await estimateGasByNetwork(tx, provider, 10);
       expect(gas).toEqual(BigNumber.from(110));
     });
-    it('Expects to return 230000 for zksync when connected with contract address', async () => {
+    it('Expects to return 350000 for zksync when connected with contract address', async () => {
       jest
         .spyOn(provider, 'getNetwork')
         .mockImplementationOnce(async () =>
@@ -54,7 +54,7 @@ describe('gasStation', () => {
         .mockImplementationOnce(async () => Promise.resolve('0x1234'));
 
       const gas = await estimateGasByNetwork({ from: '0x123abc' }, provider);
-      expect(gas).toEqual(BigNumber.from(230000));
+      expect(gas).toEqual(BigNumber.from(350000));
     });
     it('Expects to return default for zksync when connected with EOA', async () => {
       jest
