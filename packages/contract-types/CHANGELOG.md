@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.3.0 (2025-03-12)
+
+
+### Features
+
+* add celo chain id ([#626](https://github.com/aave/aave-utilities/issues/626)) ([1c2323b](https://github.com/aave/aave-utilities/commit/1c2323bd8e4d68e0f4c4b2a4a05003e1ca006052))
+
+
+
+
+
 ## 1.2.1 (2025-02-14)
 
 
