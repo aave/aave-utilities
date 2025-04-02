@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.3.1 (2025-03-26)
+
+
+### Bug Fixes
+
+* gas estimation on zksync for safe accounts ([#623](https://github.com/aave/aave-utilities/issues/623)) ([d882612](https://github.com/aave/aave-utilities/commit/d8826125572adf944778dcd90057bc364e78539a))
+
+
+
+
+
 # 1.3.0 (2025-03-12)
 
 
