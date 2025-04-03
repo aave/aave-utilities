@@ -40,6 +40,69 @@ const _abi = [
   },
   {
     type: 'function',
+    name: 'claimAllRewards',
+    inputs: [
+      {
+        name: 'assets',
+        type: 'address[]',
+        internalType: 'address[]',
+      },
+      {
+        name: 'receiver',
+        type: 'address',
+        internalType: 'address',
+      },
+    ],
+    outputs: [
+      {
+        name: 'rewards',
+        type: 'address[][]',
+        internalType: 'address[][]',
+      },
+      {
+        name: 'amounts',
+        type: 'uint256[][]',
+        internalType: 'uint256[][]',
+      },
+    ],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    name: 'claimAllRewardsOnBehalf',
+    inputs: [
+      {
+        name: 'assets',
+        type: 'address[]',
+        internalType: 'address[]',
+      },
+      {
+        name: 'user',
+        type: 'address',
+        internalType: 'address',
+      },
+      {
+        name: 'receiver',
+        type: 'address',
+        internalType: 'address',
+      },
+    ],
+    outputs: [
+      {
+        name: 'rewards',
+        type: 'address[][]',
+        internalType: 'address[][]',
+      },
+      {
+        name: 'amounts',
+        type: 'uint256[][]',
+        internalType: 'uint256[][]',
+      },
+    ],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
     name: 'claimAllRewardsOnBehalf',
     inputs: [
       {
@@ -138,6 +201,35 @@ const _abi = [
     name: 'claimSelectedRewards',
     inputs: [
       {
+        name: 'assets',
+        type: 'address[]',
+        internalType: 'address[]',
+      },
+      {
+        name: 'rewards',
+        type: 'address[][]',
+        internalType: 'address[][]',
+      },
+      {
+        name: 'receiver',
+        type: 'address',
+        internalType: 'address',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'uint256[][]',
+        internalType: 'uint256[][]',
+      },
+    ],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    name: 'claimSelectedRewards',
+    inputs: [
+      {
         name: 'asset',
         type: 'address',
         internalType: 'address',
@@ -192,6 +284,40 @@ const _abi = [
         name: 'amounts',
         type: 'uint256[]',
         internalType: 'uint256[]',
+      },
+    ],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    name: 'claimSelectedRewardsOnBehalf',
+    inputs: [
+      {
+        name: 'assets',
+        type: 'address[]',
+        internalType: 'address[]',
+      },
+      {
+        name: 'rewards',
+        type: 'address[][]',
+        internalType: 'address[][]',
+      },
+      {
+        name: 'user',
+        type: 'address',
+        internalType: 'address',
+      },
+      {
+        name: 'receiver',
+        type: 'address',
+        internalType: 'address',
+      },
+    ],
+    outputs: [
+      {
+        name: '',
+        type: 'uint256[][]',
+        internalType: 'uint256[][]',
       },
     ],
     stateMutability: 'nonpayable',
@@ -315,6 +441,12 @@ const _abi = [
         internalType: 'address',
       },
       {
+        name: 'caller',
+        type: 'address',
+        indexed: true,
+        internalType: 'address',
+      },
+      {
         name: 'flag',
         type: 'bool',
         indexed: false,
@@ -365,6 +497,16 @@ const _abi = [
         internalType: 'address',
       },
     ],
+  },
+  {
+    type: 'error',
+    name: 'LengthsDontMatch',
+    inputs: [],
+  },
+  {
+    type: 'error',
+    name: 'ZeroAddress',
+    inputs: [],
   },
 ] as const;
 

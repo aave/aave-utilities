@@ -42,10 +42,14 @@ export declare namespace IRewardsStructs {
 export interface IRewardsDistributorInterface extends utils.Interface {
   functions: {
     'claimAllRewards(address,address)': FunctionFragment;
+    'claimAllRewards(address[],address)': FunctionFragment;
+    'claimAllRewardsOnBehalf(address[],address,address)': FunctionFragment;
     'claimAllRewardsOnBehalf(address,address,address)': FunctionFragment;
     'claimAllRewardsPermit(address,address,address,uint256,(uint8,bytes32,bytes32))': FunctionFragment;
+    'claimSelectedRewards(address[],address[][],address)': FunctionFragment;
     'claimSelectedRewards(address,address[],address)': FunctionFragment;
     'claimSelectedRewardsOnBehalf(address,address[],address,address)': FunctionFragment;
+    'claimSelectedRewardsOnBehalf(address[],address[][],address,address)': FunctionFragment;
     'claimSelectedRewardsPermit(address,address[],address,address,uint256,(uint8,bytes32,bytes32))': FunctionFragment;
     'setClaimer(address,bool)': FunctionFragment;
     'setClaimer(address,address,bool)': FunctionFragment;
@@ -53,22 +57,34 @@ export interface IRewardsDistributorInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
-      | 'claimAllRewards'
-      | 'claimAllRewardsOnBehalf'
+      | 'claimAllRewards(address,address)'
+      | 'claimAllRewards(address[],address)'
+      | 'claimAllRewardsOnBehalf(address[],address,address)'
+      | 'claimAllRewardsOnBehalf(address,address,address)'
       | 'claimAllRewardsPermit'
-      | 'claimSelectedRewards'
-      | 'claimSelectedRewardsOnBehalf'
+      | 'claimSelectedRewards(address[],address[][],address)'
+      | 'claimSelectedRewards(address,address[],address)'
+      | 'claimSelectedRewardsOnBehalf(address,address[],address,address)'
+      | 'claimSelectedRewardsOnBehalf(address[],address[][],address,address)'
       | 'claimSelectedRewardsPermit'
       | 'setClaimer(address,bool)'
       | 'setClaimer(address,address,bool)',
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: 'claimAllRewards',
+    functionFragment: 'claimAllRewards(address,address)',
     values: [string, string],
   ): string;
   encodeFunctionData(
-    functionFragment: 'claimAllRewardsOnBehalf',
+    functionFragment: 'claimAllRewards(address[],address)',
+    values: [string[], string],
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'claimAllRewardsOnBehalf(address[],address,address)',
+    values: [string[], string, string],
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'claimAllRewardsOnBehalf(address,address,address)',
     values: [string, string, string],
   ): string;
   encodeFunctionData(
@@ -82,12 +98,20 @@ export interface IRewardsDistributorInterface extends utils.Interface {
     ],
   ): string;
   encodeFunctionData(
-    functionFragment: 'claimSelectedRewards',
+    functionFragment: 'claimSelectedRewards(address[],address[][],address)',
+    values: [string[], string[][], string],
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'claimSelectedRewards(address,address[],address)',
     values: [string, string[], string],
   ): string;
   encodeFunctionData(
-    functionFragment: 'claimSelectedRewardsOnBehalf',
+    functionFragment: 'claimSelectedRewardsOnBehalf(address,address[],address,address)',
     values: [string, string[], string, string],
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'claimSelectedRewardsOnBehalf(address[],address[][],address,address)',
+    values: [string[], string[][], string, string],
   ): string;
   encodeFunctionData(
     functionFragment: 'claimSelectedRewardsPermit',
@@ -110,11 +134,19 @@ export interface IRewardsDistributorInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(
-    functionFragment: 'claimAllRewards',
+    functionFragment: 'claimAllRewards(address,address)',
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'claimAllRewardsOnBehalf',
+    functionFragment: 'claimAllRewards(address[],address)',
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'claimAllRewardsOnBehalf(address[],address,address)',
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'claimAllRewardsOnBehalf(address,address,address)',
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
@@ -122,11 +154,19 @@ export interface IRewardsDistributorInterface extends utils.Interface {
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'claimSelectedRewards',
+    functionFragment: 'claimSelectedRewards(address[],address[][],address)',
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'claimSelectedRewardsOnBehalf',
+    functionFragment: 'claimSelectedRewards(address,address[],address)',
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'claimSelectedRewardsOnBehalf(address,address[],address,address)',
+    data: BytesLike,
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'claimSelectedRewardsOnBehalf(address[],address[][],address,address)',
     data: BytesLike,
   ): Result;
   decodeFunctionResult(
@@ -143,7 +183,7 @@ export interface IRewardsDistributorInterface extends utils.Interface {
   ): Result;
 
   events: {
-    'ClaimerSet(address,address,bool)': EventFragment;
+    'ClaimerSet(address,address,address,bool)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'ClaimerSet'): EventFragment;
@@ -152,10 +192,11 @@ export interface IRewardsDistributorInterface extends utils.Interface {
 export interface ClaimerSetEventObject {
   user: string;
   claimer: string;
+  caller: string;
   flag: boolean;
 }
 export type ClaimerSetEvent = TypedEvent<
-  [string, string, boolean],
+  [string, string, string, boolean],
   ClaimerSetEventObject
 >;
 
@@ -188,13 +229,26 @@ export interface IRewardsDistributor extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    claimAllRewards(
+    'claimAllRewards(address,address)'(
       asset: string,
       receiver: string,
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
-    claimAllRewardsOnBehalf(
+    'claimAllRewards(address[],address)'(
+      assets: string[],
+      receiver: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<ContractTransaction>;
+
+    'claimAllRewardsOnBehalf(address[],address,address)'(
+      assets: string[],
+      user: string,
+      receiver: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<ContractTransaction>;
+
+    'claimAllRewardsOnBehalf(address,address,address)'(
       asset: string,
       user: string,
       receiver: string,
@@ -210,16 +264,31 @@ export interface IRewardsDistributor extends BaseContract {
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
-    claimSelectedRewards(
+    'claimSelectedRewards(address[],address[][],address)'(
+      assets: string[],
+      rewards: string[][],
+      receiver: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<ContractTransaction>;
+
+    'claimSelectedRewards(address,address[],address)'(
       asset: string,
       rewards: string[],
       receiver: string,
       overrides?: Overrides & { from?: string },
     ): Promise<ContractTransaction>;
 
-    claimSelectedRewardsOnBehalf(
+    'claimSelectedRewardsOnBehalf(address,address[],address,address)'(
       asset: string,
       rewards: string[],
+      user: string,
+      receiver: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<ContractTransaction>;
+
+    'claimSelectedRewardsOnBehalf(address[],address[][],address,address)'(
+      assets: string[],
+      rewards: string[][],
       user: string,
       receiver: string,
       overrides?: Overrides & { from?: string },
@@ -249,13 +318,26 @@ export interface IRewardsDistributor extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  claimAllRewards(
+  'claimAllRewards(address,address)'(
     asset: string,
     receiver: string,
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
-  claimAllRewardsOnBehalf(
+  'claimAllRewards(address[],address)'(
+    assets: string[],
+    receiver: string,
+    overrides?: Overrides & { from?: string },
+  ): Promise<ContractTransaction>;
+
+  'claimAllRewardsOnBehalf(address[],address,address)'(
+    assets: string[],
+    user: string,
+    receiver: string,
+    overrides?: Overrides & { from?: string },
+  ): Promise<ContractTransaction>;
+
+  'claimAllRewardsOnBehalf(address,address,address)'(
     asset: string,
     user: string,
     receiver: string,
@@ -271,16 +353,31 @@ export interface IRewardsDistributor extends BaseContract {
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
-  claimSelectedRewards(
+  'claimSelectedRewards(address[],address[][],address)'(
+    assets: string[],
+    rewards: string[][],
+    receiver: string,
+    overrides?: Overrides & { from?: string },
+  ): Promise<ContractTransaction>;
+
+  'claimSelectedRewards(address,address[],address)'(
     asset: string,
     rewards: string[],
     receiver: string,
     overrides?: Overrides & { from?: string },
   ): Promise<ContractTransaction>;
 
-  claimSelectedRewardsOnBehalf(
+  'claimSelectedRewardsOnBehalf(address,address[],address,address)'(
     asset: string,
     rewards: string[],
+    user: string,
+    receiver: string,
+    overrides?: Overrides & { from?: string },
+  ): Promise<ContractTransaction>;
+
+  'claimSelectedRewardsOnBehalf(address[],address[][],address,address)'(
+    assets: string[],
+    rewards: string[][],
     user: string,
     receiver: string,
     overrides?: Overrides & { from?: string },
@@ -310,7 +407,7 @@ export interface IRewardsDistributor extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    claimAllRewards(
+    'claimAllRewards(address,address)'(
       asset: string,
       receiver: string,
       overrides?: CallOverrides,
@@ -318,7 +415,30 @@ export interface IRewardsDistributor extends BaseContract {
       [string[], BigNumber[]] & { rewards: string[]; amounts: BigNumber[] }
     >;
 
-    claimAllRewardsOnBehalf(
+    'claimAllRewards(address[],address)'(
+      assets: string[],
+      receiver: string,
+      overrides?: CallOverrides,
+    ): Promise<
+      [string[][], BigNumber[][]] & {
+        rewards: string[][];
+        amounts: BigNumber[][];
+      }
+    >;
+
+    'claimAllRewardsOnBehalf(address[],address,address)'(
+      assets: string[],
+      user: string,
+      receiver: string,
+      overrides?: CallOverrides,
+    ): Promise<
+      [string[][], BigNumber[][]] & {
+        rewards: string[][];
+        amounts: BigNumber[][];
+      }
+    >;
+
+    'claimAllRewardsOnBehalf(address,address,address)'(
       asset: string,
       user: string,
       receiver: string,
@@ -338,20 +458,35 @@ export interface IRewardsDistributor extends BaseContract {
       [string[], BigNumber[]] & { rewards: string[]; amounts: BigNumber[] }
     >;
 
-    claimSelectedRewards(
+    'claimSelectedRewards(address[],address[][],address)'(
+      assets: string[],
+      rewards: string[][],
+      receiver: string,
+      overrides?: CallOverrides,
+    ): Promise<BigNumber[][]>;
+
+    'claimSelectedRewards(address,address[],address)'(
       asset: string,
       rewards: string[],
       receiver: string,
       overrides?: CallOverrides,
     ): Promise<BigNumber[]>;
 
-    claimSelectedRewardsOnBehalf(
+    'claimSelectedRewardsOnBehalf(address,address[],address,address)'(
       asset: string,
       rewards: string[],
       user: string,
       receiver: string,
       overrides?: CallOverrides,
     ): Promise<BigNumber[]>;
+
+    'claimSelectedRewardsOnBehalf(address[],address[][],address,address)'(
+      assets: string[],
+      rewards: string[][],
+      user: string,
+      receiver: string,
+      overrides?: CallOverrides,
+    ): Promise<BigNumber[][]>;
 
     claimSelectedRewardsPermit(
       asset: string,
@@ -378,26 +513,41 @@ export interface IRewardsDistributor extends BaseContract {
   };
 
   filters: {
-    'ClaimerSet(address,address,bool)'(
+    'ClaimerSet(address,address,address,bool)'(
       user?: string | null,
       claimer?: string | null,
+      caller?: string | null,
       flag?: null,
     ): ClaimerSetEventFilter;
     ClaimerSet(
       user?: string | null,
       claimer?: string | null,
+      caller?: string | null,
       flag?: null,
     ): ClaimerSetEventFilter;
   };
 
   estimateGas: {
-    claimAllRewards(
+    'claimAllRewards(address,address)'(
       asset: string,
       receiver: string,
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
-    claimAllRewardsOnBehalf(
+    'claimAllRewards(address[],address)'(
+      assets: string[],
+      receiver: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<BigNumber>;
+
+    'claimAllRewardsOnBehalf(address[],address,address)'(
+      assets: string[],
+      user: string,
+      receiver: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<BigNumber>;
+
+    'claimAllRewardsOnBehalf(address,address,address)'(
       asset: string,
       user: string,
       receiver: string,
@@ -413,16 +563,31 @@ export interface IRewardsDistributor extends BaseContract {
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
-    claimSelectedRewards(
+    'claimSelectedRewards(address[],address[][],address)'(
+      assets: string[],
+      rewards: string[][],
+      receiver: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<BigNumber>;
+
+    'claimSelectedRewards(address,address[],address)'(
       asset: string,
       rewards: string[],
       receiver: string,
       overrides?: Overrides & { from?: string },
     ): Promise<BigNumber>;
 
-    claimSelectedRewardsOnBehalf(
+    'claimSelectedRewardsOnBehalf(address,address[],address,address)'(
       asset: string,
       rewards: string[],
+      user: string,
+      receiver: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<BigNumber>;
+
+    'claimSelectedRewardsOnBehalf(address[],address[][],address,address)'(
+      assets: string[],
+      rewards: string[][],
       user: string,
       receiver: string,
       overrides?: Overrides & { from?: string },
@@ -453,13 +618,26 @@ export interface IRewardsDistributor extends BaseContract {
   };
 
   populateTransaction: {
-    claimAllRewards(
+    'claimAllRewards(address,address)'(
       asset: string,
       receiver: string,
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
-    claimAllRewardsOnBehalf(
+    'claimAllRewards(address[],address)'(
+      assets: string[],
+      receiver: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
+
+    'claimAllRewardsOnBehalf(address[],address,address)'(
+      assets: string[],
+      user: string,
+      receiver: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
+
+    'claimAllRewardsOnBehalf(address,address,address)'(
       asset: string,
       user: string,
       receiver: string,
@@ -475,16 +653,31 @@ export interface IRewardsDistributor extends BaseContract {
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
-    claimSelectedRewards(
+    'claimSelectedRewards(address[],address[][],address)'(
+      assets: string[],
+      rewards: string[][],
+      receiver: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
+
+    'claimSelectedRewards(address,address[],address)'(
       asset: string,
       rewards: string[],
       receiver: string,
       overrides?: Overrides & { from?: string },
     ): Promise<PopulatedTransaction>;
 
-    claimSelectedRewardsOnBehalf(
+    'claimSelectedRewardsOnBehalf(address,address[],address,address)'(
       asset: string,
       rewards: string[],
+      user: string,
+      receiver: string,
+      overrides?: Overrides & { from?: string },
+    ): Promise<PopulatedTransaction>;
+
+    'claimSelectedRewardsOnBehalf(address[],address[][],address,address)'(
+      assets: string[],
+      rewards: string[][],
       user: string,
       receiver: string,
       overrides?: Overrides & { from?: string },

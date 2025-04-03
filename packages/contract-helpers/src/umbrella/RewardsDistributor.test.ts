@@ -9,6 +9,7 @@ import { RewardsDistributorService } from './';
 
 describe('Umbrella Rewards distributor', () => {
   const { address: STAKE_TOKEN } = makePair('STAKE_TOKEN');
+  const { address: STAKE_TOKEN_2 } = makePair('STAKE_TOKEN_2');
   const { address: ALICE } = makePair('ALICE');
 
   const REWARD_1 = makePair('REWARD_1').address;
@@ -16,6 +17,29 @@ describe('Umbrella Rewards distributor', () => {
 
   const stakeTokenService = new RewardsDistributorService(STAKE_TOKEN);
   const stakeTokenInterface = IRewardsDistributor__factory.createInterface();
+  describe('claimAllAvailableRewards', () => {
+    it('should properly create the transaction', () => {
+      const tx = stakeTokenService.claimAllAvailableRewards({
+        stakeTokens: [STAKE_TOKEN, STAKE_TOKEN_2],
+        sender: ALICE,
+      });
+      expect(tx.from).toEqual(ALICE);
+      expect(tx.to).toEqual(STAKE_TOKEN);
+      expectToBeDefined(tx.gasLimit);
+      expectToBeDefined(tx.data);
+      expect(tx.gasLimit.toString()).toEqual(
+        gasLimitRecommendations[ProtocolAction.umbrellaClaimAllRewards]
+          .recommended,
+      );
+      const decoded = stakeTokenInterface.decodeFunctionData(
+        'claimAllRewards(address[],address)',
+        tx.data,
+      );
+      expect(decoded).toHaveLength(2);
+      expect(decoded[0]).toEqual([STAKE_TOKEN, STAKE_TOKEN_2]);
+      expect(decoded[1]).toEqual(ALICE);
+    });
+  });
   describe('claimAllRewards', () => {
     it('should properly create the transaction', () => {
       const tx = stakeTokenService.claimAllRewards({
@@ -31,7 +55,7 @@ describe('Umbrella Rewards distributor', () => {
           .recommended,
       );
       const decoded = stakeTokenInterface.decodeFunctionData(
-        'claimAllRewards',
+        'claimAllRewards(address,address)',
         tx.data,
       );
       expect(decoded).toHaveLength(2);
@@ -56,7 +80,7 @@ describe('Umbrella Rewards distributor', () => {
           .recommended,
       );
       const decoded = stakeTokenInterface.decodeFunctionData(
-        'claimSelectedRewards',
+        'claimSelectedRewards(address,address[],address)',
         tx.data,
       );
       expect(decoded).toHaveLength(3);

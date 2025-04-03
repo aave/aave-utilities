@@ -4,6 +4,11 @@ import { gasLimitRecommendations } from '../commons/utils';
 import { IRewardsDistributorInterface } from './typechain/IRewardsDistributor';
 import { IRewardsDistributor__factory } from './typechain/IRewardsDistributor__factory';
 
+interface RewardsDistributorClaimAllAvailableRewardsParams {
+  stakeTokens: string[];
+  sender: string;
+}
+
 interface RewardsDistributorClaimAllRewardsParams {
   stakeToken: string;
   sender: string;
@@ -22,16 +27,37 @@ export class RewardsDistributorService {
     this.interface = IRewardsDistributor__factory.createInterface();
   }
 
+  // Claim all rewards across all stake tokens
+  claimAllAvailableRewards({
+    stakeTokens,
+    sender,
+  }: RewardsDistributorClaimAllAvailableRewardsParams) {
+    const tx: PopulatedTransaction = {};
+    const receiver = sender;
+    tx.data = this.interface.encodeFunctionData(
+      'claimAllRewards(address[],address)',
+      [stakeTokens, receiver],
+    );
+    tx.from = sender;
+    tx.to = this.rewardsDistributorAddress;
+    tx.gasLimit = BigNumber.from(
+      gasLimitRecommendations[ProtocolAction.umbrellaClaimAllRewards]
+        .recommended,
+    );
+    return tx;
+  }
+
+  // Claim all rewards for a specific stake token
   claimAllRewards({
     stakeToken,
     sender,
   }: RewardsDistributorClaimAllRewardsParams) {
     const tx: PopulatedTransaction = {};
     const receiver = sender;
-    const txData = this.interface.encodeFunctionData('claimAllRewards', [
-      stakeToken,
-      receiver,
-    ]);
+    const txData = this.interface.encodeFunctionData(
+      'claimAllRewards(address,address)',
+      [stakeToken, receiver],
+    );
     tx.data = txData;
     tx.from = sender;
     tx.to = this.rewardsDistributorAddress;
@@ -49,11 +75,10 @@ export class RewardsDistributorService {
   }: RewardsDistributorClaimSelectedRewardsParams) {
     const tx: PopulatedTransaction = {};
     const receiver = sender;
-    const txData = this.interface.encodeFunctionData('claimSelectedRewards', [
-      stakeToken,
-      rewards,
-      receiver,
-    ]);
+    const txData = this.interface.encodeFunctionData(
+      'claimSelectedRewards(address,address[],address)',
+      [stakeToken, rewards, receiver],
+    );
     tx.data = txData;
     tx.from = sender;
     tx.to = this.rewardsDistributorAddress;
