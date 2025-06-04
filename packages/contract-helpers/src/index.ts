@@ -41,6 +41,7 @@ export * from './governance-v3/aave-token-v3';
 export * from './governance-v3/payloads-data-helper';
 export * from './governance-v3/delegate-helper';
 export * from './abpt-migration';
+export * from './umbrella';
 
 // commons
 export * from './commons/types';

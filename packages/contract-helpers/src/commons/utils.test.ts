@@ -1,4 +1,5 @@
-import { BigNumber } from 'ethers';
+import { BigNumber, Wallet } from 'ethers';
+import { isAddress } from 'ethers/lib/utils';
 import { transactionType } from './types';
 import {
   API_ETH_MOCK_ADDRESS,
@@ -9,6 +10,8 @@ import {
   getTxValue,
   augustusToAmountOffsetFromCalldata,
   convertPopulatedTx,
+  makePair,
+  generateEIP712PermitMock,
 } from './utils';
 
 describe('Utils', () => {
@@ -128,6 +131,37 @@ describe('Utils', () => {
       expect(convertedTx.from).toEqual('b');
       expect(convertedTx.data).toEqual('c');
       expect(convertedTx.value).toEqual(BigNumber.from('0'));
+    });
+  });
+
+  describe('makePair', () => {
+    it('Generates a valid pair', () => {
+      const { address, privateKey } = makePair('test_id');
+      expect(isAddress(address)).toBeTruthy();
+      expect(privateKey).toHaveLength(66);
+      const wallet = new Wallet(privateKey);
+      expect(wallet.address).toEqual(address);
+    });
+    it('Generate always the same pair with same id', () => {
+      const { address: address1, privateKey: privateKey1 } =
+        makePair('test_id');
+      const { address: address2, privateKey: privateKey2 } =
+        makePair('test_id');
+      expect(address1).toEqual(address2);
+      expect(privateKey1).toEqual(privateKey2);
+    });
+  });
+
+  describe('generateEIP712PermitMock', () => {
+    it('Generates valid EIP712 Permit values', () => {
+      const { value } = generateEIP712PermitMock('0x0', '0x1', '100', '1');
+      expect(value).toEqual({
+        owner: '0x0',
+        spender: '0x1',
+        value: '100',
+        nonce: '0',
+        deadline: '1',
+      });
     });
   });
 });

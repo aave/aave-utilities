@@ -1,4 +1,5 @@
-import { BigNumber, BytesLike, PopulatedTransaction } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
+import { BytesLike, PopulatedTransaction } from 'ethers';
 import {
   LPBorrowParamsType,
   LPRepayParamsType,
@@ -158,6 +159,26 @@ export enum ProtocolAction {
   batchMetaDelegate = 'batchMetaDelegate',
   updateRepresentatives = 'updateRepresentatives',
   migrateABPT = 'migrateABPT',
+  umbrellaStake = 'umbrellaStake',
+  umbrellaStakeWithPermit = 'umbrellaStakeWithPermit',
+  umbrellaStakeWithATokens = 'umbrellaStakeWithATokens',
+  umbrellaStakeWithATokensWithPermit = 'umbrellaStakeWithATokensWithPermit',
+  umbrellaRedeem = 'umbrellaRedeem',
+  umbrellaRedeemATokens = 'umbrellaRedeemATokens',
+  umbrellaStakeTokenCooldown = 'umbrellaStakeTokenCooldown',
+  umbrellaStakeTokenDeposit = 'umbrellaStakeTokenDeposit',
+  umbrellaStakeTokenDepositWithPermit = 'umbrellaStakeTokenDepositWithPermit',
+  umbrellaStakeTokenRedeem = 'umbrellaStakeTokenRedeem',
+  umbrellaClaimAllRewards = 'umbrellaClaimAllRewards',
+  umbrellaClaimSelectedRewards = 'umbrellaClaimSelectedRewards',
+  umbrellaStakeGatewayStake = 'umbrellaStakeGatewayStake',
+  umbrellaStakeGatewayStakeWithPermit = 'umbrellaStakeGatewayStakeWithPermit',
+  umbrellaStakeGatewayStakeATokens = 'umbrellaStakeGatewayStakeATokens',
+  umbrellaStakeGatewayStakeATokensWithPermit = 'umbrellaStakeGatewayStakeATokensWithPermit',
+  umbrellaStakeGatewayStakeNativeTokens = 'umbrellaStakeGatewayStakeNativeTokens',
+  umbrellaStakeGatewayRedeem = 'umbrellaStakeGatewayRedeem',
+  umbrellaStakeGatewayRedeemATokens = 'umbrellaStakeGatewayRedeemATokens',
+  umbrellaStakeGatewayRedeemNativeTokens = 'umbrellaStakeGatewayRedeemNativeTokens',
 }
 
 export enum GovernanceVote {
@@ -405,4 +426,11 @@ export type RepayWithATokensTxBuilder = {
     amount,
     rateMode,
   }: Omit<LPRepayWithATokensType, 'user'>) => Promise<string>;
+};
+
+export type DefinedPopulatedTransaction = PopulatedTransaction & {
+  data: string;
+  from: string;
+  to: string;
+  gasLimit: BigNumber;
 };

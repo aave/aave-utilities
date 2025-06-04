@@ -1,5 +1,5 @@
 import { BigNumber as BigNumberJs } from 'bignumber.js';
-import { BigNumber, constants, PopulatedTransaction } from 'ethers';
+import { BigNumber, constants, PopulatedTransaction, utils } from 'ethers';
 import {
   GasRecommendationType,
   ProtocolAction,
@@ -150,6 +150,86 @@ export const gasLimitRecommendations: GasRecommendationType = {
     limit: '750000',
     recommended: '750000',
   },
+  [ProtocolAction.umbrellaStake]: {
+    limit: '400000',
+    recommended: '400000',
+  },
+  [ProtocolAction.umbrellaStakeWithPermit]: {
+    limit: '310000',
+    recommended: '310000',
+  },
+  [ProtocolAction.umbrellaStakeWithATokens]: {
+    limit: '310000',
+    recommended: '310000',
+  },
+  [ProtocolAction.umbrellaStakeWithATokensWithPermit]: {
+    limit: '310000',
+    recommended: '310000',
+  },
+  [ProtocolAction.umbrellaRedeem]: {
+    limit: '310000',
+    recommended: '310000',
+  },
+  [ProtocolAction.umbrellaRedeemATokens]: {
+    limit: '310000',
+    recommended: '310000',
+  },
+  [ProtocolAction.umbrellaStakeTokenCooldown]: {
+    limit: '60000',
+    recommended: '60000',
+  },
+  [ProtocolAction.umbrellaStakeTokenDeposit]: {
+    limit: '200000',
+    recommended: '200000',
+  },
+  [ProtocolAction.umbrellaStakeTokenDepositWithPermit]: {
+    limit: '300000',
+    recommended: '300000',
+  },
+  [ProtocolAction.umbrellaStakeTokenRedeem]: {
+    limit: '200000',
+    recommended: '200000',
+  },
+  [ProtocolAction.umbrellaClaimAllRewards]: {
+    limit: '310000',
+    recommended: '310000',
+  },
+  [ProtocolAction.umbrellaClaimSelectedRewards]: {
+    limit: '310000',
+    recommended: '310000',
+  },
+  [ProtocolAction.umbrellaStakeGatewayStake]: {
+    limit: '310000',
+    recommended: '310000',
+  },
+  [ProtocolAction.umbrellaStakeGatewayStakeWithPermit]: {
+    limit: '310000',
+    recommended: '310000',
+  },
+  [ProtocolAction.umbrellaStakeGatewayStakeATokens]: {
+    limit: '310000',
+    recommended: '310000',
+  },
+  [ProtocolAction.umbrellaStakeGatewayStakeATokensWithPermit]: {
+    limit: '310000',
+    recommended: '310000',
+  },
+  [ProtocolAction.umbrellaStakeGatewayStakeNativeTokens]: {
+    limit: '310000',
+    recommended: '310000',
+  },
+  [ProtocolAction.umbrellaStakeGatewayRedeem]: {
+    limit: '310000',
+    recommended: '310000',
+  },
+  [ProtocolAction.umbrellaStakeGatewayRedeemATokens]: {
+    limit: '310000',
+    recommended: '310000',
+  },
+  [ProtocolAction.umbrellaStakeGatewayRedeemNativeTokens]: {
+    limit: '310000',
+    recommended: '310000',
+  },
 };
 
 export const mintAmountsPerToken: Record<string, string> = {
@@ -232,3 +312,48 @@ export const convertPopulatedTx = (
     value: tx.value ? BigNumber.from(tx.value) : BigNumber.from('0'),
   };
 };
+
+export const makePair = (id: string) => {
+  const privateKey = utils.id(id);
+  const address = utils.computeAddress(privateKey);
+  return { privateKey, address };
+};
+
+export const DEFAULT_MOCK_VERIFYING_CONTRACT =
+  '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC';
+
+export const generateEIP712PermitMock = (
+  owner: string,
+  spender: string,
+  amount: string,
+  deadline: string,
+) => {
+  const domain = {
+    name: 'Mocked token',
+    version: '1',
+    chainId: 1,
+    verifyingContract: DEFAULT_MOCK_VERIFYING_CONTRACT,
+  };
+  const types = {
+    Permit: [
+      { name: 'owner', type: 'address' },
+      { name: 'spender', type: 'address' },
+      { name: 'value', type: 'uint256' },
+      { name: 'nonce', type: 'uint256' },
+      { name: 'deadline', type: 'uint256' },
+    ],
+  };
+  const value = {
+    owner,
+    spender,
+    value: amount,
+    nonce: '0',
+    deadline,
+  };
+
+  return { domain, types, value };
+};
+
+export function expectToBeDefined<T>(value: T | undefined): asserts value is T {
+  expect(value).toBeDefined();
+}
