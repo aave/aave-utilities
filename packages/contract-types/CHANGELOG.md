@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.4.0 (2025-06-04)
+
+
+### Features
+
+* umbrella ([#608](https://github.com/aave/aave-utilities/issues/608)) ([5099ed5](https://github.com/aave/aave-utilities/commit/5099ed51657e8844594fe7ed9d8dd32ff478b12f)), closes [#625](https://github.com/aave/aave-utilities/issues/625)
+
+
+
+
+
 ## 1.3.3 (2025-05-16)
 
 **Note:** Version bump only for package @aave/contract-types

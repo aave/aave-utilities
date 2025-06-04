@@ -1,6 +1,6 @@
 {
   "name": "@aave/contract-types",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "main": "index.js",
   "license": "MIT",
   "private": true,
