@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.5.0 (2025-06-12)
+
+
+### Features
+
+* target liquidity ([#629](https://github.com/aave/aave-utilities/issues/629)) ([c013305](https://github.com/aave/aave-utilities/commit/c013305e3c3ac8754a17d09f089ca19d26824b01))
+
+
+
+
+
 # 1.4.0 (2025-06-04)
 
 
