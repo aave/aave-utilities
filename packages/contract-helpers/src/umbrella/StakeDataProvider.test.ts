@@ -35,6 +35,7 @@ const mockStakeData: StakeDataStruct = {
   symbol: 'MST',
   price: BigNumber.from('1000000000000000000'),
   totalAssets: BigNumber.from('1000000000000000000000000'),
+  targetLiquidity: BigNumber.from('2000000000000000000000000'),
   underlyingTokenAddress: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
   underlyingTokenName: 'Mock Underlying Token',
   underlyingTokenSymbol: 'MUT',
@@ -119,6 +120,7 @@ describe('Umbrella StakeDataProvider', () => {
       ...mockStakeData,
       totalAssets: '1000000000000000000000000',
       price: '1000000000000000000',
+      targetLiquidity: '2000000000000000000000000',
       cooldownSeconds: 86400,
       unstakeWindowSeconds: 43200,
       rewards: [

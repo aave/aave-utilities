@@ -83,6 +83,11 @@ const _abi = [
             internalType: 'uint256',
           },
           {
+            name: 'targetLiquidity',
+            type: 'uint256',
+            internalType: 'uint256',
+          },
+          {
             name: 'underlyingTokenAddress',
             type: 'address',
             internalType: 'address',

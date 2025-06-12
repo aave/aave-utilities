@@ -87,6 +87,7 @@ export type StakeDataStruct = {
   symbol: string;
   price: BigNumberish;
   totalAssets: BigNumberish;
+  targetLiquidity: BigNumberish;
   underlyingTokenAddress: string;
   underlyingTokenName: string;
   underlyingTokenSymbol: string;
@@ -119,6 +120,7 @@ export type StakeDataStructOutput = [
   symbol: string;
   price: BigNumber;
   totalAssets: BigNumber;
+  targetLiquidity: BigNumber;
   underlyingTokenAddress: string;
   underlyingTokenName: string;
   underlyingTokenSymbol: string;
