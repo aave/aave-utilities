@@ -59,8 +59,7 @@ export interface LegacyUiPoolDataProviderInterface {
  * or v3 markets that do not have the v3.1 upgrade applied
  */
 export class LegacyUiPoolDataProvider
-  implements LegacyUiPoolDataProviderInterface
-{
+  implements LegacyUiPoolDataProviderInterface {
   private readonly _contract: UiPoolDataProviderContract;
 
   private readonly chainId: number;
@@ -194,7 +193,7 @@ export class LegacyUiPoolDataProvider
         accruedToTreasury: reserveRaw.accruedToTreasury.toString(),
         unbacked: reserveRaw.unbacked.toString(),
         isolationModeTotalDebt: reserveRaw.isolationModeTotalDebt.toString(),
-        debtCeilingDecimals: reserveRaw.debtCeilingDecimals.toNumber(),
+        debtCeilingDecimals: reserveRaw.debtCeilingDecimals.toString(),
         isSiloedBorrowing: reserveRaw.isSiloedBorrowing,
         flashLoanEnabled: reserveRaw.flashLoanEnabled,
         virtualAccActive: false,
