@@ -782,7 +782,7 @@ const pool = new Pool(provider, {
 - @param `signature` Signature approving Pool to spend user funds, from signERC20Approval()
 - @param @optional `onBehalfOf` The ethereum address for which user is depositing. It will default to the user address
 */
-const txs: EthereumTransactionTypeExtended[] = await pool.supplyWithPermit({
+const txs: EthereumTransactionTypeExtended[] = await pool.repayWithPermit({
   user,
   reserve,
   amount,
