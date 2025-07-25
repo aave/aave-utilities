@@ -121,24 +121,24 @@ export class MetaDelegateHelperService {
     const typeData = {
       domain: {
         name: governanceTokenName,
-        version: '2',
+        version: governanceTokenName === 'Aave Ethereum AAVE' ? '1' : '2',
         chainId: connectedChainId,
         verifyingContract: underlyingAsset,
       },
       types: isAllDelegate
         ? {
-            ...eIP712DomainType,
-            Delegate: [...sigParametersType, ...sigBaseType],
-          }
+          ...eIP712DomainType,
+          Delegate: [...sigParametersType, ...sigBaseType],
+        }
         : {
-            ...eIP712DomainType,
+          ...eIP712DomainType,
 
-            DelegateByType: [
-              ...sigParametersType,
-              ...sigDelegationTypeType,
-              ...sigBaseType,
-            ],
-          },
+          DelegateByType: [
+            ...sigParametersType,
+            ...sigDelegationTypeType,
+            ...sigBaseType,
+          ],
+        },
       primaryType: isAllDelegate ? 'Delegate' : 'DelegateByType',
       message: isAllDelegate
         ? { ...typesData }
