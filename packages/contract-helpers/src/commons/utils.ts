@@ -230,6 +230,14 @@ export const gasLimitRecommendations: GasRecommendationType = {
     limit: '310000',
     recommended: '310000',
   },
+  [ProtocolAction.governanceDelegate]: {
+    limit: '200000',
+    recommended: '200000',
+  },
+  [ProtocolAction.governanceRevoke]: {
+    limit: '400000',
+    recommended: '400000',
+  },
 };
 
 export const mintAmountsPerToken: Record<string, string> = {

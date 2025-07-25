@@ -179,6 +179,8 @@ export enum ProtocolAction {
   umbrellaStakeGatewayRedeem = 'umbrellaStakeGatewayRedeem',
   umbrellaStakeGatewayRedeemATokens = 'umbrellaStakeGatewayRedeemATokens',
   umbrellaStakeGatewayRedeemNativeTokens = 'umbrellaStakeGatewayRedeemNativeTokens',
+  governanceDelegate = 'governanceDelegate',
+  governanceRevoke = 'governanceRevoke',
 }
 
 export enum GovernanceVote {
