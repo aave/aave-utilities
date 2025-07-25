@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.6.1 (2025-07-25)
+
+
+### Bug Fixes
+
+* atoken eip domain ([#634](https://github.com/aave/aave-utilities/issues/634)) ([b29c10f](https://github.com/aave/aave-utilities/commit/b29c10fde48c7cca8d8f42a2682a1d4979d2e64e))
+
+
+
+
+
 # 1.6.0 (2025-07-03)
 
 
