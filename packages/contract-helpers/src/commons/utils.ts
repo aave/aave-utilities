@@ -139,8 +139,8 @@ export const gasLimitRecommendations: GasRecommendationType = {
     recommended: '1000000',
   },
   [ProtocolAction.batchMetaDelegate]: {
-    limit: '200000',
-    recommended: '200000',
+    limit: '400000',
+    recommended: '400000',
   },
   [ProtocolAction.updateRepresentatives]: {
     limit: '60000',
@@ -229,14 +229,6 @@ export const gasLimitRecommendations: GasRecommendationType = {
   [ProtocolAction.umbrellaStakeGatewayRedeemNativeTokens]: {
     limit: '310000',
     recommended: '310000',
-  },
-  [ProtocolAction.governanceDelegate]: {
-    limit: '200000',
-    recommended: '200000',
-  },
-  [ProtocolAction.governanceRevoke]: {
-    limit: '400000',
-    recommended: '400000',
   },
 };
 
