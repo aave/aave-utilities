@@ -24,8 +24,6 @@ jobs:
       - name: Build packages
         uses: ./.github/actions/build
 
-      - name: prepare npm access
-        run: echo '//registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}' >> ~/.npmrc
       # https://github.com/lerna/lerna/issues/2788 --no-verify-access
       # https://github.com/lerna/lerna/issues/1893 --preid ${{ github.sha }}
       - name: prerelease
