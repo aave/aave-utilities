@@ -46,7 +46,6 @@ jobs:
           yarn release:canary \
           --yes --no-verify-access \
           --dist-tag '${{ github.event.pull_request.head.sha }}' --preid '${{ github.event.pull_request.head.sha }}' \
-          --npm-publish-args="--provenance" \
           | tee __publish-log.txt
 
       - name: Comment on PR
