@@ -13,21 +13,28 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+      pull-requests: write
     if: |
       github.event.pull_request.head.repo.full_name == github.repository ||
       (github.ref == 'refs/heads/master' && github.event_name == 'push')
     steps:
       - uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846 # v3.0.0
         with:
-          token: '${{ secrets.BOT_TOKEN }}'
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          fetch-depth: 0
+
+      - name: Setup Node.js and Authenticate with npm
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Build packages
         uses: ./.github/actions/build
 
-      - name: prepare npm access
-        run: echo '//registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}' >> ~/.npmrc
-      # https://github.com/lerna/lerna/issues/2788 --no-verify-access
-      # https://github.com/lerna/lerna/issues/1893 --preid ${{ github.sha }}
       - name: prerelease
         if: |
           !contains(github.head_ref, 'dependabot') &&
@@ -36,6 +43,7 @@ jobs:
           yarn release:canary \
           --yes --no-verify-access \
           --dist-tag '${{ github.event.pull_request.head.sha }}' --preid '${{ github.event.pull_request.head.sha }}' \
+          --npm-publish-args="--provenance" \
           | tee __publish-log.txt
 
       - name: Comment on PR
@@ -49,9 +57,9 @@ jobs:
           github.event_name == 'push' &&
           github.ref == 'refs/heads/master'
         env:
-          GH_TOKEN: '${{ secrets.BOT_TOKEN }}'
+          GH_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
         run: |
           git config user.name "GitHub Actions Build"
           git config user.email "developers@aave.com"
           yarn release:check
-          yarn release:latest --yes --no-verify-access
+          yarn release:latest --yes --no-verify-access --npm-publish-args="--provenance"
