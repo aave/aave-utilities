@@ -32,6 +32,9 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Update npm to the latest version
+        run: npm install -g npm@latest
+
       - name: Build packages
         uses: ./.github/actions/build
 
