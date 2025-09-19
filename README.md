@@ -188,7 +188,7 @@ async function fetchContractData() {
     lendingPoolAddressProvider: markets.AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
   });
 
-  // Object containing array or users aave positions and active eMode category
+  // Object containing array of users aave positions and active eMode category
   // { userReserves, userEmodeCategoryId }
   const userReserves = await poolDataProviderContract.getUserReservesHumanized({
     lendingPoolAddressProvider: markets.AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
@@ -827,7 +827,7 @@ const txs: EthereumTransactionTypeExtended[] = await pool.repayWithATokens({
   user,
   amount,
   reserve,
-  reateMode,
+  rateMode,
 });
 ```
 
@@ -1900,7 +1900,7 @@ const markets = require("@bgd-labs/aave-address-book");
 const { PoolBundle, LendingPoolBundle } = require("@aave/contract-helpers");
 
 // Create provider
-// Can use custom RPC orR a local fork network from tenderly, ganache, foundry, hardhat, etc. for testing
+// Can use custom RPC or a local fork network from tenderly, ganache, foundry, hardhat, etc. for testing
 const provider = ethers.getDefaultProvider("homestead");
 
 function getPoolBundle(v2, marketKey) {
@@ -1998,7 +1998,7 @@ function generateSupplyTx(v2, user, token, amount, marketKey) {
       });
       return txData;
     } catch (error) {
-      console.error("Errorgenerating deposit tx data", error);
+      console.error("Error generating deposit tx data", error);
     }
   }
 }
@@ -2208,7 +2208,7 @@ function generateSupplyTx(v2, user, token, amount, marketKey) {
       });
       return txData;
     } catch (error) {
-      console.error("Errorgenerating deposit tx data", error);
+      console.error("Error generating deposit tx data", error);
     }
   }
 }
@@ -2388,7 +2388,7 @@ async function marketOptions(marketName) {
             console.log("Not a valid ethereum address");
             marketContinue(marketName);
           } else {
-            console.log("Input address of underyling token to suply");
+            console.log("Input address of underlying token to supply");
             rl.question("Input: ", async (token) => {
               if (!ethers.utils.isAddress(token)) {
                 console.log("Not a valid ethereum address");
@@ -2419,7 +2419,7 @@ async function marketOptions(marketName) {
             console.log("Not a valid ethereum address");
             marketContinue(marketName);
           } else {
-            console.log("Input address of underyling token to suply");
+            console.log("Input address of underlying token to supply");
             rl.question("Input: ", async (token) => {
               if (!ethers.utils.isAddress(token)) {
                 console.log("Not a valid ethereum address");
@@ -2455,7 +2455,7 @@ async function marketOptions(marketName) {
             console.log("Not a valid ethereum address");
             marketContinue(marketName);
           } else {
-            console.log("Input address of underyling token to suply");
+            console.log("Input address of underlying token to supply");
             rl.question("Input: ", async (token) => {
               if (!ethers.utils.isAddress(token)) {
                 console.log("Not a valid ethereum address");
@@ -2497,7 +2497,7 @@ async function marketOptions(marketName) {
             console.log("Not a valid ethereum address");
             marketContinue(marketName);
           } else {
-            console.log("Input address of underyling token to suply");
+            console.log("Input address of underlying token to supply");
             rl.question("Input: ", async (token) => {
               if (!ethers.utils.isAddress(token)) {
                 console.log("Not a valid ethereum address");
@@ -2538,7 +2538,7 @@ async function marketOptions(marketName) {
             console.log("Not a valid ethereum address");
             marketContinue(marketName);
           } else {
-            console.log("Input address of underyling token to suply");
+            console.log("Input address of underlying token to supply");
             rl.question("Input: ", async (token) => {
               if (!ethers.utils.isAddress(token)) {
                 console.log("Not a valid ethereum address");
