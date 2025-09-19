@@ -2538,7 +2538,7 @@ async function marketOptions(marketName) {
             console.log("Not a valid ethereum address");
             marketContinue(marketName);
           } else {
-            console.log("Input address of underyling token to suply");
+            console.log("Input address of underyling token to supply");
             rl.question("Input: ", async (token) => {
               if (!ethers.utils.isAddress(token)) {
                 console.log("Not a valid ethereum address");
