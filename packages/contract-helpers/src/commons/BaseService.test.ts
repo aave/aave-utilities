@@ -101,6 +101,17 @@ describe('BaseService', () => {
       expect(tx.value).toEqual(DEFAULT_NULL_VALUE_ON_TX);
       expect(tx.gasLimit).toEqual(BigNumber.from(300000));
     });
+    it('Expects transaction gasLimit to be 1 when skipping gas estimation', async () => {
+      const txCallback = baseService.generateTxCallback({
+        rawTxMethod,
+        from,
+        value,
+        gasSurplus,
+      });
+
+      const tx = await txCallback(true);
+      expect(tx.gasLimit).toEqual(BigNumber.from(1));
+    });
   });
   describe('generateTxPriceEstimation', () => {
     const baseService = new BaseService(provider, Test__factory);
