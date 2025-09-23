@@ -62,7 +62,7 @@
     "cz-conventional-changelog": "^3.0.2",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-config-xo": "^0.39.0",
+    "eslint-config-xo": "^0.40.0",
     "eslint-config-xo-typescript": "^0.45.2",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-prettier": "^4.0.0",
