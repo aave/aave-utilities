@@ -1,4 +1,4 @@
-<p align="center"> <a href="https://aave.com/" rel="noopener" target="_blank"><img width="300" src="https://aave.com/governanceGhosts.svg" alt="Aave logo"></a></p>
+<p align="center"> <a href="https://aave.com/" rel="noopener" target="_blank"><img width="300" src="https://img.shields.io/badge/Aave-Governance_Ghosts-7E3DFF?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjU2IDBDMTE0LjYgMCAwIDExNC42IDAgMjU2czExNC42IDI1NiAyNTYgMjU2IDI1Ni0xMTQuNiAyNTYtMjU2UzM5Ny40IDAgMjU2IDB6bTAgNDQ4Yy0xMDYuMSAwLTE5Mi04NS45LTE5Mi0xOTJTMTQ5LjkgNjQgMjU2IDY0czE5MiA4NS45IDE5MiAxOTItODUuOSAxOTItMTkyIDE5MnoiLz48L3N2Zz4=" alt="Aave logo"></a></p>
 
 <h1 align="center">Aave Utilities</h1>
 
@@ -52,7 +52,7 @@ npm install ethers@5
 1.  [Data Methods](#data-methods)
     - a. [Setup](#data-methods-setup)
     - b. [Markets Data](#markets-data)
-    - b. [User Data](#user-data)
+    - c. [User Data](#user-data)
 2.  [Transaction Methods](#transaction-methods)
     - a. [Setup](#transactions-setup)
     - b. [Submitting Transactions](#submitting-transactions)
