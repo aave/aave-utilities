@@ -20,7 +20,7 @@
     "commit": "git-cz",
     "release:check": "lerna changed",
     "release:latest": "lerna publish --yes --conventional-commits --create-release github --message 'chore(release): publish [ci skip]'",
-    "release:canary": "NPM_CONFIG_PROVENANCE=true lerna publish --canary --ignore-scripts",
+    "release:canary": "NPM_CONFIG_PROVENANCE=true lerna publish --canary --force-publish --yes",
     "prepare": "husky install"
   },
   "workspaces": [
