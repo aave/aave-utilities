@@ -5,3 +5,4 @@ export const USD_DECIMALS = 8;
 export const WEI_DECIMALS = 18;
 export const RAY_DECIMALS = 27;
 export const LTV_PRECISION = 4;
+export const FOO = 1;
