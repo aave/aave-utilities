@@ -109,7 +109,7 @@ npm install ethers@5
 
 The `@aave/contract-helpers` and `@aave/math-utils` packages are utilities to
 fetch and format smart contract data respectively. This section will guide you
-on how to setup and use these packages to query Aave Protocol data.
+to setup and use these packages to query Aave Protocol data.
 
 <br />
 
