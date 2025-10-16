@@ -136,7 +136,7 @@ export interface ReserveDataHumanized {
   isolationModeTotalDebt: string;
   flashLoanEnabled: boolean;
   debtCeiling: string;
-  debtCeilingDecimals: number;
+  debtCeilingDecimals: string;
   borrowCap: string;
   supplyCap: string;
   borrowableInIsolation: boolean;
