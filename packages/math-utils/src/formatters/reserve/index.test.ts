@@ -48,15 +48,6 @@ describe('formatReserve', () => {
     });
     expect(fiftyPercent.borrowUsageRatio).toEqual('0.5');
     expect(fiftyPercent.supplyUsageRatio).toEqual('0.5');
-
-    // add unbacked supplies
-    reserve.addUnbacked(200);
-    const unbacked = formatReserve({
-      reserve: reserve.reserve,
-      currentTimestamp: reserve.reserve.lastUpdateTimestamp,
-    });
-    expect(unbacked.borrowUsageRatio).toEqual('0.5');
-    expect(unbacked.supplyUsageRatio).toEqual('0.25');
   });
 
   it('should calculate usd values', () => {

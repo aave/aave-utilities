@@ -38,9 +38,8 @@ export class ReserveMock {
       debtCeiling: '0',
       debtCeilingDecimals: 2,
       isolationModeTotalDebt: '',
-      unbacked: '0',
-      virtualAccActive: false,
       virtualUnderlyingBalance: '0',
+      deficit: '0',
     };
   }
 
@@ -56,13 +55,6 @@ export class ReserveMock {
     this.reserve.totalScaledVariableDebt = new BigNumber(amount)
       .shiftedBy(this.config.decimals)
       .plus(this.reserve.totalScaledVariableDebt)
-      .toString();
-    return this;
-  }
-
-  addUnbacked(amount: number | string) {
-    this.reserve.unbacked = new BigNumber(amount)
-      .shiftedBy(this.config.decimals)
       .toString();
     return this;
   }
@@ -110,7 +102,6 @@ export class UserReserveMock {
       totalVariableDebtUSD: '0',
       borrowCapUSD: '0',
       supplyCapUSD: '0',
-      unbackedUSD: '0',
       priceInMarketReferenceCurrency: (10 ** 19).toString(),
       formattedPriceInMarketReferenceCurrency: '10',
       unborrowedLiquidity: '0',
