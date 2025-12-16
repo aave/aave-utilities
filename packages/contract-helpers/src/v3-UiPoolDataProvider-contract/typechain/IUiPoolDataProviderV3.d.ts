@@ -27,6 +27,7 @@ export declare namespace DataTypes {
     collateralBitmap: BigNumberish;
     label: string;
     borrowableBitmap: BigNumberish;
+    ltvzeroBitmap: BigNumberish;
   };
 
   export type EModeCategoryStructOutput = [
@@ -36,6 +37,7 @@ export declare namespace DataTypes {
     BigNumber,
     string,
     BigNumber,
+    BigNumber,
   ] & {
     ltv: number;
     liquidationThreshold: number;
@@ -43,6 +45,7 @@ export declare namespace DataTypes {
     collateralBitmap: BigNumber;
     label: string;
     borrowableBitmap: BigNumber;
+    ltvzeroBitmap: BigNumber;
   };
 }
 
@@ -89,7 +92,6 @@ export declare namespace IUiPoolDataProviderV3 {
     isPaused: boolean;
     isSiloedBorrowing: boolean;
     accruedToTreasury: BigNumberish;
-    unbacked: BigNumberish;
     isolationModeTotalDebt: BigNumberish;
     flashLoanEnabled: boolean;
     debtCeiling: BigNumberish;
@@ -97,8 +99,8 @@ export declare namespace IUiPoolDataProviderV3 {
     borrowCap: BigNumberish;
     supplyCap: BigNumberish;
     borrowableInIsolation: boolean;
-    virtualAccActive: boolean;
     virtualUnderlyingBalance: BigNumberish;
+    deficit: BigNumberish;
   };
 
   export type AggregatedReserveDataStructOutput = [
@@ -134,14 +136,13 @@ export declare namespace IUiPoolDataProviderV3 {
     boolean,
     BigNumber,
     BigNumber,
-    BigNumber,
     boolean,
     BigNumber,
     BigNumber,
     BigNumber,
     BigNumber,
     boolean,
-    boolean,
+    BigNumber,
     BigNumber,
   ] & {
     underlyingAsset: string;
@@ -175,7 +176,6 @@ export declare namespace IUiPoolDataProviderV3 {
     isPaused: boolean;
     isSiloedBorrowing: boolean;
     accruedToTreasury: BigNumber;
-    unbacked: BigNumber;
     isolationModeTotalDebt: BigNumber;
     flashLoanEnabled: boolean;
     debtCeiling: BigNumber;
@@ -183,8 +183,8 @@ export declare namespace IUiPoolDataProviderV3 {
     borrowCap: BigNumber;
     supplyCap: BigNumber;
     borrowableInIsolation: boolean;
-    virtualAccActive: boolean;
     virtualUnderlyingBalance: BigNumber;
+    deficit: BigNumber;
   };
 
   export type BaseCurrencyInfoStruct = {
