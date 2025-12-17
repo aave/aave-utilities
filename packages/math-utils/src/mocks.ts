@@ -123,6 +123,7 @@ export class UserReserveMock {
           id: 1,
           collateralEnabled: true,
           borrowingEnabled: true,
+          ltvzeroEnabled: false,
           eMode: {
             ltv: '6000',
             liquidationThreshold: '7000',
@@ -133,6 +134,7 @@ export class UserReserveMock {
             label: 'test emode',
             collateralBitmap: '1',
             borrowableBitmap: '1',
+            ltvzeroBitmap: '0',
           },
         },
       ],

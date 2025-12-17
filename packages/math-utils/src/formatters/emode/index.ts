@@ -8,6 +8,7 @@ interface EModeCategoryData {
   collateralBitmap: string;
   label: string;
   borrowableBitmap: string;
+  ltvzeroBitmap: string;
 }
 
 interface FormattedEModeCategory extends EModeCategoryData {
@@ -50,6 +51,7 @@ export function formatEModes(eModes: EModeData[]) {
 export interface ReserveEMode extends EModeData {
   collateralEnabled: boolean;
   borrowingEnabled: boolean;
+  ltvzeroEnabled: boolean;
 }
 
 export function getReservesEModes(
@@ -57,16 +59,19 @@ export function getReservesEModes(
   eModes: EModeData[],
 ): ReserveEMode[] {
   return eModes.reduce<ReserveEMode[]>((acc, eMode) => {
-    const { borrowableBitmap, collateralBitmap } = eMode.eMode;
+    const { borrowableBitmap, collateralBitmap, ltvzeroBitmap } = eMode.eMode;
     const borrowingEnabled =
       borrowableBitmap[borrowableBitmap.length - reserveId - 1] === '1';
     const collateralEnabled =
       collateralBitmap[collateralBitmap.length - reserveId - 1] === '1';
+    const ltvzeroEnabled =
+      ltvzeroBitmap[ltvzeroBitmap.length - reserveId - 1] === '1';
     if (borrowingEnabled || collateralEnabled) {
       acc.push({
         id: eMode.id,
         collateralEnabled,
         borrowingEnabled,
+        ltvzeroEnabled,
         eMode: eMode.eMode,
       });
     }
