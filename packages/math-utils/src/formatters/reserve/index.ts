@@ -75,9 +75,8 @@ export interface ReserveData {
   debtCeiling: string;
   debtCeilingDecimals: number;
   isolationModeTotalDebt: string;
-  unbacked: string;
-  virtualAccActive: boolean;
   virtualUnderlyingBalance: string;
+  deficit: string;
 }
 
 interface GetComputedReserveFieldsResponse {
@@ -109,9 +108,7 @@ function getComputedReserveFields({
     : valueToBigNumber(totalDebt).dividedBy(totalLiquidity).toFixed();
   const supplyUsageRatio = totalLiquidity.eq(0)
     ? '0'
-    : valueToBigNumber(totalDebt)
-        .dividedBy(totalLiquidity.plus(reserve.unbacked))
-        .toFixed();
+    : valueToBigNumber(totalDebt).dividedBy(totalLiquidity).toFixed();
   // https://github.com/aave/protocol-v2/blob/baeb455fad42d3160d571bd8d3a795948b72dd85/contracts/protocol/lendingpool/LendingPoolConfigurator.sol#L284
   const reserveLiquidationBonus = normalize(
     valueToBigNumber(reserve.reserveLiquidationBonus).minus(
@@ -269,7 +266,6 @@ export interface FormatReserveUSDResponse extends FormatReserveResponse {
   totalVariableDebtUSD: string;
   borrowCapUSD: string;
   supplyCapUSD: string;
-  unbackedUSD: string;
   priceInMarketReferenceCurrency: string;
   formattedPriceInMarketReferenceCurrency: string;
   priceInUSD: string;
@@ -351,11 +347,6 @@ export function formatReserveUSD({
     ).toString(),
     supplyCapUSD: normalizedToUsd(
       new BigNumber(reserve.supplyCap),
-      reserve.priceInMarketReferenceCurrency,
-      marketReferenceCurrencyDecimals,
-    ).toString(),
-    unbackedUSD: normalizedToUsd(
-      new BigNumber(reserve.unbacked),
       reserve.priceInMarketReferenceCurrency,
       marketReferenceCurrencyDecimals,
     ).toString(),

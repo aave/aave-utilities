@@ -7,6 +7,7 @@ export interface EModeCategoryHumanized {
   collateralBitmap: string;
   label: string;
   borrowableBitmap: string;
+  ltvzeroBitmap: string;
 }
 
 export interface EModeCategory {
@@ -16,6 +17,7 @@ export interface EModeCategory {
   collateralBitmap: BigNumber;
   label: string;
   borrowableBitmap: BigNumber;
+  ltvzeroBitmap: BigNumber;
 }
 
 export interface EmodeDataHumanized {
@@ -61,7 +63,6 @@ export interface ReservesData {
     isPaused: boolean;
     isSiloedBorrowing: boolean;
     accruedToTreasury: BigNumber;
-    unbacked: BigNumber;
     isolationModeTotalDebt: BigNumber;
     flashLoanEnabled: boolean;
     debtCeiling: BigNumber;
@@ -69,8 +70,8 @@ export interface ReservesData {
     borrowCap: BigNumber;
     supplyCap: BigNumber;
     borrowableInIsolation: boolean;
-    virtualAccActive: boolean;
     virtualUnderlyingBalance: BigNumber;
+    deficit: BigNumber;
   }>;
   1: {
     marketReferenceCurrencyUnit: BigNumber;
@@ -132,7 +133,6 @@ export interface ReserveDataHumanized {
   isPaused: boolean;
   isSiloedBorrowing: boolean;
   accruedToTreasury: string;
-  unbacked: string;
   isolationModeTotalDebt: string;
   flashLoanEnabled: boolean;
   debtCeiling: string;
@@ -140,8 +140,8 @@ export interface ReserveDataHumanized {
   borrowCap: string;
   supplyCap: string;
   borrowableInIsolation: boolean;
-  virtualAccActive: boolean;
   virtualUnderlyingBalance: string;
+  deficit: string;
 }
 
 export interface ReservesDataHumanized {

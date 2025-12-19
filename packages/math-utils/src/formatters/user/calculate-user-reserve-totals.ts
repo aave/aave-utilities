@@ -63,10 +63,14 @@ export function calculateUserReserveTotals({
         selectedEModeCategory &&
         selectedEModeCategory.collateralEnabled
       ) {
+        const effectiveLtv = selectedEModeCategory.ltvzeroEnabled
+          ? '0'
+          : selectedEModeCategory.eMode.ltv;
+
         currentLtv = currentLtv.plus(
           valueToBigNumber(
             userReserveSummary.underlyingBalanceMarketReferenceCurrency,
-          ).multipliedBy(selectedEModeCategory.eMode.ltv),
+          ).multipliedBy(effectiveLtv),
         );
         currentLiquidationThreshold = currentLiquidationThreshold.plus(
           valueToBigNumber(

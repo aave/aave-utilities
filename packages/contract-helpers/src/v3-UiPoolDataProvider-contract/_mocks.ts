@@ -101,10 +101,6 @@ export const reservesMock: ReservesData = {
         _hex: '0x0',
         _isBigNumber: true,
       }),
-      unbacked: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
       isolationModeTotalDebt: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
@@ -113,8 +109,11 @@ export const reservesMock: ReservesData = {
         _hex: '0x0',
         _isBigNumber: true,
       }),
-      virtualAccActive: false,
       virtualUnderlyingBalance: BigNumber.from({
+        _hex: '0x0',
+        _isBigNumber: true,
+      }),
+      deficit: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
       }),
@@ -217,10 +216,6 @@ export const reservesMock: ReservesData = {
         _hex: '0x0',
         _isBigNumber: true,
       }),
-      unbacked: BigNumber.from({
-        _hex: '0x0',
-        _isBigNumber: true,
-      }),
       isolationModeTotalDebt: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
@@ -229,8 +224,11 @@ export const reservesMock: ReservesData = {
         _hex: '0x0',
         _isBigNumber: true,
       }),
-      virtualAccActive: false,
       virtualUnderlyingBalance: BigNumber.from({
+        _hex: '0x0',
+        _isBigNumber: true,
+      }),
+      deficit: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
       }),
@@ -285,6 +283,10 @@ export const eModesMock: EModeData[] = [
         _isBigNumber: true,
       }),
       borrowableBitmap: BigNumber.from({
+        _hex: '0x0',
+        _isBigNumber: true,
+      }),
+      ltvzeroBitmap: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
       }),
