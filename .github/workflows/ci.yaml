@@ -64,4 +64,4 @@ jobs:
           git config user.name "GitHub Actions Build"
           git config user.email "developers@aave.com"
           yarn release:check
-          yarn release:latest --yes --no-verify-access --npm-publish-args="--provenance"
+          yarn release:latest --yes --no-verify-access --provenance
