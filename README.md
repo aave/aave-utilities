@@ -893,13 +893,12 @@ const pool = new Pool(provider, {
 /*
 - @param `user` The ethereum address that will make the deposit 
 - @param `reserve` The ethereum address of the reserve 
-- @param `interestRateMode` The rate mode to swap to, stable (InterestRate.Stable) or variable (InterestRate.Variable) 
+- @param `interestRateMode` The current rate mode, stable (InterestRate.Stable) or variable (InterestRate.Variable)  
 */
 const txs: EthereumTransactionTypeExtended[] = await pool.swapBorrowRateMode({
   user,
   reserve,
-  amount,
-  onBehalfOf,
+  interestRateMode,
 });
 ```
 
