@@ -1,6 +1,9 @@
-<p align="center"> <a href="https://aave.com/" rel="noopener" target="_blank"><img width="300" src="https://aave.com/governanceGhosts.svg" alt="Aave logo"></a></p>
+<p align="center"> <a href="https://aave.com/" rel="noopener" target="_blank"><img width="300" src="https://aave.com/favicon.png" alt="Aave logo"></a></p>
 
 <h1 align="center">Aave Utilities</h1>
+
+> [!CAUTION]
+> This repository is deprecated. Refer to [aave-sdk](https://github.com/aave/aave-sdk) and [Aave Docs](https://aave.com/docs/aave-v3/getting-started) for latest integration endpoints.
 
 The Aave Protocol is a decentralized non-custodial liquidity protocol where
 users can participate as suppliers or borrowers.
