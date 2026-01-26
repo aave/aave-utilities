@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.37.1](https://github.com/aave/aave-utilities/compare/@aave/math-utils@1.37.0...@aave/math-utils@1.37.1) (2026-01-26)
+
+**Note:** Version bump only for package @aave/math-utils
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 # [1.37.0](https://github.com/aave/aave-utilities/compare/@aave/math-utils@1.36.3...@aave/math-utils@1.37.0) (2025-12-22)
 
 ### Features
