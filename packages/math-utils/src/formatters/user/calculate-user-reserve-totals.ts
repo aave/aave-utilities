@@ -40,9 +40,20 @@ export function calculateUserReserveTotals({
         userReserveSummary.variableBorrowsMarketReferenceCurrency,
       );
 
-    if (
+    // Check if asset has liquidation threshold in user's e-mode category
+    const selectedEModeCategory =
+      userReserveSummary.userReserve.reserve.eModes.find(
+        elem => elem.id === userEmodeCategoryId,
+      );
+    const hasLiquidationThreshold =
       userReserveSummary.userReserve.reserve.reserveLiquidationThreshold !==
-        '0' &&
+        '0' ||
+      (userEmodeCategoryId &&
+        selectedEModeCategory &&
+        selectedEModeCategory.collateralEnabled);
+
+    if (
+      hasLiquidationThreshold &&
       userReserveSummary.userReserve.usageAsCollateralEnabledOnUser
     ) {
       if (userReserveSummary.userReserve.reserve.debtCeiling !== '0') {
@@ -53,10 +64,6 @@ export function calculateUserReserveTotals({
       totalCollateralMarketReferenceCurrency =
         totalCollateralMarketReferenceCurrency.plus(
           userReserveSummary.underlyingBalanceMarketReferenceCurrency,
-        );
-      const selectedEModeCategory =
-        userReserveSummary.userReserve.reserve.eModes.find(
-          elem => elem.id === userEmodeCategoryId,
         );
       if (
         userEmodeCategoryId &&
