@@ -2,8 +2,10 @@
 
 <h1 align="center">Aave Utilities</h1>
 
-> [!CAUTION]
-> This repository is deprecated. Refer to [aave-sdk](https://github.com/aave/aave-sdk) and [Aave Docs](https://aave.com/docs/aave-v3/getting-started) for latest integration endpoints.
+> [!CAUTION] This repository is deprecated. Refer to
+> [aave-sdk](https://github.com/aave/aave-sdk) and
+> [Aave Docs](https://aave.com/docs/aave-v3/getting-started) for latest
+> integration endpoints.
 
 The Aave Protocol is a decentralized non-custodial liquidity protocol where
 users can participate as suppliers or borrowers.
@@ -1700,7 +1702,7 @@ const governanceService = new AaveGovernanceService(rpcProvider, {
 
 /*
 - @param `user` The ethereum address that will create the proposal
-- @param `proposalId` Id of the proposal we want to execute
+- @param `proposalId` Id of the proposal we want to execute it
 */
 const tx = governanceService.execute({ user, proposalId });
 ```
