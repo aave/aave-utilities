@@ -1,0 +1,37 @@
+packages/contract-helpers/src/v3-UiPoolDataProvider-contract/typechain/IUiPoolDataProviderV3.d.ts
+  e02a3e1168b8ff57 28,39,48
+packages/contract-types/src/types/UiPoolDataProviderV3.ts
+  e02a3e1168b8ff57 28,39,48
+packages/contract-helpers/src/v3-UiPoolDataProvider-contract/_mocks.ts
+  e02a3e1168b8ff57 284-285
+packages/contract-helpers/src/v3-UiPoolDataProvider-contract/types.ts
+  e02a3e1168b8ff57 8,19
+packages/contract-types/src/abis/UiPoolDataProviderV3.json
+  e02a3e1168b8ff57 110-113
+packages/contract-types/src/types/factories/UiPoolDataProviderV3__factory.ts
+  e02a3e1168b8ff57 120-123
+packages/contract-helpers/src/v3-UiPoolDataProvider-contract/typechain/IUiPoolDataProviderV3__factory.ts
+  e02a3e1168b8ff57 59-62
+packages/contract-helpers/src/v3-UiPoolDataProvider-contract/index.ts
+  e02a3e1168b8ff57 264
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "d981d951b914a7f1c6a8c8ac649d25ade9a14584",
+  "prompts": {
+    "e02a3e1168b8ff57": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ca7ac8a9-079c-4df0-bf9d-560a5829d22a",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Mark Grothe",
+      "messages": [],
+      "total_additions": 26,
+      "total_deletions": 1,
+      "accepted_lines": 26,
+      "overriden_lines": 0
+    }
+  }
+}
