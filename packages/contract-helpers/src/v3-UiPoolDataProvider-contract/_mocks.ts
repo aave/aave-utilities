@@ -277,11 +277,12 @@ export const eModesMock: EModeData[] = [
       ltv: 1,
       liquidationThreshold: 1,
       liquidationBonus: 1,
-      label: 'test label',
       collateralBitmap: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,
       }),
+      isolated: false,
+      label: 'test label',
       borrowableBitmap: BigNumber.from({
         _hex: '0x0',
         _isBigNumber: true,

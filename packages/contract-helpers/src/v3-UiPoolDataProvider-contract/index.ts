@@ -261,6 +261,7 @@ export class UiPoolDataProvider implements UiPoolDataProviderInterface {
           .toBigInt()
           .toString(2)
           .padStart(256, '0'),
+        isolated: eMode.eMode.isolated,
         label: eMode.eMode.label,
         borrowableBitmap: eMode.eMode.borrowableBitmap
           .toBigInt()

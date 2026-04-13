@@ -117,6 +117,11 @@ const _abi = [
                 internalType: 'uint128',
               },
               {
+                name: 'isolated',
+                type: 'bool',
+                internalType: 'bool',
+              },
+              {
                 name: 'label',
                 type: 'string',
                 internalType: 'string',
