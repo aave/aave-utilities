@@ -6,6 +6,7 @@ interface EModeCategoryData {
   liquidationThreshold: string;
   liquidationBonus: string;
   collateralBitmap: string;
+  isolated: boolean;
   label: string;
   borrowableBitmap: string;
   ltvzeroBitmap: string;

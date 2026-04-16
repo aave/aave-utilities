@@ -131,6 +131,7 @@ export class UserReserveMock {
             formattedLtv: '0.6',
             formattedLiquidationThreshold: '0.7',
             formattedLiquidationBonus: '0',
+            isolated: false,
             label: 'test emode',
             collateralBitmap: '1',
             borrowableBitmap: '1',
