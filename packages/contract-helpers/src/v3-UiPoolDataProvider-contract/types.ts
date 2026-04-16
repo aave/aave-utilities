@@ -5,6 +5,7 @@ export interface EModeCategoryHumanized {
   liquidationThreshold: string;
   liquidationBonus: string;
   collateralBitmap: string;
+  isolated: boolean;
   label: string;
   borrowableBitmap: string;
   ltvzeroBitmap: string;
@@ -15,6 +16,7 @@ export interface EModeCategory {
   liquidationThreshold: number;
   liquidationBonus: number;
   collateralBitmap: BigNumber;
+  isolated: boolean;
   label: string;
   borrowableBitmap: BigNumber;
   ltvzeroBitmap: BigNumber;

@@ -25,6 +25,7 @@ export declare namespace DataTypes {
     liquidationThreshold: BigNumberish;
     liquidationBonus: BigNumberish;
     collateralBitmap: BigNumberish;
+    isolated: boolean;
     label: string;
     borrowableBitmap: BigNumberish;
     ltvzeroBitmap: BigNumberish;
@@ -35,6 +36,7 @@ export declare namespace DataTypes {
     number,
     number,
     BigNumber,
+    boolean,
     string,
     BigNumber,
     BigNumber,
@@ -43,6 +45,7 @@ export declare namespace DataTypes {
     liquidationThreshold: number;
     liquidationBonus: number;
     collateralBitmap: BigNumber;
+    isolated: boolean;
     label: string;
     borrowableBitmap: BigNumber;
     ltvzeroBitmap: BigNumber;
