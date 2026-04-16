@@ -1,0 +1,25 @@
+packages/math-utils/src/formatters/emode/index.ts
+  3e7398322f9746de 9
+packages/math-utils/src/mocks.ts
+  3e7398322f9746de 134
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "19f1ac1549167ae42847d96ba9a194b99a1893de",
+  "prompts": {
+    "3e7398322f9746de": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b6e513e3-1888-4dc4-942c-0af918aba0c1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Mark Grothe",
+      "messages": [],
+      "total_additions": 8,
+      "total_deletions": 0,
+      "accepted_lines": 2,
+      "overriden_lines": 0
+    }
+  }
+}
