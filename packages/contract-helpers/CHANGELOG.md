@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.38.0](https://github.com/aave/aave-utilities/compare/@aave/contract-helpers@1.37.1...@aave/contract-helpers@1.38.0) (2026-04-20)
+
+### Features
+
+- v3.7 ([#659](https://github.com/aave/aave-utilities/issues/659))
+  ([b658048](https://github.com/aave/aave-utilities/commit/b658048294408ac6d6213991e9eacdca7903c43a))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [1.37.1](https://github.com/aave/aave-utilities/compare/@aave/contract-helpers@1.37.0...@aave/contract-helpers@1.37.1) (2026-01-26)
 
 **Note:** Version bump only for package @aave/contract-helpers
