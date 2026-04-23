@@ -547,6 +547,7 @@ const supplyBundle: ActionBundle = await poolBundle.supplyBundle({
 });
 
 // Submit bundle components as shown in #bundle-methods section
+````
 
 </details>
 
@@ -1172,6 +1173,7 @@ const depositBundle: ActionBundle = await lendingPoolBundle.depositBundle({
 });
 
 // Submit bundle components as shown in #bundle-methods section
+````
 
 </details>
 
@@ -1185,7 +1187,7 @@ deposited, a corresponding amount of aTokens is minted
 <details>
   <summary>Sample Code</summary>
 
-```ts
+````ts
 import { LendingPool } from '@aave/contract-helpers';
 
 const lendingPool = new LendingPool(provider, {
