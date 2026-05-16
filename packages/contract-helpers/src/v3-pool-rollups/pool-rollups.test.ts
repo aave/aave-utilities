@@ -379,7 +379,7 @@ describe('L2Pool', () => {
       const encoder: L2Encoder = instance.getEncoder();
       expect(encoder).toEqual(instance.encoderContract);
     });
-    it('Expects to return contract without reinitalizing if already there', () => {
+    it('Expects to return contract without reinitializing if already there', () => {
       const instance: L2PoolInterface = new L2Pool(provider, config);
       expect(instance.encoderContract).toEqual(undefined);
       const encoder: L2Encoder = instance.getEncoder();
